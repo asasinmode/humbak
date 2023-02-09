@@ -1,0 +1,16 @@
+{
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "html",
+    "markdown",
+    "json"
+  ],
+  "editor.insertSpaces": false,
+  "css.lint.unknownAtRules": "ignore",
+  "unocss.root": []
+}

@@ -1,0 +1,17 @@
+{
+  "name": "humbak",
+  "version": "1.0.0",
+  "private": "true",
+  "packageManager": "pnpm@7.26.1",
+  "description": "Humbak page monorepo",
+  "author": "asasinmode <skin9470@gmail.com> (https://github.com/asasinmode/)",
+  "license": "MIT",
+  "devDependencies": {
+    "@asasinmode/eslint-config": "^0.3.1",
+    "eslint": "^8.33.0",
+    "typescript": "^4.9.5"
+  },
+  "eslintConfig": {
+    "extends": "@asasinmode"
+  }
+}
