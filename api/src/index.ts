@@ -1,6 +1,4 @@
 import { used } from '@humbak/validation';
-import { asyncTest } from './asyncTest';
+import { env } from '@/env';
 
-console.log('local package', { used });
-
-console.log('top level await', await asyncTest());
+console.log({ used, env });

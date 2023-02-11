@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "rootDir": ".",
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,

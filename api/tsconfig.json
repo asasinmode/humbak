@@ -1,8 +1,12 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": "./src",
+    "rootDir": "src",
+    "baseUrl": ".",
     "lib": ["ESNext", "DOM"],
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   }
 }
