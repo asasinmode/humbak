@@ -1,10 +1,10 @@
 import { writeFileSync } from 'fs';
 import esbuild from 'esbuild';
-import packageDocument from './package.json' assert { type: 'json' };
+import { dependencies as originalDependencies, type } from './package.json' assert { type: 'json' };
 
 const internalDependenciesPatterns = [/@\/.*/, /@humbak\/.*/];
 
-const external = Object.keys(packageDocument.dependencies).filter(dependency =>
+const external = Object.keys(originalDependencies).filter(dependency =>
 	!internalDependenciesPatterns.some(pattern => pattern.test(dependency))
 );
 
@@ -17,13 +17,11 @@ await esbuild.build({
 	format: 'esm',
 });
 
-const { type } = packageDocument;
-
-const dependencies = Object.keys(packageDocument.dependencies)
+const dependencies = Object.keys(originalDependencies)
 	.filter(key => !/@humbak\/.*/.test(key))
 	.reduce((p, key) => ({
 		...p,
-		[key]: packageDocument.dependencies[key],
+		[key]: originalDependencies[key],
 	}), {});
 
 const content = {
