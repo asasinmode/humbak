@@ -7,6 +7,7 @@ config({
 
 const schema = z.object({
 	NODE_ENV: z.enum(['production', 'development']),
+	PORT: z.string().transform(Number),
 	DATABASE_URL: z.string(),
 });
 
