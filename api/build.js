@@ -14,6 +14,7 @@ await esbuild.build({
 	external,
 	platform: 'node',
 	outdir: 'dist',
+	format: 'esm',
 });
 
 const dependencies = Object.keys(packageDocument.dependencies)
@@ -25,6 +26,7 @@ const dependencies = Object.keys(packageDocument.dependencies)
 
 const content = {
 	main: 'index.js',
+	type: packageDocument.type,
 	scripts: {
 		start: 'node index.js',
 	},
