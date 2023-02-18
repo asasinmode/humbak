@@ -1,30 +1,53 @@
+function Write-Colored-Output {
+	param(
+		[parameter(Mandatory = $true)][string]$text,
+		[parameter(Mandatory = $true)][string]$color
+	)
+
+	$tempColor = [System.Console]::ForegroundColor
+	[System.Console]::ForegroundColor = $color
+	[System.Console]::Write($text)
+	[System.Console]::ForegroundColor = $tempColor
+}
+
 function New-Menu {
 	param(
 		[parameter(Mandatory = $true)][System.Collections.Generic.List[string]]$menuItems,
-		[string]$title = 'menu title'
+		[string]$title = 'menu title',
+		[switch]${No-Clear}
 	)
+	[System.Console]::CursorVisible = $false
+
+	Write-Colored-Output "`n$title`n`n" 'green'
 
 	$selectIndex = 0
 	$outChar = 'a'
+	$shouldAdjustCursor = $false
+	$initialCursorPosition = [System.Console]::CursorTop
+	$targetCursorPosition = [System.Console]::CursorTop
 
-	[System.Console]::CursorVisible = $false
-	[Console]::Clear()
+	if ($targetCursorPosition -eq $Host.UI.RawUI.WindowSize.Height - 1) {
+		$targetCursorPosition += 1
+	}
 
+	if (!($targetCursorPosition + $menuItems.Count -lt $Host.UI.RawUI.WindowSize.Height - 1)) {
+		$shouldAdjustCursor = $true
+	}
+	
 	while (([System.Int16]$inputChar.Key -ne [System.ConsoleKey]::Enter) -and ([System.Int16]$inputChar.Key -ne [System.ConsoleKey]::Escape)) {
-
-		[System.Console]::CursorTop = 0
-		$tempColor = [System.Console]::ForegroundColor
-		[System.Console]::ForegroundColor = 'green'
-		[System.Console]::WriteLine("$title`n")
-		[System.Console]::ForegroundColor = $tempColor
+		if ($targetCursorPosition -ne $Host.UI.RawUI.WindowSize.Height) {
+			[System.Console]::CursorTop = $targetCursorPosition
+		}
+		else {
+			$targetCursorPosition -= $menuItems.Count + 1
+			$shouldAdjustCursor = $false
+		}
 
 		for ($i = 0; $i -lt $menuItems.Count; $i++) {
 			[System.Console]::Write('[')
 
 			if ($selectIndex -eq $i) {
-				[System.Console]::ForegroundColor = 'cyan'
-				[System.Console]::Write('X')
-				[System.Console]::ForegroundColor = $tempColor
+				Write-Colored-Output 'X' 'cyan'
 			}
 			else {
 				[System.Console]::Write(' ')
@@ -53,6 +76,11 @@ function New-Menu {
 			}
 		}
 
+		if ($shouldAdjustCursor) {
+			$targetCursorPosition += $initialCursorPosition + $menuItems.Count - $Host.UI.RawUI.WindowSize.Height - 1
+			$shouldAdjustCursor = $false
+		}
+
 		$outChar = $inputChar
 	}
 
@@ -60,10 +88,19 @@ function New-Menu {
 		break
 	}
 
+	[System.Console]::CursorVisible = $true
 	return $menuItems[$selectIndex]
 }
 
-if (!$(Test-Path -Path .\.env)) {
+function Invoke-Build {
+	pnpm run build
+}
+
+function Publish-Project {
+	Write-Output 'deploying'
+}
+
+if (!(Test-Path -Path .\.env)) {
 	Write-Error '.env file not found'
 
 	break
@@ -86,14 +123,24 @@ Get-Content .\.env | ForEach-Object {
 $project = New-Menu @('api', 'admin', 'webpage') 'choose project'
 
 if ($project -ne 'api') {
-	$tempColor = [System.Console]::ForegroundColor
-	[System.Console]::ForegroundColor = 'red'
-	[System.Console]::WriteLine('option currently not supported')
-	[System.Console]::ForegroundColor = $tempColor
+	Write-Colored-Output 'option currently not supported' 'red'
 
 	break
 }
 
-$action = New-Menu @('build', 'deploy', 'build and deploy') $project
+$action = New-Menu @('build', 'deploy', 'build and deploy') 'choose action' -No-Clear
 
-Write-Output "doing action $action"
+Push-Location $project
+
+if ($action -eq 'build') {
+	Invoke-Build
+}
+elseif ($action -eq 'deploy') {
+	Publish-Project
+}
+else {
+	Invoke-Build
+	Publish-Project
+}
+
+Pop-Location
