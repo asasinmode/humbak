@@ -68,10 +68,49 @@ selectOption() {
 	return $selected
 }
 
+buildProject(){
+	printf "\n"
+	(
+		cd $project
+		npm run build
+	)
+}
+
+deployProject(){
+	printf "\n"
+	(
+		cd "$project/dist"
+
+		domainPrefix=$([ "$target" == "dev" ] && echo "dev." || echo "")
+		publicDirectory="/home/$SERVER_USER/domains/$domainPrefix$project.humbak.eu/public_html"
+
+			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
+source "/home/$SERVER_USER/nodevenv/domains/$domainPrefix$project.humbak.eu/public_html/18/bin/activate"
+cd $publicDirectory
+screen -S "${domainPrefix}${project}" -X quit
+exit
+ENDSSH
+			sftp "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -P $SSH_PORT << ENDFTP
+cd $publicDirectory
+put index.js index.js
+put package.json package.json
+quit
+ENDFTP
+			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
+source "/home/$SERVER_USER/nodevenv/domains/$domainPrefix$project.humbak.eu/public_html/18/bin/activate"
+cd $publicDirectory
+screen -S "${domainPrefix}${project}" -L -dm node index.js
+exit
+ENDSSH
+	)
+}
+
 if [ ! -f ./.env ]; then
 	printColored $red ".env not found"
 	exit
 fi
+
+# TODO: flag for installing dependencies
 
 printf "\n$green?$white choose project$NC"
 
@@ -86,6 +125,9 @@ if [ $projectChoice -ne 0 ]; then
 	exit
 fi
 
+# TODO: menu with dev/prod target
+target="dev"
+
 printf "$green?$white choose action$NC"
 
 actionOptions=("build" "deploy" "build and deploy")
@@ -94,9 +136,23 @@ selectOption "${actionOptions[@]}"
 actionChoice=$?
 action=${actionOptions[$actionChoice]}
 
-printf "doing $action"
-
 SERVER_IP=$(getEnv SERVER_IP)
+SERVER_USER=$(getEnv SERVER_USER)
 SSH_PORT=$(getEnv SSH_PORT)
 SSH_USER=$(getEnv SSH_USER)
 SSH_PASSWORD=$(getEnv SSH_PASSWORD)
+
+if [ $actionChoice -eq 0 ]; then
+	printf "building "
+	printColored $white $project
+	buildProject
+elif [ $actionChoice -eq 1 ]; then
+	printf "deploying "
+	printColored $white $project
+	deployProject
+else
+	printf "building and deploying "
+	printColored $white $project
+	buildProject
+	deployProject
+fi
