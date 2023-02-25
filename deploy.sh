@@ -5,6 +5,7 @@ NC="$ESC[0m"
 white="$ESC[1;37m"
 red="$ESC[0;31m"
 green="$ESC[0;32m"
+yellow="$ESC[0;33m"
 blue="$ESC[1;34m"
 
 getEnv(){
@@ -18,7 +19,6 @@ printColored(){
 }
 
 selectOption() {
-
 	cursor_blink_on()  { printf "$ESC[?25h"; }
 	cursor_blink_off() { printf "$ESC[?25l"; }
 	cursor_to()        { printf "$ESC[$1;${2:-1}H"; }
@@ -81,8 +81,9 @@ deployProject(){
 	(
 		cd "$project/dist"
 
-		domainPrefix=$([ "$target" == "dev" ] && echo "dev." || echo "")
-		publicDirectory="/home/$SERVER_USER/domains/$domainPrefix$project.humbak.eu/public_html"
+		local domainPrefix=$([ "$target" == "dev" ] && echo "dev." || echo "")
+		local publicDirectory="/home/$SERVER_USER/domains/$domainPrefix$project.humbak.eu/public_html"
+		local installCommand=$([ "$installDependencies" = true ] && echo "npm i" || echo "")
 
 			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
 source "/home/$SERVER_USER/nodevenv/domains/$domainPrefix$project.humbak.eu/public_html/18/bin/activate"
@@ -90,7 +91,7 @@ cd $publicDirectory
 screen -S "${domainPrefix}${project}" -X quit
 exit
 ENDSSH
-			sftp "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -P $SSH_PORT << ENDFTP
+			sftp -o PubkeyAuthentication=no -P $SSH_PORT "$SSH_USER@$SERVER_IP" << ENDFTP
 cd $publicDirectory
 put index.js index.js
 put package.json package.json
@@ -99,7 +100,8 @@ ENDFTP
 			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
 source "/home/$SERVER_USER/nodevenv/domains/$domainPrefix$project.humbak.eu/public_html/18/bin/activate"
 cd $publicDirectory
-screen -S "${domainPrefix}${project}" -L -dm node index.js
+$installCommand
+screen -S "${domainPrefix}${project}" -dm node index.js
 exit
 ENDSSH
 	)
@@ -110,7 +112,15 @@ if [ ! -f ./.env ]; then
 	exit
 fi
 
-# TODO: flag for installing dependencies
+for arg; do
+	if [[ $arg == "-i" ]]; then
+		installDependencies=true
+	fi
+done
+
+if [ "$installDependencies" = true ]; then
+	printf "! ${yellow}installing dependencies$NC !\n"
+fi
 
 printf "\n$green?$white choose project$NC"
 
