@@ -8,8 +8,10 @@
     "start:dev": "set NODE_ENV=development&& node dist/index.js",
     "build": "node build.js",
     "preview": "npm run build && npm run start",
+    "prisma:generate": "dotenv -e .env.dev -- pnpx prisma generate",
     "db:push": "dotenv -e .env.dev -- pnpx prisma db push",
-    "db:migrate": "pnpx prisma migrate deploy"
+    "db:migrate": "dotenv -e .env.dev -- pnpx prisma migrate dev",
+    "db:deploy": "pnpx prisma migrate deploy"
   },
   "dependencies": {
     "@humbak/validation": "workspace:*",

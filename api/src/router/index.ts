@@ -4,7 +4,7 @@ export const t = initTRPC.create();
 
 export const appRouter = t.router({
 	test: t.procedure.query(() => {
-		return 'hi';
+		return 'test';
 	}),
 });
 
