@@ -7,19 +7,24 @@
     "start": "node dist/index.js",
     "start:dev": "set NODE_ENV=development&& node dist/index.js",
     "build": "node build.js",
-    "preview": "npm run build && npm run start"
+    "preview": "npm run build && npm run start",
+    "db:push": "dotenv -e .env.dev -- pnpx prisma db push",
+    "db:migrate": "pnpx prisma migrate deploy"
   },
   "dependencies": {
     "@humbak/validation": "workspace:*",
+    "@prisma/client": "^4.11.0",
     "@trpc/server": "^10.11.0",
     "dotenv": "^16.0.3",
     "fastify": "^4.13.0",
+    "fastify-plugin": "^4.5.0",
     "zod": "^3.20.6"
   },
   "devDependencies": {
     "@types/node": "^18.13.0",
+    "dotenv-cli": "^7.0.0",
     "esbuild": "^0.17.6",
-    "prisma": "^4.10.1",
+    "prisma": "^4.11.0",
     "tsx": "^3.12.3",
     "typescript": "^4.9.5"
   }

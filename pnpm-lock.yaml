@@ -4,36 +4,42 @@ importers:
 
   .:
     specifiers:
-      '@asasinmode/eslint-config': ^0.3.4
+      '@asasinmode/eslint-config': ^0.3.6
       eslint: ^8.34.0
       typescript: ^4.9.5
     devDependencies:
-      '@asasinmode/eslint-config': 0.3.4_7kw3g6rralp5ps6mg3uyzz6azm
+      '@asasinmode/eslint-config': 0.3.6_7kw3g6rralp5ps6mg3uyzz6azm
       eslint: 8.34.0
       typescript: 4.9.5
 
   api:
     specifiers:
       '@humbak/validation': workspace:*
+      '@prisma/client': ^4.11.0
       '@trpc/server': ^10.11.0
       '@types/node': ^18.13.0
       dotenv: ^16.0.3
+      dotenv-cli: ^7.0.0
       esbuild: ^0.17.6
       fastify: ^4.13.0
-      prisma: ^4.10.1
+      fastify-plugin: ^4.5.0
+      prisma: ^4.11.0
       tsx: ^3.12.3
       typescript: ^4.9.5
       zod: ^3.20.6
     dependencies:
       '@humbak/validation': link:../packages/validation
+      '@prisma/client': 4.11.0_prisma@4.11.0
       '@trpc/server': 10.11.0
       dotenv: 16.0.3
       fastify: 4.13.0
+      fastify-plugin: 4.5.0
       zod: 3.20.6
     devDependencies:
       '@types/node': 18.13.0
+      dotenv-cli: 7.0.0
       esbuild: 0.17.6
-      prisma: 4.10.1
+      prisma: 4.11.0
       tsx: 3.12.3
       typescript: 4.9.5
 
@@ -45,8 +51,8 @@ importers:
 
 packages:
 
-  /@asasinmode/eslint-config-basic/0.3.4_62tsymtiqxebhmxuag4hg3gx2m:
-    resolution: {integrity: sha512-6MDHuj8wTSAAIMfKP0lttj/jyq8i4Yqe+M5H/WsthpjyiY97gcnUtp0KvYsD1sVy5rNpWRaX5hLkSyIJ89iE+g==}
+  /@asasinmode/eslint-config-basic/0.3.6_62tsymtiqxebhmxuag4hg3gx2m:
+    resolution: {integrity: sha512-NVIT2Q9KS9Id37Y7X92q6TQM5RFZnon/0Vf3Aq1KR1IOf5OEU0/R/zpnLzJlZgMwMS8BLz2y7l1Un/ZwqfGtYQ==}
     peerDependencies:
       eslint: '>=8.30.0'
     dependencies:
@@ -68,13 +74,13 @@ packages:
       - supports-color
     dev: true
 
-  /@asasinmode/eslint-config-ts/0.3.4_7kw3g6rralp5ps6mg3uyzz6azm:
-    resolution: {integrity: sha512-H97D9wxr1uhqIilyXrHxbuVC62xC3WvEeaH9Al/l66u2c+pWdDkNMQ0vuPKnKNYtBhITlN5bePdkzYCW10jGqw==}
+  /@asasinmode/eslint-config-ts/0.3.6_7kw3g6rralp5ps6mg3uyzz6azm:
+    resolution: {integrity: sha512-EDMCd0aOcBomaVQMrCl+KZScQKCXpHDaW2ypRfd9j70aTf4l/QSGbmyQW5xr0ul4ZioY47nJKeTSIXTIhE+eXw==}
     peerDependencies:
       eslint: '>=8.30.0'
       typescript: '>=4.9.0'
     dependencies:
-      '@asasinmode/eslint-config-basic': 0.3.4_62tsymtiqxebhmxuag4hg3gx2m
+      '@asasinmode/eslint-config-basic': 0.3.6_62tsymtiqxebhmxuag4hg3gx2m
       '@typescript-eslint/eslint-plugin': 5.51.0_z4swst3wuuqk4hlme4ajzslgh4
       '@typescript-eslint/parser': 5.51.0_7kw3g6rralp5ps6mg3uyzz6azm
       eslint: 8.34.0
@@ -85,13 +91,13 @@ packages:
       - supports-color
     dev: true
 
-  /@asasinmode/eslint-config-vue/0.3.4_z4swst3wuuqk4hlme4ajzslgh4:
-    resolution: {integrity: sha512-ztyqjS3WHRhy35IiD87V0KPfJD9mPGhUr5YbMHQnpEVSk9ZEdD75fhfdNdnuDsUTieV/st+mc+P7kJjVHZJYzg==}
+  /@asasinmode/eslint-config-vue/0.3.6_z4swst3wuuqk4hlme4ajzslgh4:
+    resolution: {integrity: sha512-lY0JBszfVCEzooSDCgfyh+0IyXX5YjL7QW74iNrWXW11jPqBkiHYoYFC0Lr0JF1QCiOXbofLOp46vljT8Wo6CQ==}
     peerDependencies:
       eslint: '>=8.30.0'
     dependencies:
-      '@asasinmode/eslint-config-basic': 0.3.4_62tsymtiqxebhmxuag4hg3gx2m
-      '@asasinmode/eslint-config-ts': 0.3.4_7kw3g6rralp5ps6mg3uyzz6azm
+      '@asasinmode/eslint-config-basic': 0.3.6_62tsymtiqxebhmxuag4hg3gx2m
+      '@asasinmode/eslint-config-ts': 0.3.6_7kw3g6rralp5ps6mg3uyzz6azm
       eslint: 8.34.0
       eslint-plugin-vue: 9.9.0_eslint@8.34.0
       local-pkg: 0.4.3
@@ -103,12 +109,12 @@ packages:
       - typescript
     dev: true
 
-  /@asasinmode/eslint-config/0.3.4_7kw3g6rralp5ps6mg3uyzz6azm:
-    resolution: {integrity: sha512-kZ9VCk4tJTRvhltAeGLDLctxF9oWjnXNR43wAmke8mNEYoEdsT8SXYuHew/hUmUrD0sqq3YrGWxU0Pi6GrO1GA==}
+  /@asasinmode/eslint-config/0.3.6_7kw3g6rralp5ps6mg3uyzz6azm:
+    resolution: {integrity: sha512-qKZ8NBuImdX9IvsQBzlaYTIdGpWOBccP6V5jSXB8r+gcmtCchy4d3BxcHNLb9+K/XhElF//LWDtF3OaiDoNGGg==}
     peerDependencies:
       eslint: '>=8.30.0'
     dependencies:
-      '@asasinmode/eslint-config-vue': 0.3.4_z4swst3wuuqk4hlme4ajzslgh4
+      '@asasinmode/eslint-config-vue': 0.3.6_z4swst3wuuqk4hlme4ajzslgh4
       '@typescript-eslint/eslint-plugin': 5.51.0_z4swst3wuuqk4hlme4ajzslgh4
       '@typescript-eslint/parser': 5.51.0_7kw3g6rralp5ps6mg3uyzz6azm
       eslint: 8.34.0
@@ -477,10 +483,27 @@ packages:
       fastq: 1.15.0
     dev: true
 
-  /@prisma/engines/4.10.1:
-    resolution: {integrity: sha512-B3tcTxjx196nuAu1GOTKO9cGPUgTFHYRdkPkTS4m5ptb2cejyBlH9X7GOfSt3xlI7p4zAJDshJP4JJivCg9ouA==}
+  /@prisma/client/4.11.0_prisma@4.11.0:
+    resolution: {integrity: sha512-0INHYkQIqgAjrt7NzhYpeDQi8x3Nvylc2uDngKyFDDj1tTRQ4uV1HnVmd1sQEraeVAN63SOK0dgCKQHlvjL0KA==}
+    engines: {node: '>=14.17'}
     requiresBuild: true
-    dev: true
+    peerDependencies:
+      prisma: '*'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+    dependencies:
+      '@prisma/engines-version': 4.11.0-57.8fde8fef4033376662cad983758335009d522acb
+      prisma: 4.11.0
+    dev: false
+
+  /@prisma/engines-version/4.11.0-57.8fde8fef4033376662cad983758335009d522acb:
+    resolution: {integrity: sha512-3Vd8Qq06d5xD8Ch5WauWcUUrsVPdMC6Ge8ILji8RFfyhUpqon6qSyGM0apvr1O8n8qH8cKkEFqRPsYjuz5r83g==}
+    dev: false
+
+  /@prisma/engines/4.11.0:
+    resolution: {integrity: sha512-0AEBi2HXGV02cf6ASsBPhfsVIbVSDC9nbQed4iiY5eHttW9ZtMxHThuKZE1pnESbr8HRdgmFSa/Kn4OSNYuibg==}
+    requiresBuild: true
 
   /@trpc/server/10.11.0:
     resolution: {integrity: sha512-alV96Bjpa3bPgF+LZkJeQtrUJP/BM5EVpsB8S755RA3xtbudMw/lvLJFep8L/xTRw1HFZ7r4uRD31dKLOrMpaA==}
@@ -1011,10 +1034,24 @@ packages:
       domhandler: 5.0.3
     dev: true
 
+  /dotenv-cli/7.0.0:
+    resolution: {integrity: sha512-XfMzVdpdDTRnlcgvFLg3lSyiLXqFxS4tH7RbK5IxkC4XIUuxPyrGoDufkfLjy/dA28EILzEu+mros6h8aQmyGg==}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+      dotenv: 16.0.3
+      dotenv-expand: 10.0.0
+      minimist: 1.2.8
+    dev: true
+
+  /dotenv-expand/10.0.0:
+    resolution: {integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==}
+    engines: {node: '>=12'}
+    dev: true
+
   /dotenv/16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
     engines: {node: '>=12'}
-    dev: false
 
   /entities/4.4.0:
     resolution: {integrity: sha512-oYp7156SP8LkeGD0GF85ad1X9Ai79WtRsZ2gxJqtBuzH+98YUV6jkHEKlZkMbcrjJjIVJNIDP/3WL9wQkoPbWA==}
@@ -1735,6 +1772,10 @@ packages:
 
   /fast-uri/2.2.0:
     resolution: {integrity: sha512-cIusKBIt/R/oI6z/1nyfe2FvGKVTohVRfvkOhvx0nCEW+xf5NoCXjAHcWp93uOUBchzYcsvPlrapAdX1uW+YGg==}
+    dev: false
+
+  /fastify-plugin/4.5.0:
+    resolution: {integrity: sha512-79ak0JxddO0utAXAQ5ccKhvs6vX2MGyHHMMsmZkBANrq3hXc1CHzvNPHOcvTsVMEPl5I+NT+RO4YKMGehOfSIg==}
     dev: false
 
   /fastify/4.13.0:
@@ -2580,14 +2621,13 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prisma/4.10.1:
-    resolution: {integrity: sha512-0jDxgg+DruB1kHVNlcspXQB9au62IFfVg9drkhzXudszHNUAQn0lVuu+T8np0uC2z1nKD5S3qPeCyR8u5YFLnA==}
+  /prisma/4.11.0:
+    resolution: {integrity: sha512-4zZmBXssPUEiX+GeL0MUq/Yyie4ltiKmGu7jCJFnYMamNrrulTBc+D+QwAQSJ01tyzeGHlD13kOnqPwRipnlNw==}
     engines: {node: '>=14.17'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@prisma/engines': 4.10.1
-    dev: true
+      '@prisma/engines': 4.11.0
 
   /process-warning/2.1.0:
     resolution: {integrity: sha512-9C20RLxrZU/rFnxWncDkuF6O999NdIf3E1ws4B0ZeY3sRVPzWBMsYDE2lxjxhiXxg464cQTgKUGm8/i6y2YGXg==}
