@@ -11,6 +11,7 @@
     "prisma:generate": "dotenv -e .env.dev -- pnpx prisma generate",
     "db:push": "dotenv -e .env.dev -- pnpx prisma db push",
     "db:migrate": "dotenv -e .env.dev -- pnpx prisma migrate dev",
+    "db:format": "dotenv -e .env.dev -- pnpx prisma format",
     "db:deploy": "pnpx prisma migrate deploy"
   },
   "dependencies": {
