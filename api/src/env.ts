@@ -9,7 +9,6 @@ const schema = z.object({
 	NODE_ENV: z.enum(['production', 'development']),
 	PORT: z.string().transform(Number),
 	DATABASE_URL: z.string(),
-	SHADOW_DATABASE_URL: z.string().optional(),
 }).refine((input) => {
 	if (input.NODE_ENV === 'development' && !input.SHADOW_DATABASE_URL) {
 		return false;
