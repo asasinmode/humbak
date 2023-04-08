@@ -6,8 +6,8 @@
   "author": "asasinmode <skin9470@gmail.com> (https://github.com/asasinmode/)",
   "license": "MIT",
   "devDependencies": {
-    "@asasinmode/eslint-config": "^0.4.0",
-    "eslint": "^8.37.0",
+    "@asasinmode/eslint-config": "^0.4.1",
+    "eslint": "^8.38.0",
     "typescript": "^5.0.4"
   },
   "eslintConfig": {
