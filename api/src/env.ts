@@ -2,19 +2,16 @@ import { config } from 'dotenv';
 import { z } from 'zod';
 
 config({
-	path: process.env.NODE_ENV === 'development' ? '.env.dev' : '.env',
+	path: process.env.NODE_ENV === 'production' ? '.env' : '.env.dev',
 });
 
 const schema = z.object({
 	NODE_ENV: z.enum(['production', 'development']),
 	PORT: z.string().transform(Number),
-	DATABASE_URL: z.string(),
-}).refine((input) => {
-	if (input.NODE_ENV === 'development' && !input.SHADOW_DATABASE_URL) {
-		return false;
-	}
-
-	return true;
+	DATABASE_HOST: z.string(),
+	DATABASE_USER: z.string(),
+	DATABASE_PASSWORD: z.string(),
+	DATABASE_DATABASE: z.string(),
 });
 
 const parseResults = schema.safeParse(process.env);

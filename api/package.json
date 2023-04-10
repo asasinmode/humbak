@@ -18,13 +18,16 @@
     "@humbak/validation": "workspace:*",
     "@trpc/server": "^10.19.1",
     "dotenv": "^16.0.3",
+    "drizzle-orm": "^0.23.9",
     "fastify": "^4.15.0",
     "fastify-plugin": "^4.5.0",
+    "mysql2": "^3.2.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/node": "^18.15.1",
     "dotenv-cli": "^7.2.1",
+    "drizzle-kit": "^0.17.4",
     "esbuild": "^0.17.15",
     "tsx": "^3.12.6",
     "typescript": "^5.0.4"

@@ -7,14 +7,14 @@ import { env } from '~/env';
 const server = fastify();
 
 server.get('/', (req, res) => {
-	res.send('hi');
+	return res.send('hi');
 });
 
-server.register(fastifyTRPCPlugin, {
+await server.register(fastifyTRPCPlugin, {
 	prefix: '/',
 	trpcOptions: { router: appRouter, createContext },
 });
 
-server.listen({ port: env.PORT }).then(() => {
-	console.log(`server listening on \x1B[36m http://localhost:${env.PORT}/ \x1B[0m`);
-});
+await server.listen({ port: env.PORT });
+
+console.log(`server listening on\x1B[36m http://localhost:${env.PORT}/ \x1B[0m`);
