@@ -1,6 +1,5 @@
 import { drizzle } from 'drizzle-orm/mysql2';
 import mysql from 'mysql2/promise';
-import { users } from './schema/users';
 import { env } from '~/env';
 
 const poolConnection = mysql.createPool({
@@ -11,7 +10,3 @@ const poolConnection = mysql.createPool({
 });
 
 export const db = drizzle(poolConnection);
-
-const temp = await db.select().from(users);
-
-console.log(temp);

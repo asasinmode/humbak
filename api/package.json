@@ -8,11 +8,10 @@
     "start:dev": "set NODE_ENV=development&& node dist/index.js",
     "build": "node build.js",
     "preview": "npm run build && npm run start",
-    "prisma:generate": "dotenv -e .env.dev -- pnpx prisma generate",
-    "db:push": "dotenv -e .env.dev -- pnpx prisma db push",
-    "db:migrate": "dotenv -e .env.dev -- pnpx prisma migrate dev",
-    "db:format": "dotenv -e .env.dev -- pnpx prisma format",
-    "db:deploy": "pnpx prisma migrate deploy"
+    "db:generate-migrations": "drizzle-kit generate:mysql --schema ./src/db/schema --out ./src/db/migrations",
+    "db:drop-migration": "drizzle-kit drop --out ./src/db/migrations",
+    "db:migrate": "tsx ./src/db/migrate.ts",
+    "db:migrate:prod": "set NODE_ENV=production&& tsx ./src/db/migrate.ts"
   },
   "dependencies": {
     "@humbak/validation": "workspace:*",
