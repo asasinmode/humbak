@@ -5,12 +5,16 @@
   "description": "Humbak monorepo",
   "author": "asasinmode <skin9470@gmail.com> (https://github.com/asasinmode/)",
   "license": "MIT",
+  "scripts": {
+    "lint": "eslint ."
+  },
   "devDependencies": {
-    "@asasinmode/eslint-config": "^0.4.1",
-    "eslint": "^8.38.0",
+    "@asasinmode/eslint-config": "^0.4.5",
+    "eslint": "^8.39.0",
     "typescript": "^5.0.4"
   },
   "eslintConfig": {
-    "extends": "@asasinmode"
+    "extends": "@asasinmode",
+    "root": true
   }
 }
