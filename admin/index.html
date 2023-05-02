@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="icon" href="/favicon.webp" type="image/svg+xml">
+	<title>admin</title>
+	<script>
+		const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+		const setting = localStorage.getItem('color-schema') || 'auto';
+
+		if (setting === 'dark' || (prefersDark && setting !== 'light')) {
+			document.documentElement.classList.toggle('dark', true);
+		}
+	</script>
+</head>
+<body class="w-full min-h-100vh text-hex-121212 dark:text-white dark:bg-hex-121212 font-sans">
+	<script type="module" src="/src/main.ts"></script>
+</body>
+</html>

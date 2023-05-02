@@ -1,0 +1,104 @@
+<script setup lang="ts">
+const props = withDefaults(defineProps<{
+	size?: number;
+}>(), { size: 2 });
+
+function toggleTheme() {
+	const value = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+
+	localStorage.setItem('color-schema', value);
+	document.documentElement.classList.toggle('dark');
+}
+
+const style = computed(() => `--size: ${props.size}rem`);
+</script>
+
+<template>
+	<button
+		title="theme toggle" aria-live="polite"
+		class="themeToggle" :style="style"
+		@click="toggleTheme"
+	>
+		<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24">
+			<circle class="sun" cx="12" cy="12" r="6" mask="url(#moonMask)" />
+			<g class="sunBeams" stroke="currentColor">
+				<line x1="12" y1="1" x2="12" y2="3" />
+				<line x1="12" y1="21" x2="12" y2="23" />
+				<line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+				<line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+				<line x1="1" y1="12" x2="3" y2="12" />
+				<line x1="21" y1="12" x2="23" y2="12" />
+				<line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+				<line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+			</g>
+			<mask id="moonMask" class="moon">
+				<rect x="0" y="0" width="100%" height="100%" fill="white" />
+				<circle cx="24" cy="10" r="6" fill="black" />
+			</mask>
+		</svg>
+	</button>
+</template>
+
+<style>
+.themeToggle{
+	--size: 2rem;
+	--duration: 300ms;
+	--ease: cubic-bezier(.25, 0, .3, 1);
+	--ease-out: cubic-bezier(0, 0, 0, 1);
+	--ease-elastic-1: cubic-bezier(.5, 1.25, .75, 1.25);
+	--ease-elastic-2: cubic-bezier(.5, 1.5, .75, 1.25);
+
+	touch-action: manipulation;
+	inline-size: var(--size);
+	block-size: var(--size);
+	aspect-ratio: 1;
+	border-radius: 50%;
+	opacity: 0.75;
+}
+.themeToggle svg {
+	inline-size: 100%;
+	block-size: 100%;
+	stroke-linecap: round;
+}
+.themeToggle :is(.moon, .sun, .sunBeams) {
+	transform-origin: center center;
+}
+.themeToggle :is(.moon, .sun){
+	fill: currentColor;
+}
+.themeToggle .sunBeams {
+	stroke: currentColor;
+	stroke-width: 2px;
+	transition:
+		transform var(--duration) var(--ease-elastic-2),
+		opacity var(--duration) var(--ease);
+}
+.themeToggle .sun{
+	transition: transform var(--duration) var(--ease-elastic-1);
+}
+.themeToggle .moon {
+	transition-timing-function: linear;
+}
+
+.dark .themeToggle .sun{
+	transform: scale(1.75);
+	transition-timing-function: var(--ease);
+	transition-duration: calc(var(--duration) / 2);
+}
+.dark .themeToggle .sunBeams {
+	opacity: 0;
+	transform: rotateZ(-25deg);
+	transition-duration: 100ms;
+}
+.dark .themeToggle .moon circle{
+	transform: translateX(-7px);
+	transition: transform calc(var(--duration) / 2) var(--ease-out);
+	transition-delay: calc(var(--duration) / 2);
+	transition-duration: var(--duration);
+}
+
+.themeToggle:is(:hover, :focus-visible){
+	outline: none;
+	opacity: 1;
+}
+</style>

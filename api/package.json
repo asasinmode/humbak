@@ -19,21 +19,21 @@
   },
   "dependencies": {
     "@humbak/validation": "workspace:*",
-    "@trpc/server": "^10.21.1",
+    "@trpc/server": "^10.23.0",
     "dotenv": "^16.0.3",
-    "drizzle-orm": "^0.25.3",
-    "fastify": "^4.16.3",
+    "drizzle-orm": "^0.25.4",
+    "fastify": "^4.17.0",
     "fastify-plugin": "^4.5.0",
     "mysql2": "^3.2.4",
     "zod": "^3.21.4"
   },
   "devDependencies": {
     "@clack/prompts": "^0.6.3",
-    "@types/node": "^18.16.1",
+    "@types/node": "^18.16.3",
     "dotenv-cli": "^7.2.1",
     "drizzle-kit": "^0.17.6",
     "esbuild": "^0.17.18",
-    "tsx": "^3.12.6",
+    "tsx": "^3.12.7",
     "typescript": "^5.0.4"
   }
 }

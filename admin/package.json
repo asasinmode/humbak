@@ -1,0 +1,34 @@
+{
+  "name": "admin",
+  "private": true,
+  "packageManager": "pnpm@8.2.0",
+  "description": "Vue 3 starter for new projects",
+  "author": "asasinmode",
+  "license": "MIT",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --open",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "pinia": "^2.0.35",
+    "vue": "^3.2.47",
+    "vue-router": "^4.1.6"
+  },
+  "devDependencies": {
+    "@unocss/eslint-config": "^0.51.8",
+    "@unocss/reset": "^0.51.8",
+    "@vitejs/plugin-vue": "^4.2.1",
+    "typescript": "^5.0.4",
+    "unocss": "^0.51.8",
+    "unplugin-auto-import": "^0.15.3",
+    "unplugin-vue-components": "^0.24.1",
+    "vite": "^4.3.4"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@unocss"
+    ]
+  }
+}
