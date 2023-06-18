@@ -15,7 +15,7 @@ const style = computed(() => `--size: ${props.size}rem`);
 
 <template>
 	<button
-		title="theme toggle" aria-live="polite"
+		title="zmiana koloru" aria-live="polite"
 		class="themeToggle" :style="style"
 		@click="toggleTheme"
 	>
@@ -42,7 +42,7 @@ const style = computed(() => `--size: ${props.size}rem`);
 <style>
 .themeToggle{
 	--size: 2rem;
-	--duration: 300ms;
+	--duration: 200ms;
 	--ease: cubic-bezier(.25, 0, .3, 1);
 	--ease-out: cubic-bezier(0, 0, 0, 1);
 	--ease-elastic-1: cubic-bezier(.5, 1.25, .75, 1.25);
@@ -98,7 +98,6 @@ const style = computed(() => `--size: ${props.size}rem`);
 }
 
 .themeToggle:is(:hover, :focus-visible){
-	outline: none;
 	opacity: 1;
 }
 </style>

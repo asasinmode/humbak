@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import LayoutDefault from '~/layouts/LayoutDefault.vue';
+import Default from '~/layouts/Default.vue';
 </script>
 
 <template>
-	<component :is="$route.meta.layout ?? LayoutDefault">
+	<component :is="$route.meta.layout ?? Default">
 		<slot />
 	</component>
 </template>

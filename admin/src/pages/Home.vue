@@ -2,7 +2,7 @@
 </script>
 
 <template>
-	<main flex-center>
+	<main class="flex-center">
 		<button
 			class="dark:hoverable:(bg-white text-hex-121212) hoverable:(bg-hex-121212 text-white)"
 		>

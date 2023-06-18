@@ -13,8 +13,19 @@
 			document.documentElement.classList.toggle('dark', true);
 		}
 	</script>
+	<style>
+		body {
+			background-color: #e0e7ff;
+			color-scheme: light;
+		}
+		.dark body {
+			background-color: #1e1b4b;
+			color: white;
+			color-scheme: dark;
+		}
+	</style>
 </head>
-<body class="w-full min-h-100vh text-hex-121212 dark:text-white dark:bg-hex-121212 font-sans">
+<body class="font-sans">
 	<script type="module" src="/src/main.ts"></script>
 </body>
 </html>
