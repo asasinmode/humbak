@@ -6,7 +6,7 @@ const props = withDefaults(defineProps<{
 function toggleTheme() {
 	const value = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
 
-	localStorage.setItem('color-schema', value);
+	localStorage.setItem('color-scheme', value);
 	document.documentElement.classList.toggle('dark');
 }
 
@@ -16,12 +16,12 @@ const style = computed(() => `--size: ${props.size}rem`);
 <template>
 	<button
 		title="zmiana koloru" aria-live="polite"
-		class="themeToggle" :style="style"
+		class="themeToggle text-slate-800 dark:text-slate-200" :style="style"
 		@click="toggleTheme"
 	>
 		<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24">
-			<circle class="sun" cx="12" cy="12" r="6" mask="url(#moonMask)" />
-			<g class="sunBeams" stroke="currentColor">
+			<circle class="sun" cx="12" cy="12" r="6" mask="url(#moonMask)" fill="currentColor" />
+			<g class="sunBeams" stroke="currentColor" stroke-width="2" stroke-linecap="round">
 				<line x1="12" y1="1" x2="12" y2="3" />
 				<line x1="12" y1="21" x2="12" y2="23" />
 				<line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
@@ -58,17 +58,11 @@ const style = computed(() => `--size: ${props.size}rem`);
 .themeToggle svg {
 	inline-size: 100%;
 	block-size: 100%;
-	stroke-linecap: round;
 }
 .themeToggle :is(.moon, .sun, .sunBeams) {
 	transform-origin: center center;
 }
-.themeToggle :is(.moon, .sun){
-	fill: currentColor;
-}
 .themeToggle .sunBeams {
-	stroke: currentColor;
-	stroke-width: 2px;
 	transition:
 		transform var(--duration) var(--ease-elastic-2),
 		opacity var(--duration) var(--ease);
