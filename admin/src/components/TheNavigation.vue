@@ -25,24 +25,24 @@ function onMenuToggle(isOpen: boolean) {
 		class="absolute z-11 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 overflow-auto bg-indigo-100 py-2 transition-transform dark:bg-indigo-950"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
-		<RouterLink to="/" class="col-span-2 w-fit px-3 py-1 text-5 neon-button-cyan">
+		<RouterLink to="/" class="col-span-2 w-fit px-3 py-1 text-5 neon-button-cyan" @click="onMenuToggle(false)">
 			strony
 		</RouterLink>
-		<RouterLink to="/pliki" class="col-span-2 w-fit px-3 py-1 text-5 neon-button-green">
+		<RouterLink to="/pliki" class="col-span-2 w-fit px-3 py-1 text-5 neon-button-green" @click="onMenuToggle(false)">
 			pliki
 		</RouterLink>
-		<RouterLink to="/css" class="col-span-2 w-fit px-3 py-1 text-5 neon-button-rose">
+		<RouterLink to="/css" class="col-span-2 w-fit px-3 py-1 text-5 neon-button-rose" @click="onMenuToggle(false)">
 			css
 		</RouterLink>
-		<RouterLink to="/slider" class="col-span-2 w-fit px-3 py-1 text-5 neon-button-orange">
+		<RouterLink to="/slider" class="col-span-2 w-fit px-3 py-1 text-5 neon-button-orange" @click="onMenuToggle(false)">
 			slider
 		</RouterLink>
-		<RouterLink to="/stopka" class="col-span-2 w-fit px-3 py-1 text-5 neon-button-teal">
+		<RouterLink to="/stopka" class="col-span-2 w-fit px-3 py-1 text-5 neon-button-teal" @click="onMenuToggle(false)">
 			stopka
 		</RouterLink>
 
 		<TheThemeToggle class="mt-3 justify-self-end" />
-		<TheSettings class="mt-3 justify-self-start" />
+		<TheSettings class="mt-3 justify-self-start" @click="onMenuToggle(false)" />
 	</nav>
 </template>
 
