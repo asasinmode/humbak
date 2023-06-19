@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const isExpanded = ref(false);
+const isExpanded = ref(true);
 
 function onMenuToggle(isOpen: boolean) {
 	isExpanded.value = isOpen;
@@ -25,7 +25,7 @@ function onMenuToggle(isOpen: boolean) {
 		class="absolute z-11 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 overflow-auto bg-indigo-100 py-2 transition-transform dark:bg-indigo-950"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
-		<RouterLink to="/strony" class="col-span-2 w-fit px-3 py-1 text-5 neon-button-cyan">
+		<RouterLink to="/" class="col-span-2 w-fit px-3 py-1 text-5 neon-button-cyan">
 			strony
 		</RouterLink>
 		<RouterLink to="/pliki" class="col-span-2 w-fit px-3 py-1 text-5 neon-button-green">

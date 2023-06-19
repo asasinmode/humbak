@@ -3,6 +3,6 @@
 
 <template>
 	<main class="flex-center">
-		strony
+		pliki
 	</main>
 </template>
