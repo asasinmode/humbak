@@ -6,7 +6,7 @@ const count = ref(0);
 	<RouterLink
 		title="ustawienia"
 		to="/ustawienia"
-		class="rounded-1/2 text-slate-800 transition-transform dark:text-slate-200 text-link"
+		class="rounded-1/2 transition-transform text-link"
 		:style="{ transform: `rotate(${count * 180}deg)` }"
 		@click="count++"
 	>

@@ -4,7 +4,7 @@ import Files from '~/pages/Files.vue';
 import Css from '~/pages/Css.vue';
 import Slider from '~/pages/Slider.vue';
 import Footer from '~/pages/Footer.vue';
-import Settings from '~/pages/Footer.vue';
+import Settings from '~/pages/Settings.vue';
 import Error from '~/pages/Error.vue';
 import Navigationless from '~/layouts/Navigationless.vue';
 

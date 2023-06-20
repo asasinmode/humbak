@@ -1,8 +1,73 @@
 <script setup lang="ts">
-const isExpanded = ref(true);
+import type { ComponentPublicInstance } from 'vue';
+import TheThemeToggle from '~/components/TheThemeToggle.vue';
 
-function onMenuToggle(isOpen: boolean) {
+const isExpanded = ref(false);
+const firstFocusableNavElement = ref<ComponentPublicInstance | null>(null);
+const secondToLastFocusableNavElement = ref<InstanceType<typeof TheThemeToggle> | null>(null);
+
+function toggleMenu(isOpen: boolean) {
 	isExpanded.value = isOpen;
+}
+
+function onToggleButtonFocusIn(event: FocusEvent) {
+	if (window.innerWidth < 768) {
+		return;
+	}
+
+	if (event.relatedTarget === firstFocusableNavElement.value?.$el) {
+		isExpanded.value = false;
+
+		return;
+	}
+
+	if (event.relatedTarget !== null && event.relatedTarget !== document.documentElement) {
+		return;
+	}
+
+	isExpanded.value = true;
+}
+
+function onToggleButtonFocusOut(event: FocusEvent) {
+	if (window.innerWidth < 768) {
+		return;
+	}
+
+	if (event.relatedTarget === firstFocusableNavElement.value?.$el) {
+		isExpanded.value = true;
+
+		return;
+	}
+
+	if (event.relatedTarget !== null && event.relatedTarget !== document.documentElement) {
+		return;
+	}
+
+	isExpanded.value = false;
+}
+
+function onLastElementFocusIn(event: FocusEvent) {
+	if (window.innerWidth < 768) {
+		return;
+	}
+
+	if (event.relatedTarget === secondToLastFocusableNavElement.value?.buttonElement) {
+		return;
+	}
+
+	isExpanded.value = true;
+}
+
+function onLastElementFocusOut(event: FocusEvent) {
+	if (window.innerWidth < 768) {
+		return;
+	}
+
+	if (event.relatedTarget === secondToLastFocusableNavElement.value?.buttonElement) {
+		return;
+	}
+
+	isExpanded.value = false;
 }
 </script>
 
@@ -16,7 +81,9 @@ function onMenuToggle(isOpen: boolean) {
 				? 'bg-opacity-40 top-0 right-0 w-screen h-screen p-5 is-expanded'
 				: 'bg-opacity-0 top-3 right-3 w-12 h-12 p-2',
 		]"
-		@click="onMenuToggle(!isExpanded)"
+		@click="toggleMenu(!isExpanded)"
+		@focusin="onToggleButtonFocusIn"
+		@focusout="onToggleButtonFocusOut"
 	>
 		<div class="i-fa6-solid-bars h-8 w-8" />
 	</button>
@@ -25,24 +92,52 @@ function onMenuToggle(isOpen: boolean) {
 		class="absolute z-11 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 overflow-auto bg-inherit py-2 transition-transform"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
-		<RouterLink to="/" class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-cyan" @click="onMenuToggle(false)">
+		<RouterLink
+			ref="firstFocusableNavElement"
+			to="/" class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-cyan"
+			@click="toggleMenu(false)"
+		>
 			strony
 		</RouterLink>
-		<RouterLink to="/pliki" class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-green" @click="onMenuToggle(false)">
+		<RouterLink
+			to="/pliki"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-orange"
+			@click="toggleMenu(false)"
+		>
 			pliki
 		</RouterLink>
-		<RouterLink to="/css" class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-rose" @click="onMenuToggle(false)">
+		<RouterLink
+			to="/css"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-rose"
+			@click="toggleMenu(false)"
+		>
 			css
 		</RouterLink>
-		<RouterLink to="/slider" class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-orange" @click="onMenuToggle(false)">
+		<RouterLink
+			to="/slider"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-green"
+			@click="toggleMenu(false)"
+		>
 			slider
 		</RouterLink>
-		<RouterLink to="/stopka" class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-teal" @click="onMenuToggle(false)">
+		<RouterLink
+			to="/stopka"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-yellow"
+			@click="toggleMenu(false)"
+		>
 			stopka
 		</RouterLink>
 
-		<TheThemeToggle class="mt-2 justify-self-end filter-drop-shadow filter-drop-shadow-color-black/20" />
-		<TheSettings class="mt-2 justify-self-start filter-drop-shadow filter-drop-shadow-color-black/20" @click="onMenuToggle(false)" />
+		<TheThemeToggle
+			ref="secondToLastFocusableNavElement"
+			class="mt-2 justify-self-end filter-drop-shadow filter-drop-shadow-color-black/20"
+		/>
+		<TheSettings
+			class="mt-2 justify-self-start filter-drop-shadow filter-drop-shadow-color-black/20"
+			@click="toggleMenu(false)"
+			@focusin="onLastElementFocusIn"
+			@focusout="onLastElementFocusOut"
+		/>
 	</nav>
 </template>
 

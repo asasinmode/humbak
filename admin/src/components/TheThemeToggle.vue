@@ -3,6 +3,8 @@ const props = withDefaults(defineProps<{
 	size?: number;
 }>(), { size: 2 });
 
+const buttonElement = ref<HTMLButtonElement | null>(null);
+
 function toggleTheme() {
 	const value = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
 
@@ -11,12 +13,17 @@ function toggleTheme() {
 }
 
 const style = computed(() => `--size: ${props.size}rem`);
+
+defineExpose({
+	buttonElement,
+});
 </script>
 
 <template>
 	<button
+		ref="buttonElement"
 		title="zmiana koloru" aria-live="polite"
-		class="themeToggle text-slate-800 dark:text-slate-200" :style="style"
+		class="themeToggle" :style="style"
 		@click="toggleTheme"
 	>
 		<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24">
