@@ -11,10 +11,6 @@ function toggleMenu(isOpen: boolean) {
 }
 
 function onToggleButtonFocusIn(event: FocusEvent) {
-	if (window.innerWidth < 768) {
-		return;
-	}
-
 	if (event.relatedTarget === firstFocusableNavElement.value?.$el) {
 		isExpanded.value = false;
 
@@ -29,10 +25,6 @@ function onToggleButtonFocusIn(event: FocusEvent) {
 }
 
 function onToggleButtonFocusOut(event: FocusEvent) {
-	if (window.innerWidth < 768) {
-		return;
-	}
-
 	if (event.relatedTarget === firstFocusableNavElement.value?.$el) {
 		isExpanded.value = true;
 
@@ -47,7 +39,7 @@ function onToggleButtonFocusOut(event: FocusEvent) {
 }
 
 function onLastElementFocusIn(event: FocusEvent) {
-	if (window.innerWidth < 768) {
+	if (window.innerWidth >= 768) {
 		return;
 	}
 
@@ -59,7 +51,7 @@ function onLastElementFocusIn(event: FocusEvent) {
 }
 
 function onLastElementFocusOut(event: FocusEvent) {
-	if (window.innerWidth < 768) {
+	if (window.innerWidth >= 768) {
 		return;
 	}
 
@@ -75,10 +67,10 @@ function onLastElementFocusOut(event: FocusEvent) {
 	<button
 		id="menu-toggle"
 		title="menu"
-		class="fixed z-10 flex items-start justify-end bg-black"
+		class="fixed z-10 flex items-start justify-end bg-black md:hidden"
 		:class="[
 			isExpanded
-				? 'bg-opacity-40 top-0 right-0 w-screen h-screen p-5 is-expanded'
+				? 'bg-opacity-40 top-0 right-0 w-screen h-screen p-5 cursor-default is-expanded'
 				: 'bg-opacity-0 top-3 right-3 w-12 h-12 p-2',
 		]"
 		@click="toggleMenu(!isExpanded)"
@@ -89,7 +81,7 @@ function onLastElementFocusOut(event: FocusEvent) {
 	</button>
 
 	<nav
-		class="absolute z-11 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 overflow-auto bg-inherit py-2 transition-transform"
+		class="absolute z-11 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 overflow-auto bg-inherit py-2 transition-transform md:relative md:flex md:translate-y-0 md:justify-around"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<RouterLink
@@ -130,10 +122,10 @@ function onLastElementFocusOut(event: FocusEvent) {
 
 		<TheThemeToggle
 			ref="secondToLastFocusableNavElement"
-			class="mt-2 justify-self-end filter-drop-shadow filter-drop-shadow-color-black/20"
+			class="mt-2 justify-self-end filter-drop-shadow filter-drop-shadow-color-black/20 md:absolute md:left-0 md:top-1/2 md:mt-0 xl:translate-x-full md:-translate-y-1/2"
 		/>
 		<TheSettings
-			class="mt-2 justify-self-start filter-drop-shadow filter-drop-shadow-color-black/20"
+			class="mt-2 justify-self-start filter-drop-shadow filter-drop-shadow-color-black/20 md:absolute md:right-0 md:top-1/2 md:mt-0 md:-translate-y-1/2 xl:-translate-x-full"
 			@click="toggleMenu(false)"
 			@focusin="onLastElementFocusIn"
 			@focusout="onLastElementFocusOut"
