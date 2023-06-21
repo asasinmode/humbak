@@ -2,5 +2,5 @@ import { int, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
 
 export const users = mysqlTable('users', {
 	id: int('id').autoincrement().primaryKey(),
-	username: varchar('username', { length: 256 }).notNull(),
+	username: varchar('username', { length: 256 }).primaryKey(),
 });

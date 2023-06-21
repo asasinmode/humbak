@@ -7,8 +7,10 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    Button: typeof import('./../components/Button.vue')['default']
     DependencyIcon: typeof import('./../components/DependencyIcon.vue')['default']
     DependencyIconsCircle: typeof import('./../components/DependencyIconsCircle.vue')['default']
+    Input: typeof import('./../components/Input.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TheFooter: typeof import('./../components/TheFooter.vue')['default']
@@ -16,5 +18,7 @@ declare module 'vue' {
     TheNavigation: typeof import('./../components/TheNavigation.vue')['default']
     TheSettings: typeof import('./../components/TheSettings.vue')['default']
     TheThemeToggle: typeof import('./../components/TheThemeToggle.vue')['default']
+    VButton: typeof import('./../components/VButton.vue')['default']
+    VInput: typeof import('./../components/VInput.vue')['default']
   }
 }

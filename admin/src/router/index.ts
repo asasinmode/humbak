@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '~/pages/Home.vue';
-import Files from '~/pages/Files.vue';
-import Css from '~/pages/Css.vue';
-import Slider from '~/pages/Slider.vue';
-import Footer from '~/pages/Footer.vue';
-import Settings from '~/pages/Settings.vue';
-import Error from '~/pages/Error.vue';
-import Navigationless from '~/layouts/Navigationless.vue';
+import PageHome from '~/pages/PageHome.vue';
+import PageFiles from '~/pages/PageFiles.vue';
+import PageCss from '~/pages/PageCss.vue';
+import PageSlider from '~/pages/PageSlider.vue';
+import PageFooter from '~/pages/PageFooter.vue';
+import PageSettings from '~/pages/PageSettings.vue';
+import PageError from '~/pages/PageError.vue';
+import LayoutNavigationless from '~/layouts/LayoutNavigationless.vue';
 
 export const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,40 +14,40 @@ export const router = createRouter({
 		{
 			path: '/',
 			name: 'pages',
-			component: Home,
+			component: PageHome,
 		},
 		{
 			path: '/pliki',
 			name: 'Files',
-			component: Files,
+			component: PageFiles,
 		},
 		{
 			path: '/css',
 			name: 'Css',
-			component: Css,
+			component: PageCss,
 		},
 		{
 			path: '/slider',
 			name: 'Slider',
-			component: Slider,
+			component: PageSlider,
 		},
 		{
 			path: '/stopka',
 			name: 'Footer',
-			component: Footer,
+			component: PageFooter,
 		},
 		{
 			path: '/ustawienia',
-			component: Settings,
+			component: PageSettings,
 			name: 'Settings',
 		},
 		{
 			path: '/404',
 			name: 'notFound',
-			component: Error,
+			component: PageError,
 			props: { status: 404, message: 'page not found' },
 			meta: {
-				layout: Navigationless,
+				layout: LayoutNavigationless,
 			},
 		},
 	],
