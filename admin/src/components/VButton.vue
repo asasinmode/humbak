@@ -2,7 +2,7 @@
 </script>
 
 <template>
-	<button class="border-2 px-3 py-1 shadow neon-button-zinc">
+	<button class="px-3 py-1 shadow">
 		<slot />
 	</button>
 </template>

@@ -1,13 +1,17 @@
 <script setup lang="ts">
 defineProps<{
-	label?: string;
 	id: string;
+	label?: string;
+	placeholder?: string;
+	suffixIcon?: string;
 }>();
 </script>
 
 <template>
-	<div class="flex flex-col">
-		<label v-if="label" :for="id" class="w-fit">{{ label }}</label>
-		<input :id="id" class="">
+	<div class="relative flex flex-col gap-[2px]">
+		<label v-if="label" :for="id" class="ml-3 w-fit">{{ label }}</label>
+		<input :id="id" class="neon-stone py-1 pl-3 shadow" :class="[suffixIcon ? 'pr-9' : 'pr-3']" :placeholder="placeholder">
+
+		<div v-if="suffixIcon" :class="suffixIcon" class="pointer-events-none absolute right-4 top-1/2 text-neutral -translate-y-1/2" />
 	</div>
 </template>

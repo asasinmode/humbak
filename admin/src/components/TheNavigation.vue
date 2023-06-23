@@ -86,35 +86,35 @@ function onLastElementFocusOut(event: FocusEvent) {
 	>
 		<RouterLink
 			ref="firstFocusableNavElement"
-			to="/" class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-cyan"
+			to="/" class="neon-cyan col-span-2 w-fit px-3 py-1 text-5 shadow"
 			@click="toggleMenu(false)"
 		>
 			strony
 		</RouterLink>
 		<RouterLink
 			to="/pliki"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-orange"
+			class="neon-orange col-span-2 w-fit px-3 py-1 text-5 shadow"
 			@click="toggleMenu(false)"
 		>
 			pliki
 		</RouterLink>
 		<RouterLink
 			to="/css"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-rose"
+			class="neon-fuchsia col-span-2 w-fit px-3 py-1 text-5 shadow"
 			@click="toggleMenu(false)"
 		>
 			css
 		</RouterLink>
 		<RouterLink
 			to="/slider"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-green"
+			class="neon-emerald col-span-2 w-fit px-3 py-1 text-5 shadow"
 			@click="toggleMenu(false)"
 		>
 			slider
 		</RouterLink>
 		<RouterLink
 			to="/stopka"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-button-yellow"
+			class="neon-yellow col-span-2 w-fit px-3 py-1 text-5 shadow"
 			@click="toggleMenu(false)"
 		>
 			stopka
@@ -122,10 +122,10 @@ function onLastElementFocusOut(event: FocusEvent) {
 
 		<TheThemeToggle
 			ref="secondToLastFocusableNavElement"
-			class="mt-2 justify-self-end filter-drop-shadow filter-drop-shadow-color-black/20 md:absolute md:left-0 md:top-1/2 md:mt-0 xl:translate-x-full md:-translate-y-1/2"
+			class="mt-2 justify-self-end filter-drop-shadow filter-drop-shadow-color-black/20 md:absolute md:left-[clamp(0.25rem,calc(-0.93rem_+_2.46vw),3.00rem)] md:top-1/2 md:mt-0 md:-translate-y-1/2"
 		/>
 		<TheSettings
-			class="mt-2 justify-self-start filter-drop-shadow filter-drop-shadow-color-black/20 md:absolute md:right-0 md:top-1/2 md:mt-0 md:-translate-y-1/2 xl:-translate-x-full"
+			class="mt-2 justify-self-start filter-drop-shadow filter-drop-shadow-color-black/20 md:absolute md:right-[clamp(0.25rem,calc(-0.93rem_+_2.46vw),3.00rem)] md:top-1/2 md:mt-0 md:-translate-y-1/2"
 			@click="toggleMenu(false)"
 			@focusin="onLastElementFocusIn"
 			@focusout="onLastElementFocusOut"

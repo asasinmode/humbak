@@ -5,7 +5,3 @@
 *:focus-visible {
 	z-index: 101;
 }
-
-:is(input, select):focus-visible {
-	outline: unset;
-}
