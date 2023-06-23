@@ -3,8 +3,8 @@ import type { ComponentPublicInstance } from 'vue';
 import TheThemeToggle from '~/components/TheThemeToggle.vue';
 
 const isExpanded = ref(false);
-const firstFocusableNavElement = ref<ComponentPublicInstance | null>(null);
-const secondToLastFocusableNavElement = ref<InstanceType<typeof TheThemeToggle> | null>(null);
+const firstFocusableNavElement = ref<ComponentPublicInstance | null>();
+const secondToLastFocusableNavElement = ref<InstanceType<typeof TheThemeToggle> | null>();
 
 function toggleMenu(isOpen: boolean) {
 	isExpanded.value = isOpen;
@@ -86,35 +86,35 @@ function onLastElementFocusOut(event: FocusEvent) {
 	>
 		<RouterLink
 			ref="firstFocusableNavElement"
-			to="/" class="neon-cyan col-span-2 w-fit px-3 py-1 text-5 shadow"
+			to="/" class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-cyan"
 			@click="toggleMenu(false)"
 		>
 			strony
 		</RouterLink>
 		<RouterLink
 			to="/pliki"
-			class="neon-orange col-span-2 w-fit px-3 py-1 text-5 shadow"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-orange"
 			@click="toggleMenu(false)"
 		>
 			pliki
 		</RouterLink>
 		<RouterLink
 			to="/css"
-			class="neon-fuchsia col-span-2 w-fit px-3 py-1 text-5 shadow"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-fuchsia"
 			@click="toggleMenu(false)"
 		>
 			css
 		</RouterLink>
 		<RouterLink
 			to="/slider"
-			class="neon-emerald col-span-2 w-fit px-3 py-1 text-5 shadow"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-emerald"
 			@click="toggleMenu(false)"
 		>
 			slider
 		</RouterLink>
 		<RouterLink
 			to="/stopka"
-			class="neon-yellow col-span-2 w-fit px-3 py-1 text-5 shadow"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-yellow"
 			@click="toggleMenu(false)"
 		>
 			stopka

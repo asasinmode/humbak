@@ -12,6 +12,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "monaco-editor-core": "^0.39.0",
     "pinia": "^2.1.4",
     "vue": "^3.3.4",
     "vue-router": "^4.2.2"

@@ -10,6 +10,7 @@ declare module 'vue' {
     Button: typeof import('./../components/Button.vue')['default']
     DependencyIcon: typeof import('./../components/DependencyIcon.vue')['default']
     DependencyIconsCircle: typeof import('./../components/DependencyIconsCircle.vue')['default']
+    Editor: typeof import('./../components/Editor.vue')['default']
     Input: typeof import('./../components/Input.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -19,6 +20,7 @@ declare module 'vue' {
     TheSettings: typeof import('./../components/TheSettings.vue')['default']
     TheThemeToggle: typeof import('./../components/TheThemeToggle.vue')['default']
     VButton: typeof import('./../components/VButton.vue')['default']
+    VEditor: typeof import('./../components/VEditor.vue')['default']
     VInput: typeof import('./../components/VInput.vue')['default']
   }
 }
