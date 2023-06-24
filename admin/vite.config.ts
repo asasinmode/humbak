@@ -12,7 +12,11 @@ export default defineConfig({
 		},
 	},
 	plugins: [
-		Vue(),
+		Vue({
+			script: {
+				defineModel: true,
+			},
+		}),
 		Unocss(),
 		Components({
 			dts: './src/types/components.d.ts',
@@ -21,6 +25,7 @@ export default defineConfig({
 			imports: [
 				'vue',
 				'vue-router',
+				{ vue: ['defineModel'] },
 			],
 			dts: './src/types/auto-imports.d.ts',
 			dirs: [

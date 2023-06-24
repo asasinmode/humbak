@@ -1,4 +1,12 @@
 <script setup lang="ts">
+const title = ref('');
+const slug = ref('');
+const menuText = ref('');
+const html = ref('');
+
+function onSave() {
+	console.log('saving', { title, slug, menuText, html });
+}
 </script>
 
 <template>
@@ -10,13 +18,13 @@
 			</VButton>
 		</div>
 
-		<VInput id="pageTitle" label="tytuł strony" />
-		<VInput id="pageSlug" label="url" />
-		<VInput id="pageMenuText" label="tekst w menu" />
+		<VInput id="pageTitle" v-model="title" label="tytuł strony" />
+		<VInput id="pageSlug" v-model="slug" label="url" />
+		<VInput id="pageMenuText" v-model="menuText" label="tekst w menu" />
 	</section>
 
 	<section class="h-[60vh] flex resize-y gap-5 overflow-hidden">
-		<VEditor class="flex-1" />
+		<VEditor v-model="html" class="flex-1" />
 		<main class="bg-checker flex-1" />
 	</section>
 
@@ -24,7 +32,7 @@
 		<VButton class="-ml-[0.8rem] neon-red">
 			wyczyść
 		</VButton>
-		<VButton class="neon-green">
+		<VButton class="neon-green" @click="onSave">
 			zapisz
 		</VButton>
 	</section>

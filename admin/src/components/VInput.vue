@@ -5,12 +5,20 @@ defineProps<{
 	placeholder?: string;
 	suffixIcon?: string;
 }>();
+
+const value = defineModel<string>();
 </script>
 
 <template>
 	<div class="relative flex flex-col gap-[2px]">
 		<label v-if="label" :for="id" class="ml-3 w-fit">{{ label }}</label>
-		<input :id="id" class="neon-stone py-1 pl-3 shadow" :class="[suffixIcon ? 'pr-9' : 'pr-3']" :placeholder="placeholder">
+		<input
+			:id="id"
+			v-model="value"
+			class="py-1 pl-3 shadow neon-stone"
+			:class="[suffixIcon ? 'pr-9' : 'pr-3']"
+			:placeholder="placeholder"
+		>
 
 		<div v-if="suffixIcon" :class="suffixIcon" class="pointer-events-none absolute right-4 top-1/2 text-neutral -translate-y-1/2" />
 	</div>

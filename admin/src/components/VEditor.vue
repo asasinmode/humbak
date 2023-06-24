@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import * as monaco from 'monaco-editor-core';
 
-const temp = ref('');
-const container = ref<HTMLDivElement | null>();
+const value = defineModel<string>();
+const containerRef = ref<HTMLDivElement | null>();
 const editor = shallowRef<monaco.editor.IStandaloneCodeEditor | undefined>(undefined);
 
 onMounted(() => {
-	if (!container.value) {
+	if (!containerRef.value) {
 		throw new Error('cannot find editor container');
 	}
 
-	const editorInstance = monaco.editor.create(container.value, {
-		value: temp.value,
+	const editorInstance = monaco.editor.create(containerRef.value, {
+		value: value.value,
 		automaticLayout: true,
 		scrollBeyondLastLine: false,
 		theme: 'vs-dark',
@@ -26,7 +26,7 @@ onMounted(() => {
 	editor.value = editorInstance;
 
 	editorInstance.onDidChangeModelContent(() => {
-		temp.value = editorInstance.getValue();
+		value.value = editorInstance.getValue();
 	});
 });
 
@@ -36,5 +36,5 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<article ref="container" />
+	<article ref="containerRef" />
 </template>
