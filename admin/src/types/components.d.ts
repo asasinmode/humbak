@@ -19,9 +19,9 @@ declare module 'vue' {
     TheNavigation: typeof import('./../components/TheNavigation.vue')['default']
     TheSettings: typeof import('./../components/TheSettings.vue')['default']
     TheThemeToggle: typeof import('./../components/TheThemeToggle.vue')['default']
-    VButton: typeof import('./../components/VButton.vue')['default']
-    VEditor: typeof import('./../components/VEditor.vue')['default']
-    VInput: typeof import('./../components/VInput.vue')['default']
-    VLoading: typeof import('./../components/VLoading.vue')['default']
+    VButton: typeof import('./../components/V/VButton.vue')['default']
+    VEditor: typeof import('./../components/V/VEditor.vue')['default']
+    VInput: typeof import('./../components/V/VInput.vue')['default']
+    VLoading: typeof import('./../components/V/VLoading.vue')['default']
   }
 }
