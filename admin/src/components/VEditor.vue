@@ -14,13 +14,13 @@ onMounted(() => {
 		value: temp.value,
 		automaticLayout: true,
 		scrollBeyondLastLine: false,
+		theme: 'vs-dark',
 		minimap: {
 			enabled: false,
 		},
 		// 'inlineSuggest': {
 		// 	enabled: false,
 		// },
-		fixedOverflowWidgets: true,
 	});
 
 	editor.value = editorInstance;

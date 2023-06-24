@@ -22,5 +22,6 @@ declare module 'vue' {
     VButton: typeof import('./../components/VButton.vue')['default']
     VEditor: typeof import('./../components/VEditor.vue')['default']
     VInput: typeof import('./../components/VInput.vue')['default']
+    VLoading: typeof import('./../components/VLoading.vue')['default']
   }
 }
