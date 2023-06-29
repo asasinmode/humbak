@@ -4,7 +4,7 @@ const slug = ref('');
 const menuText = ref('');
 const html = ref('');
 
-function onSave() {
+function save() {
 	console.log('saving', { title, slug, menuText, html });
 }
 </script>
@@ -32,7 +32,7 @@ function onSave() {
 		<VButton class="-ml-[0.8rem] neon-red">
 			wyczyść
 		</VButton>
-		<VButton class="neon-green" @click="onSave">
+		<VButton class="neon-green" @click="save">
 			zapisz
 		</VButton>
 	</section>

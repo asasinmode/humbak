@@ -10,7 +10,7 @@ function toggleMenu(isOpen: boolean) {
 	isExpanded.value = isOpen;
 }
 
-function onToggleButtonFocusIn(event: FocusEvent) {
+function toggleButtonFocusIn(event: FocusEvent) {
 	if (event.relatedTarget === firstFocusableNavElement.value?.$el) {
 		isExpanded.value = false;
 
@@ -24,7 +24,7 @@ function onToggleButtonFocusIn(event: FocusEvent) {
 	isExpanded.value = true;
 }
 
-function onToggleButtonFocusOut(event: FocusEvent) {
+function toggleButtonFocusOut(event: FocusEvent) {
 	if (event.relatedTarget === firstFocusableNavElement.value?.$el) {
 		isExpanded.value = true;
 
@@ -38,7 +38,7 @@ function onToggleButtonFocusOut(event: FocusEvent) {
 	isExpanded.value = false;
 }
 
-function onLastElementFocusIn(event: FocusEvent) {
+function lastElementFocusIn(event: FocusEvent) {
 	if (window.innerWidth >= 768) {
 		return;
 	}
@@ -50,7 +50,7 @@ function onLastElementFocusIn(event: FocusEvent) {
 	isExpanded.value = true;
 }
 
-function onLastElementFocusOut(event: FocusEvent) {
+function lastElementFocusOut(event: FocusEvent) {
 	if (window.innerWidth >= 768) {
 		return;
 	}
@@ -74,8 +74,8 @@ function onLastElementFocusOut(event: FocusEvent) {
 				: 'bg-opacity-0 top-3 right-3 w-12 h-12 p-2',
 		]"
 		@click="toggleMenu(!isExpanded)"
-		@focusin="onToggleButtonFocusIn"
-		@focusout="onToggleButtonFocusOut"
+		@focusin="toggleButtonFocusIn"
+		@focusout="toggleButtonFocusOut"
 	>
 		<div class="i-fa6-solid-bars h-8 w-8" />
 	</button>
@@ -127,8 +127,8 @@ function onLastElementFocusOut(event: FocusEvent) {
 		<TheSettings
 			class="mt-2 justify-self-start filter-drop-shadow filter-drop-shadow-color-black/20 md:absolute md:right-[clamp(0.25rem,calc(-0.93rem_+_2.46vw),3.00rem)] md:top-1/2 md:mt-0 md:-translate-y-1/2"
 			@click="toggleMenu(false)"
-			@focusin="onLastElementFocusIn"
-			@focusout="onLastElementFocusOut"
+			@focusin="lastElementFocusIn"
+			@focusout="lastElementFocusOut"
 		/>
 	</nav>
 </template>
