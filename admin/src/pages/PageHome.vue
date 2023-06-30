@@ -23,7 +23,7 @@ function save() {
 		<VInput id="pageMenuText" v-model="menuText" label="tekst w menu" />
 	</section>
 
-	<section class="h-[60vh] flex resize-y gap-5 overflow-hidden">
+	<section class="hidden h-[60vh] resize-y gap-5 overflow-hidden md:flex">
 		<VEditor v-model="html" class="flex-1" />
 		<main class="bg-checker flex-1" />
 	</section>
