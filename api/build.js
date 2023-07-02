@@ -2,7 +2,7 @@ import { writeFileSync } from 'fs';
 import esbuild from 'esbuild';
 import packageDocument from './package.json' assert { type: 'json' };
 
-const internalDependenciesPatterns = [/@\/.*/, /@humbak\/.*/];
+const internalDependenciesPatterns = [/~\/.*/, /@humbak\/.*/];
 
 const external = Object.keys(packageDocument.dependencies).filter(dependency =>
 	!internalDependenciesPatterns.some(pattern => pattern.test(dependency))

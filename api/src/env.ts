@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 import { z } from 'zod';
 
 config({
-	path: process.env.NODE_ENV === 'production' ? '.env' : '.env.dev',
+	path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development',
 });
 
 const schema = z.object({
@@ -12,14 +12,7 @@ const schema = z.object({
 	DATABASE_USER: z.string(),
 	DATABASE_PASSWORD: z.string(),
 	DATABASE_DATABASE: z.string(),
+	ADMIN_URL: z.string(),
 });
 
-const parseResults = schema.safeParse(process.env);
-
-if (!parseResults.success) {
-	console.error('invalid env', JSON.stringify(parseResults.error.format(), null, 4));
-
-	process.exit(1);
-}
-
-export const env = parseResults.data;
+export const env = schema.parse(process.env);

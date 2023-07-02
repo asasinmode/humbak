@@ -7,6 +7,12 @@ const html = ref('');
 function save() {
 	console.log('saving', { title, slug, menuText, html });
 }
+
+async function temp() {
+	const pages = await useApi.pages.list.query();
+
+	console.log('pages', pages);
+}
 </script>
 
 <template>
@@ -29,7 +35,7 @@ function save() {
 	</section>
 
 	<section class="mt-4 flex justify-center gap-4 pb-4 md:mt-8">
-		<VButton class="-ml-[0.8rem] neon-red">
+		<VButton class="-ml-[0.8rem] neon-red" @click="temp">
 			wyczyść
 		</VButton>
 		<VButton class="neon-green" @click="save">

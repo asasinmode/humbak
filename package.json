@@ -1,7 +1,7 @@
 {
   "name": "humbak",
   "private": "true",
-  "packageManager": "pnpm@8.6.2",
+  "packageManager": "pnpm@8.6.5",
   "description": "Humbak monorepo",
   "author": "asasinmode <skin9470@gmail.com> (https://github.com/asasinmode/)",
   "license": "MIT",
@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@asasinmode/eslint-config": "^0.4.5",
+    "@humbak/api": "workspace:^",
     "eslint": "^8.43.0",
     "typescript": "^5.1.3"
   },

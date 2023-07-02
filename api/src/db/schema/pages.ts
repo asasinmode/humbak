@@ -1,4 +1,4 @@
-import { sql } from 'drizzle-orm';
+import { type InferModel, sql } from 'drizzle-orm';
 import { datetime, int, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
 
 export const pages = mysqlTable('pages', {
@@ -9,3 +9,5 @@ export const pages = mysqlTable('pages', {
 	createdAt: datetime('createdAt').notNull().default(sql`NOW()`),
 	updatedAt: datetime('createdAt').notNull().default(sql`NOW()`),
 });
+
+export type Page = InferModel<typeof pages, 'select'>;

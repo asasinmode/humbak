@@ -1,11 +1,8 @@
-import { initTRPC } from '@trpc/server';
+import { router } from './trpc';
+import { pagesRouter } from './routers/pages';
 
-export const t = initTRPC.create();
-
-export const appRouter = t.router({
-	test: t.procedure.query(() => {
-		return 'test';
-	}),
+export const appRouter = router({
+	pages: pagesRouter,
 });
 
 export type AppRouter = typeof appRouter;

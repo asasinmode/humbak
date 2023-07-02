@@ -12,12 +12,15 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@trpc/client": "^10.33.0",
     "monaco-editor-core": "^0.39.0",
     "pinia": "^2.1.4",
     "vue": "^3.3.4",
-    "vue-router": "^4.2.2"
+    "vue-router": "^4.2.2",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@humbak/api": "workspace:^",
     "@iconify-json/fa6-solid": "^1.1.13",
     "@unocss/eslint-config": "^0.53.1",
     "@unocss/reset": "^0.53.1",
