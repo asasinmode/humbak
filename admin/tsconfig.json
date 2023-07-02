@@ -28,8 +28,14 @@
     "noUnusedLocals": true,
     /* Completeness */
     "skipDefaultLibCheck": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
   },
+  /* Trpc */
+  "references": [
+    {
+      "path": "../api"
+    }
+  ],
   "exclude": [
     "dist",
     "node_modules"
