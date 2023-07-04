@@ -93,6 +93,9 @@ importers:
       drizzle-orm:
         specifier: ^0.27.0
         version: 0.27.0(mysql2@3.4.2)
+      drizzle-zod:
+        specifier: ^0.4.4
+        version: 0.4.4(drizzle-orm@0.27.0)(zod@3.21.4)
       fastify:
         specifier: ^4.18.0
         version: 4.18.0
@@ -1941,6 +1944,16 @@ packages:
         optional: true
     dependencies:
       mysql2: 3.4.2
+    dev: false
+
+  /drizzle-zod@0.4.4(drizzle-orm@0.27.0)(zod@3.21.4):
+    resolution: {integrity: sha512-XNn0mjQ306Hvg+CuyKV98wnsWBWeTqv+kgE/N79Zj0EdCvjD2kaoN5sFDGFkMVqPQuP7IB1IPs0lEcOij1RvBA==}
+    peerDependencies:
+      drizzle-orm: '>=0.23.13'
+      zod: '*'
+    dependencies:
+      drizzle-orm: 0.27.0(mysql2@3.4.2)
+      zod: 3.21.4
     dev: false
 
   /duplexer@0.1.2:
