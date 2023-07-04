@@ -89,6 +89,7 @@ function lastElementFocusOut(event: FocusEvent) {
 			to="/" class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-cyan"
 			@click="toggleMenu(false)"
 		>
+			<div class="i-solar-document-text-linear mr-[2px] inline-block align-sub text-cyan" />
 			strony
 		</RouterLink>
 		<RouterLink
@@ -96,6 +97,7 @@ function lastElementFocusOut(event: FocusEvent) {
 			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-orange"
 			@click="toggleMenu(false)"
 		>
+			<div class="i-solar-folder-with-files-linear mr-[2px] inline-block align-sub text-orange" />
 			pliki
 		</RouterLink>
 		<RouterLink
@@ -103,6 +105,7 @@ function lastElementFocusOut(event: FocusEvent) {
 			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-fuchsia"
 			@click="toggleMenu(false)"
 		>
+			<div class="i-solar-pallete-2-outline mr-[2px] inline-block align-sub text-fuchsia" />
 			css
 		</RouterLink>
 		<RouterLink
@@ -110,6 +113,7 @@ function lastElementFocusOut(event: FocusEvent) {
 			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-emerald"
 			@click="toggleMenu(false)"
 		>
+			<div class="i-solar-wallpaper-linear mr-[2px] inline-block align-sub text-emerald" />
 			slider
 		</RouterLink>
 		<RouterLink
@@ -117,6 +121,7 @@ function lastElementFocusOut(event: FocusEvent) {
 			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-yellow"
 			@click="toggleMenu(false)"
 		>
+			<div class="i-solar-smartphone-linear mr-[2px] inline-block align-sub text-yellow-5 dark:text-yellow" />
 			stopka
 		</RouterLink>
 
