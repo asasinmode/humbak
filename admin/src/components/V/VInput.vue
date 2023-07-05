@@ -4,6 +4,7 @@ defineProps<{
 	label?: string;
 	placeholder?: string;
 	suffixIcon?: string;
+	error?: string;
 }>();
 
 const value = defineModel<string>();
@@ -15,10 +16,13 @@ const value = defineModel<string>();
 		<input
 			:id="id"
 			v-model="value"
-			class="py-1 pl-3 shadow neon-stone"
-			:class="[suffixIcon ? 'pr-9' : 'pr-3']"
+			class="py-1 pl-3 shadow"
+			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-stone']"
 			:placeholder="placeholder"
 		>
+		<p v-if="error" class="pointer-events-none absolute bottom-0 left-3 translate-y-full text-3 text-red-500">
+			{{ error }}
+		</p>
 
 		<div v-if="suffixIcon" :class="suffixIcon" class="pointer-events-none absolute right-4 top-1/2 text-neutral -translate-y-1/2" />
 	</div>

@@ -3,10 +3,14 @@ const title = ref('');
 const slug = ref('');
 const menuText = ref('');
 const html = ref('');
+const isLoading = ref(false);
 
-const { handleError, fieldToError, resetErrors } = useErrors(['title', 'slug', 'menuText', 'html'] as const);
+const { handleError, fieldToError, resetErrors } = useErrors(['title', 'slug', 'menuText'] as const);
 
 async function save() {
+	resetErrors();
+	isLoading.value = true;
+
 	try {
 		const thing = await useApi.pages.create.mutate({
 			language: 'pl',
@@ -15,11 +19,11 @@ async function save() {
 			menuText: menuText.value,
 		});
 
-		resetErrors();
-
 		console.log('got', thing);
 	} catch (e) {
 		handleError(e);
+	} finally {
+		isLoading.value = false;
 	}
 }
 </script>
@@ -33,9 +37,27 @@ async function save() {
 			</VButton>
 		</div>
 
-		<VInput id="pageTitle" v-model="title" label="tytuł strony" />
-		<VInput id="pageSlug" v-model="slug" label="url" />
-		<VInput id="pageMenuText" v-model="menuText" label="tekst w menu" />
+		<VInput
+			id="pageTitle"
+			v-model="title"
+			label="tytuł strony"
+			:error="fieldToError.title"
+			@update:model-value="fieldToError.title = ''"
+		/>
+		<VInput
+			id="pageSlug"
+			v-model="slug"
+			label="url"
+			:error="fieldToError.slug"
+			@update:model-value="fieldToError.slug = ''"
+		/>
+		<VInput
+			id="pageMenuText"
+			v-model="menuText"
+			label="tekst w menu"
+			:error="fieldToError.menuText"
+			@update:model-value="fieldToError.menuText = ''"
+		/>
 	</section>
 
 	<!-- make resizable with handle in the middle -->
@@ -48,7 +70,7 @@ async function save() {
 		<VButton class="-ml-[0.8rem] neon-red">
 			wyczyść
 		</VButton>
-		<VButton class="neon-green" @click="save">
+		<VButton class="neon-green" :loading="isLoading" @click="save">
 			zapisz
 		</VButton>
 	</section>

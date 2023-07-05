@@ -36,6 +36,8 @@ export const useErrors = <T extends Readonly<string[]>>(fields: T) => {
 					if (property in fieldToError.value) {
 						// @ts-expect-error property is a string
 						fieldToError.value[property] = message;
+					} else {
+						console.error(`Unspecified path (${property}) error: ${message}`);
 					}
 				}
 			}
