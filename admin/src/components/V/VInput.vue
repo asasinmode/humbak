@@ -24,6 +24,10 @@ const value = defineModel<string>();
 			{{ error }}
 		</p>
 
-		<div v-if="suffixIcon" :class="suffixIcon" class="pointer-events-none absolute right-4 top-1/2 text-neutral -translate-y-1/2" />
+		<div
+			v-if="suffixIcon"
+			class="pointer-events-none absolute right-4 top-1/2 text-neutral -translate-y-1/2"
+			:class="suffixIcon"
+		/>
 	</div>
 </template>

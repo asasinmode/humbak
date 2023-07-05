@@ -3,7 +3,7 @@ const props = withDefaults(defineProps<{
 	size?: number;
 }>(), { size: 2 });
 
-const buttonElement = ref<HTMLButtonElement | null>(null);
+const element = ref<HTMLButtonElement | null>(null);
 
 function toggleTheme() {
 	const value = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
@@ -15,13 +15,13 @@ function toggleTheme() {
 const style = computed(() => `--size: ${props.size}rem`);
 
 defineExpose({
-	buttonElement,
+	element,
 });
 </script>
 
 <template>
 	<button
-		ref="buttonElement"
+		ref="element"
 		title="zmiana koloru" aria-live="polite"
 		class="themeToggle" :style="style"
 		@click="toggleTheme"

@@ -43,7 +43,7 @@ function lastElementFocusIn(event: FocusEvent) {
 		return;
 	}
 
-	if (event.relatedTarget === secondToLastFocusableNavElement.value?.buttonElement) {
+	if (event.relatedTarget === secondToLastFocusableNavElement.value?.element) {
 		return;
 	}
 
@@ -55,7 +55,7 @@ function lastElementFocusOut(event: FocusEvent) {
 		return;
 	}
 
-	if (event.relatedTarget === secondToLastFocusableNavElement.value?.buttonElement) {
+	if (event.relatedTarget === secondToLastFocusableNavElement.value?.element) {
 		return;
 	}
 

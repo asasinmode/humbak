@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import VButton from '~/components/V/VButton.vue';
+
 const title = ref('');
 const slug = ref('');
 const menuText = ref('');
 const html = ref('');
 const isLoading = ref(false);
+const saveButton = ref<InstanceType<typeof VButton> | null>();
 
 const { handleError, fieldToError, resetErrors } = useErrors(['title', 'slug', 'menuText'] as const);
 
@@ -22,6 +25,7 @@ async function save() {
 		console.log('got', thing);
 	} catch (e) {
 		handleError(e);
+		useShake(saveButton.value?.element);
 	} finally {
 		isLoading.value = false;
 	}
@@ -70,7 +74,7 @@ async function save() {
 		<VButton class="-ml-[0.8rem] neon-red">
 			wyczyść
 		</VButton>
-		<VButton class="neon-green" :loading="isLoading" @click="save">
+		<VButton ref="saveButton" class="neon-green" :loading="isLoading" @click="save">
 			zapisz
 		</VButton>
 	</section>
