@@ -4,15 +4,23 @@ const slug = ref('');
 const menuText = ref('');
 const html = ref('');
 
-async function save() {
-	const thing = await useApi.pages.create.mutate({
-		title: title.value,
-		slug: slug.value,
-		menuText: menuText.value,
-		language: 'pl',
-	});
+const { handleError, fieldToError, resetErrors } = useErrors(['title', 'slug', 'menuText', 'html'] as const);
 
-	console.log('thing', thing);
+async function save() {
+	try {
+		const thing = await useApi.pages.create.mutate({
+			language: 'pl',
+			title: title.value,
+			slug: slug.value,
+			menuText: menuText.value,
+		});
+
+		resetErrors();
+
+		console.log('got', thing);
+	} catch (e) {
+		handleError(e);
+	}
 }
 </script>
 
@@ -30,7 +38,7 @@ async function save() {
 		<VInput id="pageMenuText" v-model="menuText" label="tekst w menu" />
 	</section>
 
-	<!-- @TODO make resizable with handle in the middle -->
+	<!-- make resizable with handle in the middle -->
 	<section class="hidden h-[60vh] resize-y gap-5 overflow-hidden md:flex">
 		<VEditor v-model="html" class="flex-1" />
 		<main class="bg-checker flex-1" />
