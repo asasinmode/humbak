@@ -50,7 +50,7 @@ function reset() {
 			<VButton class="neon-blue">
 				szukaj
 			</VButton>
-			<VButton class="neon-amber" @click="toast('my text sdflkjsdkfj sdkljfweojow ejfklsdjofewj sdfkljwoekfjowejfslkdjfowejfoewmflwkmksdlsdkfjowekj', 'success')">
+			<VButton class="neon-amber" @click="toast('my text', 'success')">
 				TEMP
 			</VButton>
 		</div>
