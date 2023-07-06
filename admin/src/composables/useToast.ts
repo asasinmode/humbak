@@ -1,4 +1,4 @@
-export type ToastVariant = 'success' | 'error' | 'warning' | 'info';
+export type ToastVariant = 'success' | 'error';
 type Toast = {
 	id: string;
 	variant: ToastVariant;
@@ -14,7 +14,7 @@ const toast = (text: string, variant: ToastVariant = 'success') => {
 		variant,
 	});
 
-	setTimeout(() => _toasts.value.shift(), 5000);
+	setTimeout(() => _toasts.value.shift(), 2500);
 };
 
 export const useToast = () => ({

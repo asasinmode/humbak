@@ -26,3 +26,12 @@
 	80% {transform: translate(-0.5em);}
 	100% {transform: translate(0);}
 }
+
+.toast-progress:after {
+	animation: shrink 2500ms linear;
+}
+
+@keyframes shrink {
+	0% {width: 100%;}
+	100% {width: 0;}
+}
