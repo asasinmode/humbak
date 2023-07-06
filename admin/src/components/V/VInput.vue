@@ -16,7 +16,7 @@ const value = defineModel<string>();
 		<input
 			:id="id"
 			v-model="value"
-			class="py-1 pl-3 shadow"
+			class="min-w-24 w-full py-1 pl-3 shadow"
 			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-stone']"
 			:placeholder="placeholder"
 		>

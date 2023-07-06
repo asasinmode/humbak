@@ -81,7 +81,7 @@ function lastElementFocusOut(event: FocusEvent) {
 	</button>
 
 	<nav
-		class="absolute z-11 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 overflow-auto bg-inherit py-2 transition-transform md:relative md:flex md:translate-y-0 md:justify-around md:bg-transparent"
+		class="absolute z-11 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 overflow-auto bg-inherit py-2 transition-transform md:relative md:flex md:translate-y-0 md:justify-around md:bg-transparent md:px-4"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<RouterLink

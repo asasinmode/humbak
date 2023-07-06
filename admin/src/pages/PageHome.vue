@@ -2,13 +2,14 @@
 import VButton from '~/components/V/VButton.vue';
 
 const title = ref('');
+const language = ref('');
 const slug = ref('');
 const menuText = ref('');
 const html = ref('');
 const isLoading = ref(false);
 const saveButton = ref<InstanceType<typeof VButton> | null>();
 
-const { handleError, fieldToError, resetErrors } = useErrors(['title', 'slug', 'menuText'] as const);
+const { handleError, fieldToError, resetErrors } = useErrors(['title', 'language', 'slug', 'menuText'] as const);
 
 async function save() {
 	resetErrors();
@@ -16,7 +17,7 @@ async function save() {
 
 	try {
 		const thing = await useApi.pages.create.mutate({
-			language: 'pl',
+			language: language.value,
 			title: title.value,
 			slug: slug.value,
 			menuText: menuText.value,
@@ -33,9 +34,9 @@ async function save() {
 </script>
 
 <template>
-	<section class="grid grid-cols-1 mx-auto max-w-7xl gap-x-4 gap-y-4 px-2 py-4 md:grid-cols-3 md:px-4 md:py-8">
+	<section class="grid grid-cols-[4fr_1fr] mx-auto max-w-6xl gap-x-4 gap-y-4 px-2 py-4 md:grid-cols-12 md:px-4 md:py-8">
 		<div class="col-span-full mt-[2px] w-[calc(100%-_3.5rem)] flex gap-4 md:mx-auto md:max-w-128">
-			<VInput id="pageSearch" class="w-0 flex-1" suffix-icon="i-solar-magnifer-linear" />
+			<VInput id="pageSearch" class="flex-1" suffix-icon="i-solar-magnifer-linear" />
 			<VButton class="neon-blue">
 				szukaj
 			</VButton>
@@ -44,13 +45,23 @@ async function save() {
 		<VInput
 			id="pageTitle"
 			v-model="title"
+			class="md:col-span-8"
 			label="tytuł strony"
 			:error="fieldToError.title"
 			@update:model-value="fieldToError.title = ''"
 		/>
 		<VInput
+			id="pageLanguage"
+			v-model="language"
+			class="md:col-span-4"
+			label="język"
+			:error="fieldToError.language"
+			@update:model-value="fieldToError.language = ''"
+		/>
+		<VInput
 			id="pageSlug"
 			v-model="slug"
+			class="col-span-full md:col-span-6"
 			label="url"
 			:error="fieldToError.slug"
 			@update:model-value="fieldToError.slug = ''"
@@ -58,6 +69,7 @@ async function save() {
 		<VInput
 			id="pageMenuText"
 			v-model="menuText"
+			class="col-span-full md:col-span-6"
 			label="tekst w menu"
 			:error="fieldToError.menuText"
 			@update:model-value="fieldToError.menuText = ''"
