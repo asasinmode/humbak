@@ -1,21 +1,20 @@
-type ToastVariant = 'success' | 'error' | 'warning' | 'info';
+export type ToastVariant = 'success' | 'error' | 'warning' | 'info';
 type Toast = {
 	id: string;
-	variant: string;
+	variant: ToastVariant;
 	text: string;
 };
 
 const _toasts = ref<Toast[]>([]);
 
 const toast = (text: string, variant: ToastVariant = 'success') => {
-	console.log('toasting');
-	// _toasts.value.unshift({
-	// 	id: Math.random().toString(36).substring(2, 9),
-	// 	text,
-	// 	variant,
-	// });
+	_toasts.value.push({
+		id: Math.random().toString(36).substring(2, 9),
+		text,
+		variant,
+	});
 
-	// setTimeout(() => _toasts.value.pop(), 3000);
+	setTimeout(() => _toasts.value.shift(), 5000);
 };
 
 export const useToast = () => ({
