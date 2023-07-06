@@ -45,13 +45,13 @@ function reset() {
 
 <template>
 	<section class="grid grid-cols-[5fr_2fr] mx-auto max-w-6xl gap-x-4 gap-y-4 px-2 py-4 md:grid-cols-12 md:px-4 md:py-8">
-		<VButton class="neon-amber" @click="toast('my text', 'success')">
-			TEMP
-		</VButton>
 		<div class="col-span-full mt-[2px] w-[calc(100%-_3.5rem)] flex gap-4 md:mx-auto md:max-w-128">
 			<VInput id="pageSearch" class="flex-1" suffix-icon="i-solar-magnifer-linear" />
 			<VButton class="neon-blue">
 				szukaj
+			</VButton>
+			<VButton class="neon-amber" @click="toast('my text sdflkjsdkfj sdkljfweojow ejfklsdjofewj sdfkljwoekfjowejfslkdjfowejfoewmflwkmksdlsdkfjowekj', 'success')">
+				TEMP
 			</VButton>
 		</div>
 
