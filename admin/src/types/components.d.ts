@@ -7,18 +7,12 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    Button: typeof import('./../components/Button.vue')['default']
-    DependencyIcon: typeof import('./../components/DependencyIcon.vue')['default']
-    DependencyIconsCircle: typeof import('./../components/DependencyIconsCircle.vue')['default']
-    Editor: typeof import('./../components/Editor.vue')['default']
-    Input: typeof import('./../components/Input.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    TheFooter: typeof import('./../components/TheFooter.vue')['default']
-    ThemeToggle: typeof import('./../components/ThemeToggle.vue')['default']
     TheNavigation: typeof import('./../components/TheNavigation.vue')['default']
     TheSettings: typeof import('./../components/TheSettings.vue')['default']
     TheThemeToggle: typeof import('./../components/TheThemeToggle.vue')['default']
+    TheToasts: typeof import('./../components/TheToasts.vue')['default']
     VButton: typeof import('./../components/V/VButton.vue')['default']
     VEditor: typeof import('./../components/V/VEditor.vue')['default']
     VInput: typeof import('./../components/V/VInput.vue')['default']

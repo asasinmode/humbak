@@ -10,13 +10,14 @@ const isLoading = ref(false);
 const saveButton = ref<InstanceType<typeof VButton> | null>();
 
 const { handleError, fieldToError, resetErrors } = useErrors(['title', 'language', 'slug', 'menuText'] as const);
+const { toast } = useToast();
 
 async function save() {
 	resetErrors();
 	isLoading.value = true;
 
 	try {
-		const thing = await useApi.pages.create.mutate({
+		const thing = await useApi().pages.create.mutate({
 			language: language.value,
 			title: title.value,
 			slug: slug.value,
@@ -31,10 +32,22 @@ async function save() {
 		isLoading.value = false;
 	}
 }
+
+function reset() {
+	resetErrors();
+	title.value = '';
+	language.value = '';
+	slug.value = '';
+	menuText.value = '';
+	html.value = '';
+}
 </script>
 
 <template>
-	<section class="grid grid-cols-[4fr_1fr] mx-auto max-w-6xl gap-x-4 gap-y-4 px-2 py-4 md:grid-cols-12 md:px-4 md:py-8">
+	<section class="grid grid-cols-[5fr_2fr] mx-auto max-w-6xl gap-x-4 gap-y-4 px-2 py-4 md:grid-cols-12 md:px-4 md:py-8">
+		<VButton class="neon-amber" @click="toast('my text', 'success')">
+			TEMP
+		</VButton>
 		<div class="col-span-full mt-[2px] w-[calc(100%-_3.5rem)] flex gap-4 md:mx-auto md:max-w-128">
 			<VInput id="pageSearch" class="flex-1" suffix-icon="i-solar-magnifer-linear" />
 			<VButton class="neon-blue">
@@ -83,7 +96,7 @@ async function save() {
 	</section>
 
 	<section class="mt-4 flex justify-center gap-4 pb-4 md:mt-8">
-		<VButton class="-ml-[0.8rem] neon-red">
+		<VButton class="-ml-[0.8rem] neon-red" @click="reset">
 			wyczyść
 		</VButton>
 		<VButton ref="saveButton" class="neon-green" :loading="isLoading" @click="save">

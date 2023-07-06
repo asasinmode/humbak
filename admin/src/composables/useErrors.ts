@@ -1,10 +1,10 @@
 import { ref } from 'vue';
 import { TRPCClientError } from '@trpc/client';
 
-interface TRPCError {
+type TRPCError = {
 	message: string;
 	path: string[];
-}
+};
 
 export const useErrors = <T extends Readonly<string[]>>(fields: T) => {
 	const fieldToError = ref(
