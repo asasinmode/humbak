@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import VButton from '~/components/V/VButton.vue';
 
+const html = ref('');
 const saveButton = ref<InstanceType<typeof VButton> | null>();
 
 const {
 	resetForm, sendForm,
 	errors, isSaving,
-	title, language, slug, menuText, html,
+	title, language, slug, menuText,
 } = useForm(
 	{
 		title: '',
 		language: '',
 		slug: '',
 		menuText: '',
-		html: '',
 	},
 	async () => {
 		const page = await useApi().pages.create.mutate({
