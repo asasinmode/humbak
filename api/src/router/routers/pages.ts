@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, ilike } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '~/db';
 import { insertPageSchema, pages } from '~/db/schema/pages';
@@ -18,7 +18,29 @@ export const pagesRouter = router({
 
 		return page[0];
 	}),
-	uniqueLanguages: publicProcedure.query(() => {
-		return db.selectDistinct({ language: pages.language }).from(pages).orderBy(pages.language);
+	uniqueLanguages: publicProcedure.input(z.object({
+		query: z.string().optional().default(''),
+		limit: z.number().optional().default(5),
+		offset: z.number().optional().default(0),
+	})).query(async (opts) => {
+		const { query, limit, offset } = opts.input;
+
+		const result = await (query
+			? db
+				.selectDistinct({ language: pages.language })
+				.from(pages)
+				.where(ilike(pages.language, query))
+				.orderBy(pages.language)
+				.limit(limit)
+				.offset(offset)
+			: db
+				.selectDistinct({ language: pages.language })
+				.from(pages)
+				.orderBy(pages.language)
+				.limit(limit)
+				.offset(offset)
+		);
+
+		return result.map(row => row.language);
 	}),
 });

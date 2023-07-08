@@ -27,6 +27,12 @@ const {
 	},
 	saveButton.value?.element
 );
+
+const languages = ref<string[]>([]);
+
+onMounted(async () => {
+	languages.value = await useApi().pages.uniqueLanguages.query({ query: language.value });
+});
 </script>
 
 <template>
@@ -51,12 +57,14 @@ const {
 				:error="errors.title"
 				@update:model-value="errors.title = ''"
 			/>
-			<VInput
+			<VSelect
 				id="pageLanguage"
 				v-model="language"
 				class="md:col-span-4"
 				label="język"
+				:options="languages"
 				:error="errors.language"
+				transform-options
 				@update:model-value="errors.language = ''"
 			/>
 			<VInput

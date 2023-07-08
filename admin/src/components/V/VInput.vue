@@ -29,5 +29,6 @@ const value = defineModel<string>();
 			class="pointer-events-none absolute right-4 top-1/2 text-neutral -translate-y-1/2"
 			:class="suffixIcon"
 		/>
+		<slot />
 	</div>
 </template>
