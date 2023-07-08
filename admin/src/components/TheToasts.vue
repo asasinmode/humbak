@@ -16,29 +16,27 @@ const containerProgress: ClassRecord = {
 </script>
 
 <template>
-	<div>
-		<TransitionGroup
-			name="toast"
-			tag="section"
-			aria-hidden="true"
-			class="pointer-events-none fixed right-2 top-2 z-100 max-w-[calc(100%_-_4rem)] w-64"
+	<TransitionGroup
+		name="toast"
+		tag="section"
+		aria-hidden="true"
+		class="pointer-events-none fixed bottom-0 right-0 top-2 z-100 box-content max-w-[calc(100%_-_4rem)] w-64 overflow-hidden pl-6 pr-2"
+	>
+		<div
+			v-for="{ id, variant, text } in toasts"
+			:key="id"
+			class="toast-progress pointer-events-auto relative mb-3 min-h-12 w-64 flex items-center overflow-hidden rounded-md bg-neutral-200 p-2 pb-3 pl-12 hyphens-auto shadow-md after:absolute before:absolute after:bottom-0 after:left-0 before:left-2 before:top-1/2 after:h-1 after:w-0 after:w-full before:h-8 before:w-8 after:origin-left before:rounded-1/2 dark:bg-neutral-800 before:bg-op-20 after:content-empty before:content-empty before:-translate-y-1/2"
+			:class="containerProgress[variant]"
 		>
-			<div
-				v-for="{ id, variant, text } in toasts"
-				:key="id"
-				class="toast-progress pointer-events-auto relative mb-3 min-h-12 w-full flex shrink-0 items-center overflow-hidden rounded-md bg-neutral-200 p-2 pb-3 pl-12 hyphens-auto shadow-md after:absolute before:absolute after:bottom-0 after:left-0 before:left-2 before:top-1/2 after:h-1 after:w-0 after:w-full before:h-8 before:w-8 after:origin-left before:rounded-1/2 dark:bg-neutral-800 before:bg-op-20 after:content-empty before:content-empty before:-translate-y-1/2"
-				:class="containerProgress[variant]"
-			>
-				<div class="absolute left-3 top-1/2 h-6 w-6 -translate-y-1/2" :class="icon[variant]" />
-				{{ text }}
-				<button
-					class="i-mdi-close absolute right-1 top-1 h-5 w-5 text-2 text-neutral hover:text-neutral-500 dark:hover:text-neutral-300"
-					tabindex="-1"
-					@click="clearToast(id)"
-				/>
-			</div>
-		</TransitionGroup>
-	</div>
+			<div class="absolute left-3 top-1/2 h-6 w-6 -translate-y-1/2" :class="icon[variant]" />
+			{{ text }}
+			<button
+				class="i-mdi-close absolute right-1 top-1 h-5 w-5 text-2 text-neutral hover:text-neutral-500 dark:hover:text-neutral-300"
+				tabindex="-1"
+				@click="clearToast(id)"
+			/>
+		</div>
+	</TransitionGroup>
 </template>
 
 <style>
@@ -76,32 +74,32 @@ const containerProgress: ClassRecord = {
 
 @keyframes toast-bounce-in {
 	from {
-    opacity: 0;
-    transform: translateX(200rem);
-  }
-  60% {
-    opacity: 1;
-    transform: translateX(-1.5rem);
-  }
-  75% {
-    transform: translateX(0.625rem);
-  }
-  90% {
-    transform: translateX(-0.25rem);
-  }
-  to {
-    transform: none;
-  }
+		opacity: 0;
+		transform: translateX(200rem);
+	}
+	60% {
+		opacity: 1;
+		transform: translateX(-1.5rem);
+	}
+	75% {
+		transform: translateX(0.625rem);
+	}
+	90% {
+		transform: translateX(-0.25rem);
+	}
+	to {
+		transform: none;
+	}
 }
 
 @keyframes toast-bounce-out {
 	20% {
-    opacity: 1;
-    transform: translateX(-1.25rem);
-  }
-  to {
-    opacity: 0;
-    transform: translateX(40rem);
-  }
+		opacity: 1;
+		transform: translateX(-1.25rem);
+	}
+	to {
+		opacity: 0;
+		transform: translateX(40rem);
+	}
 }
 </style>
