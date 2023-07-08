@@ -93,7 +93,7 @@ function reset() {
 		</section>
 
 		<!-- make resizable with handle in the middle -->
-		<section class="mt-6 hidden h-[60vh] resize-y gap-5 overflow-hidden md:flex">
+		<section class="mt-6 hidden h-[60vh] resize-y gap-5 of-hidden md:flex">
 			<VEditor v-model="html" class="flex-1" />
 			<main class="bg-checker flex-1" />
 		</section>

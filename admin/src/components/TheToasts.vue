@@ -20,12 +20,12 @@ const containerProgress: ClassRecord = {
 		name="toast"
 		tag="section"
 		aria-hidden="true"
-		class="pointer-events-none fixed bottom-0 right-0 top-2 z-100 box-content max-w-[calc(100%_-_4rem)] w-64 overflow-hidden pl-6 pr-2"
+		class="pointer-events-none fixed bottom-0 right-0 top-2 z-100 box-content max-w-[calc(100%_-_4rem)] w-64 of-hidden pl-6 pr-2"
 	>
 		<div
 			v-for="{ id, variant, text } in toasts"
 			:key="id"
-			class="toast-progress pointer-events-auto relative mb-3 min-h-12 w-64 flex items-center overflow-hidden rounded-md bg-neutral-200 p-2 pb-3 pl-12 hyphens-auto shadow-md after:absolute before:absolute after:bottom-0 after:left-0 before:left-2 before:top-1/2 after:h-1 after:w-0 after:w-full before:h-8 before:w-8 after:origin-left before:rounded-1/2 dark:bg-neutral-800 before:bg-op-20 after:content-empty before:content-empty before:-translate-y-1/2"
+			class="toast-progress pointer-events-auto relative mb-3 min-h-12 w-64 flex items-center of-hidden rounded-md bg-neutral-200 p-2 pb-3 pl-12 hyphens-auto shadow-md after:absolute before:absolute after:bottom-0 after:left-0 before:left-2 before:top-1/2 after:h-1 after:w-0 after:w-full before:h-8 before:w-8 after:origin-left before:rounded-1/2 dark:bg-neutral-800 before:bg-op-20 after:content-empty before:content-empty before:-translate-y-1/2"
 			:class="containerProgress[variant]"
 		>
 			<div class="absolute left-3 top-1/2 h-6 w-6 -translate-y-1/2" :class="icon[variant]" />

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import PageHome from '~/pages/PageHome.vue';
+import PageMenu from '~/pages/PageMenu.vue';
 import PageFiles from '~/pages/PageFiles.vue';
 import PageCss from '~/pages/PageCss.vue';
 import PageSlider from '~/pages/PageSlider.vue';
@@ -15,6 +16,11 @@ export const router = createRouter({
 			path: '/',
 			name: 'pages',
 			component: PageHome,
+		},
+		{
+			path: '/menu',
+			name: 'menu',
+			component: PageMenu,
 		},
 		{
 			path: '/pliki',

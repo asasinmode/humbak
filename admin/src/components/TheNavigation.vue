@@ -81,7 +81,7 @@ function lastElementFocusOut(event: FocusEvent) {
 	</button>
 
 	<nav
-		class="absolute z-11 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 overflow-auto bg-inherit py-2 transition-transform md:relative md:flex md:translate-y-0 md:justify-around md:bg-transparent md:px-4"
+		class="absolute z-11 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 of-auto bg-inherit py-2 transition-transform md:relative md:flex md:translate-y-0 md:justify-around md:bg-transparent md:px-4"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<RouterLink
@@ -91,6 +91,14 @@ function lastElementFocusOut(event: FocusEvent) {
 		>
 			<div class="i-solar-document-text-linear mr-[2px] inline-block align-sub text-cyan" />
 			strony
+		</RouterLink>
+		<RouterLink
+			to="/menu"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-violet"
+			@click="toggleMenu(false)"
+		>
+			<div class="i-solar-layers-outline mr-[2px] inline-block align-sub text-violet" />
+			menu
 		</RouterLink>
 		<RouterLink
 			to="/pliki"
