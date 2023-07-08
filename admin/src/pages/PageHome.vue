@@ -45,64 +45,66 @@ function reset() {
 </script>
 
 <template>
-	<section class="mb-4 w-[calc(100%-_3.5rem)] flex gap-4 px-2 pt-[18px] md:mx-auto md:max-w-128 md:px-0">
-		<VInput id="pageSearch" class="flex-1" suffix-icon="i-solar-magnifer-linear" />
-		<VButton class="neon-blue">
-			szukaj
-		</VButton>
-	</section>
+	<main class="px-2 pb-4 pt-[18px] md:px-0">
+		<section class="mb-4 w-[calc(100%-_3.5rem)] flex gap-4 md:mx-auto md:max-w-128">
+			<VInput id="pageSearch" class="flex-1" suffix-icon="i-solar-magnifer-linear" />
+			<VButton class="neon-blue">
+				szukaj
+			</VButton>
+		</section>
 
-	<section class="mx-auto mb-4 max-w-208 bg-green px-2 md:mb-8 md:px-0">
-		here goes page select
-	</section>
+		<section class="mx-auto mb-4 max-w-208 bg-green">
+			here goes page select
+		</section>
 
-	<section class="grid grid-cols-[5fr_2fr] mx-auto mb-4 max-w-6xl gap-x-4 gap-y-4 px-2 md:grid-cols-12 md:mb-8 md:px-0">
-		<VInput
-			id="pageTitle"
-			v-model="title"
-			class="md:col-span-8"
-			label="tytuł strony"
-			:error="fieldToError.title"
-			@update:model-value="fieldToError.title = ''"
-		/>
-		<VInput
-			id="pageLanguage"
-			v-model="language"
-			class="md:col-span-4"
-			label="język"
-			:error="fieldToError.language"
-			@update:model-value="fieldToError.language = ''"
-		/>
-		<VInput
-			id="pageSlug"
-			v-model="slug"
-			class="col-span-full md:col-span-6"
-			label="url"
-			:error="fieldToError.slug"
-			@update:model-value="fieldToError.slug = ''"
-		/>
-		<VInput
-			id="pageMenuText"
-			v-model="menuText"
-			class="col-span-full md:col-span-6"
-			label="tekst w menu"
-			:error="fieldToError.menuText"
-			@update:model-value="fieldToError.menuText = ''"
-		/>
-	</section>
+		<section class="grid grid-cols-[5fr_2fr] mx-auto max-w-6xl gap-x-4 gap-y-4 md:grid-cols-12">
+			<VInput
+				id="pageTitle"
+				v-model="title"
+				class="md:col-span-8"
+				label="tytuł strony"
+				:error="fieldToError.title"
+				@update:model-value="fieldToError.title = ''"
+			/>
+			<VInput
+				id="pageLanguage"
+				v-model="language"
+				class="md:col-span-4"
+				label="język"
+				:error="fieldToError.language"
+				@update:model-value="fieldToError.language = ''"
+			/>
+			<VInput
+				id="pageSlug"
+				v-model="slug"
+				class="col-span-full md:col-span-6"
+				label="url"
+				:error="fieldToError.slug"
+				@update:model-value="fieldToError.slug = ''"
+			/>
+			<VInput
+				id="pageMenuText"
+				v-model="menuText"
+				class="col-span-full md:col-span-6"
+				label="tekst w menu"
+				:error="fieldToError.menuText"
+				@update:model-value="fieldToError.menuText = ''"
+			/>
+		</section>
 
-	<!-- make resizable with handle in the middle -->
-	<section class="hidden h-[60vh] resize-y gap-5 overflow-hidden md:flex">
-		<VEditor v-model="html" class="flex-1" />
-		<main class="bg-checker flex-1" />
-	</section>
+		<!-- make resizable with handle in the middle -->
+		<section class="mt-6 hidden h-[60vh] resize-y gap-5 overflow-hidden md:flex">
+			<VEditor v-model="html" class="flex-1" />
+			<main class="bg-checker flex-1" />
+		</section>
 
-	<section class="mt-4 flex justify-center gap-4 pb-4 md:mt-8">
-		<VButton class="-ml-[0.8rem] neon-red" @click="reset">
-			wyczyść
-		</VButton>
-		<VButton ref="saveButton" class="neon-green" :loading="isLoading" @click="save">
-			zapisz
-		</VButton>
-	</section>
+		<section class="mt-6 flex justify-center gap-4">
+			<VButton class="-ml-[0.8rem] neon-red" @click="reset">
+				wyczyść
+			</VButton>
+			<VButton ref="saveButton" class="neon-green" :loading="isLoading" @click="save">
+				zapisz
+			</VButton>
+		</section>
+	</main>
 </template>
