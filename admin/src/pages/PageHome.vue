@@ -1,16 +1,20 @@
 <script setup lang="ts">
 import VButton from '~/components/V/VButton.vue';
 
-const title = ref('');
-const language = ref('');
-const slug = ref('');
-const menuText = ref('');
-const html = ref('');
 const isLoading = ref(false);
 const saveButton = ref<InstanceType<typeof VButton> | null>();
 
-const { handleError, fieldToError, resetErrors } = useErrors(['title', 'language', 'slug', 'menuText'] as const);
 const { toast } = useToast();
+const {
+	handleError, resetErrors, resetForm, errors,
+	title, language, slug, menuText, html,
+} = useForm({
+	title: '',
+	language: '',
+	slug: '',
+	menuText: '',
+	html: '',
+});
 
 async function save() {
 	resetErrors();
@@ -33,15 +37,6 @@ async function save() {
 		isLoading.value = false;
 	}
 }
-
-function reset() {
-	resetErrors();
-	title.value = '';
-	language.value = '';
-	slug.value = '';
-	menuText.value = '';
-	html.value = '';
-}
 </script>
 
 <template>
@@ -63,32 +58,32 @@ function reset() {
 				v-model="title"
 				class="md:col-span-8"
 				label="tytuł strony"
-				:error="fieldToError.title"
-				@update:model-value="fieldToError.title = ''"
+				:error="errors.title"
+				@update:model-value="errors.title = ''"
 			/>
 			<VInput
 				id="pageLanguage"
 				v-model="language"
 				class="md:col-span-4"
 				label="język"
-				:error="fieldToError.language"
-				@update:model-value="fieldToError.language = ''"
+				:error="errors.language"
+				@update:model-value="errors.language = ''"
 			/>
 			<VInput
 				id="pageSlug"
 				v-model="slug"
 				class="col-span-full md:col-span-6"
 				label="url"
-				:error="fieldToError.slug"
-				@update:model-value="fieldToError.slug = ''"
+				:error="errors.slug"
+				@update:model-value="errors.slug = ''"
 			/>
 			<VInput
 				id="pageMenuText"
 				v-model="menuText"
 				class="col-span-full md:col-span-6"
 				label="tekst w menu"
-				:error="fieldToError.menuText"
-				@update:model-value="fieldToError.menuText = ''"
+				:error="errors.menuText"
+				@update:model-value="errors.menuText = ''"
 			/>
 		</section>
 
@@ -99,7 +94,7 @@ function reset() {
 		</section>
 
 		<section class="mt-6 flex justify-center gap-4">
-			<VButton class="-ml-[0.8rem] neon-red" @click="reset">
+			<VButton class="-ml-[0.8rem] neon-red" @click="resetForm">
 				wyczyść
 			</VButton>
 			<VButton ref="saveButton" class="neon-green" :loading="isLoading" @click="save">

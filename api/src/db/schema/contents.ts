@@ -9,7 +9,7 @@ export const contents = mysqlTable('contents', {
 	meta: json('meta').notNull().default([]),
 	visible: boolean('visible').notNull().default(true),
 	createdAt: datetime('createdAt').notNull().default(sql`NOW()`),
-	updatedAt: datetime('createdAt').notNull().default(sql`NOW()`),
+	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
 export type Content = InferModel<typeof contents>;

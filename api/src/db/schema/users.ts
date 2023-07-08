@@ -6,7 +6,7 @@ export const users = mysqlTable('users', {
 	username: varchar('username', { length: 256 }).notNull(),
 	password: text('password').notNull(),
 	createdAt: datetime('createdAt').notNull().default(sql`NOW()`),
-	updatedAt: datetime('createdAt').notNull().default(sql`NOW()`),
+	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
 export type User = InferModel<typeof users, 'select'>;
