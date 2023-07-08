@@ -18,7 +18,7 @@ export const useToast = () => ({
 			text,
 			variant,
 		});
-		timeouts[id] = setTimeout(() => toasts.value.shift(), 2500);
+		timeouts[id] = setTimeout(() => toasts.value.shift(), 3000);
 	},
 	clearToast(id: string) {
 		const index = toasts.value.findIndex(toast => toast.id === id);
