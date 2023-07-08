@@ -8,9 +8,13 @@ type TRPCError = {
 	path: string[];
 };
 
-export const useForm = <
-		T extends Record<string, unknown>
-	>(form: T) => {
+export const useForm = <T extends Record<string, unknown>>(
+	form: T,
+	saveCallback: () => Promise<unknown>,
+	elementToShake?: Parameters<typeof useShake>[0]
+) => {
+	const isSaving = ref(false);
+
 	const fields = {} as { [K in keyof T]: Ref<T[K]> };
 	for (const key in form) {
 		// @ts-expect-error it's a valid key
@@ -52,7 +56,7 @@ export const useForm = <
 					// @ts-expect-error it's also a valid key
 					errors.value[property] = message;
 				} else {
-					console.error(`Unspecified path (${property}) error: ${message}`);
+					console.error(`Unknown path (${property}) error: ${message}`);
 					toastUnknown = true;
 				}
 			}
@@ -61,12 +65,29 @@ export const useForm = <
 		toastUnknown && toast('Coś poszło nie tak 😓', 'error');
 	}
 
+	async function sendForm() {
+		resetErrors();
+		isSaving.value = true;
+
+		try {
+			await saveCallback();
+			toast('Zapisano zmiany');
+		} catch (e) {
+			handleError(e);
+			await useShake(elementToShake);
+		} finally {
+			isSaving.value = false;
+		}
+	}
+
 	return {
 		...fields,
 		errors,
+		isSaving,
 		resetErrors,
 		resetFields,
 		resetForm,
 		handleError,
+		sendForm,
 	};
 };

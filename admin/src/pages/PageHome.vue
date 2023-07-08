@@ -1,42 +1,32 @@
 <script setup lang="ts">
 import VButton from '~/components/V/VButton.vue';
 
-const isLoading = ref(false);
 const saveButton = ref<InstanceType<typeof VButton> | null>();
 
-const { toast } = useToast();
 const {
-	handleError, resetErrors, resetForm, errors,
+	resetForm, sendForm,
+	errors, isSaving,
 	title, language, slug, menuText, html,
-} = useForm({
-	title: '',
-	language: '',
-	slug: '',
-	menuText: '',
-	html: '',
-});
-
-async function save() {
-	resetErrors();
-	isLoading.value = true;
-
-	try {
-		const thing = await useApi().pages.create.mutate({
+} = useForm(
+	{
+		title: '',
+		language: '',
+		slug: '',
+		menuText: '',
+		html: '',
+	},
+	async () => {
+		const page = await useApi().pages.create.mutate({
 			language: language.value,
 			title: title.value,
 			slug: slug.value,
 			menuText: menuText.value,
 		});
 
-		console.log('got', thing);
-		toast('Zapisano zmiany');
-	} catch (e) {
-		handleError(e);
-		useShake(saveButton.value?.element);
-	} finally {
-		isLoading.value = false;
-	}
-}
+		console.log('saved page', page);
+	},
+	saveButton.value?.element
+);
 </script>
 
 <template>
@@ -97,7 +87,7 @@ async function save() {
 			<VButton class="-ml-[0.8rem] neon-red" @click="resetForm">
 				wyczyść
 			</VButton>
-			<VButton ref="saveButton" class="neon-green" :loading="isLoading" @click="save">
+			<VButton ref="saveButton" class="neon-green" :loading="isSaving" @click="sendForm">
 				zapisz
 			</VButton>
 		</section>
