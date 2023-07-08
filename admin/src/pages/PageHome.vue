@@ -25,6 +25,7 @@ async function save() {
 		});
 
 		console.log('got', thing);
+		toast('Zapisano zmiany');
 	} catch (e) {
 		handleError(e);
 		useShake(saveButton.value?.element);
@@ -49,9 +50,6 @@ function reset() {
 			<VInput id="pageSearch" class="flex-1" suffix-icon="i-solar-magnifer-linear" />
 			<VButton class="neon-blue">
 				szukaj
-			</VButton>
-			<VButton class="neon-amber" @click="toast('my text', 'success')">
-				TEMP
 			</VButton>
 		</div>
 

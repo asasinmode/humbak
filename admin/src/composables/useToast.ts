@@ -10,7 +10,7 @@ const timeouts: Record<string, NodeJS.Timeout> = {};
 
 export const useToast = () => ({
 	toasts,
-	toast(text: string, variant: ToastVariant = 'success') {
+	toast: (text: string, variant: ToastVariant = 'success') => {
 		const id = Math.random().toString(36).substring(2, 9);
 
 		toasts.value.push({
@@ -20,7 +20,7 @@ export const useToast = () => ({
 		});
 		timeouts[id] = setTimeout(() => toasts.value.shift(), 3000);
 	},
-	clearToast(id: string) {
+	clearToast: (id: string) => {
 		const index = toasts.value.findIndex(toast => toast.id === id);
 
 		if (!timeouts[id] || index === -1) {

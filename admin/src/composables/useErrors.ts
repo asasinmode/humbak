@@ -1,6 +1,8 @@
 import { ref } from 'vue';
 import { TRPCClientError } from '@trpc/client';
 
+const { toast } = useToast();
+
 type TRPCError = {
 	message: string;
 	path: string[];
@@ -27,6 +29,7 @@ export const useErrors = <T extends Readonly<string[]>>(fields: T) => {
 			}
 
 			const errors: TRPCError[] = JSON.parse(error.message);
+			let toastUnknown = false;
 
 			resetErrors();
 
@@ -38,9 +41,12 @@ export const useErrors = <T extends Readonly<string[]>>(fields: T) => {
 						fieldToError.value[property] = message;
 					} else {
 						console.error(`Unspecified path (${property}) error: ${message}`);
+						toastUnknown = true;
 					}
 				}
 			}
+
+			toastUnknown && toast('Coś poszło nie tak 😓', 'error');
 		},
 	};
 };
