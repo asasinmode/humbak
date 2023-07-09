@@ -8,6 +8,8 @@ defineProps<{
 	class?: string;
 }>();
 
+defineEmits(['focusout']);
+
 defineOptions({
 	inheritAttrs: false,
 });
@@ -21,7 +23,7 @@ defineExpose({
 </script>
 
 <template>
-	<div class="relative flex flex-col gap-[2px]" :class="$props.class">
+	<div class="relative flex flex-col gap-[2px]" :class="$props.class" @focusout="$emit('focusout', $event)">
 		<label v-if="label" :for="id" class="ml-3 w-fit">{{ label }}</label>
 		<input
 			:id="id"
