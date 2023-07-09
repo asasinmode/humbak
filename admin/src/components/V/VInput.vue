@@ -5,17 +5,29 @@ defineProps<{
 	placeholder?: string;
 	suffixIcon?: string;
 	error?: string;
+	class?: string;
 }>();
 
+defineOptions({
+	inheritAttrs: false,
+});
+
 const value = defineModel<string>();
+const element = ref<HTMLInputElement | null>();
+
+defineExpose({
+	element,
+});
 </script>
 
 <template>
-	<div class="relative flex flex-col gap-[2px]">
+	<div class="relative flex flex-col gap-[2px]" :class="$props.class">
 		<label v-if="label" :for="id" class="ml-3 w-fit">{{ label }}</label>
 		<input
 			:id="id"
+			ref="element"
 			v-model="value"
+			v-bind="$attrs"
 			class="min-w-24 w-full py-1 pl-3 shadow"
 			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-stone']"
 			:placeholder="placeholder"
