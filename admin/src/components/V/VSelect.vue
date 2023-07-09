@@ -96,7 +96,7 @@ function closeIfFocusedOutside(event: FocusEvent) {
 			v-show="isExpanded"
 			:id="listId"
 			ref="listbox"
-			class="absolute bottom-0 left-3 z-100 w-[calc(100%_-_1.5rem)] translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-neutral-2/85"
+			class="absolute bottom-0 left-3 z-10 w-[calc(100%_-_1.5rem)] translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-neutral-2/90 shadow-md dark:border-neutral-5 dark:bg-neutral-8/90"
 			role="listbox"
 			@keydown.up.prevent="moveCursor(-1)"
 			@keydown.down.prevent="moveCursor(1)"
