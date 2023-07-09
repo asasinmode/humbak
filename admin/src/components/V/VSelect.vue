@@ -79,7 +79,6 @@ function closeIfFocusedOutside(event: FocusEvent) {
 		ref="input"
 		v-model="modelValue"
 		role="combobox"
-		aria-autocomplete="list"
 		aria-haspopup="listbox"
 		:aria-expanded="isExpanded"
 		:aria-controls="listId"
@@ -97,8 +96,8 @@ function closeIfFocusedOutside(event: FocusEvent) {
 			v-show="isExpanded"
 			:id="listId"
 			ref="listbox"
-			class="absolute bottom-0 left-3 z-100 w-[calc(100%_-_1.5rem)] translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-neutral bg-op-100"
-			aria-role="listbox"
+			class="absolute bottom-0 left-3 z-100 w-[calc(100%_-_1.5rem)] translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-neutral-2/85"
+			role="listbox"
 			@keydown.up.prevent="moveCursor(-1)"
 			@keydown.down.prevent="moveCursor(1)"
 		>
@@ -106,14 +105,20 @@ function closeIfFocusedOutside(event: FocusEvent) {
 				v-for="({ text, value }, index) in computedOptions"
 				:id="`${listId}-${index}`"
 				:key="text"
-				class="w-full cursor-pointer select-none py-2"
-				:class="{ 'bg-pink': cursoredOverIndex === index }"
+				class="relative w-full cursor-pointer select-none truncate bg-op-40 py-2 pl-2 pr-8 hover:bg-op-40"
+				:class="cursoredOverIndex === index
+					? modelValue === value
+						? 'bg-green'
+						: 'bg-blue'
+					: ''
+				"
 				tabindex="-1"
-				aria-role="option"
+				role="option"
 				@click="selectOption(index)"
+				@mouseenter="cursoredOverIndex = index"
 			>
 				{{ text }}
-				<div v-show="modelValue === value" class="i-fa6-solid-check ml-auto inline-block h-4 w-4" />
+				<div v-show="modelValue === value" class="i-fa6-solid-check absolute right-2 top-1/2 h-4 w-4 shrink-0 -translate-y-1/2" />
 			</li>
 		</ul>
 	</VInput>
