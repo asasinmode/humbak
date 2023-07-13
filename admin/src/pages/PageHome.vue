@@ -68,21 +68,7 @@ onMounted(async () => {
 			</VButton>
 		</section>
 
-		<table class="mx-auto mb-4 max-w-208">
-			<caption>strony {{ total }}</caption>
-			<tr>
-				<th>id</th>
-				<th>tytuł</th>
-				<th>tekst w menu</th>
-				<th>język</th>
-			</tr>
-			<tr v-for="page in pages" :key="page.id">
-				<td>{{ page.id }}</td>
-				<td>{{ page.title }}</td>
-				<td>{{ page.menuText }}</td>
-				<td>{{ page.language }}</td>
-			</tr>
-		</table>
+		<VTable class="mx-auto mb-4 max-w-208" :rows="pages" :total="total" page-key="id" />
 
 		<section class="grid grid-cols-[5fr_2fr] mx-auto max-w-6xl gap-x-4 gap-y-4 md:grid-cols-12">
 			<VInput
