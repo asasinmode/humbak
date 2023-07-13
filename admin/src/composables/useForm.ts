@@ -71,7 +71,7 @@ export const useForm = <T extends Record<string, unknown>>(
 
 		try {
 			await saveCallback();
-			toast('Zapisano zmiany');
+			toast('zapisano zmiany');
 		} catch (e) {
 			handleError(e);
 			await useShake(elementToShake);

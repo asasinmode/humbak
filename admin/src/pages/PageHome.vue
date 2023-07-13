@@ -28,22 +28,34 @@ const {
 	saveButton.value?.element
 );
 
+const isLoading = ref(false);
 const languages = ref<string[]>([]);
 const listPagesQuery = useApi().pages.list.query;
 const pages = ref([] as Awaited<ReturnType<typeof listPagesQuery>>);
 
 const offset = ref(0);
 const limit = ref(5);
+const total = ref(0);
 const pageSearch = ref('');
 
 onMounted(async () => {
-	const [loadedPages, loadedLanguages] = await Promise.all([
-		listPagesQuery({ offset: offset.value, limit: limit.value, query: pageSearch.value }),
-		useApi().pages.uniqueLanguages.query(),
-	]);
+	isLoading.value = true;
 
-	pages.value = loadedPages;
-	languages.value = loadedLanguages;
+	try {
+		const [loadedPages, count, loadedLanguages] = await Promise.all([
+			listPagesQuery({ offset: offset.value, limit: limit.value, query: pageSearch.value }),
+			useApi().pages.count.query({ query: pageSearch.value }),
+			useApi().pages.uniqueLanguages.query(),
+		]);
+		pages.value = loadedPages;
+		total.value = count;
+		languages.value = loadedLanguages;
+	} catch (e) {
+		useToast().toast('błąd przy ładowaniu danych', 'error');
+		throw e;
+	} finally {
+		isLoading.value = false;
+	}
 });
 </script>
 
@@ -56,9 +68,21 @@ onMounted(async () => {
 			</VButton>
 		</section>
 
-		<section class="mx-auto mb-4 max-w-208 bg-green">
-			here goes page select
-		</section>
+		<table class="mx-auto mb-4 max-w-208">
+			<caption>strony {{ total }}</caption>
+			<tr>
+				<th>id</th>
+				<th>tytuł</th>
+				<th>tekst w menu</th>
+				<th>język</th>
+			</tr>
+			<tr v-for="page in pages" :key="page.id">
+				<td>{{ page.id }}</td>
+				<td>{{ page.title }}</td>
+				<td>{{ page.menuText }}</td>
+				<td>{{ page.language }}</td>
+			</tr>
+		</table>
 
 		<section class="grid grid-cols-[5fr_2fr] mx-auto max-w-6xl gap-x-4 gap-y-4 md:grid-cols-12">
 			<VInput
@@ -76,6 +100,7 @@ onMounted(async () => {
 				label="język"
 				:options="languages"
 				:error="errors.language"
+				:loading="isLoading"
 				transform-options
 				@update:model-value="errors.language = ''"
 			/>

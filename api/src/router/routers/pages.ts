@@ -1,4 +1,4 @@
-import { eq, ilike } from 'drizzle-orm';
+import { eq, like, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '~/db';
 import { insertPageSchema, pages } from '~/db/schema/pages';
@@ -10,23 +10,33 @@ export const pagesRouter = router({
 		const { query, limit, offset } = opts.input;
 		const select = { id: pages.id, language: pages.language, title: pages.title, menuText: pages.menuText };
 
-		const result = await (query
-			? db
-				.selectDistinct(select)
-				.from(pages)
-				.where(ilike(pages.language, query))
-				.orderBy(pages.language)
-				.limit(limit)
-				.offset(offset)
-			: db
-				.selectDistinct(select)
-				.from(pages)
-				.orderBy(pages.language)
-				.limit(limit)
-				.offset(offset)
-		);
+		return db
+			.selectDistinct(select)
+			.from(pages)
+			.where(query
+				? or(
+					like(pages.title, query),
+					like(pages.menuText, query)
+				)
+				: sql`1 = 1`)
+			.orderBy(pages.id)
+			.limit(limit)
+			.offset(offset);
+	}),
+	count: publicProcedure.input(paginationQueryInput.pick({ query: true })).query(async (opts) => {
+		const { query } = opts.input;
 
-		return result;
+		const result = await db
+			.select({ count: sql<number>`COUNT(*)` })
+			.from(pages)
+			.where(query
+				? or(
+					like(pages.title, query),
+					like(pages.menuText, query)
+				)
+				: sql`1 = 1`);
+
+		return result[0].count;
 	}),
 	byId: publicProcedure.input(z.number()).query((opts) => {
 		return db.select().from(pages).where(eq(pages.id, opts.input));
