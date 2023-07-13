@@ -1,14 +1,15 @@
-<script setup lang="ts" generic="T">
+<script setup lang="ts">
 import VInput from '~/components/V/VInput.vue';
 
 const props = withDefaults(defineProps<{
 	transformOptions?: boolean;
-	options: Record<string, T> | T[];
+	options: Record<string, string> | string[];
+	id: string;
 }>(), {
 	transformOptions: false,
 });
 
-const modelValue = defineModel<T>();
+const modelValue = defineModel<string>();
 const isExpanded = ref(false);
 const cursoredOverIndex = ref<number | undefined>();
 
@@ -18,18 +19,18 @@ const listbox = ref<HTMLUListElement | null>();
 
 const computedOptions = computed(() => {
 	if (props.transformOptions) {
-		return (props.options as T[]).map(value => ({
+		return (props.options as string[]).map(value => ({
 			text: `${value}`,
 			value,
 		}));
 	}
 
-	return Object.entries(props.options as Record<string, T>).map(([text, value]) => ({ text, value }));
+	return Object.entries(props.options as Record<string, string>).map(([text, value]) => ({ text, value }));
 });
 
 updateCursoredIndexToSelected(modelValue.value);
 
-function updateCursoredIndexToSelected(value?: T) {
+function updateCursoredIndexToSelected(value?: string) {
 	cursoredOverIndex.value = undefined;
 	if (value) {
 		for (let i = 0; i < computedOptions.value.length; i++) {
@@ -76,6 +77,7 @@ function closeIfFocusedOutside(event: FocusEvent) {
 
 <template>
 	<VInput
+		:id="id"
 		ref="input"
 		v-model="modelValue"
 		role="combobox"

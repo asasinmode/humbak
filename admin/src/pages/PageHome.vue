@@ -29,9 +29,21 @@ const {
 );
 
 const languages = ref<string[]>([]);
+const listPagesQuery = useApi().pages.list.query;
+const pages = ref([] as Awaited<ReturnType<typeof listPagesQuery>>);
+
+const offset = ref(0);
+const limit = ref(5);
+const pageSearch = ref('');
 
 onMounted(async () => {
-	languages.value = await useApi().pages.uniqueLanguages.query({ query: language.value });
+	const [loadedPages, loadedLanguages] = await Promise.all([
+		listPagesQuery({ offset: offset.value, limit: limit.value, query: pageSearch.value }),
+		useApi().pages.uniqueLanguages.query(),
+	]);
+
+	pages.value = loadedPages;
+	languages.value = loadedLanguages;
 });
 </script>
 

@@ -1,5 +1,6 @@
 import { exit } from 'node:process';
 import { confirm } from '@clack/prompts';
+import { z } from 'zod';
 import { env } from '~/env';
 import { pool } from '~/db';
 
@@ -23,3 +24,9 @@ export async function getTableNames() {
 
 	return queryResult[0] as { table_name: string; }[];
 }
+
+export const paginationQueryInput = z.object({
+	query: z.string().optional().default(''),
+	limit: z.number().optional().default(5),
+	offset: z.number().optional().default(0),
+});
