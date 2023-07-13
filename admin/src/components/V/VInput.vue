@@ -30,7 +30,7 @@ defineExpose({
 			ref="element"
 			v-model="value"
 			v-bind="$attrs"
-			class="min-w-24 w-full py-1 pl-3 shadow"
+			class="min-w-24 w-full py-1 pl-3 shadow placeholder:text-stone"
 			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-stone']"
 			:placeholder="placeholder"
 		>
