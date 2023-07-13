@@ -5,8 +5,10 @@ const props = withDefaults(defineProps<{
 	transformOptions?: boolean;
 	options: Record<string, string> | string[];
 	id: string;
+	loading?: boolean;
 }>(), {
 	transformOptions: false,
+	loading: false,
 });
 
 const modelValue = defineModel<string>();
@@ -103,25 +105,28 @@ function closeIfFocusedOutside(event: FocusEvent) {
 			@keydown.up.prevent="moveCursor(-1)"
 			@keydown.down.prevent="moveCursor(1)"
 		>
-			<li
-				v-for="({ text, value }, index) in computedOptions"
-				:id="`${listId}-${index}`"
-				:key="text"
-				class="relative w-full cursor-pointer select-none truncate bg-op-40 py-2 pl-2 pr-8 hover:bg-op-40"
-				:class="cursoredOverIndex === index
-					? modelValue === value
-						? 'bg-green'
-						: 'bg-blue'
-					: ''
-				"
-				tabindex="-1"
-				role="option"
-				@click="selectOption(index)"
-				@mouseenter="cursoredOverIndex = index"
-			>
-				{{ text }}
-				<div v-show="modelValue === value" class="i-fa6-solid-check absolute right-2 top-1/2 h-4 w-4 shrink-0 -translate-y-1/2" />
-			</li>
+			<v-loading v-if="loading" class="py-2" />
+			<template v-else>
+				<li
+					v-for="({ text, value }, index) in computedOptions"
+					:id="`${listId}-${index}`"
+					:key="text"
+					class="relative w-full cursor-pointer select-none truncate bg-op-40 py-2 pl-2 pr-8 hover:bg-op-40"
+					:class="cursoredOverIndex === index
+						? modelValue === value
+							? 'bg-green'
+							: 'bg-blue'
+						: ''
+					"
+					tabindex="-1"
+					role="option"
+					@click="selectOption(index)"
+					@mouseenter="cursoredOverIndex = index"
+				>
+					{{ text }}
+					<div v-show="modelValue === value" class="i-fa6-solid-check absolute right-2 top-1/2 h-4 w-4 shrink-0 -translate-y-1/2" />
+				</li>
+			</template>
 		</ul>
 	</VInput>
 </template>
