@@ -8,12 +8,12 @@ const secondToLastFocusableNavElement = ref<InstanceType<typeof TheThemeToggle> 
 
 function toggleMenu(isOpen: boolean) {
 	isExpanded.value = isOpen;
+	document.body.style.overflow = isOpen ? 'hidden' : 'unset';
 }
 
 function toggleButtonFocusIn(event: FocusEvent) {
 	if (event.relatedTarget === firstFocusableNavElement.value?.$el) {
-		isExpanded.value = false;
-
+		toggleMenu(false);
 		return;
 	}
 
@@ -21,13 +21,12 @@ function toggleButtonFocusIn(event: FocusEvent) {
 		return;
 	}
 
-	isExpanded.value = true;
+	toggleMenu(true);
 }
 
 function toggleButtonFocusOut(event: FocusEvent) {
 	if (event.relatedTarget === firstFocusableNavElement.value?.$el) {
-		isExpanded.value = true;
-
+		toggleMenu(true);
 		return;
 	}
 
@@ -35,7 +34,7 @@ function toggleButtonFocusOut(event: FocusEvent) {
 		return;
 	}
 
-	isExpanded.value = false;
+	toggleMenu(false);
 }
 
 function lastElementFocusIn(event: FocusEvent) {
@@ -47,7 +46,7 @@ function lastElementFocusIn(event: FocusEvent) {
 		return;
 	}
 
-	isExpanded.value = true;
+	toggleMenu(true);
 }
 
 function lastElementFocusOut(event: FocusEvent) {
@@ -59,7 +58,7 @@ function lastElementFocusOut(event: FocusEvent) {
 		return;
 	}
 
-	isExpanded.value = false;
+	toggleMenu(false);
 }
 </script>
 
