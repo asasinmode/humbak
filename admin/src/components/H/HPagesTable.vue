@@ -107,7 +107,7 @@ function changeOffset(value: number) {
 				<div class="i-fa6-solid-chevron-right absolute left-1/2 h-3 w-3 translate-center" />
 			</VButton>
 		</header>
-		<table class="h-pages-table relative w-full table-fixed" role="table">
+		<table class="h-pages-table relative w-full" role="table">
 			<caption id="h-pages-caption" class="absolute left-0 text-start text-5 font-600 -top-[10px] md:left-4 -translate-y-full">
 				strony ({{ total }})
 			</caption>
@@ -131,17 +131,17 @@ function changeOffset(value: number) {
 				<td
 					v-for="(value, key) in page"
 					:key="key"
-					:data-cell="labels[key]"
+					:data-cell="`${labels[key]}:`"
 					:class="{ 'md:text-end': key === 'id' }"
 					role="cell"
 				>
 					{{ value }}
 				</td>
 				<td role="cell">
-					<VButton class="text-[0.85rem] neon-blue !px-2 !py-[2px]">
+					<VButton class="neon-blue md:text-[0.85rem] md:!px-2 md:!py-[2px]">
 						edytuj
 					</VButton>
-					<VButton class="text-[0.85rem] neon-red !px-2 !py-[2px]">
+					<VButton class="neon-red md:text-[0.85rem] md:!px-2 md:!py-[2px]">
 						usuń
 					</VButton>
 				</td>
@@ -189,8 +189,15 @@ function changeOffset(value: number) {
 	}
 
 	.h-pages-table td::before {
-		content: attr(data-cell) ":";
+		content: attr(data-cell);
 		font-weight: 400;
+	}
+
+	.h-pages-table td:last-of-type{
+		display: flex;
+		justify-content: end;
+		gap: 0.5rem;
+		padding-block-start: 0.375rem;
 	}
 }
 </style>
