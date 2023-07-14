@@ -121,6 +121,7 @@ function changeOffset(value: number) {
 				>
 					{{ label }}
 				</th>
+				<th />
 			</tr>
 			<tr
 				v-for="page in pages"
@@ -135,6 +136,14 @@ function changeOffset(value: number) {
 					role="cell"
 				>
 					{{ value }}
+				</td>
+				<td role="cell">
+					<VButton class="text-[0.85rem] neon-blue !px-2 !py-[2px]">
+						edytuj
+					</VButton>
+					<VButton class="text-[0.85rem] neon-red !px-2 !py-[2px]">
+						usuń
+					</VButton>
 				</td>
 			</tr>
 		</table>
