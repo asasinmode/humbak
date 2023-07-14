@@ -11,7 +11,7 @@ defineExpose({ element });
 <template>
 	<button
 		ref="element"
-		class="relative px-3 py-1 shadow disabled:(border-op-50 bg-op-20) dark:disabled:border-op-80"
+		class="relative px-3 py-1 shadow"
 		:disabled="loading"
 	>
 		<VLoading v-show="loading" class="absolute left-1/2 top-1/2 translate-center" />

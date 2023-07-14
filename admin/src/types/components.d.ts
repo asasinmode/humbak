@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    HPagesTable: typeof import('./../components/H/HPagesTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TheNavigation: typeof import('./../components/TheNavigation.vue')['default']
@@ -18,6 +19,5 @@ declare module 'vue' {
     VInput: typeof import('./../components/V/VInput.vue')['default']
     VLoading: typeof import('./../components/V/VLoading.vue')['default']
     VSelect: typeof import('./../components/V/VSelect.vue')['default']
-    VTable: typeof import('./../components/V/VTable.vue')['default']
   }
 }

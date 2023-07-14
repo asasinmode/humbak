@@ -30,25 +30,12 @@ const {
 
 const isLoading = ref(false);
 const languages = ref<string[]>([]);
-const listPagesQuery = useApi().pages.list.query;
-const pages = ref([] as Awaited<ReturnType<typeof listPagesQuery>>);
-
-const offset = ref(0);
-const limit = ref(5);
-const total = ref(0);
-const pageSearch = ref('');
 
 onMounted(async () => {
 	isLoading.value = true;
 
 	try {
-		const [loadedPages, count, loadedLanguages] = await Promise.all([
-			listPagesQuery({ offset: offset.value, limit: limit.value, query: pageSearch.value }),
-			useApi().pages.count.query({ query: pageSearch.value }),
-			useApi().pages.uniqueLanguages.query(),
-		]);
-		pages.value = loadedPages;
-		total.value = count;
+		const loadedLanguages = await useApi().pages.uniqueLanguages.query();
 		languages.value = loadedLanguages;
 	} catch (e) {
 		useToast().toast('błąd przy ładowaniu danych', 'error');
@@ -61,26 +48,7 @@ onMounted(async () => {
 
 <template>
 	<main class="px-2 pb-4 pt-[18px] md:px-0">
-		<section class="mb-4 w-[calc(100%-_3.5rem)] flex gap-4 md:mx-auto md:max-w-128">
-			<VInput id="pageSearch" class="flex-1" suffix-icon="i-solar-magnifer-linear" />
-			<VButton class="neon-blue">
-				szukaj
-			</VButton>
-		</section>
-
-		<VTable
-			class="mx-auto mb-4 max-w-208"
-			caption="strony"
-			:rows="pages"
-			:total="total"
-			:key-labels="{
-				id: 'id',
-				title: 'tytuł',
-				menuText: 'tekst w menu',
-				language: 'język',
-			}"
-			row-key="id"
-		/>
+		<HPagesTable />
 
 		<section class="grid grid-cols-[5fr_2fr] mx-auto max-w-6xl gap-x-4 gap-y-4 md:grid-cols-12">
 			<VInput

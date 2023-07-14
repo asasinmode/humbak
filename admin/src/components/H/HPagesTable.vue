@@ -1,0 +1,183 @@
+<script setup lang="ts">
+const isLoading = ref(false);
+const pages = ref([] as Awaited<ReturnType<typeof listPagesQuery>>);
+const offset = ref(0);
+const limit = ref(5);
+const total = ref(0);
+const search = ref('');
+
+const listPagesQuery = useApi().pages.list.query;
+const labels = {
+	id: 'id',
+	title: 'tytuł',
+	menuText: 'tekst w menu',
+	language: 'język',
+};
+
+onMounted(() => {
+	getPages();
+});
+
+const lastPage = computed(() => Math.floor(total.value / limit.value));
+const isPreviousPageDisabled = computed(() => offset.value === 0);
+const isNextPageDisabled = computed(() => lastPage.value === offset.value);
+
+async function getPages() {
+	isLoading.value = true;
+
+	try {
+		const [loadedPages, count] = await Promise.all([
+			listPagesQuery({ offset: offset.value, limit: limit.value, query: search.value }),
+			useApi().pages.count.query({ query: search.value }),
+		]);
+		pages.value = loadedPages;
+		total.value = count;
+	} catch (e) {
+		useToast().toast('błąd przy ładowaniu danych', 'error');
+		throw e;
+	} finally {
+		isLoading.value = false;
+	}
+}
+
+function onPageInputBlur() {
+	const value = parseInt(`${offset.value}`.replaceAll(/[^\d]/g, ''));
+	let hasChanged = false;
+
+	if (Number.isNaN(value)) {
+		hasChanged = offset.value !== 0;
+		offset.value = 0;
+	} else if (value > lastPage.value) {
+		hasChanged = offset.value === lastPage.value;
+		offset.value = lastPage.value;
+	} else {
+		hasChanged = offset.value !== value;
+		offset.value = value;
+	}
+
+	hasChanged && getPages();
+}
+
+function changeOffset(value: number) {
+	if ((offset.value === 0 && value < 0) || (offset.value === lastPage.value && value > 0)) {
+		return;
+	}
+	offset.value += value;
+	getPages();
+}
+</script>
+
+<template>
+	<section class="mb-4 w-[calc(100%-_3.5rem)] flex gap-4 md:mx-auto md:max-w-128">
+		<VInput id="pagesSearch" v-model="search" class="flex-1" suffix-icon="i-solar-magnifer-linear" />
+		<VButton class="neon-blue">
+			szukaj
+		</VButton>
+	</section>
+
+	<div
+		class="mx-auto mb-4 max-w-208 overflow-auto border-2 border-neutral border-op-50 rounded-2 bg-neutral bg-op-20 dark:border-op-80"
+		role="region"
+		tabindex="0"
+		aria-labelledby="h-pages-caption"
+	>
+		<header class="flex justify-end gap-2 bg-black/10 px-2 py-2 dark:bg-white/20">
+			<VButton
+				class="relative h-9 w-9 shrink-0 neon-violet"
+				:disabled="isPreviousPageDisabled"
+				@click="changeOffset(-1)"
+			>
+				<div class="i-fa6-solid-chevron-left absolute left-1/2 h-3 w-3 translate-center" />
+			</VButton>
+			<VInput
+				id="pagesOffsetInput"
+				v-model.number="offset"
+				input-class="!min-w-14 !w-14 text-center neon-violet"
+				@blur="onPageInputBlur"
+			/>
+			<VButton
+				class="relative h-9 w-9 shrink-0 neon-violet"
+				:disabled="isNextPageDisabled"
+				@click="changeOffset(1)"
+			>
+				<div class="i-fa6-solid-chevron-right absolute left-1/2 h-3 w-3 translate-center" />
+			</VButton>
+		</header>
+		<table class="h-pages-table relative w-full" role="table">
+			<caption id="h-pages-caption" class="absolute left-4 text-start text-5 font-600 -top-[10px] -translate-y-full">
+				strony
+			</caption>
+			<tr role="row">
+				<th
+					v-for="(label, key) in labels"
+					:key="key"
+					class="text-start"
+					:class="{ 'text-end': key === 'id' }"
+					role="columnheader"
+				>
+					{{ label }}
+				</th>
+			</tr>
+			<tr
+				v-for="page in pages"
+				:key="page.id"
+				role="row"
+			>
+				<td
+					v-for="(value, key) in page"
+					:key="key"
+					:data-cell="labels[key]"
+					:class="{ 'text-end': key === 'id' }"
+					role="cell"
+				>
+					{{ value }}
+				</td>
+			</tr>
+		</table>
+	</div>
+</template>
+
+<style>
+.h-pages-table tr:nth-of-type(2n + 1) {
+	background-color: hsl(0 0% 0% / 0.05);
+}
+
+.dark .h-pages-table tr:nth-of-type(2n + 1) {
+	background-color: hsl(0 0% 100% / 0.08);
+}
+
+.h-pages-table tr:first-of-type{
+	background-color: hsl(0 0% 0% / 0.1)
+}
+
+.dark .h-pages-table tr:first-of-type{
+	background-color: hsl(0 0% 100% / 0.2)
+}
+
+@media (max-width: 767px){
+	.h-pages-table caption, .h-pages-table tr {
+		padding-inline: 0.5rem;
+	}
+
+	.h-pages-table tr:first-of-type {
+		display: none;
+	}
+
+	.h-pages-table tr {
+		display: block;
+		padding-block: clamp(0.50rem, calc(0.23rem + 1.34vw), 0.88rem);
+	}
+
+	.h-pages-table td {
+		display: grid;
+		grid-template-columns: 6.25rem auto;
+		gap: 1rem;
+		font-weight: 700;
+	}
+
+	.h-pages-table td::before {
+		content: attr(data-cell) ":";
+		font-weight: 400;
+	}
+}
+</style>

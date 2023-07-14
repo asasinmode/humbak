@@ -6,6 +6,7 @@ defineProps<{
 	suffixIcon?: string;
 	error?: string;
 	class?: string;
+	inputClass?: string;
 }>();
 
 defineEmits(['focusout']);
@@ -14,7 +15,7 @@ defineOptions({
 	inheritAttrs: false,
 });
 
-const value = defineModel<string>();
+const value = defineModel<string | number>();
 const element = ref<HTMLInputElement | null>();
 
 defineExpose({
@@ -30,8 +31,8 @@ defineExpose({
 			ref="element"
 			v-model="value"
 			v-bind="$attrs"
-			class="min-w-24 w-full py-1 pl-3 shadow placeholder:text-stone"
-			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-stone']"
+			class="min-w-24 w-full py-1 pl-3 shadow placeholder:text-neutral"
+			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-neutral', inputClass]"
 			:placeholder="placeholder"
 		>
 		<p v-if="error" class="pointer-events-none absolute bottom-0 left-3 translate-y-full text-3 text-red-500">
