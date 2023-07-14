@@ -81,7 +81,7 @@ function lastElementFocusOut(event: FocusEvent) {
 	</button>
 
 	<nav
-		class="absolute z-11 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 of-auto bg-inherit py-2 transition-transform md:relative md:flex md:translate-y-0 md:justify-around md:bg-transparent md:px-4"
+		class="absolute z-11 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 of-auto bg-inherit py-2 transition-transform md:(relative flex translate-y-0 justify-around bg-transparent px-4)"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<RouterLink
@@ -135,10 +135,10 @@ function lastElementFocusOut(event: FocusEvent) {
 
 		<TheThemeToggle
 			ref="secondToLastFocusableNavElement"
-			class="mt-2 justify-self-end filter-drop-shadow filter-drop-shadow-color-black/20 md:absolute md:left-[clamp(0.25rem,calc(-0.93rem_+_2.46vw),3.00rem)] md:top-1/2 md:mt-0 md:-translate-y-1/2"
+			class="mt-2 justify-self-end filter-drop-shadow filter-drop-shadow-color-black/20 md:(absolute left-[clamp(0.25rem,calc(-0.93rem_+_2.46vw),3.00rem)] top-1/2 mt-0 -translate-y-1/2)"
 		/>
 		<TheSettings
-			class="mt-2 justify-self-start filter-drop-shadow filter-drop-shadow-color-black/20 md:absolute md:right-[clamp(0.25rem,calc(-0.93rem_+_2.46vw),3.00rem)] md:top-1/2 md:mt-0 md:-translate-y-1/2"
+			class="mt-2 justify-self-start filter-drop-shadow filter-drop-shadow-color-black/20 md:(absolute right-[clamp(0.25rem,calc(-0.93rem_+_2.46vw),3.00rem)] top-1/2 mt-0 -translate-y-1/2)"
 			@click="toggleMenu(false)"
 			@focusin="lastElementFocusIn"
 			@focusout="lastElementFocusOut"

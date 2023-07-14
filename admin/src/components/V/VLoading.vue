@@ -9,7 +9,7 @@ withDefaults(defineProps<{
 <template>
 	<div class="flex-center animate-duration-4500" aria-hidden="true">
 		<div
-			class="hourglass-loader after:block after:rounded-full after:content-empty"
+			class="hourglass-loader after:(block rounded-full content-empty)"
 			:style="`--size: ${size}px;`"
 		/>
 	</div>
