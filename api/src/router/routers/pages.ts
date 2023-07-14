@@ -21,7 +21,7 @@ export const pagesRouter = router({
 				: sql`1 = 1`)
 			.orderBy(pages.id)
 			.limit(limit)
-			.offset(offset);
+			.offset(offset * limit);
 	}),
 	count: publicProcedure.input(paginationQueryInput.pick({ query: true })).query(async (opts) => {
 		const { query } = opts.input;

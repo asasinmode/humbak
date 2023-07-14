@@ -22,8 +22,12 @@ const lastPage = computed(() => Math.floor(total.value / limit.value));
 const isPreviousPageDisabled = computed(() => offset.value === 0);
 const isNextPageDisabled = computed(() => lastPage.value === offset.value);
 
-async function getPages() {
+async function getPages(resetOffset = false) {
 	isLoading.value = true;
+
+	if (resetOffset) {
+		offset.value = 0;
+	}
 
 	try {
 		const [loadedPages, count] = await Promise.all([
@@ -68,12 +72,12 @@ function changeOffset(value: number) {
 </script>
 
 <template>
-	<section class="mb-4 w-[calc(100%-_3.5rem)] flex gap-4 md:mx-auto md:max-w-128">
+	<form class="mb-4 w-[calc(100%-_3.5rem)] flex gap-4 md:mx-auto md:max-w-128" @submit.prevent="getPages(true)">
 		<VInput id="pagesSearch" v-model="search" class="flex-1" suffix-icon="i-solar-magnifer-linear" />
 		<VButton class="neon-blue">
 			szukaj
 		</VButton>
-	</section>
+	</form>
 
 	<div
 		class="mx-auto mb-4 max-w-208 overflow-auto border-2 border-neutral border-op-50 rounded-2 bg-neutral bg-op-20 dark:border-op-80"
@@ -104,15 +108,15 @@ function changeOffset(value: number) {
 			</VButton>
 		</header>
 		<table class="h-pages-table relative w-full" role="table">
-			<caption id="h-pages-caption" class="absolute left-4 text-start text-5 font-600 -top-[10px] -translate-y-full">
-				strony
+			<caption id="h-pages-caption" class="absolute left-0 text-start text-5 font-600 -top-[10px] md:left-4 -translate-y-full">
+				strony ({{ total }})
 			</caption>
 			<tr role="row">
 				<th
 					v-for="(label, key) in labels"
 					:key="key"
-					class="text-start"
-					:class="{ 'text-end': key === 'id' }"
+					class="md:text-start"
+					:class="{ 'md:text-end': key === 'id' }"
 					role="columnheader"
 				>
 					{{ label }}
@@ -127,7 +131,7 @@ function changeOffset(value: number) {
 					v-for="(value, key) in page"
 					:key="key"
 					:data-cell="labels[key]"
-					:class="{ 'text-end': key === 'id' }"
+					:class="{ 'md:text-end': key === 'id' }"
 					role="cell"
 				>
 					{{ value }}
