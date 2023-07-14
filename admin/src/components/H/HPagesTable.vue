@@ -151,11 +151,11 @@ function changeOffset(value: number) {
 </template>
 
 <style>
-.h-pages-table tr:nth-of-type(2n + 1) {
+.h-pages-table tr:nth-of-type(odd) {
 	background-color: hsl(0 0% 0% / 0.05);
 }
 
-.dark .h-pages-table tr:nth-of-type(2n + 1) {
+.dark .h-pages-table tr:nth-of-type(odd) {
 	background-color: hsl(0 0% 100% / 0.08);
 }
 
