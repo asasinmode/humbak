@@ -109,18 +109,18 @@ function lastElementFocusOut(event: FocusEvent) {
 		</RouterLink>
 		<RouterLink
 			to="/css"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-fuchsia"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-emerald"
 			@click="toggleMenu(false)"
 		>
-			<div class="i-solar-pallete-2-outline mr-[2px] inline-block align-sub text-fuchsia" />
+			<div class="i-solar-pallete-2-outline mr-[2px] inline-block align-sub text-emerald" />
 			css
 		</RouterLink>
 		<RouterLink
 			to="/slider"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-emerald"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-fuchsia"
 			@click="toggleMenu(false)"
 		>
-			<div class="i-solar-wallpaper-linear mr-[2px] inline-block align-sub text-emerald" />
+			<div class="i-solar-wallpaper-linear mr-[2px] inline-block align-sub text-fuchsia" />
 			slider
 		</RouterLink>
 		<RouterLink
