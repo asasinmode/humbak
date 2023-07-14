@@ -107,7 +107,7 @@ function changeOffset(value: number) {
 				<div class="i-fa6-solid-chevron-right absolute left-1/2 h-3 w-3 translate-center" />
 			</VButton>
 		</header>
-		<table class="h-pages-table relative w-full" role="table">
+		<table class="h-pages-table relative w-full table-fixed" role="table">
 			<caption id="h-pages-caption" class="absolute left-0 text-start text-5 font-600 -top-[10px] md:left-4 -translate-y-full">
 				strony ({{ total }})
 			</caption>
@@ -115,7 +115,7 @@ function changeOffset(value: number) {
 				<th
 					v-for="(label, key) in labels"
 					:key="key"
-					class="md:text-start"
+					class="text-start"
 					:class="{ 'md:text-end': key === 'id' }"
 					role="columnheader"
 				>
