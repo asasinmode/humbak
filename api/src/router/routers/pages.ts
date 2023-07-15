@@ -11,12 +11,12 @@ export const pagesRouter = router({
 		const select = { id: pages.id, language: pages.language, title: pages.title, menuText: pages.menuText };
 
 		return db
-			.selectDistinct(select)
+			.select(select)
 			.from(pages)
 			.where(query
 				? or(
-					like(pages.title, query),
-					like(pages.menuText, query)
+					like(pages.title, `%${query}%`),
+					like(pages.menuText, `%${query}%`)
 				)
 				: sql`1 = 1`)
 			.orderBy(pages.id)
@@ -31,8 +31,8 @@ export const pagesRouter = router({
 			.from(pages)
 			.where(query
 				? or(
-					like(pages.title, query),
-					like(pages.menuText, query)
+					like(pages.title, `%${query}%`),
+					like(pages.menuText, `%${query}%`)
 				)
 				: sql`1 = 1`);
 
