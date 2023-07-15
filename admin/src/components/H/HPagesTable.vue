@@ -18,6 +18,7 @@ onMounted(() => {
 	getPages();
 });
 
+const lastOffset = ref(0);
 const lastPage = computed(() => Math.floor(total.value / limit.value));
 const isPreviousPageDisabled = computed(() => offset.value === 0);
 const isNextPageDisabled = computed(() => lastPage.value === offset.value);
@@ -45,21 +46,18 @@ async function getPages(resetOffset = false) {
 }
 
 function onPageInputBlur() {
-	const value = parseInt(`${offset.value}`.replaceAll(/[^\d]/g, ''));
-	let hasChanged = false;
+	const value = parseInt(`${offset.value}`.replaceAll(/[^\d-]/g, ''));
 
-	if (Number.isNaN(value)) {
-		hasChanged = offset.value !== 0;
+	if (Number.isNaN(value) || value < 0) {
 		offset.value = 0;
 	} else if (value > lastPage.value) {
-		hasChanged = offset.value === lastPage.value;
 		offset.value = lastPage.value;
 	} else {
-		hasChanged = offset.value !== value;
 		offset.value = value;
 	}
 
-	hasChanged && getPages();
+	offset.value !== lastOffset.value && getPages();
+	lastOffset.value = offset.value;
 }
 
 function changeOffset(value: number) {
@@ -68,6 +66,10 @@ function changeOffset(value: number) {
 	}
 	offset.value += value;
 	getPages();
+}
+
+function updateLastOffset() {
+	lastOffset.value = offset.value;
 }
 </script>
 
@@ -87,7 +89,7 @@ function changeOffset(value: number) {
 	>
 		<header class="flex justify-end gap-2 bg-black/10 px-2 py-2 dark:bg-white/20">
 			<VButton
-				class="relative h-9 w-9 shrink-0 neon-violet"
+				class="relative h-9 w-9 shrink-0 dark:neon-violet neon-violet-5"
 				:disabled="isPreviousPageDisabled"
 				@click="changeOffset(-1)"
 			>
@@ -96,11 +98,12 @@ function changeOffset(value: number) {
 			<VInput
 				id="pagesOffsetInput"
 				v-model.number="offset"
-				input-class="!min-w-14 !w-14 text-center neon-violet"
+				input-class="!min-w-14 !w-14 text-center neon-violet-5 dark:neon-violet"
+				@focus="updateLastOffset"
 				@blur="onPageInputBlur"
 			/>
 			<VButton
-				class="relative h-9 w-9 shrink-0 neon-violet"
+				class="relative h-9 w-9 shrink-0 dark:neon-violet neon-violet-5"
 				:disabled="isNextPageDisabled"
 				@click="changeOffset(1)"
 			>
