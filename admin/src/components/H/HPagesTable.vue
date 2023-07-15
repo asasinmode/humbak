@@ -107,63 +107,74 @@ function changeOffset(value: number) {
 				<div class="i-fa6-solid-chevron-right absolute left-1/2 h-3 w-3 translate-center" />
 			</VButton>
 		</header>
-		<table class="h-pages-table relative w-full" role="table">
+		<table class="h-pages-table relative w-full table-fixed" role="table">
 			<caption id="h-pages-caption" class="absolute left-0 text-start text-5 font-600 -top-[10px] md:left-4 -translate-y-full">
 				strony ({{ total }})
 			</caption>
-			<tr role="row">
-				<th
-					v-for="(label, key) in labels"
-					:key="key"
-					class="text-start"
-					:class="{ 'md:text-end': key === 'id' }"
-					role="columnheader"
+			<thead>
+				<tr role="row">
+					<th
+						v-for="(label, key) in labels"
+						:key="key"
+						class="px-4 pb-1 text-start"
+						:class="{
+							'md:text-end w-12': key === 'id',
+							'w-2/7': key === 'menuText',
+							'w-18': key === 'language',
+						}"
+						role="columnheader"
+					>
+						{{ label }}
+					</th>
+					<th class="w-30" />
+				</tr>
+			</thead>
+			<tbody>
+				<tr
+					v-for="page in pages"
+					:key="page.id"
+					role="row"
 				>
-					{{ label }}
-				</th>
-				<th />
-			</tr>
-			<tr
-				v-for="page in pages"
-				:key="page.id"
-				role="row"
-			>
-				<td
-					v-for="(value, key) in page"
-					:key="key"
-					:data-cell="`${labels[key]}:`"
-					:class="{ 'md:text-end': key === 'id' }"
-					role="cell"
-				>
-					{{ value }}
-				</td>
-				<td role="cell">
-					<VButton class="neon-blue md:text-[0.85rem] md:!px-2 md:!py-[2px]">
-						edytuj
-					</VButton>
-					<VButton class="neon-red md:text-[0.85rem] md:!px-2 md:!py-[2px]">
-						usuń
-					</VButton>
-				</td>
-			</tr>
+					<td
+						v-for="(_, key) in labels"
+						:key="key"
+						:data-cell="`${labels[key]}:`"
+						class="md:px-4 md:py-2 md:vertical-text-top"
+						:class="{ 'md:text-end': key === 'id' }"
+						role="cell"
+					>
+						{{ page[key] }}
+					</td>
+					<td role="cell">
+						<div class="h-full flex items-center gap-2 md:w-full md:justify-around md:gap-0">
+							<VButton class="neon-blue md:text-[0.85rem] md:!px-2 md:!py-[2px]">
+								edytuj
+							</VButton>
+							<VButton class="neon-red md:text-[0.85rem] md:!px-2 md:!py-[2px]">
+								usuń
+							</VButton>
+						</div>
+					</td>
+				</tr>
+			</tbody>
 		</table>
 	</div>
 </template>
 
 <style>
-.h-pages-table tr:nth-of-type(odd) {
+.h-pages-table tbody tr:nth-of-type(even) {
 	background-color: hsl(0 0% 0% / 0.05);
 }
 
-.dark .h-pages-table tr:nth-of-type(odd) {
+.dark .h-pages-table tbody tr:nth-of-type(even) {
 	background-color: hsl(0 0% 100% / 0.08);
 }
 
-.h-pages-table tr:first-of-type{
+.h-pages-table thead tr{
 	background-color: hsl(0 0% 0% / 0.1)
 }
 
-.dark .h-pages-table tr:first-of-type{
+.dark .h-pages-table thead tr{
 	background-color: hsl(0 0% 100% / 0.2)
 }
 
