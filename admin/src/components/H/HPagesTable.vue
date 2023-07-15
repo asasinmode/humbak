@@ -80,7 +80,7 @@ function changeOffset(value: number) {
 	</form>
 
 	<div
-		class="mx-auto mb-4 max-w-208 overflow-auto border-2 border-neutral border-op-50 rounded-2 bg-neutral bg-op-20 dark:border-op-80"
+		class="relative mx-auto mb-4 max-w-208 overflow-auto border-2 border-neutral border-op-50 rounded-2 bg-neutral bg-op-20 md:min-h-[17.875rem] dark:border-op-80"
 		role="region"
 		tabindex="0"
 		aria-labelledby="h-pages-caption"
@@ -147,10 +147,10 @@ function changeOffset(value: number) {
 					</td>
 					<td role="cell">
 						<div class="h-full flex items-center gap-2 md:w-full md:justify-around md:gap-0">
-							<VButton class="neon-blue md:text-[0.85rem] md:!px-2 md:!py-[2px]">
+							<VButton class="md:text-[0.85rem] neon-blue md:!px-2 md:!py-[2px]">
 								edytuj
 							</VButton>
-							<VButton class="neon-red md:text-[0.85rem] md:!px-2 md:!py-[2px]">
+							<VButton class="md:text-[0.85rem] neon-red md:!px-2 md:!py-[2px]">
 								usuń
 							</VButton>
 						</div>
@@ -158,6 +158,7 @@ function changeOffset(value: number) {
 				</tr>
 			</tbody>
 		</table>
+		<VLoading v-show="isLoading" class="absolute inset-0 bg-black/20 dark:bg-black/30" size="40" />
 	</div>
 </template>
 
@@ -183,7 +184,7 @@ function changeOffset(value: number) {
 		padding-inline: 0.5rem;
 	}
 
-	.h-pages-table tr:first-of-type {
+	.h-pages-table thead tr:first-of-type {
 		display: none;
 	}
 
