@@ -38,10 +38,10 @@ function close() {
 	document.removeEventListener('keydown', closeIfEscape);
 	document.body.style.overflow = 'unset';
 
-	if (props.noOpenButton && props.activator) {
-		props.activator.focus();
-	} else {
+	if (!props.noOpenButton) {
 		openButton.value?.element?.focus();
+	} else {
+		props.activator?.focus();
 	}
 
 	props.closeAction && props.closeAction();
