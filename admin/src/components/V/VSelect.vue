@@ -5,10 +5,10 @@ const props = withDefaults(defineProps<{
 	transformOptions?: boolean;
 	options: Record<string, string> | string[];
 	id: string;
-	loading?: boolean;
+	isLoading?: boolean;
 }>(), {
 	transformOptions: false,
-	loading: false,
+	isLoading: false,
 });
 
 const modelValue = defineModel<string>();
@@ -105,7 +105,7 @@ function closeIfFocusedOutside(event: FocusEvent) {
 			@keydown.up.prevent="moveCursor(-1)"
 			@keydown.down.prevent="moveCursor(1)"
 		>
-			<v-loading v-if="loading" class="py-2" />
+			<v-loading v-if="isLoading" class="py-2" />
 			<template v-else>
 				<li
 					v-for="({ text, value }, index) in computedOptions"

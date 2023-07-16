@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-	loading?: boolean;
+	isLoading?: boolean;
 }>();
 
 const element = ref<HTMLButtonElement | null>();
@@ -12,10 +12,10 @@ defineExpose({ element });
 	<button
 		ref="element"
 		class="relative px-3 py-1 shadow"
-		:disabled="loading"
+		:disabled="isLoading"
 	>
-		<VLoading v-show="loading" class="absolute left-1/2 top-1/2 translate-center" />
-		<span :class="{ 'op-0': loading }">
+		<VLoading v-show="isLoading" class="absolute left-1/2 top-1/2 translate-center" />
+		<span :class="{ 'op-0': isLoading }">
 			<slot />
 		</span>
 	</button>

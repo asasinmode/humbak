@@ -160,7 +160,7 @@ function updateLastOffset() {
 						<div class="h-full flex items-center gap-2 md:w-full md:justify-around md:gap-0">
 							<VButton
 								class="md:text-[0.85rem] neon-blue md:!px-2 md:!py-[2px]"
-								:loading="loadingPageId === page.id"
+								:is-loading="loadingPageId === page.id"
 								@click="$emit('edit', page.id)"
 							>
 								edytuj

@@ -91,7 +91,7 @@ function deletePage(id: number) {
 				label="język"
 				:options="languages"
 				:error="errors.language"
-				:loading="isLoading"
+				:is-loading="isLoading"
 				transform-options
 				@update:model-value="errors.language = ''"
 			/>
@@ -123,7 +123,7 @@ function deletePage(id: number) {
 			<VButton class="-ml-[0.8rem] neon-red" @click="resetForm">
 				wyczyść
 			</VButton>
-			<VButton ref="saveButton" class="neon-green" :loading="isSaving" @click="sendForm">
+			<VButton ref="saveButton" class="neon-green" :is-loading="isSaving" @click="sendForm">
 				zapisz
 			</VButton>
 		</section>
