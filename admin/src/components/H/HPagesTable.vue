@@ -121,7 +121,7 @@ function updateLastOffset() {
 						:key="key"
 						class="px-4 pb-1 text-start"
 						:class="{
-							'md:text-end w-12': key === 'id',
+							'md:text-end w-16': key === 'id',
 							'w-2/7': key === 'menuText',
 							'w-18': key === 'language',
 						}"
