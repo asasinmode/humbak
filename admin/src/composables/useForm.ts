@@ -39,8 +39,8 @@ export const useForm = <T extends Record<string, unknown>>(
 		}
 	}
 	async function resetForm(element?: HTMLElement | null) {
-		if (hasChanged()) {
-			await confirm(element);
+		if (hasChanged() && !(await confirm(element))) {
+			return;
 		}
 
 		resetErrors();
