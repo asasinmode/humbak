@@ -1,3 +1,4 @@
+// @unocss-include
 import VButton from '~/components/V/VButton.vue';
 import VDialog from '~/components/V/VDialog.vue';
 
@@ -29,16 +30,18 @@ const component = defineComponent(() => {
 			noOpenButton: true,
 			closeAction: () => resolve.value?.(false),
 			activator: activator.value,
+			classContainer: 'grid grid-cols-2 gap-x-2 gap-y-3',
+			classCloseButton: 'justify-self-end',
 		},
 		{
 			default: () => [
-				h('h3', {}, title.value),
-				h('p', {}, text.value),
+				h('h3', { class: 'col-span-full text-center text-5 font-600' }, title.value),
+				h('p', { class: 'col-span-full mb-3' }, text.value),
 			],
 			post: () => h(
 				VButton,
 				{
-					class: 'neon-green',
+					class: 'neon-green justify-self-start',
 					onClick() {
 						resolve.value?.(true);
 						close.value?.();

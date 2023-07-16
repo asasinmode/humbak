@@ -6,6 +6,7 @@ const props = defineProps<{
 	closeAction?: () => unknown;
 	loading?: boolean;
 	classContainer?: string;
+	classCloseButton?: string;
 	noOpenButton?: boolean;
 	activator?: HTMLElement | null;
 	disableClickOutside?: boolean;
@@ -111,13 +112,14 @@ defineExpose({
 			<article
 				ref="dialog"
 				role="dialog" aria-live="polite" aria-modal="true" :aria-busy="loading" :aria-hidden="!isOpen"
-				class="max-w-[80vw] w-sm bg-neutral-1 shadow-lg lg:max-w-5xl lg:w-xl dark:bg-neutral-9"
+				class="max-w-[80vw] w-sm rounded bg-neutral-1 px-2 py-4 shadow-lg lg:max-w-5xl lg:w-xl dark:bg-neutral-9 md:px-4"
 				:class="classContainer"
 			>
 				<slot />
 				<VButton
 					ref="closeButton"
 					class="neon-red"
+					:class="classCloseButton"
 					:disabled="loading"
 					@click="close"
 				>
