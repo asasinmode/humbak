@@ -3,6 +3,7 @@ import VButton from '~/components/V/VButton.vue';
 
 const props = defineProps<{
 	action?: () => unknown;
+	closeAction?: () => unknown;
 	loading?: boolean;
 	classContainer?: string;
 	noOpenButton?: boolean;
@@ -37,12 +38,13 @@ function close() {
 	document.removeEventListener('keydown', closeIfEscape);
 	document.body.style.overflow = 'unset';
 
-	if (!props.noOpenButton && props.activator) {
+	if (props.noOpenButton && props.activator) {
 		props.activator.focus();
 	} else {
 		openButton.value?.element?.focus();
 	}
 
+	props.closeAction && props.closeAction();
 	isOpen.value = false;
 }
 

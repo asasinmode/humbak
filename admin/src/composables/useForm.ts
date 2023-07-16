@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 import { TRPCClientError } from '@trpc/client';
 
+const { confirm } = useConfirm();
 const { toast } = useToast();
 
 type TRPCError = {
@@ -37,9 +38,10 @@ export const useForm = <T extends Record<string, unknown>>(
 			fields[key].value = form[key];
 		}
 	}
-	function resetForm() {
-		// popup to confirm
-		hasChanged() && toast('zmiany zostaną utracone');
+	async function resetForm(element?: HTMLElement | null) {
+		if (hasChanged()) {
+			await confirm(element);
+		}
 
 		resetErrors();
 		resetFields();

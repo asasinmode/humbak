@@ -5,6 +5,7 @@ const api = useApi();
 const { toast } = useToast();
 
 const html = ref('');
+const resetButton = ref<InstanceType<typeof VButton> | null>();
 const saveButton = ref<InstanceType<typeof VButton> | null>();
 
 const {
@@ -120,7 +121,7 @@ function deletePage(id: number) {
 		</section>
 
 		<section class="mt-6 flex justify-center gap-4">
-			<VButton class="-ml-[0.8rem] neon-red" @click="resetForm">
+			<VButton ref="resetButton" class="-ml-[0.8rem] neon-red" @click="resetForm(resetButton?.element)">
 				wyczyść
 			</VButton>
 			<VButton ref="saveButton" class="neon-green" :is-loading="isSaving" @click="sendForm">
