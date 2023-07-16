@@ -14,6 +14,7 @@ export const useForm = <T extends Record<string, unknown>>(
 	elementToShake?: Parameters<typeof useShake>[0]
 ) => {
 	const isSaving = ref(false);
+	const initValue = structuredClone(form);
 
 	const fields = {} as { [K in keyof T]: Ref<T[K]> };
 	for (const key in form) {
@@ -37,6 +38,9 @@ export const useForm = <T extends Record<string, unknown>>(
 		}
 	}
 	function resetForm() {
+		// popup to confirm
+		hasChanged() && toast('zmiany zostaną utracone');
+
 		resetErrors();
 		resetFields();
 	}
@@ -83,7 +87,17 @@ export const useForm = <T extends Record<string, unknown>>(
 	function updateValues(data: { [K in keyof T]: T[K]; } & Record<string, any>) {
 		for (const key in form) {
 			fields[key].value = data[key];
+			initValue[key] = data[key];
 		}
+	}
+
+	function hasChanged() {
+		for (const key in form) {
+			if (fields[key].value !== initValue[key]) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	return {
