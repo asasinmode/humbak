@@ -56,13 +56,13 @@ export const useForm = <T extends Record<string, unknown>>(
 					// @ts-expect-error it's also a valid key
 					errors.value[property] = message;
 				} else {
-					console.error(`Unknown path (${property}) error: ${message}`);
+					console.error(`unknown path (${property}) error: ${message}`);
 					toastUnknown = true;
 				}
 			}
 		}
 
-		toastUnknown && toast('Coś poszło nie tak 😓', 'error');
+		toastUnknown && toast('coś poszło nie tak 😓', 'error');
 	}
 
 	async function sendForm() {
@@ -80,6 +80,12 @@ export const useForm = <T extends Record<string, unknown>>(
 		}
 	}
 
+	function updateValues(data: { [K in keyof T]: T[K]; } & Record<string, any>) {
+		for (const key in form) {
+			fields[key].value = data[key];
+		}
+	}
+
 	return {
 		...fields,
 		errors,
@@ -89,5 +95,6 @@ export const useForm = <T extends Record<string, unknown>>(
 		resetForm,
 		handleError,
 		sendForm,
+		updateValues,
 	};
 };
