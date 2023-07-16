@@ -32,7 +32,15 @@ const component = defineComponent(() => {
 				h('p', {}, 'Masz niezapisane zmiany. Czy na pewno chcesz kontunuować?'),
 			],
 			post: () => h(
-				VButton, { class: 'neon-green', onClick() { resolve.value?.(true); } }, () => 'kontynuuj'
+				VButton,
+				{
+					class: 'neon-green',
+					onClick() {
+						resolve.value?.(true);
+						close.value?.();
+					},
+				},
+				() => 'kontynuuj'
 			),
 		}
 	);
@@ -48,7 +56,6 @@ export const useConfirm = () => {
 				return _resolve(value);
 			};
 		}).finally(() => {
-			close.value?.();
 			promise.value = undefined;
 		});
 
