@@ -1,4 +1,13 @@
 <script setup lang="ts">
+defineProps<{
+	loadingPageId?: number;
+}>();
+
+defineEmits<{
+	edit: [id: number];
+	delete: [id: number];
+}>();
+
 const isLoading = ref(false);
 const pages = ref([] as Awaited<ReturnType<typeof listPagesQuery>>);
 const offset = ref(0);
@@ -84,7 +93,6 @@ function updateLastOffset() {
 	<div
 		class="relative mx-auto mb-4 max-w-208 overflow-auto border-2 border-neutral border-op-50 rounded-2 bg-neutral bg-op-20 md:min-h-[17.875rem] dark:border-op-80"
 		role="region"
-		tabindex="0"
 		aria-labelledby="h-pages-caption"
 	>
 		<header class="flex justify-end gap-2 bg-black/10 px-2 py-2 dark:bg-white/20">
@@ -150,10 +158,14 @@ function updateLastOffset() {
 					</td>
 					<td role="cell">
 						<div class="h-full flex items-center gap-2 md:w-full md:justify-around md:gap-0">
-							<VButton class="md:text-[0.85rem] neon-blue md:!px-2 md:!py-[2px]">
+							<VButton
+								class="md:text-[0.85rem] neon-blue md:!px-2 md:!py-[2px]"
+								:loading="loadingPageId === page.id"
+								@click="$emit('edit', page.id)"
+							>
 								edytuj
 							</VButton>
-							<VButton class="md:text-[0.85rem] neon-red md:!px-2 md:!py-[2px]">
+							<VButton class="md:text-[0.85rem] neon-red md:!px-2 md:!py-[2px]" @click="$emit('delete', page.id)">
 								usuń
 							</VButton>
 						</div>

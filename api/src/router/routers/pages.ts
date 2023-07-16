@@ -38,15 +38,17 @@ export const pagesRouter = router({
 
 		return result[0].count;
 	}),
-	byId: publicProcedure.input(z.number()).query((opts) => {
-		return db.select().from(pages).where(eq(pages.id, opts.input));
+	byId: publicProcedure.input(z.number()).query(async (opts) => {
+		const result = await db.select().from(pages).where(eq(pages.id, opts.input));
+
+		return result[0];
 	}),
 	create: publicProcedure.input(insertPageSchema).mutation(async (opts) => {
 		const [{ insertId }] = await db.insert(pages).values(opts.input);
 
-		const page = await db.select().from(pages).where(eq(pages.id, insertId));
+		const result = await db.select().from(pages).where(eq(pages.id, insertId));
 
-		return page[0];
+		return result[0];
 	}),
 	uniqueLanguages: publicProcedure.query(async () => {
 		const result = await db.selectDistinct({ language: pages.language }).from(pages);

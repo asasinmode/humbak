@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import VButton from '~/components/V/VButton.vue';
 
+const api = useApi();
+const { toast } = useToast();
+
 const html = ref('');
 const saveButton = ref<InstanceType<typeof VButton> | null>();
 
 const {
-	resetForm, sendForm,
+	resetForm, sendForm, updateValues,
 	errors, isSaving,
 	title, language, slug, menuText,
 } = useForm(
@@ -16,7 +19,7 @@ const {
 		menuText: '',
 	},
 	async () => {
-		const page = await useApi().pages.create.mutate({
+		const page = await api.pages.create.mutate({
 			language: language.value,
 			title: title.value,
 			slug: slug.value,
@@ -35,20 +38,42 @@ onMounted(async () => {
 	isLoading.value = true;
 
 	try {
-		const loadedLanguages = await useApi().pages.uniqueLanguages.query();
+		const loadedLanguages = await api.pages.uniqueLanguages.query();
 		languages.value = loadedLanguages;
 	} catch (e) {
-		useToast().toast('błąd przy ładowaniu danych', 'error');
+		toast('błąd przy ładowaniu danych', 'error');
 		throw e;
 	} finally {
 		isLoading.value = false;
 	}
 });
+
+const loadingPageId = ref<number | undefined>();
+const loadedPageId = ref<number | undefined>();
+
+async function editPage(id: number) {
+	loadingPageId.value = id;
+
+	try {
+		const page = await api.pages.byId.query(id);
+		loadedPageId.value = page.id;
+		updateValues(page);
+	} catch (e) {
+		toast('nie udało się załadować strony', 'error');
+		throw e;
+	} finally {
+		loadingPageId.value = undefined;
+	}
+}
+
+function deletePage(id: number) {
+	console.log('deleting', id);
+}
 </script>
 
 <template>
 	<main class="px-2 pb-4 pt-[18px] md:px-0">
-		<HPagesTable />
+		<HPagesTable :loading-page-id="loadingPageId" @edit="editPage" @delete="deletePage" />
 
 		<section class="grid grid-cols-[5fr_2fr] mx-auto max-w-6xl gap-x-4 gap-y-4 md:grid-cols-12">
 			<VInput
