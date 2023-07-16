@@ -89,7 +89,7 @@ function handleTab(event: KeyboardEvent) {
 }
 
 function focusableElements(parent: HTMLElement) {
-	return Array.from(parent.querySelectorAll('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]') as NodeListOf<Focusable>);
+	return Array.from(parent.querySelectorAll<Focusable>('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]'));
 }
 
 defineExpose({
