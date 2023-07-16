@@ -4,6 +4,10 @@ import VDialog from '~/components/V/VDialog.vue';
 const promise = ref<Promise<boolean>>();
 const resolve = ref<(value: boolean) => void>();
 
+const title = ref('niezapisane zmiany');
+const text = ref('Masz niezapisane zmiany. Czy na pewno chcesz kontynuować?');
+const okText = ref('kontynuuj');
+
 const close = ref(() => {});
 const open = ref(() => {});
 const activator = ref<HTMLElement | null>();
@@ -28,8 +32,8 @@ const component = defineComponent(() => {
 		},
 		{
 			default: () => [
-				h('h3', {}, 'niezapisane zmiany'),
-				h('p', {}, 'Masz niezapisane zmiany. Czy na pewno chcesz kontunuować?'),
+				h('h3', {}, title.value),
+				h('p', {}, text.value),
 			],
 			post: () => h(
 				VButton,
@@ -40,15 +44,32 @@ const component = defineComponent(() => {
 						close.value?.();
 					},
 				},
-				() => 'kontynuuj'
+				() => okText.value
 			),
 		}
 	);
 });
 
 export const useConfirm = () => {
-	function confirm(activatorElement?: HTMLElement | null) {
+	function confirm(
+		activatorElement?: HTMLElement | null,
+		props: {
+			title?: string;
+			text?: string;
+			okText?: string;
+		} = {}
+	) {
 		activator.value = activatorElement;
+
+		if (props.title) {
+			title.value = props.title;
+		}
+		if (props.text) {
+			text.value = props.text;
+		}
+		if (props.okText) {
+			okText.value = props.okText;
+		}
 
 		promise.value = new Promise<boolean>((_resolve) => {
 			open.value?.();
