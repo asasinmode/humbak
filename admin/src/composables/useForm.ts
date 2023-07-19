@@ -121,5 +121,6 @@ export const useForm = <T extends Record<string, unknown>>(
 		handleError,
 		sendForm,
 		updateValues,
+		hasChanged,
 	};
 };

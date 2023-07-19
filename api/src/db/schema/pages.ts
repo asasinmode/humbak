@@ -22,4 +22,4 @@ export const insertPageSchema = createInsertSchema(pages, {
 	title: schema => schema.title.nonempty(),
 	slug: schema => schema.slug.nonempty(),
 	menuText: schema => schema.menuText.nonempty(),
-}).omit({ id: true, createdAt: true, updatedAt: true });
+}).omit({ createdAt: true, updatedAt: true });

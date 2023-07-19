@@ -1,13 +1,18 @@
 <script setup lang="ts">
+import HPagesTable from '~/components/H/HPagesTable.vue';
 import VButton from '~/components/V/VButton.vue';
 
 const api = useApi();
 const { toast } = useToast();
 
-const html = ref('');
+const table = ref<InstanceType<typeof HPagesTable> | null>();
 const resetButton = ref<InstanceType<typeof VButton> | null>();
 const saveButton = ref<InstanceType<typeof VButton> | null>();
 
+const loadingPageId = ref<number | undefined>();
+const loadedPageId = ref<number | undefined>();
+
+const html = ref('');
 const {
 	resetForm, sendForm, updateValues,
 	errors, isSaving,
@@ -21,13 +26,15 @@ const {
 	},
 	async () => {
 		const page = await api.pages.create.mutate({
+			id: loadedPageId.value,
 			language: language.value,
 			title: title.value,
 			slug: slug.value,
 			menuText: menuText.value,
 		});
 
-		console.log('saved page', page);
+		updateValues(page);
+		table.value?.getPages(true);
 	},
 	saveButton.value?.element
 );
@@ -49,10 +56,8 @@ onMounted(async () => {
 	}
 });
 
-const loadingPageId = ref<number | undefined>();
-const loadedPageId = ref<number | undefined>();
-
 async function editPage(id: number) {
+	await resetForm();
 	loadingPageId.value = id;
 
 	try {
@@ -70,11 +75,16 @@ async function editPage(id: number) {
 function deletePage(id: number) {
 	console.log('deleting', id);
 }
+
+function clearForm() {
+	resetForm(resetButton.value?.element);
+	loadedPageId.value = undefined;
+}
 </script>
 
 <template>
 	<main class="px-2 pb-4 pt-[18px] md:px-0">
-		<HPagesTable :loading-page-id="loadingPageId" @edit="editPage" @delete="deletePage" />
+		<HPagesTable ref="table" :loading-page-id="loadingPageId" @edit="editPage" @delete="deletePage" />
 
 		<section class="grid grid-cols-[5fr_2fr] mx-auto max-w-6xl gap-x-4 gap-y-4 md:grid-cols-12">
 			<VInput
@@ -115,13 +125,13 @@ function deletePage(id: number) {
 		</section>
 
 		<!-- make resizable with handle in the middle -->
-		<section class="mt-6 hidden h-[60vh] resize-y gap-5 of-hidden md:flex">
+		<section class="mt-6 hidden h-[60vh] gap-10 md:flex">
 			<VEditor v-model="html" class="flex-1" />
 			<main class="bg-checker flex-1" />
 		</section>
 
 		<section class="mt-6 flex justify-center gap-4">
-			<VButton ref="resetButton" class="-ml-[0.8rem] neon-red" @click="resetForm(resetButton?.element)">
+			<VButton ref="resetButton" class="-ml-[0.8rem] neon-red" @click="clearForm">
 				wyczyść
 			</VButton>
 			<VButton ref="saveButton" class="neon-green" :is-loading="isSaving" @click="sendForm">

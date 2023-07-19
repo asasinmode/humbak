@@ -81,6 +81,10 @@ function changeOffset(value: number) {
 function updateLastOffset() {
 	lastOffset.value = offset.value;
 }
+
+defineExpose({
+	getPages,
+});
 </script>
 
 <template>

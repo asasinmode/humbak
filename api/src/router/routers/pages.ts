@@ -44,9 +44,12 @@ export const pagesRouter = router({
 		return result[0];
 	}),
 	create: publicProcedure.input(insertPageSchema).mutation(async (opts) => {
-		const [{ insertId }] = await db.insert(pages).values(opts.input);
+		const [{ insertId }] = await db
+			.insert(pages)
+			.values(opts.input)
+			.onDuplicateKeyUpdate({ set: { ...opts.input, id: undefined } });
 
-		const result = await db.select().from(pages).where(eq(pages.id, insertId));
+		const result = await db.select().from(pages).where(eq(pages.id, insertId || opts.input.id || 0));
 
 		return result[0];
 	}),
