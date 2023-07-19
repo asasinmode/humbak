@@ -97,6 +97,7 @@ defineExpose({
 
 	<div
 		class="relative mx-auto mb-4 max-w-208 overflow-auto border-2 border-neutral border-op-50 rounded-2 bg-neutral bg-op-20 md:min-h-[17.875rem] dark:border-op-80"
+		tabindex="0"
 		role="region"
 		aria-labelledby="h-pages-caption"
 	>
