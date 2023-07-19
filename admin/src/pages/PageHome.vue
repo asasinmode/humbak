@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import HPagesTable from '~/components/H/HPagesTable.vue';
 import VButton from '~/components/V/VButton.vue';
+import type { UniqueLanguage } from '~/composables/useApi';
 
 const api = useApi();
 const { toast } = useToast();
@@ -40,14 +41,13 @@ const {
 );
 
 const isLoading = ref(false);
-const languages = ref<string[]>([]);
+const languages = ref<UniqueLanguage[]>([]);
 
 onMounted(async () => {
 	isLoading.value = true;
 
 	try {
-		const loadedLanguages = await api.pages.uniqueLanguages.query();
-		languages.value = loadedLanguages;
+		languages.value = await api.pages.uniqueLanguages.query();
 	} catch (e) {
 		toast('błąd przy ładowaniu danych', 'error');
 		throw e;

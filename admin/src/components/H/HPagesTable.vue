@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Page } from '~/composables/useApi';
+import type { ListedPage } from '~/composables/useApi';
 
 defineProps<{
 	loadingPageId?: number;
@@ -11,7 +11,7 @@ defineEmits<{
 }>();
 
 const isLoading = ref(false);
-const pages = ref<Page[]>([]);
+const pages = ref<ListedPage[]>([]);
 const offset = ref(0);
 const limit = ref(5);
 const total = ref(0);
