@@ -47,7 +47,13 @@ export const pagesRouter = router({
 		const [{ insertId }] = await db
 			.insert(pages)
 			.values(opts.input)
-			.onDuplicateKeyUpdate({ set: { ...opts.input, id: undefined } });
+			.onDuplicateKeyUpdate({
+				set: {
+					...opts.input,
+					id: undefined,
+					updatedAt: new Date(),
+				},
+			});
 
 		const result = await db.select().from(pages).where(eq(pages.id, insertId || opts.input.id || 0));
 
