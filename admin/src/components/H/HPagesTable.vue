@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Page } from '~/composables/useApi';
+
 defineProps<{
 	loadingPageId?: number;
 }>();
@@ -9,13 +11,12 @@ defineEmits<{
 }>();
 
 const isLoading = ref(false);
-const pages = ref([] as Awaited<ReturnType<typeof listPagesQuery>>);
+const pages = ref<Page[]>([]);
 const offset = ref(0);
 const limit = ref(5);
 const total = ref(0);
 const search = ref('');
 
-const listPagesQuery = useApi().pages.list.query;
 const labels = {
 	id: 'id',
 	title: 'tytuł',
@@ -41,7 +42,7 @@ async function getPages(resetOffset = false) {
 
 	try {
 		const [loadedPages, count] = await Promise.all([
-			listPagesQuery({ offset: offset.value, limit: limit.value, query: search.value }),
+			useApi().pages.list.query({ offset: offset.value, limit: limit.value, query: search.value }),
 			useApi().pages.count.query({ query: search.value }),
 		]);
 		pages.value = loadedPages;
