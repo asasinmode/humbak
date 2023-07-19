@@ -43,7 +43,7 @@ export const pagesRouter = router({
 
 		return result[0];
 	}),
-	create: publicProcedure.input(insertPageSchema).mutation(async (opts) => {
+	upsert: publicProcedure.input(insertPageSchema).mutation(async (opts) => {
 		const [{ insertId }] = await db
 			.insert(pages)
 			.values(opts.input)

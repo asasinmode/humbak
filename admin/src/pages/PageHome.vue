@@ -25,7 +25,7 @@ const {
 		menuText: '',
 	},
 	async () => {
-		const page = await api.pages.create.mutate({
+		const page = await api.pages.upsert.mutate({
 			id: loadedPageId.value,
 			language: language.value,
 			title: title.value,
