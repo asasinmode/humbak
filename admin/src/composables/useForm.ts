@@ -56,7 +56,8 @@ export const useForm = <T extends Record<string, unknown>>(
 	}
 
 	function handleError(error: unknown) {
-		if (!(error instanceof TRPCClientError)) {
+		if (!(error instanceof TRPCClientError) || error.data.httpStatus !== 400) {
+			toast('coś poszło nie tak 😓', 'error');
 			throw error;
 		}
 
