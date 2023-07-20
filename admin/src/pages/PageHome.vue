@@ -4,6 +4,7 @@ import VButton from '~/components/V/VButton.vue';
 import type { UniqueLanguage } from '~/composables/useApi';
 
 const api = useApi();
+const { confirm } = useConfirm();
 const { toast } = useToast();
 
 const table = ref<InstanceType<typeof HPagesTable> | null>();
@@ -35,7 +36,7 @@ const {
 		});
 
 		updateValues(page);
-		table.value?.getPages(true);
+		await Promise.all([table.value?.getPages(true), getLanguages()]);
 	},
 	saveButton.value?.element
 );
@@ -43,7 +44,9 @@ const {
 const isLoading = ref(false);
 const languages = ref<UniqueLanguage[]>([]);
 
-onMounted(async () => {
+onMounted(() => getLanguages());
+
+async function getLanguages() {
 	isLoading.value = true;
 
 	try {
@@ -54,14 +57,14 @@ onMounted(async () => {
 	} finally {
 		isLoading.value = false;
 	}
-});
+}
 
 async function editPage(id: number) {
 	await resetForm();
 	loadingPageId.value = id;
 
 	try {
-		const page = await api.pages.byId.query(id);
+		const [page] = await Promise.all([api.pages.byId.query(id), getLanguages()]);
 		loadedPageId.value = page.id;
 		updateValues(page);
 	} catch (e) {
@@ -72,8 +75,29 @@ async function editPage(id: number) {
 	}
 }
 
-function deletePage(id: number) {
-	console.log('deleting', id);
+async function deletePage(id: number, button: HTMLButtonElement) {
+	if (
+		!(await confirm(button, { title: 'usuń stronę', text: 'Usuwasz stronę. Jesteś pewien?', okText: 'usuń' }))
+	) {
+		return;
+	}
+
+	loadingPageId.value = id;
+
+	try {
+		await api.pages.delete.mutate(id);
+
+		if (loadedPageId.value === id) {
+			loadedPageId.value = undefined;
+			resetForm(undefined, true);
+		}
+		await Promise.all([table.value?.getPages(), getLanguages()]);
+	} catch (e) {
+		toast('nie udało się usunąć strony', 'error');
+		throw e;
+	} finally {
+		loadingPageId.value = undefined;
+	}
 }
 
 function clearForm() {

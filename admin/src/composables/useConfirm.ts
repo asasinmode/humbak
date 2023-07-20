@@ -88,7 +88,6 @@ export const useConfirm = () => {
 
 	return {
 		confirm,
-		resolve,
 		TheConfirm: component,
 	};
 };

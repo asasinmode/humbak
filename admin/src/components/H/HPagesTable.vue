@@ -7,7 +7,7 @@ defineProps<{
 
 defineEmits<{
 	edit: [id: number];
-	delete: [id: number];
+	delete: [id: number, button: HTMLButtonElement];
 }>();
 
 const isLoading = ref(false);
@@ -163,15 +163,22 @@ defineExpose({
 						{{ page[key] }}
 					</td>
 					<td role="cell">
-						<div class="h-full flex items-center gap-2 md:w-full md:justify-around md:gap-0">
+						<div class="relative h-full flex items-center gap-2 md:w-full md:justify-around md:gap-0">
+							<VLoading v-show="loadingPageId === page.id" class="absolute left-1/2 top-1/2 translate-center" />
 							<VButton
 								class="md:text-[0.85rem] neon-blue md:!px-2 md:!py-[2px]"
-								:is-loading="loadingPageId === page.id"
+								:class="{ 'op-0': loadingPageId === page.id }"
+								:disabled="loadingPageId === page.id"
 								@click="$emit('edit', page.id)"
 							>
 								edytuj
 							</VButton>
-							<VButton class="md:text-[0.85rem] neon-red md:!px-2 md:!py-[2px]" @click="$emit('delete', page.id)">
+							<VButton
+								class="md:text-[0.85rem] neon-red md:!px-2 md:!py-[2px]"
+								:class="{ 'op-0': loadingPageId === page.id }"
+								:disabled="loadingPageId === page.id"
+								@click="$emit('delete', page.id, $event.target)"
+							>
 								usuń
 							</VButton>
 						</div>

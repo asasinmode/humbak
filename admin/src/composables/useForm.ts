@@ -38,8 +38,8 @@ export const useForm = <T extends Record<string, unknown>>(
 			fields[key].value = form[key];
 		}
 	}
-	async function resetForm(element?: HTMLElement | null) {
-		if (hasChanged()) {
+	async function resetForm(element?: HTMLElement | null, skipConfirm = false) {
+		if (skipConfirm && hasChanged()) {
 			const proceed = await confirm(element, {
 				title: 'niezapisane zmiany',
 				text: 'Masz niezapisane zmiany. Czy na pewno chcesz wyczyścić dane?',

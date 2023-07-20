@@ -59,6 +59,9 @@ export const pagesRouter = router({
 
 		return result[0];
 	}),
+	delete: publicProcedure.input(z.number()).mutation(async (opts) => {
+		await db.delete(pages).where(eq(pages.id, opts.input));
+	}),
 	uniqueLanguages: publicProcedure.query(async () => {
 		const result = await db.selectDistinct({ language: pages.language }).from(pages);
 
