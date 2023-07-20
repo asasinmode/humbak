@@ -38,21 +38,23 @@ export const useForm = <T extends Record<string, unknown>>(
 			fields[key].value = form[key];
 		}
 	}
-	async function resetForm(element?: HTMLElement | null, skipConfirm = false) {
-		if (skipConfirm && hasChanged()) {
+	async function resetForm(element?: HTMLElement | null, skipConfirm = false, continueMessage = false) {
+		if (!skipConfirm && hasChanged()) {
 			const proceed = await confirm(element, {
 				title: 'niezapisane zmiany',
-				text: 'Masz niezapisane zmiany. Czy na pewno chcesz wyczyścić dane?',
-				okText: 'wyczyść',
+				text: `Masz niezapisane zmiany. Czy na pewno chcesz ${continueMessage ? 'kontynuować' : 'wyczyścić dane'}?`,
+				okText: continueMessage ? 'kontynuuj' : 'wyczyść',
 			});
 
 			if (!proceed) {
-				return;
+				return false;
 			}
 		}
 
 		resetErrors();
 		resetFields();
+		updateValues(form);
+		return true;
 	}
 
 	function handleError(error: unknown) {

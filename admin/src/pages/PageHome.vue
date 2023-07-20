@@ -59,8 +59,11 @@ async function getLanguages() {
 	}
 }
 
-async function editPage(id: number) {
-	await resetForm();
+async function editPage(id: number, button: HTMLButtonElement) {
+	if (!(await resetForm(button, false, true))) {
+		return;
+	}
+
 	loadingPageId.value = id;
 
 	try {

@@ -6,7 +6,7 @@ defineProps<{
 }>();
 
 defineEmits<{
-	edit: [id: number];
+	edit: [id: number, button: HTMLButtonElement];
 	delete: [id: number, button: HTMLButtonElement];
 }>();
 
@@ -169,7 +169,7 @@ defineExpose({
 								class="md:text-[0.85rem] neon-blue md:!px-2 md:!py-[2px]"
 								:class="{ 'op-0': loadingPageId === page.id }"
 								:disabled="loadingPageId === page.id"
-								@click="$emit('edit', page.id)"
+								@click="$emit('edit', page.id, $event.target)"
 							>
 								edytuj
 							</VButton>
