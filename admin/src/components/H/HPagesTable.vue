@@ -55,8 +55,8 @@ async function getPages(resetOffset = false) {
 	}
 }
 
-function onPageInputBlur() {
-	const value = parseInt(`${offset.value}`.replaceAll(/[^\d-]/g, ''));
+function onPageInputBlur(event: FocusEvent) {
+	const value = parseInt(`${(event.target as HTMLInputElement).value}`.replaceAll(/[^\d-]/g, ''));
 
 	if (Number.isNaN(value) || value < 0) {
 		offset.value = 0;
@@ -111,7 +111,7 @@ defineExpose({
 			</VButton>
 			<VInput
 				id="pagesOffsetInput"
-				v-model.number="offset"
+				:model-value="offset"
 				input-class="!min-w-14 !w-14 text-center neon-violet-5 dark:neon-violet"
 				@focus="updateLastOffset"
 				@blur="onPageInputBlur"
