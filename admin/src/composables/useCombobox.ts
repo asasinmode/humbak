@@ -39,11 +39,11 @@ export const useCombobox = (
 	}
 
 	function selectOption(index?: number) {
-		isExpanded.value = false;
 		if (index !== undefined) {
 			modelValue.value = options.value[index].value;
 			cursoredOverIndex.value = index;
 		}
+		isExpanded.value = false;
 	}
 
 	function expandAndSelectFirst() {
