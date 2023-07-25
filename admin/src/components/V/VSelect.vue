@@ -12,10 +12,6 @@ const props = withDefaults(defineProps<{
 });
 
 const modelValue = defineModel<string>();
-const isExpanded = ref(false);
-const cursoredOverIndex = ref<number | undefined>();
-
-const input = ref<InstanceType<typeof VInput> | null>();
 const listbox = ref<HTMLUListElement | null>();
 
 const computedOptions = computed(() => {
@@ -29,71 +25,28 @@ const computedOptions = computed(() => {
 	return Object.entries(props.options as Record<string, string>).map(([text, value]) => ({ text, value }));
 });
 
+const {
+	isExpanded,
+	cursoredOverIndex,
+	updateCursoredIndexToSelected,
+	moveCursor,
+	selectOption,
+	expandAndSelectFirst,
+	closeIfFocusedOutside,
+} = useCombobox(modelValue, computedOptions, listbox);
+
 updateCursoredIndexToSelected(modelValue.value);
-
-function updateCursoredIndexToSelected(value?: string) {
-	cursoredOverIndex.value = undefined;
-	if (value) {
-		for (let i = 0; i < computedOptions.value.length; i++) {
-			if (value === computedOptions.value[i].value) {
-				cursoredOverIndex.value = i;
-				break;
-			}
-		}
-	}
-}
-
-function moveCursor(value: number) {
-	if (!isExpanded.value) {
-		isExpanded.value = true;
-		return;
-	}
-
-	if (cursoredOverIndex.value === undefined) {
-		cursoredOverIndex.value = value > 0 ? 0 : (computedOptions.value.length - 1);
-		return;
-	}
-
-	cursoredOverIndex.value = (cursoredOverIndex.value + value) % computedOptions.value.length;
-	if (cursoredOverIndex.value < 0) {
-		cursoredOverIndex.value = computedOptions.value.length + cursoredOverIndex.value;
-	}
-}
-
-function selectOption(index?: number) {
-	isExpanded.value = false;
-	if (index !== undefined) {
-		modelValue.value = computedOptions.value[index].value;
-		cursoredOverIndex.value = index;
-	}
-}
-
-function expandAndSelectFirst() {
-	isExpanded.value = true;
-	updateCursoredIndexToSelected(modelValue.value);
-	if (cursoredOverIndex.value === undefined) {
-		cursoredOverIndex.value = 0;
-	}
-}
-
-function closeIfFocusedOutside(event: FocusEvent) {
-	const target = event.relatedTarget as HTMLElement | null;
-	if (!target || !listbox.value || !listbox.value.contains(target)) {
-		isExpanded.value = false;
-	}
-}
 </script>
 
 <template>
 	<VInput
 		:id="id"
-		ref="input"
 		v-model="modelValue"
 		role="combobox"
 		aria-haspopup="listbox"
 		:aria-expanded="isExpanded"
-		:aria-controls="`${id}Listbox`"
-		:aria-activedescendant="cursoredOverIndex !== undefined ? `${id}Listbox-${cursoredOverIndex}` : ''"
+		:aria-controls="`${id}-listbox`"
+		:aria-activedescendant="cursoredOverIndex !== undefined ? `${id}-option-${cursoredOverIndex}` : ''"
 		@focus="expandAndSelectFirst"
 		@focusout="closeIfFocusedOutside"
 		@update:model-value="updateCursoredIndexToSelected"
@@ -105,7 +58,7 @@ function closeIfFocusedOutside(event: FocusEvent) {
 	>
 		<ul
 			v-show="isExpanded"
-			:id="`${id}Listbox`"
+			:id="`${id}-listbox`"
 			ref="listbox"
 			class="absolute bottom-0 left-3 z-10 w-[calc(100%_-_1.5rem)] translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-neutral-2/90 shadow-md dark:border-neutral-5 dark:bg-neutral-8/90"
 			role="listbox"
@@ -116,7 +69,7 @@ function closeIfFocusedOutside(event: FocusEvent) {
 			<template v-else>
 				<li
 					v-for="({ text, value }, index) in computedOptions"
-					:id="`${id}Listbox-${index}`"
+					:id="`${id}-option-${index}`"
 					:key="text"
 					class="relative w-full cursor-pointer select-none truncate bg-op-40 py-2 pl-2 pr-8 hover:bg-op-40"
 					:class="cursoredOverIndex === index
@@ -127,6 +80,7 @@ function closeIfFocusedOutside(event: FocusEvent) {
 					"
 					tabindex="-1"
 					role="option"
+					:aria-selected="modelValue === value"
 					@click="selectOption(index)"
 					@mouseenter="cursoredOverIndex = index"
 				>

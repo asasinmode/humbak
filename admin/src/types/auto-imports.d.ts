@@ -54,6 +54,7 @@ declare global {
   const unref: typeof import('vue')['unref']
   const useApi: typeof import('../composables/useApi')['useApi']
   const useAttrs: typeof import('vue')['useAttrs']
+  const useCombobox: typeof import('../composables/useCombobox')['useCombobox']
   const useConfirm: typeof import('../composables/useConfirm')['useConfirm']
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
@@ -127,6 +128,7 @@ declare module 'vue' {
     readonly unref: UnwrapRef<typeof import('vue')['unref']>
     readonly useApi: UnwrapRef<typeof import('../composables/useApi')['useApi']>
     readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
+    readonly useCombobox: UnwrapRef<typeof import('../composables/useCombobox')['useCombobox']>
     readonly useConfirm: UnwrapRef<typeof import('../composables/useConfirm')['useConfirm']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
@@ -194,6 +196,7 @@ declare module '@vue/runtime-core' {
     readonly unref: UnwrapRef<typeof import('vue')['unref']>
     readonly useApi: UnwrapRef<typeof import('../composables/useApi')['useApi']>
     readonly useAttrs: UnwrapRef<typeof import('vue')['useAttrs']>
+    readonly useCombobox: UnwrapRef<typeof import('../composables/useCombobox')['useCombobox']>
     readonly useConfirm: UnwrapRef<typeof import('../composables/useConfirm')['useConfirm']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
