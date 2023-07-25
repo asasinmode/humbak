@@ -15,7 +15,6 @@ const modelValue = defineModel<string>();
 const isExpanded = ref(false);
 const cursoredOverIndex = ref<number | undefined>();
 
-const listId = Math.random().toString(36).substring(2, 9);
 const input = ref<InstanceType<typeof VInput> | null>();
 const listbox = ref<HTMLUListElement | null>();
 
@@ -69,6 +68,14 @@ function selectOption(index?: number) {
 	}
 }
 
+function expandAndSelectFirst() {
+	isExpanded.value = true;
+	updateCursoredIndexToSelected(modelValue.value);
+	if (cursoredOverIndex.value === undefined) {
+		cursoredOverIndex.value = 0;
+	}
+}
+
 function closeIfFocusedOutside(event: FocusEvent) {
 	const target = event.relatedTarget as HTMLElement | null;
 	if (!target || !listbox.value || !listbox.value.contains(target)) {
@@ -85,9 +92,9 @@ function closeIfFocusedOutside(event: FocusEvent) {
 		role="combobox"
 		aria-haspopup="listbox"
 		:aria-expanded="isExpanded"
-		:aria-controls="listId"
-		:aria-activedescendant="cursoredOverIndex !== undefined ? `${listId}-${cursoredOverIndex}` : ''"
-		@focus="isExpanded = true"
+		:aria-controls="`${id}Listbox`"
+		:aria-activedescendant="cursoredOverIndex !== undefined ? `${id}Listbox-${cursoredOverIndex}` : ''"
+		@focus="expandAndSelectFirst"
 		@focusout="closeIfFocusedOutside"
 		@update:model-value="updateCursoredIndexToSelected"
 		@keydown.up.prevent="moveCursor(-1)"
@@ -98,7 +105,7 @@ function closeIfFocusedOutside(event: FocusEvent) {
 	>
 		<ul
 			v-show="isExpanded"
-			:id="listId"
+			:id="`${id}Listbox`"
 			ref="listbox"
 			class="absolute bottom-0 left-3 z-10 w-[calc(100%_-_1.5rem)] translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-neutral-2/90 shadow-md dark:border-neutral-5 dark:bg-neutral-8/90"
 			role="listbox"
@@ -109,7 +116,7 @@ function closeIfFocusedOutside(event: FocusEvent) {
 			<template v-else>
 				<li
 					v-for="({ text, value }, index) in computedOptions"
-					:id="`${listId}-${index}`"
+					:id="`${id}Listbox-${index}`"
 					:key="text"
 					class="relative w-full cursor-pointer select-none truncate bg-op-40 py-2 pl-2 pr-8 hover:bg-op-40"
 					:class="cursoredOverIndex === index
