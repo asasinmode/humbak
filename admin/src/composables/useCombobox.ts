@@ -7,7 +7,6 @@ export const useCombobox = (
 ) => {
 	const isExpanded = ref(false);
 	const cursoredOverIndex = ref<number | undefined>();
-
 	const options = computed(() => isRef(rawOptions) ? rawOptions.value : rawOptions);
 
 	function updateCursoredIndexToSelected(value?: string) {

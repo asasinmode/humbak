@@ -60,7 +60,8 @@ async function getLanguages() {
 }
 
 async function editPage(id: number, button: HTMLButtonElement) {
-	if (!(await resetForm(button, false, true))) {
+	const proceed = await resetForm(button, false, true);
+	if (!proceed) {
 		return;
 	}
 
@@ -152,8 +153,11 @@ function clearForm() {
 		</section>
 
 		<!-- make resizable with handle in the middle -->
-		<section class="mt-6 hidden h-[60vh] gap-10 md:flex">
-			<VEditor v-model="html" class="flex-1" />
+		<section class="mt-6 hidden h-[60vh] gap-x-2 md:flex">
+			<HEditor v-model="html" class="flex-1" />
+			<aside class="w-8 shrink-0">
+				<HEditorModeSelect />
+			</aside>
 			<main class="bg-checker flex-1" />
 		</section>
 

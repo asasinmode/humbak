@@ -7,6 +7,8 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    HEditor: typeof import('./../components/H/HEditor.vue')['default']
+    HEditorModeSelect: typeof import('./../components/H/HEditorModeSelect.vue')['default']
     HPagesTable: typeof import('./../components/H/HPagesTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -17,7 +19,6 @@ declare module 'vue' {
     TheToasts: typeof import('./../components/TheToasts.vue')['default']
     VButton: typeof import('./../components/V/VButton.vue')['default']
     VDialog: typeof import('./../components/V/VDialog.vue')['default']
-    VEditor: typeof import('./../components/V/VEditor.vue')['default']
     VInput: typeof import('./../components/V/VInput.vue')['default']
     VLoading: typeof import('./../components/V/VLoading.vue')['default']
     VSelect: typeof import('./../components/V/VSelect.vue')['default']
