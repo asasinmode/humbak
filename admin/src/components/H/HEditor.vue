@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import * as monaco from 'monaco-editor-core';
+// import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+// import only whats needed
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.main.js';
 
 const value = defineModel<string>();
 const editorRef = ref<HTMLDivElement | null>();
-const editor = shallowRef<monaco.editor.IStandaloneCodeEditor | undefined>(undefined);
+const editor = shallowRef<monaco.editor.IStandaloneCodeEditor | undefined>();
 
 onMounted(() => {
 	if (!editorRef.value) {
@@ -12,15 +14,13 @@ onMounted(() => {
 
 	const editorInstance = monaco.editor.create(editorRef.value, {
 		value: value.value,
+		language: 'html',
 		automaticLayout: true,
 		scrollBeyondLastLine: false,
 		theme: 'vs-dark',
 		minimap: {
 			enabled: false,
 		},
-		// 'inlineSuggest': {
-		// 	enabled: false,
-		// },
 	});
 
 	editor.value = editorInstance;
@@ -28,6 +28,8 @@ onMounted(() => {
 	editorInstance.onDidChangeModelContent(() => {
 		value.value = editorInstance.getValue();
 	});
+
+	console.log(monaco.languages.getLanguages());
 });
 
 onBeforeUnmount(() => {

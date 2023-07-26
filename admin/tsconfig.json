@@ -28,7 +28,7 @@
     "noUnusedLocals": true,
     /* Completeness */
     "skipDefaultLibCheck": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   /* Trpc */
   "references": [

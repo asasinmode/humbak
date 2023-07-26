@@ -14,6 +14,11 @@ const saveButton = ref<InstanceType<typeof VButton> | null>();
 const loadingPageId = ref<number | undefined>();
 const loadedPageId = ref<number | undefined>();
 
+const isLoading = ref(false);
+const languages = ref<UniqueLanguage[]>([]);
+
+onMounted(() => getLanguages());
+
 const html = ref('');
 const {
 	resetForm, sendForm, updateValues,
@@ -40,11 +45,6 @@ const {
 	},
 	saveButton.value?.element
 );
-
-const isLoading = ref(false);
-const languages = ref<UniqueLanguage[]>([]);
-
-onMounted(() => getLanguages());
 
 async function getLanguages() {
 	isLoading.value = true;
