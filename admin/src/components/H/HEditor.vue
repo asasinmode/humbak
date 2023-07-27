@@ -1,16 +1,18 @@
 <script setup lang="ts">
-// import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-// import only whats needed
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.main.js';
+import loader from '@monaco-editor/loader';
+
+type IMonacoStandalone = ReturnType<Awaited<ReturnType<typeof loader['init']>>['editor']['create']>;
 
 const value = defineModel<string>();
-const editorRef = ref<HTMLDivElement | null>();
-const editor = shallowRef<monaco.editor.IStandaloneCodeEditor | undefined>();
+const editorRef = ref<HTMLDivElement>();
+const editor = shallowRef<IMonacoStandalone>();
 
-onMounted(() => {
+onMounted(async () => {
 	if (!editorRef.value) {
 		throw new Error('cannot find editor element');
 	}
+
+	const monaco = await loader.init();
 
 	const editorInstance = monaco.editor.create(editorRef.value, {
 		value: value.value,
@@ -21,6 +23,7 @@ onMounted(() => {
 		minimap: {
 			enabled: false,
 		},
+		tabSize: 2,
 	});
 
 	editor.value = editorInstance;
@@ -28,8 +31,6 @@ onMounted(() => {
 	editorInstance.onDidChangeModelContent(() => {
 		value.value = editorInstance.getValue();
 	});
-
-	console.log(monaco.languages.getLanguages());
 });
 
 onBeforeUnmount(() => {

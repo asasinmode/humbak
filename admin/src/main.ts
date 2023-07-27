@@ -2,7 +2,6 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { router } from './router';
 import App from './App.vue';
-import './workers/editorWorker';
 
 import '@unocss/reset/tailwind.css';
 import 'virtual:uno.css';
