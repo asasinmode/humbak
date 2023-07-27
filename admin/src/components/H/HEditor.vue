@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import loader from '@monaco-editor/loader';
 
-type IMonacoStandalone = ReturnType<Awaited<ReturnType<typeof loader['init']>>['editor']['create']>;
+type MonacoStandalone = ReturnType<Awaited<ReturnType<typeof loader['init']>>['editor']['create']>;
 
 const value = defineModel<string>();
 const editorRef = ref<HTMLDivElement>();
-const editor = shallowRef<IMonacoStandalone>();
+const editor = shallowRef<MonacoStandalone>();
 
 onMounted(async () => {
 	if (!editorRef.value) {
