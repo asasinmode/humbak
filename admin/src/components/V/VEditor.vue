@@ -18,6 +18,7 @@ const emit = defineEmits<{
 	'update:model-value': [string];
 }>();
 
+const isLoading = ref(false);
 const editorRef = ref<HTMLDivElement>();
 const editor = shallowRef<IMonacoStandalone>();
 const editorModels = shallowRef<IMonacoTextModel[]>([]);
@@ -31,6 +32,7 @@ onMounted(async () => {
 		throw new Error('cannot find editor element');
 	}
 
+	isLoading.value = true;
 	const monaco = await loader.init();
 
 	setTheme = monaco.editor.setTheme;
@@ -54,6 +56,8 @@ onMounted(async () => {
 	editor.value.onDidChangeModelContent(() => {
 		emit('update:model-value', editorModels.value[props.currentModel].getValue());
 	});
+
+	isLoading.value = false;
 });
 
 onBeforeUnmount(() => {
@@ -70,5 +74,8 @@ watch(isDark, (value) => {
 </script>
 
 <template>
-	<article ref="editorRef" />
+	<div class="relative">
+		<article ref="editorRef" class="h-full w-full" />
+		<VLoading v-if="isLoading" class="absolute inset-0" :size="40" />
+	</div>
 </template>
