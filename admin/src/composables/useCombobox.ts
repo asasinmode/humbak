@@ -1,15 +1,15 @@
 import type { MaybeRef } from 'vue';
 
-export const useCombobox = (
-	modelValue: Ref<string | undefined>,
-	rawOptions: MaybeRef<{ text: string; value: string; }[]>,
+export const useCombobox = <T>(
+	modelValue: Ref<T>,
+	rawOptions: MaybeRef<{ text: string; value: T; }[]>,
 	listboxRef: Ref<HTMLElement | null | undefined>
 ) => {
 	const isExpanded = ref(false);
 	const cursoredOverIndex = ref<number | undefined>();
 	const options = computed(() => isRef(rawOptions) ? rawOptions.value : rawOptions);
 
-	function updateCursoredIndexToSelected(value?: string) {
+	function updateCursoredIndexToSelected(value?: T) {
 		cursoredOverIndex.value = undefined;
 		if (value) {
 			for (let i = 0; i < options.value.length; i++) {

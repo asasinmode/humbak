@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HPagesTable from '~/components/H/HPagesTable.vue';
+import PagesTable from '~/components/Pages/PagesTable.vue';
 import VButton from '~/components/V/VButton.vue';
 import type { UniqueLanguage } from '~/composables/useApi';
 
@@ -7,7 +7,7 @@ const api = useApi();
 const { confirm } = useConfirm();
 const { toast } = useToast();
 
-const table = ref<InstanceType<typeof HPagesTable> | null>();
+const table = ref<InstanceType<typeof PagesTable> | null>();
 const resetButton = ref<InstanceType<typeof VButton> | null>();
 const saveButton = ref<InstanceType<typeof VButton> | null>();
 
@@ -19,7 +19,6 @@ const languages = ref<UniqueLanguage[]>([]);
 
 onMounted(() => getLanguages());
 
-const html = ref('');
 const {
 	resetForm, sendForm, updateValues,
 	errors, isSaving,
@@ -112,7 +111,7 @@ function clearForm() {
 
 <template>
 	<main class="px-2 pb-4 pt-[18px] md:px-0">
-		<HPagesTable ref="table" :loading-page-id="loadingPageId" @edit="editPage" @delete="deletePage" />
+		<PagesTable ref="table" :loading-page-id="loadingPageId" @edit="editPage" @delete="deletePage" />
 
 		<section class="grid grid-cols-[5fr_2fr] mx-auto max-w-6xl gap-x-4 gap-y-4 md:grid-cols-12">
 			<VInput
@@ -152,14 +151,7 @@ function clearForm() {
 			/>
 		</section>
 
-		<!-- make resizable with handle in the middle -->
-		<section class="mt-6 hidden h-[60vh] gap-x-2 md:flex">
-			<HEditor v-model="html" class="flex-1" />
-			<aside class="w-8 shrink-0">
-				<HEditorModeSelect />
-			</aside>
-			<main class="bg-checker flex-1" />
-		</section>
+		<PagesContentEditor />
 
 		<section class="mt-6 flex justify-center gap-4">
 			<VButton ref="resetButton" class="-ml-[0.8rem] neon-red" @click="clearForm">

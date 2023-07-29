@@ -1,11 +1,11 @@
 <script setup lang="ts">
-const modelValue = ref('html');
+const value = defineModel<number>({ required: true });
 const listbox = ref<HTMLUListElement | null>();
 
 const options = [
-	{ text: 'html', value: 'html' },
-	{ text: 'css', value: 'css' },
-	{ text: 'meta', value: 'meta' },
+	{ text: 'html', value: 0 },
+	{ text: 'css', value: 1 },
+	{ text: 'meta', value: 2 },
 ];
 
 const {
@@ -16,9 +16,9 @@ const {
 	selectOption,
 	expandAndSelectFirst,
 	closeIfFocusedOutside,
-} = useCombobox(modelValue, options, listbox);
+} = useCombobox(value, options, listbox);
 
-updateCursoredIndexToSelected(modelValue.value);
+updateCursoredIndexToSelected(value.value);
 </script>
 
 <template>
