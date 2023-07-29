@@ -4,11 +4,10 @@ import { pages } from './pages';
 
 export const contents = mysqlTable('contents', {
 	id: int('id').primaryKey().autoincrement(),
-	pageId: int('id').notNull().references(() => pages.id, { onDelete: 'cascade' }),
-	value: text('value').notNull().default(''),
+	pageId: int('pageId').notNull().references(() => pages.id, { onDelete: 'cascade' }),
+	html: text('html').notNull().default(''),
 	meta: json('meta').notNull().default([]),
 	visible: boolean('visible').notNull().default(true),
-	createdAt: datetime('createdAt').notNull().default(sql`NOW()`),
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
