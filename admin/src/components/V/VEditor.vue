@@ -21,6 +21,7 @@ const emit = defineEmits<{
 const editorRef = ref<HTMLDivElement>();
 const editor = shallowRef<IMonacoStandalone>();
 const editorModels = shallowRef<IMonacoTextModel[]>([]);
+let setTheme: (theme: string) => void;
 
 const { isDark } = useTheme();
 
@@ -32,6 +33,9 @@ onMounted(async () => {
 
 	const monaco = await loader.init();
 
+	setTheme = monaco.editor.setTheme;
+	setTheme(isDark.value ? 'vs-dark' : 'vs');
+
 	for (const { value, language } of props.models) {
 		editorModels.value.push(monaco.editor.createModel(value, language));
 	}
@@ -40,7 +44,6 @@ onMounted(async () => {
 		model: editorModels.value[props.currentModel],
 		automaticLayout: true,
 		scrollBeyondLastLine: false,
-		theme: isDark.value ? 'vs-dark' : 'vs',
 		minimap: {
 			enabled: false,
 		},
@@ -62,7 +65,7 @@ watch(() => props.currentModel, (index) => {
 });
 
 watch(isDark, (value) => {
-	editor.value?.updateOptions({ theme: value ? 'vs-dark' : 'vs' });
+	setTheme(value ? 'vs-dark' : 'vs');
 });
 </script>
 
