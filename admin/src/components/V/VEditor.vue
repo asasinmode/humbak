@@ -22,6 +22,8 @@ const editorRef = ref<HTMLDivElement>();
 const editor = shallowRef<IMonacoStandalone>();
 const editorModels = shallowRef<IMonacoTextModel[]>([]);
 
+const { isDark } = useTheme();
+
 // add loading & load only once
 onMounted(async () => {
 	if (!editorRef.value) {
@@ -38,7 +40,7 @@ onMounted(async () => {
 		model: editorModels.value[props.currentModel],
 		automaticLayout: true,
 		scrollBeyondLastLine: false,
-		theme: 'vs-dark',
+		theme: isDark.value ? 'vs-dark' : 'vs',
 		minimap: {
 			enabled: false,
 		},
@@ -57,6 +59,10 @@ onBeforeUnmount(() => {
 
 watch(() => props.currentModel, (index) => {
 	editor.value?.setModel(editorModels.value[index]);
+});
+
+watch(() => isDark.value, (value) => {
+	editor.value?.updateOptions({ theme: value ? 'vs-dark' : 'vs' });
 });
 </script>
 

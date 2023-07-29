@@ -1,17 +1,17 @@
 <script setup lang="ts">
 const html = ref(`
 <section>
-  <h1>Content</h1>
+	<h1>Content</h1>
 </section>
 `);
 const css = ref(`
 .selector {
-  background-color: hotpink;
+	background-color: hotpink;
 }
 `);
 const meta = ref(`
 [
-  { "name": "robots", "content": "index, follow" }
+	{ "name": "robots", "content": "index, follow" }
 ]
 `);
 const currentModelIndex = ref(0);

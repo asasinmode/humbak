@@ -3,15 +3,11 @@ const props = withDefaults(defineProps<{
 	size?: number;
 }>(), { size: 2 });
 
+const { isDark, toggleTheme } = useTheme();
+
+isDark.value = document.documentElement.classList.contains('dark');
+
 const element = ref<HTMLButtonElement | null>(null);
-
-function toggleTheme() {
-	const value = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-
-	localStorage.setItem('color-scheme', value);
-	document.documentElement.classList.toggle('dark');
-}
-
 const style = computed(() => `--size: ${props.size}rem`);
 
 defineExpose({

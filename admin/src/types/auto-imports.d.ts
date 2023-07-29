@@ -64,6 +64,7 @@ declare global {
   const useRouter: typeof import('vue-router')['useRouter']
   const useShake: typeof import('../composables/useShake')['useShake']
   const useSlots: typeof import('vue')['useSlots']
+  const useTheme: typeof import('../composables/useTheme')['useTheme']
   const useToast: typeof import('../composables/useToast')['useToast']
   const watch: typeof import('vue')['watch']
   const watchEffect: typeof import('vue')['watchEffect']
@@ -138,6 +139,7 @@ declare module 'vue' {
     readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
     readonly useShake: UnwrapRef<typeof import('../composables/useShake')['useShake']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
+    readonly useTheme: UnwrapRef<typeof import('../composables/useTheme')['useTheme']>
     readonly useToast: UnwrapRef<typeof import('../composables/useToast')['useToast']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
     readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
@@ -206,6 +208,7 @@ declare module '@vue/runtime-core' {
     readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
     readonly useShake: UnwrapRef<typeof import('../composables/useShake')['useShake']>
     readonly useSlots: UnwrapRef<typeof import('vue')['useSlots']>
+    readonly useTheme: UnwrapRef<typeof import('../composables/useTheme')['useTheme']>
     readonly useToast: UnwrapRef<typeof import('../composables/useToast')['useToast']>
     readonly watch: UnwrapRef<typeof import('vue')['watch']>
     readonly watchEffect: UnwrapRef<typeof import('vue')['watchEffect']>
