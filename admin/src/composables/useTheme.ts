@@ -1,12 +1,10 @@
-const isDark = ref(false);
+const isDark = ref(document.documentElement.classList.contains('dark'));
 
 export const useTheme = () => {
 	function toggleTheme() {
-		const value = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-		isDark.value = value === 'dark';
-
-		localStorage.setItem('color-scheme', value);
-		document.documentElement.classList.toggle('dark');
+		isDark.value = !isDark.value;
+		localStorage.setItem('color-scheme', isDark.value ? 'dark' : 'light');
+		document.documentElement.classList.toggle('dark', isDark.value);
 	}
 
 	return { toggleTheme, isDark };

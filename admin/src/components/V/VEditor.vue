@@ -61,7 +61,7 @@ watch(() => props.currentModel, (index) => {
 	editor.value?.setModel(editorModels.value[index]);
 });
 
-watch(() => isDark.value, (value) => {
+watch(isDark, (value) => {
 	editor.value?.updateOptions({ theme: value ? 'vs-dark' : 'vs' });
 });
 </script>
