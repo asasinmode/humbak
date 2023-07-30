@@ -19,5 +19,5 @@ export const contents = mysqlTable('contents', {
 export type Content = InferModel<typeof contents>;
 
 export const insertContentSchema = createInsertSchema(contents, {
-	meta: () => z.array(z.object<Record<string, any>>({})),
+	meta: () => z.array(z.object({}).catchall(z.any())),
 }).omit({ updatedAt: true });
