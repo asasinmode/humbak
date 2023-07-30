@@ -1,26 +1,28 @@
 <script setup lang="ts">
+import PagesContentEditor from '~/components/Pages/PagesContentEditor.vue';
 import PagesTable from '~/components/Pages/PagesTable.vue';
 import VButton from '~/components/V/VButton.vue';
-import type { UniqueLanguage } from '~/composables/useApi';
+import type { IUniqueLanguage } from '~/composables/useApi';
 
 const api = useApi();
 const { confirm } = useConfirm();
 const { toast } = useToast();
 
-const table = ref<InstanceType<typeof PagesTable> | null>();
-const resetButton = ref<InstanceType<typeof VButton> | null>();
-const saveButton = ref<InstanceType<typeof VButton> | null>();
+const table = ref<InstanceType<typeof PagesTable>>();
+const resetButton = ref<InstanceType<typeof VButton>>();
+const saveButton = ref<InstanceType<typeof VButton>>();
+const contentEditor = ref<InstanceType<typeof PagesContentEditor>>();
 
 const loadingPageId = ref<number | undefined>();
 const loadedPageId = ref<number | undefined>();
 
 const isLoading = ref(false);
-const languages = ref<UniqueLanguage[]>([]);
+const languages = ref<IUniqueLanguage[]>([]);
 
 onMounted(() => getLanguages());
 
 const {
-	resetForm, sendForm, updateValues,
+	clearForm, sendForm, updateValues,
 	errors, isSaving,
 	title, language, slug, menuText,
 } = useForm(
@@ -41,6 +43,8 @@ const {
 
 		updateValues(page);
 		await Promise.all([table.value?.getPages(true), getLanguages()]);
+		loadingPageId.value = undefined;
+		loadedPageId.value = page.id;
 	},
 	saveButton.value?.element
 );
@@ -59,7 +63,7 @@ async function getLanguages() {
 }
 
 async function editPage(id: number, button: HTMLButtonElement) {
-	const proceed = await resetForm(button, false, true);
+	const proceed = await clearForm(button, false, true);
 	if (!proceed) {
 		return;
 	}
@@ -67,9 +71,12 @@ async function editPage(id: number, button: HTMLButtonElement) {
 	loadingPageId.value = id;
 
 	try {
-		const [page] = await Promise.all([api.pages.byId.query(id), getLanguages()]);
+		const [page] = await Promise.all([
+			api.pages.byId.query(id), getLanguages(),
+		]);
 		loadedPageId.value = page.id;
 		updateValues(page);
+		contentEditor.value?.updateValues(page);
 	} catch (e) {
 		toast('nie udało się załadować strony', 'error');
 		throw e;
@@ -79,9 +86,8 @@ async function editPage(id: number, button: HTMLButtonElement) {
 }
 
 async function deletePage(id: number, button: HTMLButtonElement) {
-	if (
-		!(await confirm(button, { title: 'usuń stronę', text: 'Usuwasz stronę. Jesteś pewien?', okText: 'usuń' }))
-	) {
+	const proceed = await confirm(button, { title: 'usuń stronę', text: 'Usuwasz stronę. Jesteś pewien?', okText: 'usuń' });
+	if (!proceed) {
 		return;
 	}
 
@@ -92,7 +98,8 @@ async function deletePage(id: number, button: HTMLButtonElement) {
 
 		if (loadedPageId.value === id) {
 			loadedPageId.value = undefined;
-			resetForm(undefined, true);
+			clearForm(undefined, true);
+			contentEditor.value?.clear();
 		}
 		await Promise.all([table.value?.getPages(), getLanguages()]);
 	} catch (e) {
@@ -103,8 +110,8 @@ async function deletePage(id: number, button: HTMLButtonElement) {
 	}
 }
 
-function clearForm() {
-	resetForm(resetButton.value?.element);
+function clearFormAndLoadedPage() {
+	clearForm(resetButton.value?.element);
 	loadedPageId.value = undefined;
 }
 </script>
@@ -151,10 +158,10 @@ function clearForm() {
 			/>
 		</section>
 
-		<PagesContentEditor />
+		<PagesContentEditor ref="contentEditor" />
 
 		<section class="mt-6 flex justify-center gap-4">
-			<VButton ref="resetButton" class="-ml-[0.8rem] neon-red" @click="clearForm">
+			<VButton ref="resetButton" class="-ml-[0.8rem] neon-red" @click="clearFormAndLoadedPage">
 				wyczyść
 			</VButton>
 			<VButton ref="saveButton" class="neon-green" :is-loading="isSaving" @click="sendForm">

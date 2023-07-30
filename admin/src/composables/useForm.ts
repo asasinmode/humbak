@@ -27,18 +27,18 @@ export const useForm = <T extends Record<string, unknown>>(
 		Object.keys(form).reduce((p, c) => ({ ...p, [c]: '' }), {}) as Record<keyof T, string>
 	);
 
-	function resetErrors() {
+	function clearErrors() {
 		for (const key in errors.value) {
 			// @ts-expect-error it's a valid key
 			errors.value[key] = '';
 		}
 	}
-	function resetFields() {
+	function clearFields() {
 		for (const key in form) {
 			fields[key].value = form[key];
 		}
 	}
-	async function resetForm(element?: HTMLElement | null, skipConfirm = false, continueMessage = false) {
+	async function clearForm(element?: HTMLElement | null, skipConfirm = false, continueMessage = false) {
 		if (!skipConfirm && hasChanged()) {
 			const proceed = await confirm(element, {
 				title: 'niezapisane zmiany',
@@ -51,8 +51,8 @@ export const useForm = <T extends Record<string, unknown>>(
 			}
 		}
 
-		resetErrors();
-		resetFields();
+		clearErrors();
+		clearFields();
 		updateValues(form);
 		return true;
 	}
@@ -63,7 +63,7 @@ export const useForm = <T extends Record<string, unknown>>(
 			throw error;
 		}
 
-		resetErrors();
+		clearErrors();
 		let toastUnknown = false;
 
 		for (const { path, message } of JSON.parse(error.message) as TRPCError[]) {
@@ -83,7 +83,7 @@ export const useForm = <T extends Record<string, unknown>>(
 	}
 
 	async function sendForm() {
-		resetErrors();
+		clearErrors();
 		isSaving.value = true;
 
 		try {
@@ -117,9 +117,9 @@ export const useForm = <T extends Record<string, unknown>>(
 		...fields,
 		errors,
 		isSaving,
-		resetErrors,
-		resetFields,
-		resetForm,
+		clearErrors,
+		clearFields,
+		clearForm,
 		handleError,
 		sendForm,
 		updateValues,

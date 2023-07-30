@@ -5,13 +5,10 @@ await promptProdContinue();
 
 const tables = await getTableNames();
 
-await pool.execute('SET FOREIGN_KEY_CHECKS = 0');
-
 await Promise.all(
-	tables.map(table =>
+	tables.filter(({ table_name }) => table_name !== 'pages').map(table =>
 		pool.execute(`DROP TABLE ${table.table_name}`)
-	)
+	).concat(pool.execute('DROP TABLE pages'))
 );
 
-await pool.execute('SET FOREIGN_KEY_CHECKS = 1');
 await pool.end();

@@ -71,6 +71,14 @@ watch(() => props.currentModel, (index) => {
 watch(isDark, (value) => {
 	setTheme(value ? 'vs-dark' : 'vs');
 });
+
+function updateModelValue(index: number, value: string) {
+	editorModels.value[index].setValue(value);
+}
+
+defineExpose({
+	updateModelValue,
+});
 </script>
 
 <template>

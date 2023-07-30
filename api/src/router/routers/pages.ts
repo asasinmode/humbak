@@ -50,7 +50,21 @@ export const pagesRouter = router({
 		return result[0].count;
 	}),
 	byId: publicProcedure.input(z.number()).query(async (opts) => {
-		const result = await db.select().from(pages).where(eq(pages.id, opts.input));
+		const result = await db
+			.select({
+				id: pages.id,
+				language: pages.language,
+				title: pages.title,
+				slug: pages.slug,
+				menuText: sql<string>`${menus.text}`,
+				html: sql<string>`${contents.html}`,
+				meta: sql<string>`${contents.meta}`,
+			})
+			.from(pages)
+			.leftJoin(menus, eq(menus.pageId, opts.input))
+			.leftJoin(contents, eq(contents.pageId, opts.input))
+			.where(eq(pages.id, opts.input));
+
 		return result[0];
 	}),
 	upsert: publicProcedure.input(upsertPageInputSchema).mutation(async (opts) => {
@@ -83,7 +97,21 @@ export const pagesRouter = router({
 			}),
 		]);
 
-		const result = await db.select().from(pages).where(eq(pages.id, pageId));
+		const result = await db
+			.select({
+				id: pages.id,
+				language: pages.language,
+				title: pages.title,
+				slug: pages.slug,
+				menuText: sql<string>`${menus.text}`,
+				html: sql<string>`${contents.html}`,
+				meta: sql<string>`${contents.meta}`,
+			})
+			.from(pages)
+			.leftJoin(menus, eq(menus.pageId, pageId))
+			.leftJoin(contents, eq(contents.pageId, pageId))
+			.where(eq(pages.id, pageId));
+
 		return result[0];
 	}),
 	delete: publicProcedure.input(z.number()).mutation(async (opts) => {

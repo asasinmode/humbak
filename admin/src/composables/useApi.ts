@@ -12,5 +12,5 @@ const client = createTRPCProxyClient<AppRouter>({
 
 export const useApi = () => client;
 
-export type ListedPage = Awaited<ReturnType<typeof client['pages']['list']['query']>>[number];
-export type UniqueLanguage = Awaited<ReturnType<typeof client['pages']['uniqueLanguages']['query']>>[number];
+export type IListedPage = Awaited<ReturnType<typeof client['pages']['list']['query']>>[number];
+export type IUniqueLanguage = Awaited<ReturnType<typeof client['pages']['uniqueLanguages']['query']>>[number];
