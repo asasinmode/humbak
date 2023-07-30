@@ -65,10 +65,15 @@ function updateValues(
 function getChangedFields() {
 	const fields: Pick<IUpsertPageInput, 'html' | 'css' | 'meta'> = {};
 
-	if (contents.value.meta.value || contents.value.meta.initValue) {
+	const { value: metaValue, initValue: metaInitValue } = contents.value.meta;
+	if (metaValue || metaInitValue) {
 		const parsedMetaValue = JSON.parse(contents.value.meta.value);
-		const parsedInitMetaValue = JSON.parse(contents.value.meta.initValue);
-		if (JSON.stringify(parsedMetaValue) !== JSON.stringify(parsedInitMetaValue)) {
+		if (metaInitValue) {
+			const parsedInitMetaValue = JSON.parse(contents.value.meta.initValue);
+			if (JSON.stringify(parsedMetaValue) !== JSON.stringify(parsedInitMetaValue)) {
+				fields.meta = parsedMetaValue;
+			}
+		} else {
 			fields.meta = parsedMetaValue;
 		}
 	}
