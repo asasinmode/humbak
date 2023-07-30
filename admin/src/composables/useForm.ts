@@ -83,13 +83,13 @@ export const useForm = <T extends Record<string, unknown>>(
 		toastUnknown && toast('coś poszło nie tak 😓', 'error');
 	}
 
-	async function sendForm() {
+	async function sendForm(toastSuccess = true) {
 		clearErrors();
 		isSaving.value = true;
 
 		try {
 			await saveCallback();
-			toast('zapisano zmiany');
+			toastSuccess && toast('zapisano zmiany');
 		} catch (e) {
 			handleError(e);
 			await useShake(elementToShake);

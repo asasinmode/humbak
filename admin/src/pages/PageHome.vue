@@ -56,6 +56,8 @@ const {
 		await Promise.all([table.value?.getPages(true), getLanguages()]);
 		loadingPageId.value = undefined;
 		loadedPageId.value = page.id;
+
+		toast('zapisano zmiany');
 	},
 	saveButton.value?.element,
 	() => Object.keys(contentEditor.value?.getChangedFields() || {}).length > 0
