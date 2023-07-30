@@ -12,4 +12,6 @@ export const menus = mysqlTable('menus', {
 
 export type Page = InferModel<typeof pages, 'select'>;
 
-export const insertMenuSchema = createInsertSchema(menus).omit({ updatedAt: true });
+export const insertMenuSchema = createInsertSchema(menus, {
+	text: schema => schema.text.nonempty(),
+}).omit({ updatedAt: true });
