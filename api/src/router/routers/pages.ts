@@ -1,22 +1,32 @@
 import { eq, like, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '~/db';
-import { insertPageSchema, pages } from '~/db/schema/pages';
 import { publicProcedure, router } from '~/router/trpc';
 import { paginationQueryInput } from '~/helpers';
+import { insertPageSchema, pages } from '~/db/schema/pages';
+import { contents, insertContentSchema } from '~/db/schema/contents';
+import { insertMenuSchema, menus } from '~/db/schema/menu';
+
+const upsertPageInputSchema = insertPageSchema
+	.and(z.object({
+		menuText: insertMenuSchema.shape.text,
+		css: z.string().optional(),
+	}))
+	.and(insertContentSchema.omit({ pageId: true }));
 
 export const pagesRouter = router({
 	list: publicProcedure.input(paginationQueryInput).query(async (opts) => {
 		const { query, limit, offset } = opts.input;
-		const select = { id: pages.id, language: pages.language, title: pages.title, menuText: pages.menuText };
+		const select = { id: pages.id, language: pages.language, title: pages.title, menuText: menus.text };
 
 		return db
 			.select(select)
 			.from(pages)
+			.leftJoin(menus, eq(menus.pageId, pages.id))
 			.where(query
 				? or(
 					like(pages.title, `%${query}%`),
-					like(pages.menuText, `%${query}%`)
+					like(menus.text, `%${query}%`)
 				)
 				: sql`1 = 1`)
 			.orderBy(pages.id)
@@ -29,10 +39,11 @@ export const pagesRouter = router({
 		const result = await db
 			.select({ count: sql<number>`COUNT(*)` })
 			.from(pages)
+			.leftJoin(menus, eq(menus.pageId, pages.id))
 			.where(query
 				? or(
 					like(pages.title, `%${query}%`),
-					like(pages.menuText, `%${query}%`)
+					like(menus.text, `%${query}%`)
 				)
 				: sql`1 = 1`);
 
@@ -40,23 +51,39 @@ export const pagesRouter = router({
 	}),
 	byId: publicProcedure.input(z.number()).query(async (opts) => {
 		const result = await db.select().from(pages).where(eq(pages.id, opts.input));
-
 		return result[0];
 	}),
-	upsert: publicProcedure.input(insertPageSchema).mutation(async (opts) => {
-		const [{ insertId }] = await db
+	upsert: publicProcedure.input(upsertPageInputSchema).mutation(async (opts) => {
+		const { menuText, html, meta, ...pageFields } = opts.input;
+
+		const [{ insertId: pageId }] = await db
 			.insert(pages)
-			.values(opts.input)
+			.values(pageFields)
 			.onDuplicateKeyUpdate({
 				set: {
-					...opts.input,
+					...pageFields,
 					id: undefined,
 					updatedAt: new Date(),
 				},
 			});
 
-		const result = await db.select().from(pages).where(eq(pages.id, insertId || opts.input.id || 0));
+		await Promise.all([
+			db.insert(menus).values({ pageId, text: menuText }).onDuplicateKeyUpdate({
+				set: {
+					text: menuText,
+					updatedAt: new Date(),
+				},
+			}),
+			db.insert(contents).values({ pageId, html, meta }).onDuplicateKeyUpdate({
+				set: {
+					html,
+					meta,
+					updatedAt: new Date(),
+				},
+			}),
+		]);
 
+		const result = await db.select().from(pages).where(eq(pages.id, pageId));
 		return result[0];
 	}),
 	delete: publicProcedure.input(z.number()).mutation(async (opts) => {

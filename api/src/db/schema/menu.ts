@@ -1,11 +1,15 @@
 import { type InferModel, sql } from 'drizzle-orm';
-import { datetime, int, mysqlTable } from 'drizzle-orm/mysql-core';
+import { createInsertSchema } from 'drizzle-zod';
+import { boolean, datetime, int, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
 import { pages } from './pages';
 
 export const menus = mysqlTable('menus', {
-	id: int('id').primaryKey().autoincrement(),
-	pageId: int('pageId').notNull().references(() => pages.id, { onDelete: 'cascade' }),
+	pageId: int('pageId').primaryKey().references(() => pages.id, { onDelete: 'cascade' }),
+	text: varchar('text', { length: 256 }).notNull(),
+	visible: boolean('visible').notNull().default(true),
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
 export type Page = InferModel<typeof pages, 'select'>;
+
+export const insertMenuSchema = createInsertSchema(menus).omit({ updatedAt: true });

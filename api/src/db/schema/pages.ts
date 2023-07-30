@@ -7,7 +7,6 @@ export const pages = mysqlTable('pages', {
 	language: varchar('language', { length: 32 }).notNull(),
 	title: varchar('title', { length: 256 }).notNull(),
 	slug: varchar('slug', { length: 256 }).notNull(),
-	menuText: varchar('menuText', { length: 256 }).notNull(),
 	createdAt: datetime('createdAt').notNull().default(sql`NOW()`),
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 }, table => ({
@@ -21,5 +20,4 @@ export const insertPageSchema = createInsertSchema(pages, {
 	language: schema => schema.language.nonempty(),
 	title: schema => schema.title.nonempty(),
 	slug: schema => schema.slug.nonempty(),
-	menuText: schema => schema.menuText.nonempty(),
 }).omit({ createdAt: true, updatedAt: true });
