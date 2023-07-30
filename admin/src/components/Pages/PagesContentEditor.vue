@@ -1,18 +1,10 @@
 <script setup lang="ts">
 import VEditor from '~/components/V/VEditor.vue';
+import type { IUpsertPageInput } from '~/composables/useApi';
 
 const editor = ref<InstanceType<typeof VEditor>>();
 
-type IContent = {
-	initValue: string;
-	value: string;
-};
-
-const contents = ref<{
-	html: IContent;
-	css: IContent;
-	meta: IContent;
-}>({
+const contents = ref({
 	html: {
 		initValue: '',
 		value: '',
@@ -30,19 +22,6 @@ const contents = ref<{
 		value: '',
 	},
 });
-// const html = ref(`
-// <section>
-// 	<h1>Content</h1>
-// </section>
-// `);
-// const css = ref(`
-
-// `);
-// const meta = ref(`
-// [
-// 	{ "name": "robots", "content": "index, follow" }
-// ]
-// `);
 const currentModelIndex = ref(0);
 
 function updateCurrentModel(value: string) {
@@ -57,43 +36,57 @@ function updateCurrentModel(value: string) {
 }
 
 function clear() {
-	for (const key in contents.value) {
-		// @ts-expect-error it's a valid key
-		contents.value[key].value = '';
-		// @ts-expect-error it's a valid key
-		contents.value[key].initValue = '';
-	}
+	updateValues({ html: '', css: '', meta: '' });
 }
 
-async function updateValues(
+function updateValues(
 	data: {
 		html: string;
 		// css: string;
 		meta: string;
-		[key: string]: any;
-	}
+	} & Record<string, any>
 ) {
-	for (const key in contents.value) {
-		// @ts-expect-error it's a valid key
-		contents.value[key].value = data[key];
-		// @ts-expect-error it's a valid key
-		contents.value[key].initValue = data[key];
-	}
-
-	// tmp
+	contents.value.html.value = data.html;
+	contents.value.meta.value = data.meta;
 	contents.value.css.value = `.selector {
 	background-color: lime;
 }`;
-	contents.value.css.initValue = contents.value.css.value;
 
-	editor?.value?.updateModelValue(0, contents.value.html.value);
-	editor?.value?.updateModelValue(1, contents.value.css.value);
-	editor?.value?.updateModelValue(2, contents.value.meta.value);
+	for (const key in contents.value) {
+		// @ts-expect-error it's a valid key
+		contents.value[key].initValue = contents.value[key].value;
+	}
+
+	editor.value?.updateModelValue(0, contents.value.html.value);
+	editor.value?.updateModelValue(1, contents.value.css.value);
+	editor.value?.updateModelValue(2, contents.value.meta.value);
+}
+
+function getChangedFields() {
+	const fields: Pick<IUpsertPageInput, 'html' | 'css' | 'meta'> = {};
+
+	if (contents.value.meta.value || contents.value.meta.initValue) {
+		const parsedMetaValue = JSON.parse(contents.value.meta.value);
+		const parsedInitMetaValue = JSON.parse(contents.value.meta.initValue);
+		if (JSON.stringify(parsedMetaValue) !== JSON.stringify(parsedInitMetaValue)) {
+			fields.meta = parsedMetaValue;
+		}
+	}
+
+	if (contents.value.html.value !== contents.value.html.initValue) {
+		fields.html = contents.value.html.value;
+	}
+	if (contents.value.css.value !== contents.value.css.initValue) {
+		fields.css = contents.value.css.value;
+	}
+
+	return fields;
 }
 
 defineExpose({
 	clear,
 	updateValues,
+	getChangedFields,
 });
 </script>
 

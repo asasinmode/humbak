@@ -12,7 +12,8 @@ type TRPCError = {
 export const useForm = <T extends Record<string, unknown>>(
 	form: T,
 	saveCallback: () => Promise<unknown>,
-	elementToShake?: Parameters<typeof useShake>[0]
+	elementToShake?: Parameters<typeof useShake>[0],
+	checkForExternalHasChanged = () => true
 ) => {
 	const isSaving = ref(false);
 	const initValue = structuredClone(form);
@@ -110,7 +111,7 @@ export const useForm = <T extends Record<string, unknown>>(
 				return true;
 			}
 		}
-		return false;
+		return checkForExternalHasChanged();
 	}
 
 	return {

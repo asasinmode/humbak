@@ -33,20 +33,32 @@ const {
 		menuText: '',
 	},
 	async () => {
+		let contentFields;
+		try {
+			contentFields = contentEditor.value?.getChangedFields() || {};
+		} catch (e) {
+			toast('zła wartość meta', 'error');
+			console.error(e);
+			return;
+		}
+
 		const page = await api.pages.upsert.mutate({
 			id: loadedPageId.value,
 			language: language.value,
 			title: title.value,
 			slug: slug.value,
 			menuText: menuText.value,
+			...contentFields,
 		});
 
 		updateValues(page);
+		contentEditor.value?.updateValues(page);
 		await Promise.all([table.value?.getPages(true), getLanguages()]);
 		loadingPageId.value = undefined;
 		loadedPageId.value = page.id;
 	},
-	saveButton.value?.element
+	saveButton.value?.element,
+	() => Object.keys(contentEditor.value?.getChangedFields() || {}).length > 0
 );
 
 async function getLanguages() {
@@ -55,7 +67,7 @@ async function getLanguages() {
 	try {
 		languages.value = await api.pages.uniqueLanguages.query();
 	} catch (e) {
-		toast('błąd przy ładowaniu danych', 'error');
+		toast('błąd przy ładowaniu języków', 'error');
 		throw e;
 	} finally {
 		isLoading.value = false;
@@ -69,6 +81,8 @@ async function editPage(id: number, button: HTMLButtonElement) {
 	}
 
 	loadingPageId.value = id;
+	loadedPageId.value = undefined;
+	contentEditor.value?.clear();
 
 	try {
 		const [page] = await Promise.all([
@@ -110,9 +124,14 @@ async function deletePage(id: number, button: HTMLButtonElement) {
 	}
 }
 
-function clearFormAndLoadedPage() {
-	clearForm(resetButton.value?.element);
+async function clearFormAndLoadedPage() {
+	const proceed = await clearForm(resetButton.value?.element);
+	if (!proceed) {
+		return;
+	}
+
 	loadedPageId.value = undefined;
+	contentEditor.value?.clear();
 }
 </script>
 
@@ -164,7 +183,12 @@ function clearFormAndLoadedPage() {
 			<VButton ref="resetButton" class="-ml-[0.8rem] neon-red" @click="clearFormAndLoadedPage">
 				wyczyść
 			</VButton>
-			<VButton ref="saveButton" class="neon-green" :is-loading="isSaving" @click="sendForm">
+			<VButton
+				ref="saveButton"
+				class="neon-green"
+				:is-loading="isSaving"
+				@click="sendForm(false)"
+			>
 				zapisz
 			</VButton>
 		</section>
