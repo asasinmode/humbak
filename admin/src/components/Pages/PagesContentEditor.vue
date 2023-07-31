@@ -162,8 +162,7 @@ defineExpose({
 				@mousedown="initResizeDrag"
 			>
 				<span class="visually-hidden">zmień rozmiar</span>
-				<div class="i-solar-double-alt-arrow-up-linear absolute left-1/2 top-[calc(50%_-_0.25rem)] h-4 w-4 translate-center" />
-				<div class="i-solar-double-alt-arrow-down-linear absolute left-1/2 top-[calc(50%_+_0.25rem)] h-4 w-4 translate-center" />
+				<div class="i-fa6-solid-arrows-up-down absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
 			</VButton>
 		</aside>
 		<main class="bg-checker flex-1" v-text="contents.html.value" />
