@@ -76,8 +76,13 @@ function updateModelValue(index: number, value: string) {
 	editorModels.value[index].setValue(value);
 }
 
+function formatCurrentModel() {
+	return editor.value?.getAction('editor.action.formatDocument')?.run();
+}
+
 defineExpose({
 	updateModelValue,
+	formatCurrentModel,
 });
 </script>
 

@@ -35,6 +35,10 @@ function updateCurrentModel(value: string) {
 	}
 }
 
+function formatCurrentModel() {
+	editor.value?.formatCurrentModel();
+}
+
 function clear() {
 	updateValues({ html: '', css: '', meta: '' });
 }
@@ -111,6 +115,10 @@ defineExpose({
 		/>
 		<aside class="w-8 shrink-0">
 			<PagesContentEditorModelSelect v-model="currentModelIndex" />
+			<VButton class="mt-2 h-8 w-8 p-0 neon-purple" title="formatuj" @click="formatCurrentModel">
+				<span class="visually-hidden">formatuj</span>
+				<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-[1.15rem] w-[1.15rem] translate-center" />
+			</VButton>
 		</aside>
 		<main class="bg-checker flex-1" v-text="contents.html.value" />
 	</section>
