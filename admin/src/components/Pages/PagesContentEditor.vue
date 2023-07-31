@@ -3,6 +3,7 @@ import VEditor from '~/components/V/VEditor.vue';
 import type { IUpsertPageInput } from '~/composables/useApi';
 
 const editor = ref<InstanceType<typeof VEditor>>();
+const container = ref<HTMLDivElement>();
 
 const contents = ref({
 	html: {
@@ -42,6 +43,34 @@ async function formatMeta() {
 		editor.value?.formatCurrentModel();
 		wasMetaFormatted = true;
 	}
+}
+
+let initY = 0;
+let initHeight = 0;
+
+function initResizeDrag(event: MouseEvent) {
+	event.preventDefault();
+	if (!container.value || !document.defaultView) {
+		throw new Error('Container or document default view not found');
+	}
+
+	initY = event.clientY;
+	initHeight = parseInt(document.defaultView.getComputedStyle(container.value).height);
+	document.addEventListener('mousemove', onResizeMove);
+	document.addEventListener('mouseup', cleanupResizeDrag);
+}
+
+function onResizeMove(event: MouseEvent) {
+	event.preventDefault();
+	if (!container.value) {
+		throw new Error('Container not found');
+	}
+	container.value.style.height = `${initHeight + event.clientY - initY}px`;
+}
+
+function cleanupResizeDrag() {
+	document.removeEventListener('mousemove', onResizeMove);
+	document.removeEventListener('mouseup', cleanupResizeDrag);
 }
 
 function clear() {
@@ -108,7 +137,7 @@ defineExpose({
 </script>
 
 <template>
-	<section class="mt-6 hidden h-[60vh] gap-x-2 md:flex">
+	<section ref="container" class="mt-6 hidden h-[60vh] min-h-64 gap-x-2 md:flex">
 		<!-- make resizable -->
 		<VEditor
 			ref="editor"
@@ -121,11 +150,20 @@ defineExpose({
 			:current-model="currentModelIndex"
 			@update:model-value="updateCurrentModel"
 		/>
-		<aside class="w-8 shrink-0">
+		<aside class="relative w-8 shrink-0">
 			<PagesContentEditorModelSelect v-model="currentModelIndex" @update:model-value="formatMeta" />
 			<VButton class="mt-2 h-8 w-8 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
 				<span class="visually-hidden">formatuj</span>
 				<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-[1.15rem] w-[1.15rem] translate-center" />
+			</VButton>
+			<VButton
+				class="left-1/2 top-1/2 h-8 w-8 translate-center cursor-move p-0 !absolute neon-neutral"
+				title="zmień rozmiar"
+				@mousedown="initResizeDrag"
+			>
+				<span class="visually-hidden">zmień rozmiar</span>
+				<div class="i-solar-double-alt-arrow-up-linear absolute left-1/2 top-[calc(50%_-_0.25rem)] h-4 w-4 translate-center" />
+				<div class="i-solar-double-alt-arrow-down-linear absolute left-1/2 top-[calc(50%_+_0.25rem)] h-4 w-4 translate-center" />
 			</VButton>
 		</aside>
 		<main class="bg-checker flex-1" v-text="contents.html.value" />
