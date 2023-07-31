@@ -68,7 +68,7 @@ export const pagesRouter = router({
 		return result[0];
 	}),
 	upsert: publicProcedure.input(upsertPageInputSchema).mutation(async (opts) => {
-		const { menuText, html, meta, ...pageFields } = opts.input;
+		const { menuText, html, meta, css, ...pageFields } = opts.input;
 
 		const [{ insertId: pageId }] = await db
 			.insert(pages)
