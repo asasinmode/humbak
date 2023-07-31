@@ -23,6 +23,7 @@ const contents = ref({
 	},
 });
 const currentModelIndex = ref(0);
+let wasMetaFormatted = false;
 
 function updateCurrentModel(value: string) {
 	const index = currentModelIndex.value;
@@ -32,6 +33,14 @@ function updateCurrentModel(value: string) {
 		contents.value.css.value = value;
 	} else {
 		contents.value.meta.value = value;
+	}
+}
+
+async function formatMeta() {
+	if (!wasMetaFormatted && currentModelIndex.value === 2) {
+		await nextTick();
+		editor.value?.formatCurrentModel();
+		wasMetaFormatted = true;
 	}
 }
 
@@ -60,6 +69,9 @@ function updateValues(
 	editor.value?.updateModelValue(0, contents.value.html.value);
 	editor.value?.updateModelValue(1, contents.value.css.value);
 	editor.value?.updateModelValue(2, contents.value.meta.value);
+
+	wasMetaFormatted = false;
+	formatMeta();
 }
 
 function getChangedFields() {
@@ -110,7 +122,7 @@ defineExpose({
 			@update:model-value="updateCurrentModel"
 		/>
 		<aside class="w-8 shrink-0">
-			<PagesContentEditorModelSelect v-model="currentModelIndex" />
+			<PagesContentEditorModelSelect v-model="currentModelIndex" @update:model-value="formatMeta" />
 			<VButton class="mt-2 h-8 w-8 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
 				<span class="visually-hidden">formatuj</span>
 				<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-[1.15rem] w-[1.15rem] translate-center" />
