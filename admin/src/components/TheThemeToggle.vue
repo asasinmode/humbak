@@ -3,7 +3,7 @@ const props = withDefaults(defineProps<{
 	size?: number;
 }>(), { size: 2 });
 
-const { toggleTheme } = useTheme();
+const { toggleTheme, isDark } = useTheme();
 
 const element = ref<HTMLButtonElement | null>(null);
 const style = computed(() => `--size: ${props.size}rem`);
@@ -22,6 +22,7 @@ defineExpose({
 		:style="style"
 		@click="toggleTheme"
 	>
+		<span class="visually-hidden">zmiana koloru ({{ isDark ? 'ciemny' : 'jasny' }})</span>
 		<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24">
 			<circle class="sun" cx="12" cy="12" r="6" mask="url(#moonMask)" fill="currentColor" />
 			<g class="sunBeams" stroke="currentColor" stroke-width="2" stroke-linecap="round">

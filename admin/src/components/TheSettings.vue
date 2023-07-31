@@ -9,10 +9,12 @@ const count = ref(0);
 		class="rounded-1/2 text-link"
 		@click="count++"
 	>
+		<span class="visually-hidden">ustawienia</span>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="32" height="32" viewBox="0 0 24 24"
 			class="transition-transform"
+			aria-hidden="true"
 			:style="{ transform: `rotate(${count * 180}deg)` }"
 		>
 			<g fill="none" stroke="currentColor" stroke-width="1.5">

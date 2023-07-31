@@ -76,6 +76,7 @@ function lastElementFocusOut(event: FocusEvent) {
 		@focusin="toggleButtonFocusIn"
 		@focusout="toggleButtonFocusOut"
 	>
+		<span class="visually-hidden">menu</span>
 		<div class="i-fa6-solid-bars h-8 w-8" />
 	</button>
 

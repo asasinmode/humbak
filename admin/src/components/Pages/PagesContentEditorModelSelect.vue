@@ -22,12 +22,11 @@ updateCursoredIndexToSelected(value.value);
 </script>
 
 <template>
-	<article class="relative">
-		<span id="editor-mode-combobox-label" class="visually-hidden">editor mode</span>
+	<article class="relative" title="tryb edytora">
+		<span id="editor-mode-combobox-label" class="visually-hidden">tryb edytora</span>
 		<div
-			aria-label="editor mode"
+			aria-label="tryb edytora"
 			class="relative h-8 w-8 cursor-pointer shadow neon-blue"
-			title="editor mode"
 			role="combobox"
 			tabindex="0"
 			aria-haspopup="listbox"
@@ -60,17 +59,17 @@ updateCursoredIndexToSelected(value.value);
 			@keydown.down.prevent="moveCursor(1)"
 		>
 			<li
-				v-for="({ text, value }, index) in options"
+				v-for="({ text, value: optionValue }, index) in options"
 				:id="`editor-mode-option-${index}`"
 				:key="text"
 				class="relative flex-1 cursor-pointer select-none bg-op-40 px-3 py-2 hover:bg-op-40"
 				:class=" [
-					modelValue === value ? 'after:(content-empty absolute right-[2px] top-[2px] h-1 w-1 rounded-1/2 bg-current)' : '',
-					cursoredOverIndex === index ? modelValue === value ? 'bg-green' : 'bg-blue' : '',
+					modelValue === optionValue ? 'after:(content-empty absolute right-[2px] top-[2px] h-1 w-1 rounded-1/2 bg-current)' : '',
+					cursoredOverIndex === index ? modelValue === optionValue ? 'bg-green' : 'bg-blue' : '',
 				]"
 				tabindex="-1"
 				role="option"
-				:aria-selected="modelValue === value"
+				:aria-selected="modelValue === optionValue"
 				@click="selectOption(index)"
 				@mouseenter="cursoredOverIndex = index"
 			>
