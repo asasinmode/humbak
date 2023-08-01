@@ -61,7 +61,6 @@ onMounted(async () => {
 							description: [
 								'The name and content attributes can be used together to provide document metadata in terms of name-value pairs,',
 								'with the name attribute giving the metadata name, and the content attribute giving the value.',
-								'',
 								'@see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#attr-name',
 							].join('\n'),
 							anyOf: [

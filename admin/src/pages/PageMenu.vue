@@ -1,8 +1,139 @@
 <script setup lang="ts">
+type IMenuLink = {
+	id: number;
+	text: string;
+	href: string;
+	position: number;
+	parentId: null | number;
+};
+
+type IMenuTreeItem = {
+	id: number;
+	text: string;
+	href: string;
+	position: number;
+	children: IMenuTreeItem[];
+};
+
+const menuLinks: IMenuLink[] = [
+	{ id: 1, text: 'third', href: 'menu', position: 2, parentId: null },
+	{ id: 2, text: 'second', href: 'menu', position: 1, parentId: null },
+	{ id: 3, text: 'first', href: 'menu', position: 0, parentId: null },
+	{ id: 4, text: 'third nested', href: 'menu', position: 2, parentId: 1 },
+	{ id: 5, text: 'second nested second', href: 'menu', position: 1, parentId: 2 },
+	{ id: 6, text: 'second nested first', href: 'menu', position: 0, parentId: 2 },
+	{ id: 7, text: 'first nested', href: 'menu', position: 0, parentId: 3 },
+	{ id: 8, text: 'first nested second', href: 'menu', position: 1, parentId: 4 },
+	{ id: 9, text: 'first nested first', href: 'menu', position: 0, parentId: 4 },
+	{ id: 10, text: 'first nested third', href: 'menu', position: 2, parentId: 4 },
+	{ id: 11, text: 'second nested first', href: 'menu', position: 0, parentId: 5 },
+	{ id: 12, text: 'second nested third', href: 'menu', position: 2, parentId: 5 },
+	{ id: 13, text: 'second nested second', href: 'menu', position: 1, parentId: 5 },
+	{ id: 14, text: 'third nested first', href: 'menu', position: 0, parentId: 6 },
+	{ id: 15, text: 'third nested second', href: 'menu', position: 1, parentId: 6 },
+	{ id: 16, text: 'third nested third', href: 'menu', position: 2, parentId: 6 },
+];
+
+function convertToTree(menuLinks: IMenuLink[]) {
+	const rv = extractWithParentId(menuLinks, null);
+
+	for (const child of rv) {
+		child.children = extractWithParentId(menuLinks, child.id);
+		for (const grandchild of child.children) {
+			grandchild.children = extractWithParentId(menuLinks, grandchild.id);
+		}
+	}
+
+	return rv;
+}
+
+function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): IMenuTreeItem[] {
+	const rv: IMenuTreeItem[] = [];
+	let index = 0;
+	while (index < menuLinks.length) {
+		let currentLink = menuLinks[index];
+
+		if (currentLink.parentId === parentId) {
+			let indexInDestination = 0;
+			for (const { position } of rv) {
+				if (position < currentLink.position) {
+					indexInDestination += 1;
+				}
+			}
+
+			currentLink = menuLinks.splice(index, 1)[0];
+
+			rv.splice(indexInDestination, 0, {
+				id: currentLink.id,
+				text: currentLink.text,
+				href: currentLink.href,
+				position: currentLink.position,
+				children: [],
+			});
+
+			index -= 1;
+		}
+		index += 1;
+	}
+	return rv;
+}
+
+const transformedMenuLinks = convertToTree(menuLinks);
 </script>
 
 <template>
-	<main class="flex-center">
-		menu
+	<main class="px-2 pb-4 pt-[18px] md:px-0">
+		<article class="mx-auto">
+			<nav>
+				<ul class="flex flex-row bg-green/20">
+					<li
+						v-for="(firstLevelLink, firstLevelIndex) in transformedMenuLinks"
+						:key="firstLevelLink.id"
+						class="hoverable-child-ul-visible relative flex-center flex-1 flex-col"
+					>
+						<button> {{ firstLevelLink.text }} </button>
+
+						<ul
+							v-if="firstLevelLink.children.length"
+							class="absolute bottom-0 w-full translate-y-full bg-yellow/20"
+						>
+							<li
+								v-for="secondLevelLink in firstLevelLink.children"
+								:key="secondLevelLink.id"
+								class="hoverable-child-ul-visible relative"
+							>
+								<button>{{ secondLevelLink.text }}</button>
+
+								<ul
+									v-if="secondLevelLink.children.length"
+									class="absolute top-0 w-full bg-cyan/20"
+									:class="
+										firstLevelIndex > Math.ceil(firstLevelLink.children.length / 2)
+											? 'left-0 -translate-x-full' : 'right-0 translate-x-full'
+									"
+								>
+									<li
+										v-for="thirdLevelLink in secondLevelLink.children"
+										:key="thirdLevelLink.id"
+									>
+										<button>{{ thirdLevelLink.text }}</button>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+		</article>
 	</main>
 </template>
+
+<style>
+.hoverable-child-ul-visible > ul {
+	display: none;
+}
+.hoverable-child-ul-visible:hover > ul,
+.hoverable-child-ul-visible:focus-within > ul {
+	display: block;
+}
+</style>
