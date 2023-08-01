@@ -25,6 +25,7 @@ const editorRef = ref<HTMLDivElement>();
 const editor = shallowRef<IMonacoStandalone>();
 const editorModels = shallowRef<IMonacoTextModel[]>([]);
 let setTheme: (theme: string) => void;
+let getModels: () => IMonacoTextModel[];
 
 // add loading & load only once
 onMounted(async () => {
@@ -35,6 +36,7 @@ onMounted(async () => {
 	isLoading.value = true;
 	const monaco = await loader.init();
 
+	getModels = monaco.editor.getModels;
 	setTheme = monaco.editor.setTheme;
 	setTheme(isDark.value ? 'vs-dark' : 'vs');
 
@@ -119,6 +121,9 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
 	editor.value?.dispose();
+	for (const model of getModels()) {
+		model.dispose();
+	}
 });
 
 watch(() => props.currentModel, (index) => {
