@@ -79,39 +79,96 @@ function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): I
 }
 
 const transformedMenuLinks = convertToTree(menuLinks);
+
+type IGrabbedLink = {
+	id: number;
+	path: (number | undefined)[];
+	element: HTMLButtonElement;
+};
+
+let currentlyGrabbedLink: IGrabbedLink | undefined;
+const nav = ref <HTMLElement | undefined>();
+
+function initLinkElementDrag(event: MouseEvent, id: number, path: IGrabbedLink['path']) {
+	event.preventDefault();
+	if (!nav.value) {
+		throw new Error('Nav element not found');
+	}
+
+	const originalElement = event.target as HTMLButtonElement;
+
+	const element = originalElement.cloneNode() as HTMLButtonElement;
+	element.style.position = 'fixed';
+	element.style.pointerEvents = 'none';
+	element.style.left = `${event.clientX}px`;
+	element.style.top = `${event.clientY}px`;
+	element.style.width = `${originalElement.offsetWidth}px`;
+	element.style.height = `${originalElement.offsetHeight}px`;
+	element.classList.add('bg-humbak');
+	element.innerText = originalElement.innerText;
+
+	nav.value.appendChild(element);
+	currentlyGrabbedLink = { id, path, element };
+
+	document.addEventListener('mousemove', moveCurrentlyDraggedLink);
+	document.addEventListener('mouseup', cleanupDrag);
+}
+
+function moveCurrentlyDraggedLink(event: MouseEvent) {
+	if (!currentlyGrabbedLink) {
+		console.warn('Grabbed node not set');
+		return;
+	}
+
+	currentlyGrabbedLink.element.style.left = `${event.clientX}px`;
+	currentlyGrabbedLink.element.style.top = `${event.clientY}px`;
+}
+
+function cleanupDrag() {
+	document.removeEventListener('mousemove', moveCurrentlyDraggedLink);
+	document.removeEventListener('mouseup', cleanupDrag);
+	currentlyGrabbedLink?.element.remove();
+	currentlyGrabbedLink = undefined;
+}
 </script>
 
 <template>
 	<main class="px-2 pb-4 pt-[18px] md:px-0">
-		<nav class="bg-humbak mx-auto max-w-360 text-black">
-			<ul class="flex flex-row">
+		<nav ref="nav" class="bg-humbak mx-auto max-w-360 text-black shadow">
+			<menu class="flex flex-row">
 				<li
 					v-for="(firstLevelLink, firstLevelIndex) in transformedMenuLinks"
 					:key="firstLevelLink.id"
-					class="hoverable-child-ul-visible hover:bg-humbak-5 focus-within:bg-humbak-5 relative flex-center flex-1 flex-col"
+					class="hoverable-child-menu-visible hover:bg-humbak-5 focus-within:bg-humbak-5 relative flex-center flex-1 flex-col"
 				>
-					<button class="relative h-full w-full p-2">
+					<button
+						class="relative h-full w-full p-2"
+						@mousedown="initLinkElementDrag($event, firstLevelLink.id, [firstLevelIndex])"
+					>
 						{{ firstLevelLink.text }}
 						<div
 							v-if="firstLevelLink.children.length"
-							class="i-solar-alt-arrow-down-linear absolute bottom-0 left-1/2 h-3 w-3 -translate-x-1/2"
+							class="i-solar-alt-arrow-down-linear pointer-events-none absolute bottom-0 left-1/2 h-3 w-3 -translate-x-1/2"
 						/>
 					</button>
 
-					<ul
+					<menu
 						v-if="firstLevelLink.children.length"
 						class="bg-humbak-5 absolute bottom-0 w-full translate-y-full"
 					>
 						<li
-							v-for="secondLevelLink in firstLevelLink.children"
+							v-for="(secondLevelLink, secondLevelIndex) in firstLevelLink.children"
 							:key="secondLevelLink.id"
-							class="hoverable-child-ul-visible hover:bg-humbak-6 focus-within:bg-humbak-6 relative"
+							class="hoverable-child-menu-visible hover:bg-humbak-6 focus-within:bg-humbak-6 relative"
 						>
-							<button class="relative h-full w-full p-2">
+							<button
+								class="relative h-full w-full p-2"
+								@mousedown="initLinkElementDrag($event, secondLevelLink.id, [firstLevelIndex, secondLevelIndex])"
+							>
 								{{ secondLevelLink.text }}
 								<div
 									v-if="secondLevelLink.children.length"
-									class="absolute top-1/2 h-3 w-3 -translate-y-1/2"
+									class="pointer-events-none absolute top-1/2 h-3 w-3 -translate-y-1/2"
 									:class="
 										firstLevelIndex > Math.ceil(firstLevelLink.children.length / 2)
 											? 'left-0 i-solar-alt-arrow-left-linear'
@@ -120,7 +177,7 @@ const transformedMenuLinks = convertToTree(menuLinks);
 								/>
 							</button>
 
-							<ul
+							<menu
 								v-if="secondLevelLink.children.length"
 								class="bg-humbak-6 absolute top-0 w-full"
 								:class="
@@ -129,30 +186,33 @@ const transformedMenuLinks = convertToTree(menuLinks);
 								"
 							>
 								<li
-									v-for="thirdLevelLink in secondLevelLink.children"
+									v-for="(thirdLevelLink, thirdLevelIndex) in secondLevelLink.children"
 									:key="thirdLevelLink.id"
 									class="hover:bg-humbak-7 focus-within:bg-humbak-7"
 								>
-									<button class="h-full w-full p-2">
+									<button
+										class="h-full w-full p-2"
+										@mousedown="initLinkElementDrag($event, thirdLevelLink.id, [firstLevelIndex, secondLevelIndex, thirdLevelIndex])"
+									>
 										{{ thirdLevelLink.text }}
 									</button>
 								</li>
-							</ul>
+							</menu>
 						</li>
-					</ul>
+					</menu>
 				</li>
-			</ul>
+			</menu>
 		</nav>
 	</main>
 </template>
 
 <style>
-.hoverable-child-ul-visible > ul {
+.hoverable-child-menu-visible > menu {
 	display: none;
 }
 
-.hoverable-child-ul-visible:hover > ul,
-.hoverable-child-ul-visible:focus-within > ul {
+.hoverable-child-menu-visible:hover > menu,
+.hoverable-child-menu-visible:focus-within > menu {
 	display: block;
 }
 </style>
