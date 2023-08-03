@@ -91,7 +91,7 @@ const nav = ref<HTMLElement | undefined>();
 function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: number[]) {
 	event.preventDefault();
 	if (!nav.value) {
-		throw new Error('Nav element not found');
+		throw new Error('nav element not found');
 	}
 
 	const target = event.target as HTMLButtonElement;
@@ -120,17 +120,16 @@ function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: numbe
 	document.addEventListener('mouseup', cleanupDrag);
 }
 
-function createDropPreview(event: MouseEvent, path: number[]) {
+function createDropIndicator(event: MouseEvent, path: number[]) {
 	if (!currentlyGrabbedLink) {
 		return;
 	}
 
 	const target = event.target as HTMLButtonElement;
-	const parentLi = target.parentElement as HTMLLIElement;
-	const parentMenu = parentLi.parentElement as HTMLMenuElement;
+	const element = target?.parentElement as HTMLLIElement;
 
-	if (!parentLi || !parentMenu) {
-		throw new Error('Parents for drop preview not found');
+	if (!element) {
+		throw new Error('parent of dragged element not found');
 	}
 
 	const isVertical = path.length > 1;
@@ -138,32 +137,26 @@ function createDropPreview(event: MouseEvent, path: number[]) {
 		target[isVertical ? 'offsetHeight' : 'offsetWidth'] / 2
 	);
 
-	let element = dropPreview?.element;
-	if (!element) {
-		element = currentlyGrabbedLink.element.cloneNode(true) as HTMLLIElement;
-		element.style.position = '';
-		element.style.top = '';
-		element.style.left = '';
-		element.style.width = '';
-		element.style.height = '';
-	}
+	dropPreview?.element.classList.remove('drop-indicator-start', 'drop-indicator-end');
 
+	element.classList.toggle(isBefore ? 'drop-indicator-start' : 'drop-indicator-end', true);
 	dropPreview = { element, path, isBefore };
 
-	const isPreviewInOriginalPosition = comparePreviewOriginalPosition(isBefore, path);
-	if (!isPreviewInOriginalPosition) {
-		parentMenu.insertBefore(element, isBefore ? parentLi : parentLi.nextElementSibling);
-		return;
-	}
-	if (element.parentElement) {
-		element.parentElement.removeChild(element);
-	}
+	// const isPreviewInOriginalPosition = comparePreviewOriginalPosition(isBefore, path);
+	// if (!isPreviewInOriginalPosition) {
+	// 	parentMenu.insertBefore(element, isBefore ? parent : parent.nextElementSibling);
+	// 	return;
+	// }
+	// if (element.parentElement) {
+	// 	element.parentElement.removeChild(element);
+	// }
 }
 
 function adjustDropPreviewPosition(
 	event: MouseEvent,
 	path: number[]
 ) {
+	return;
 	if (!dropPreview) {
 		return;
 	}
@@ -204,11 +197,7 @@ function moveCurrentlyDraggedLink(event: MouseEvent) {
 }
 
 function cleanupDrag(event: MouseEvent) {
-	if (!currentlyGrabbedLink) {
-		throw new Error('Associated variables not set');
-	}
-
-	const { path: originalPath } = currentlyGrabbedLink;
+	const originalPath = currentlyGrabbedLink?.path;
 	const path = dropPreview?.path;
 	const isBefore = dropPreview?.isBefore;
 
@@ -216,11 +205,13 @@ function cleanupDrag(event: MouseEvent) {
 	document.removeEventListener('mouseup', cleanupDrag);
 	currentlyGrabbedLink?.element.remove();
 	currentlyGrabbedLink = undefined;
-	dropPreview?.element.remove();
+	dropPreview?.element.classList.remove('drop-indicator-end', 'drop-indicator-start');
 	dropPreview = undefined;
 
+	return;
+
 	const isDroppedOutside = !event.target || !nav.value?.contains(event.target as HTMLElement);
-	if (!path || isBefore === undefined || isDroppedOutside) {
+	if (isDroppedOutside || !path || !originalPath || isBefore === undefined) {
 		return;
 	}
 
@@ -306,13 +297,13 @@ function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
 				<li
 					v-for="(firstLevelLink, firstLevelIndex) in transformedMenuLinks"
 					:key="firstLevelLink.id"
-					class="hoverable-child-menu-visible hover:bg-humbak-5 focus-within:bg-humbak-5 relative flex-center flex-1 flex-col list-none"
+					class="hoverable-child-menu-visible horizontal hover:bg-humbak-5 focus-within:bg-humbak-5 relative flex-center flex-1 flex-col list-none"
 				>
 					<MenuLinkButton
 						:item="firstLevelLink"
 						:path="[firstLevelIndex]"
 						@mousedown="initLinkElementDrag"
-						@mouseenter="createDropPreview"
+						@mouseenter="createDropIndicator"
 						@mousemove="adjustDropPreviewPosition"
 					>
 						<div
@@ -328,13 +319,13 @@ function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
 						<li
 							v-for="(secondLevelLink, secondLevelIndex) in firstLevelLink.children"
 							:key="secondLevelLink.id"
-							class="hoverable-child-menu-visible hover:bg-humbak-6 focus-within:bg-humbak-6 relative list-none"
+							class="hoverable-child-menu-visible vertical hover:bg-humbak-6 focus-within:bg-humbak-6 relative list-none"
 						>
 							<MenuLinkButton
 								:item="secondLevelLink"
 								:path="[firstLevelIndex, secondLevelIndex]"
 								@mousedown="initLinkElementDrag"
-								@mouseenter="createDropPreview"
+								@mouseenter="createDropIndicator"
 								@mousemove="adjustDropPreviewPosition"
 							>
 								<div
@@ -359,13 +350,13 @@ function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
 								<li
 									v-for="(thirdLevelLink, thirdLevelIndex) in secondLevelLink.children"
 									:key="thirdLevelLink.id"
-									class="hover:bg-humbak-7 focus-within:bg-humbak-7 list-none"
+									class="hover:bg-humbak-7 vertical focus-within:bg-humbak-7 list-none"
 								>
 									<MenuLinkButton
 										:item="thirdLevelLink"
 										:path="[firstLevelIndex, secondLevelIndex, thirdLevelIndex]"
 										@mousedown="initLinkElementDrag"
-										@mouseenter="createDropPreview"
+										@mouseenter="createDropIndicator"
 										@mousemove="adjustDropPreviewPosition"
 									/>
 								</li>
@@ -390,5 +381,69 @@ function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
 
 .dragged-menu-link {
 	@apply bg-black text-white dark:(bg-white text-black)
+}
+
+.drop-indicator-start:before,
+.drop-indicator-end:before{
+	@apply bg-black dark:bg-white
+}
+
+.drop-indicator-start:after,
+.drop-indicator-end:after,
+.drop-indicator-start:before,
+.drop-indicator-end:before {
+	@apply content-empty absolute z-100 pointer-events-none
+}
+
+.horizontal.drop-indicator-start:after,
+.horizontal.drop-indicator-end:after {
+  border-left: 0.25rem solid transparent;
+  border-right: 0.25rem solid transparent;
+  border-top: 0.35rem solid hsl(0 0% 0%);
+}
+.dark .horizontal.drop-indicator-start:after,
+.dark .horizontal.drop-indicator-end:after {
+	border-top: 0.35rem solid hsl(0 0% 100%);
+}
+
+.vertical.drop-indicator-start:after,
+.vertical.drop-indicator-end:after {
+  border-top: 0.25rem solid transparent;
+  border-bottom: 0.25rem solid transparent;
+  border-right: 0.35rem solid hsl(0 0% 0%);
+}
+.dark .vertical.drop-indicator-start:after,
+.dark .vertical.drop-indicator-end:after {
+	border-right: 0.35rem solid hsl(0 0% 100%);
+}
+
+.horizontal.drop-indicator-start,
+.horizontal.drop-indicator-end {
+	@apply before:(h-full w-[2px]) after:(top-0 -translate-y-full)
+}
+
+.horizontal.drop-indicator-start:before,
+.horizontal.drop-indicator-start:after {
+	@apply left-0 -translate-x-1/2
+}
+
+.horizontal.drop-indicator-end:before,
+.horizontal.drop-indicator-end:after {
+	@apply right-0 translate-x-1/2
+}
+
+.vertical.drop-indicator-start,
+.vertical.drop-indicator-end {
+	@apply before:(w-full h-[2px] right-0) after:(right-0 translate-x-full)
+}
+
+.vertical.drop-indicator-start:before,
+.vertical.drop-indicator-start:after {
+	@apply top-0 -translate-y-1/2
+}
+
+.vertical.drop-indicator-end:before,
+.vertical.drop-indicator-end:after {
+	@apply bottom-0 translate-y-1/2
 }
 </style>
