@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import type { IMenuTreeItem } from '~/types';
 
-withDefaults(
-	defineProps<{
-		item: IMenuTreeItem;
-		path: number[];
-		currentLevelChildrenLength: number;
-		levelVertical?: boolean;
-	}>(),
-	{ levelVertical: false }
-);
+defineProps<{
+	item: IMenuTreeItem;
+	path: number[];
+}>();
 
 defineEmits<{
 	mousedown: [MouseEvent, IMenuTreeItem, number[]];

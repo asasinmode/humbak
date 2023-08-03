@@ -83,6 +83,7 @@ type IDropPreview = {
 	isBefore: boolean;
 };
 
+const { toast } = useToast();
 let currentlyGrabbedLink: IGrabbedLink | undefined;
 let dropPreview: IDropPreview | undefined;
 const nav = ref<HTMLElement | undefined>();
@@ -198,18 +199,18 @@ function moveCurrentlyDraggedLink(event: MouseEvent) {
 		console.warn('Grabbed node not set');
 		return;
 	}
-
 	currentlyGrabbedLink.element.style.left = `${event.clientX}px`;
 	currentlyGrabbedLink.element.style.top = `${event.clientY}px`;
 }
 
 function cleanupDrag(event: MouseEvent) {
-	if (!dropPreview || !currentlyGrabbedLink) {
+	if (!currentlyGrabbedLink) {
 		throw new Error('Associated variables not set');
 	}
 
-	const path = dropPreview.path;
-	const isBefore = dropPreview.isBefore;
+	const { path: originalPath } = currentlyGrabbedLink;
+	const path = dropPreview?.path;
+	const isBefore = dropPreview?.isBefore;
 
 	document.removeEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.removeEventListener('mouseup', cleanupDrag);
@@ -219,12 +220,57 @@ function cleanupDrag(event: MouseEvent) {
 	dropPreview = undefined;
 
 	const isDroppedOutside = !event.target || !nav.value?.contains(event.target as HTMLElement);
-	const isPreviewInOriginalPosition = comparePreviewOriginalPosition(isBefore, path);
-	if (isDroppedOutside || isPreviewInOriginalPosition) {
+	if (!path || isBefore === undefined || isDroppedOutside) {
 		return;
 	}
 
-	console.log('moving thing from', [...currentlyGrabbedLink.path], 'to', [...path]);
+	let target = transformedMenuLinks.value[originalPath[0]];
+	for (const index of originalPath.slice(1)) {
+		target = target.children[index];
+	}
+	let maxMenuLevel = 3;
+	for (const child of target.children) {
+		maxMenuLevel = 2;
+		if (child.children.length) {
+			maxMenuLevel = 1;
+			break;
+		}
+	}
+
+	if (path.length > maxMenuLevel) {
+		toast('nowa pozycja nie mieści w sobie dzieci', 'error');
+		return;
+	}
+
+	let isMovedOnSameLevel = path.length === originalPath.length;
+	const maxIndex = (path.length > originalPath.length ? path.length : originalPath.length) - 2;
+	for (let i = 0; i <= maxIndex; i++) {
+		isMovedOnSameLevel = isMovedOnSameLevel && path[i] === originalPath[i];
+	}
+
+	let currentLevelReference = transformedMenuLinks.value;
+	for (const index of originalPath.slice(0, -1)) {
+		currentLevelReference = currentLevelReference[index].children;
+	}
+
+	// console.log('moving from', originalPath.at(-1), 'to', path.at(-1), isBefore);
+	if (isMovedOnSameLevel) {
+		currentLevelReference.splice(
+			path[path.length - 1],
+			0,
+			currentLevelReference.splice(originalPath[originalPath.length - 1], 1)[0]
+		);
+	} else {
+		let newLevelReference = transformedMenuLinks.value;
+		for (const index of path.slice(0, -1)) {
+			newLevelReference = newLevelReference[index].children;
+		}
+		newLevelReference.splice(
+			path[path.length - 1] + (isBefore ? 0 : 1),
+			0,
+			currentLevelReference.splice(originalPath[originalPath.length - 1], 1)[0]
+		);
+	}
 }
 
 function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
@@ -265,7 +311,6 @@ function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
 					<MenuLinkButton
 						:item="firstLevelLink"
 						:path="[firstLevelIndex]"
-						:current-level-children-length="transformedMenuLinks.length"
 						@mousedown="initLinkElementDrag"
 						@mouseenter="createDropPreview"
 						@mousemove="adjustDropPreviewPosition"
@@ -286,10 +331,8 @@ function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
 							class="hoverable-child-menu-visible hover:bg-humbak-6 focus-within:bg-humbak-6 relative list-none"
 						>
 							<MenuLinkButton
-								level-vertical
 								:item="secondLevelLink"
 								:path="[firstLevelIndex, secondLevelIndex]"
-								:current-level-children-length="firstLevelLink.children.length"
 								@mousedown="initLinkElementDrag"
 								@mouseenter="createDropPreview"
 								@mousemove="adjustDropPreviewPosition"
@@ -319,10 +362,8 @@ function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
 									class="hover:bg-humbak-7 focus-within:bg-humbak-7 list-none"
 								>
 									<MenuLinkButton
-										level-vertical
 										:item="thirdLevelLink"
 										:path="[firstLevelIndex, secondLevelIndex, thirdLevelIndex]"
-										:current-level-children-length="secondLevelLink.children.length"
 										@mousedown="initLinkElementDrag"
 										@mouseenter="createDropPreview"
 										@mousemove="adjustDropPreviewPosition"
