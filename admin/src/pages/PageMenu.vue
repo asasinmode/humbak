@@ -30,14 +30,12 @@ const menuLinks: IMenuLink[] = [
 
 function convertToTree(menuLinks: IMenuLink[]) {
 	const rv = extractWithParentId(menuLinks, null);
-
 	for (const child of rv) {
 		child.children = extractWithParentId(menuLinks, child.id);
 		for (const grandchild of child.children) {
 			grandchild.children = extractWithParentId(menuLinks, grandchild.id);
 		}
 	}
-
 	return rv;
 }
 
@@ -75,14 +73,13 @@ function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): I
 const transformedMenuLinks = ref(convertToTree(menuLinks));
 
 type IGrabbedLink = {
-	id: number;
+	item: IMenuTreeItem;
+	element: HTMLLIElement;
 	path: number[];
-	element: HTMLButtonElement;
 };
 type IDropPreview = {
-	id: number;
-	element: HTMLElement;
-	isVertical: boolean;
+	element: HTMLLIElement;
+	path: number[];
 	isBefore: boolean;
 };
 
@@ -90,7 +87,7 @@ let currentlyGrabbedLink: IGrabbedLink | undefined;
 let dropPreview: IDropPreview | undefined;
 const nav = ref<HTMLElement | undefined>();
 
-function initLinkElementDrag(event: MouseEvent, id: number, path: number[]) {
+function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: number[]) {
 	event.preventDefault();
 	if (!nav.value) {
 		throw new Error('Nav element not found');
@@ -99,7 +96,7 @@ function initLinkElementDrag(event: MouseEvent, id: number, path: number[]) {
 	const target = event.target as HTMLButtonElement;
 	const parentTarget = target.parentElement as HTMLLIElement;
 
-	const element = parentTarget.cloneNode() as HTMLButtonElement;
+	const element = parentTarget.cloneNode() as HTMLLIElement;
 	element.innerHTML = '';
 	element.style.position = 'fixed';
 	element.style.pointerEvents = 'none';
@@ -108,21 +105,22 @@ function initLinkElementDrag(event: MouseEvent, id: number, path: number[]) {
 	element.style.width = `${parentTarget.offsetWidth}px`;
 	element.style.height = `${parentTarget.offsetHeight}px`;
 	element.style.opacity = '0.6';
-	element.classList.add('dragged-menu-link', 'flex-1');
+	element.classList.add('dragged-menu-link');
+	element.classList.toggle('flex-1', true);
 
 	const button = target.cloneNode() as HTMLButtonElement;
 	button.innerText = target.innerText;
 	element.appendChild(button);
 
 	nav.value.appendChild(element);
-	currentlyGrabbedLink = { id, path, element };
+	currentlyGrabbedLink = { item, element, path };
 
 	document.addEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.addEventListener('mouseup', cleanupDrag);
 }
 
-function createDropPreview(event: MouseEvent, id: number, path: number[]) {
-	if (!currentlyGrabbedLink || currentlyGrabbedLink.id === id) {
+function createDropPreview(event: MouseEvent, path: number[]) {
+	if (!currentlyGrabbedLink) {
 		return;
 	}
 
@@ -134,16 +132,10 @@ function createDropPreview(event: MouseEvent, id: number, path: number[]) {
 		throw new Error('Parents for drop preview not found');
 	}
 
-	let currentLevelChildren = transformedMenuLinks.value;
-	for (const index of path.slice(0, -1)) {
-		currentLevelChildren = currentLevelChildren[index].children;
-	}
-
 	const isVertical = path.length > 1;
 	const isBefore = event[isVertical ? 'offsetY' : 'offsetX'] < (
 		target[isVertical ? 'offsetHeight' : 'offsetWidth'] / 2
 	);
-	const isAtTheEnd = !isBefore && path[path.length - 1] === currentLevelChildren.length - 1;
 
 	let element = dropPreview?.element;
 	if (!element) {
@@ -155,29 +147,50 @@ function createDropPreview(event: MouseEvent, id: number, path: number[]) {
 		element.style.height = '';
 	}
 
-	if (isAtTheEnd) {
-		parentMenu.appendChild(element);
-	} else {
-		parentMenu.insertBefore(element, isBefore ? parentLi : parentLi.nextElementSibling);
-	}
+	dropPreview = { element, path, isBefore };
 
-	dropPreview = {
-		id,
-		element,
-		isVertical,
-		isBefore,
-	};
+	const isPreviewInOriginalPosition = comparePreviewOriginalPosition(isBefore, path);
+	if (!isPreviewInOriginalPosition) {
+		parentMenu.insertBefore(element, isBefore ? parentLi : parentLi.nextElementSibling);
+		return;
+	}
+	if (element.parentElement) {
+		element.parentElement.removeChild(element);
+	}
 }
 
-function adjustDropPreviewPosition(event: MouseEvent, id: number, path: number[]) {
+function adjustDropPreviewPosition(
+	event: MouseEvent,
+	path: number[]
+) {
 	if (!dropPreview) {
 		return;
 	}
 
 	const target = event.target as HTMLButtonElement;
-	const isBefore = event[dropPreview.isVertical ? 'offsetY' : 'offsetX'] < (
-		target[dropPreview.isVertical ? 'offsetHeight' : 'offsetWidth'] / 2
+	const parentLi = target.parentElement as HTMLLIElement;
+	const parentMenu = parentLi.parentElement as HTMLMenuElement;
+
+	if (!parentLi || !parentMenu) {
+		throw new Error('Parents for drop preview not found');
+	}
+
+	const isVertical = path.length > 1;
+	const isBefore = event[isVertical ? 'offsetY' : 'offsetX'] < (
+		target[isVertical ? 'offsetHeight' : 'offsetWidth'] / 2
 	);
+
+	dropPreview.path = path;
+	dropPreview.isBefore = isBefore;
+
+	const isPreviewInOriginalPosition = comparePreviewOriginalPosition(isBefore, path);
+	if (!isPreviewInOriginalPosition) {
+		parentMenu.insertBefore(dropPreview.element, isBefore ? parentLi : parentLi.nextElementSibling);
+		return;
+	}
+	if (dropPreview.element.parentElement) {
+		dropPreview.element.parentElement.removeChild(dropPreview.element);
+	}
 }
 
 function moveCurrentlyDraggedLink(event: MouseEvent) {
@@ -190,13 +203,53 @@ function moveCurrentlyDraggedLink(event: MouseEvent) {
 	currentlyGrabbedLink.element.style.top = `${event.clientY}px`;
 }
 
-function cleanupDrag() {
+function cleanupDrag(event: MouseEvent) {
+	if (!dropPreview || !currentlyGrabbedLink) {
+		throw new Error('Associated variables not set');
+	}
+
+	const path = dropPreview.path;
+	const isBefore = dropPreview.isBefore;
+
 	document.removeEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.removeEventListener('mouseup', cleanupDrag);
 	currentlyGrabbedLink?.element.remove();
 	currentlyGrabbedLink = undefined;
 	dropPreview?.element.remove();
 	dropPreview = undefined;
+
+	const isDroppedOutside = !event.target || !nav.value?.contains(event.target as HTMLElement);
+	const isPreviewInOriginalPosition = comparePreviewOriginalPosition(isBefore, path);
+	if (isDroppedOutside || isPreviewInOriginalPosition) {
+		return;
+	}
+
+	console.log('moving thing from', [...currentlyGrabbedLink.path], 'to', [...path]);
+}
+
+function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
+	if (
+		!dropPreview
+		|| !currentlyGrabbedLink
+		|| path.length !== currentlyGrabbedLink.path.length
+		|| isBefore !== dropPreview.isBefore
+	) {
+		return false;
+	}
+
+	let rv = true;
+	for (let i = 0; i < path.length; i++) {
+		rv = rv && currentlyGrabbedLink.path[i] === path[i];
+	}
+
+	const lastIndex = path.length - 1;
+	if (isBefore && path[lastIndex] === currentlyGrabbedLink.path[lastIndex] + 1) {
+		return true;
+	} else if (!isBefore && path[lastIndex] === currentlyGrabbedLink.path[lastIndex] - 1) {
+		return true;
+	}
+
+	return rv;
 }
 </script>
 
@@ -212,6 +265,7 @@ function cleanupDrag() {
 					<MenuLinkButton
 						:item="firstLevelLink"
 						:path="[firstLevelIndex]"
+						:current-level-children-length="transformedMenuLinks.length"
 						@mousedown="initLinkElementDrag"
 						@mouseenter="createDropPreview"
 						@mousemove="adjustDropPreviewPosition"
@@ -232,8 +286,10 @@ function cleanupDrag() {
 							class="hoverable-child-menu-visible hover:bg-humbak-6 focus-within:bg-humbak-6 relative list-none"
 						>
 							<MenuLinkButton
+								level-vertical
 								:item="secondLevelLink"
 								:path="[firstLevelIndex, secondLevelIndex]"
+								:current-level-children-length="firstLevelLink.children.length"
 								@mousedown="initLinkElementDrag"
 								@mouseenter="createDropPreview"
 								@mousemove="adjustDropPreviewPosition"
@@ -263,8 +319,10 @@ function cleanupDrag() {
 									class="hover:bg-humbak-7 focus-within:bg-humbak-7 list-none"
 								>
 									<MenuLinkButton
+										level-vertical
 										:item="thirdLevelLink"
 										:path="[firstLevelIndex, secondLevelIndex, thirdLevelIndex]"
+										:current-level-children-length="secondLevelLink.children.length"
 										@mousedown="initLinkElementDrag"
 										@mouseenter="createDropPreview"
 										@mousemove="adjustDropPreviewPosition"

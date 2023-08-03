@@ -1,24 +1,29 @@
 <script setup lang="ts">
 import type { IMenuTreeItem } from '~/types';
 
-defineProps<{
-	item: IMenuTreeItem;
-	path: number[];
-}>();
+withDefaults(
+	defineProps<{
+		item: IMenuTreeItem;
+		path: number[];
+		currentLevelChildrenLength: number;
+		levelVertical?: boolean;
+	}>(),
+	{ levelVertical: false }
+);
 
 defineEmits<{
-	mousedown: [MouseEvent, number, number[]];
-	mouseenter: [MouseEvent, number, number[]];
-	mousemove: [MouseEvent, number, number[]];
+	mousedown: [MouseEvent, IMenuTreeItem, number[]];
+	mouseenter: [MouseEvent, number[]];
+	mousemove: [MouseEvent, number[]];
 }>();
 </script>
 
 <template>
 	<button
 		class="relative h-full w-full p-2"
-		@mousedown="$emit('mousedown', $event, item.id, path)"
-		@mouseenter="$emit('mouseenter', $event, item.id, path)"
-		@mousemove="$emit('mousemove', $event, item.id, path)"
+		@mousedown="$emit('mousedown', $event, item, path)"
+		@mouseenter="$emit('mouseenter', $event, path)"
+		@mousemove="$emit('mousemove', $event, path)"
 	>
 		{{ item.text }}
 		<slot />
