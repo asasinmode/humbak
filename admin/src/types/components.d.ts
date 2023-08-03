@@ -7,6 +7,8 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    LinkButton: typeof import('./../components/Menu/LinkButton.vue')['default']
+    MenuLinkButton: typeof import('./../components/Menu/MenuLinkButton.vue')['default']
     PagesContentEditor: typeof import('./../components/Pages/PagesContentEditor.vue')['default']
     PagesContentEditorModelSelect: typeof import('./../components/Pages/PagesContentEditorModelSelect.vue')['default']
     PagesTable: typeof import('./../components/Pages/PagesTable.vue')['default']

@@ -1,18 +1,12 @@
 <script setup lang="ts">
+import type { IMenuTreeItem } from '~/types';
+
 type IMenuLink = {
 	id: number;
 	text: string;
 	href: string;
 	position: number;
 	parentId: null | number;
-};
-
-type IMenuTreeItem = {
-	id: number;
-	text: string;
-	href: string;
-	position: number;
-	children: IMenuTreeItem[];
 };
 
 const menuLinks: IMenuLink[] = [
@@ -78,40 +72,111 @@ function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): I
 	return rv;
 }
 
-const transformedMenuLinks = convertToTree(menuLinks);
+const transformedMenuLinks = ref(convertToTree(menuLinks));
 
 type IGrabbedLink = {
 	id: number;
-	path: (number | undefined)[];
+	path: number[];
 	element: HTMLButtonElement;
+};
+type IDropPreview = {
+	id: number;
+	element: HTMLElement;
+	isVertical: boolean;
+	isBefore: boolean;
 };
 
 let currentlyGrabbedLink: IGrabbedLink | undefined;
-const nav = ref <HTMLElement | undefined>();
+let dropPreview: IDropPreview | undefined;
+const nav = ref<HTMLElement | undefined>();
 
-function initLinkElementDrag(event: MouseEvent, id: number, path: IGrabbedLink['path']) {
+function initLinkElementDrag(event: MouseEvent, id: number, path: number[]) {
 	event.preventDefault();
 	if (!nav.value) {
 		throw new Error('Nav element not found');
 	}
 
-	const originalElement = event.target as HTMLButtonElement;
+	const target = event.target as HTMLButtonElement;
+	const cloneTarget = target.parentElement as HTMLLIElement;
 
-	const element = originalElement.cloneNode() as HTMLButtonElement;
+	const element = cloneTarget.cloneNode() as HTMLButtonElement;
 	element.style.position = 'fixed';
 	element.style.pointerEvents = 'none';
 	element.style.left = `${event.clientX}px`;
 	element.style.top = `${event.clientY}px`;
-	element.style.width = `${originalElement.offsetWidth}px`;
-	element.style.height = `${originalElement.offsetHeight}px`;
-	element.classList.add('bg-humbak');
-	element.innerText = originalElement.innerText;
+	element.style.width = `${cloneTarget.offsetWidth}px`;
+	element.style.height = `${cloneTarget.offsetHeight}px`;
+	element.style.opacity = '0.6';
+	element.classList.add('dragged-menu-link', 'flex-1');
+
+	const button = target.cloneNode() as HTMLButtonElement;
+	button.innerText = target.innerText;
+	element.appendChild(button);
 
 	nav.value.appendChild(element);
 	currentlyGrabbedLink = { id, path, element };
 
 	document.addEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.addEventListener('mouseup', cleanupDrag);
+}
+
+function createDropPreview(event: MouseEvent, id: number, path: number[]) {
+	if (!currentlyGrabbedLink || currentlyGrabbedLink.id === id) {
+		return;
+	}
+
+	const target = event.target as HTMLButtonElement;
+	const parentLi = target.parentElement as HTMLLIElement;
+	const parentMenu = parentLi.parentElement as HTMLMenuElement;
+
+	if (!parentLi || !parentMenu) {
+		throw new Error('Parents for drop preview not found');
+	}
+
+	let currentLevelChildren = transformedMenuLinks.value;
+	for (const index of path.slice(0, -1)) {
+		currentLevelChildren = currentLevelChildren[index].children;
+	}
+
+	const isVertical = path.length > 1;
+	const isBefore = event[isVertical ? 'offsetY' : 'offsetX'] < (
+		target[isVertical ? 'offsetHeight' : 'offsetWidth'] / 2
+	);
+	const isAtTheEnd = !isBefore && path[path.length - 1] === currentLevelChildren.length - 1;
+
+	let element = dropPreview?.element;
+	if (!element) {
+		element = currentlyGrabbedLink.element.cloneNode(true) as HTMLLIElement;
+		element.style.position = '';
+		element.style.top = '';
+		element.style.left = '';
+		element.style.width = '';
+		element.style.height = '';
+	}
+
+	if (isAtTheEnd) {
+		parentMenu.appendChild(element);
+	} else {
+		parentMenu.insertBefore(element, isBefore ? parentLi : parentLi.nextElementSibling);
+	}
+
+	dropPreview = {
+		id,
+		element,
+		isVertical,
+		isBefore,
+	};
+}
+
+function adjustDropPreviewPosition(event: MouseEvent, id: number, path: number[]) {
+	if (!dropPreview) {
+		return;
+	}
+
+	const target = event.target as HTMLButtonElement;
+	const isBefore = event[dropPreview.isVertical ? 'offsetY' : 'offsetX'] < (
+		target[dropPreview.isVertical ? 'offsetHeight' : 'offsetWidth'] / 2
+	);
 }
 
 function moveCurrentlyDraggedLink(event: MouseEvent) {
@@ -128,7 +193,9 @@ function cleanupDrag() {
 	document.removeEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.removeEventListener('mouseup', cleanupDrag);
 	currentlyGrabbedLink?.element.remove();
+	dropPreview?.element.remove();
 	currentlyGrabbedLink = undefined;
+	dropPreview = undefined;
 }
 </script>
 
@@ -141,16 +208,18 @@ function cleanupDrag() {
 					:key="firstLevelLink.id"
 					class="hoverable-child-menu-visible hover:bg-humbak-5 focus-within:bg-humbak-5 relative flex-center flex-1 flex-col"
 				>
-					<button
-						class="relative h-full w-full p-2"
-						@mousedown="initLinkElementDrag($event, firstLevelLink.id, [firstLevelIndex])"
+					<MenuLinkButton
+						:item="firstLevelLink"
+						:path="[firstLevelIndex]"
+						@mousedown="initLinkElementDrag"
+						@mouseenter="createDropPreview"
+						@mousemove="adjustDropPreviewPosition"
 					>
-						{{ firstLevelLink.text }}
 						<div
 							v-if="firstLevelLink.children.length"
 							class="i-solar-alt-arrow-down-linear pointer-events-none absolute bottom-0 left-1/2 h-3 w-3 -translate-x-1/2"
 						/>
-					</button>
+					</MenuLinkButton>
 
 					<menu
 						v-if="firstLevelLink.children.length"
@@ -161,11 +230,13 @@ function cleanupDrag() {
 							:key="secondLevelLink.id"
 							class="hoverable-child-menu-visible hover:bg-humbak-6 focus-within:bg-humbak-6 relative"
 						>
-							<button
-								class="relative h-full w-full p-2"
-								@mousedown="initLinkElementDrag($event, secondLevelLink.id, [firstLevelIndex, secondLevelIndex])"
+							<MenuLinkButton
+								:item="secondLevelLink"
+								:path="[firstLevelIndex, secondLevelIndex]"
+								@mousedown="initLinkElementDrag"
+								@mouseenter="createDropPreview"
+								@mousemove="adjustDropPreviewPosition"
 							>
-								{{ secondLevelLink.text }}
 								<div
 									v-if="secondLevelLink.children.length"
 									class="pointer-events-none absolute top-1/2 h-3 w-3 -translate-y-1/2"
@@ -175,7 +246,7 @@ function cleanupDrag() {
 											: 'right-0 i-solar-alt-arrow-right-linear'
 									"
 								/>
-							</button>
+							</MenuLinkButton>
 
 							<menu
 								v-if="secondLevelLink.children.length"
@@ -190,12 +261,13 @@ function cleanupDrag() {
 									:key="thirdLevelLink.id"
 									class="hover:bg-humbak-7 focus-within:bg-humbak-7"
 								>
-									<button
-										class="h-full w-full p-2"
-										@mousedown="initLinkElementDrag($event, thirdLevelLink.id, [firstLevelIndex, secondLevelIndex, thirdLevelIndex])"
-									>
-										{{ thirdLevelLink.text }}
-									</button>
+									<MenuLinkButton
+										:item="thirdLevelLink"
+										:path="[firstLevelIndex, secondLevelIndex, thirdLevelIndex]"
+										@mousedown="initLinkElementDrag"
+										@mouseenter="createDropPreview"
+										@mousemove="adjustDropPreviewPosition"
+									/>
 								</li>
 							</menu>
 						</li>
@@ -215,4 +287,15 @@ function cleanupDrag() {
 .hoverable-child-menu-visible:focus-within > menu {
 	display: block;
 }
+
+.dragged-menu-link {
+	@apply bg-black text-white dark:(bg-white text-black)
+	/* background: black; */
+	/* color: white; */
+}
+
+/* .dark .dragged-menu-link { */
+/* 	background: white; */
+/* 	color: black; */
+/* } */
 </style>
