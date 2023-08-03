@@ -132,6 +132,8 @@ function createDropIndicator(event: MouseEvent, path: number[]) {
 		throw new Error('parent of dragged element not found');
 	}
 
+	console.log('element', element);
+
 	const isVertical = path.length > 1;
 	const isBefore = event[isVertical ? 'offsetY' : 'offsetX'] < (
 		target[isVertical ? 'offsetHeight' : 'offsetWidth'] / 2
@@ -350,7 +352,7 @@ function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
 								<li
 									v-for="(thirdLevelLink, thirdLevelIndex) in secondLevelLink.children"
 									:key="thirdLevelLink.id"
-									class="hover:bg-humbak-7 vertical focus-within:bg-humbak-7 list-none"
+									class="hover:bg-humbak-7 vertical focus-within:bg-humbak-7 relative list-none"
 								>
 									<MenuLinkButton
 										:item="thirdLevelLink"
