@@ -97,15 +97,16 @@ function initLinkElementDrag(event: MouseEvent, id: number, path: number[]) {
 	}
 
 	const target = event.target as HTMLButtonElement;
-	const cloneTarget = target.parentElement as HTMLLIElement;
+	const parentTarget = target.parentElement as HTMLLIElement;
 
-	const element = cloneTarget.cloneNode() as HTMLButtonElement;
+	const element = parentTarget.cloneNode() as HTMLButtonElement;
+	element.innerHTML = '';
 	element.style.position = 'fixed';
 	element.style.pointerEvents = 'none';
 	element.style.left = `${event.clientX}px`;
 	element.style.top = `${event.clientY}px`;
-	element.style.width = `${cloneTarget.offsetWidth}px`;
-	element.style.height = `${cloneTarget.offsetHeight}px`;
+	element.style.width = `${parentTarget.offsetWidth}px`;
+	element.style.height = `${parentTarget.offsetHeight}px`;
 	element.style.opacity = '0.6';
 	element.classList.add('dragged-menu-link', 'flex-1');
 
@@ -193,8 +194,8 @@ function cleanupDrag() {
 	document.removeEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.removeEventListener('mouseup', cleanupDrag);
 	currentlyGrabbedLink?.element.remove();
-	dropPreview?.element.remove();
 	currentlyGrabbedLink = undefined;
+	dropPreview?.element.remove();
 	dropPreview = undefined;
 }
 </script>
@@ -206,7 +207,7 @@ function cleanupDrag() {
 				<li
 					v-for="(firstLevelLink, firstLevelIndex) in transformedMenuLinks"
 					:key="firstLevelLink.id"
-					class="hoverable-child-menu-visible hover:bg-humbak-5 focus-within:bg-humbak-5 relative flex-center flex-1 flex-col"
+					class="hoverable-child-menu-visible hover:bg-humbak-5 focus-within:bg-humbak-5 relative flex-center flex-1 flex-col list-none"
 				>
 					<MenuLinkButton
 						:item="firstLevelLink"
@@ -228,7 +229,7 @@ function cleanupDrag() {
 						<li
 							v-for="(secondLevelLink, secondLevelIndex) in firstLevelLink.children"
 							:key="secondLevelLink.id"
-							class="hoverable-child-menu-visible hover:bg-humbak-6 focus-within:bg-humbak-6 relative"
+							class="hoverable-child-menu-visible hover:bg-humbak-6 focus-within:bg-humbak-6 relative list-none"
 						>
 							<MenuLinkButton
 								:item="secondLevelLink"
@@ -259,7 +260,7 @@ function cleanupDrag() {
 								<li
 									v-for="(thirdLevelLink, thirdLevelIndex) in secondLevelLink.children"
 									:key="thirdLevelLink.id"
-									class="hover:bg-humbak-7 focus-within:bg-humbak-7"
+									class="hover:bg-humbak-7 focus-within:bg-humbak-7 list-none"
 								>
 									<MenuLinkButton
 										:item="thirdLevelLink"
@@ -290,12 +291,5 @@ function cleanupDrag() {
 
 .dragged-menu-link {
 	@apply bg-black text-white dark:(bg-white text-black)
-	/* background: black; */
-	/* color: white; */
 }
-
-/* .dark .dragged-menu-link { */
-/* 	background: white; */
-/* 	color: black; */
-/* } */
 </style>
