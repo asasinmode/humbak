@@ -90,8 +90,12 @@ const transformedMenuLinks = convertToTree(menuLinks);
 					:key="firstLevelLink.id"
 					class="hoverable-child-ul-visible hover:bg-humbak-5 focus-within:bg-humbak-5 relative flex-center flex-1 flex-col"
 				>
-					<button class="h-full w-full p-2">
+					<button class="relative h-full w-full p-2">
 						{{ firstLevelLink.text }}
+						<div
+							v-if="firstLevelLink.children.length"
+							class="i-solar-alt-arrow-down-linear absolute bottom-0 left-1/2 h-3 w-3 -translate-x-1/2"
+						/>
 					</button>
 
 					<ul
@@ -103,8 +107,17 @@ const transformedMenuLinks = convertToTree(menuLinks);
 							:key="secondLevelLink.id"
 							class="hoverable-child-ul-visible hover:bg-humbak-6 focus-within:bg-humbak-6 relative"
 						>
-							<button class="h-full w-full p-2">
+							<button class="relative h-full w-full p-2">
 								{{ secondLevelLink.text }}
+								<div
+									v-if="secondLevelLink.children.length"
+									class="absolute top-1/2 h-3 w-3 -translate-y-1/2"
+									:class="
+										firstLevelIndex > Math.ceil(firstLevelLink.children.length / 2)
+											? 'left-0 i-solar-alt-arrow-left-linear'
+											: 'right-0 i-solar-alt-arrow-right-linear'
+									"
+								/>
 							</button>
 
 							<ul
