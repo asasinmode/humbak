@@ -83,48 +83,53 @@ const transformedMenuLinks = convertToTree(menuLinks);
 
 <template>
 	<main class="px-2 pb-4 pt-[18px] md:px-0">
-		<article class="mx-auto">
-			<nav>
-				<ul class="flex flex-row bg-green/20">
-					<li
-						v-for="(firstLevelLink, firstLevelIndex) in transformedMenuLinks"
-						:key="firstLevelLink.id"
-						class="hoverable-child-ul-visible relative flex-center flex-1 flex-col"
+		<nav class="bg-humbak mx-auto max-w-360 text-black">
+			<ul class="flex flex-row">
+				<li
+					v-for="(firstLevelLink, firstLevelIndex) in transformedMenuLinks"
+					:key="firstLevelLink.id"
+					class="hoverable-child-ul-visible hover:bg-humbak-5 focus-within:bg-humbak-5 relative flex-center flex-1 flex-col"
+				>
+					<button class="h-full w-full p-2">
+						{{ firstLevelLink.text }}
+					</button>
+
+					<ul
+						v-if="firstLevelLink.children.length"
+						class="bg-humbak-5 absolute bottom-0 w-full translate-y-full"
 					>
-						<button> {{ firstLevelLink.text }} </button>
-
-						<ul
-							v-if="firstLevelLink.children.length"
-							class="absolute bottom-0 w-full translate-y-full bg-yellow/20"
+						<li
+							v-for="secondLevelLink in firstLevelLink.children"
+							:key="secondLevelLink.id"
+							class="hoverable-child-ul-visible hover:bg-humbak-6 focus-within:bg-humbak-6 relative"
 						>
-							<li
-								v-for="secondLevelLink in firstLevelLink.children"
-								:key="secondLevelLink.id"
-								class="hoverable-child-ul-visible relative"
-							>
-								<button>{{ secondLevelLink.text }}</button>
+							<button class="h-full w-full p-2">
+								{{ secondLevelLink.text }}
+							</button>
 
-								<ul
-									v-if="secondLevelLink.children.length"
-									class="absolute top-0 w-full bg-cyan/20"
-									:class="
-										firstLevelIndex > Math.ceil(firstLevelLink.children.length / 2)
-											? 'left-0 -translate-x-full' : 'right-0 translate-x-full'
-									"
+							<ul
+								v-if="secondLevelLink.children.length"
+								class="bg-humbak-6 absolute top-0 w-full"
+								:class="
+									firstLevelIndex > Math.ceil(firstLevelLink.children.length / 2)
+										? 'left-0 -translate-x-full' : 'right-0 translate-x-full'
+								"
+							>
+								<li
+									v-for="thirdLevelLink in secondLevelLink.children"
+									:key="thirdLevelLink.id"
+									class="hover:bg-humbak-7 focus-within:bg-humbak-7"
 								>
-									<li
-										v-for="thirdLevelLink in secondLevelLink.children"
-										:key="thirdLevelLink.id"
-									>
-										<button>{{ thirdLevelLink.text }}</button>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</nav>
-		</article>
+									<button class="h-full w-full p-2">
+										{{ thirdLevelLink.text }}
+									</button>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
 	</main>
 </template>
 
@@ -132,6 +137,7 @@ const transformedMenuLinks = convertToTree(menuLinks);
 .hoverable-child-ul-visible > ul {
 	display: none;
 }
+
 .hoverable-child-ul-visible:hover > ul,
 .hoverable-child-ul-visible:focus-within > ul {
 	display: block;
