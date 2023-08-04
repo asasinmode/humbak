@@ -306,7 +306,7 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 									v-if="secondLevelLink.children.length"
 									class="pointer-events-none absolute top-1/2 h-3 w-3 -translate-y-1/2"
 									:class="
-										firstLevelIndex >= Math.ceil(firstLevelLink.children.length / 2)
+										firstLevelIndex > Math.ceil(firstLevelLink.children.length / 2)
 											? 'left-0 i-solar-alt-arrow-left-linear'
 											: 'right-0 i-solar-alt-arrow-right-linear'
 									"
@@ -318,7 +318,7 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 									|| (currentlyGrabbedLink && currentlyGrabbedLink.item.id !== secondLevelLink.id)"
 								class="bg-humbak-6 absolute top-0 w-full"
 								:class="
-									firstLevelIndex >= Math.ceil(firstLevelLink.children.length / 2)
+									firstLevelIndex > Math.ceil(firstLevelLink.children.length / 2)
 										? 'left-0 -translate-x-full' : 'right-0 translate-x-full'
 								"
 							>
@@ -339,7 +339,7 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 									v-if="currentlyGrabbedLink && !secondLevelLink.children.length"
 									class="horizontal hover:bg-humbak-7 focus-within:bg-humbak-7 relative list-none"
 									data-menu-drop-placeholder
-									:data-indicator-on-start="firstLevelIndex >= Math.ceil(firstLevelLink.children.length / 2)"
+									:data-indicator-on-start="firstLevelIndex > Math.ceil(firstLevelLink.children.length / 2)"
 								>
 									<MenuLinkButton
 										:path="[firstLevelIndex, secondLevelIndex, 0]"
