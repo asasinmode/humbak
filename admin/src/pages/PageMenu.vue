@@ -116,9 +116,18 @@ function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: numbe
 	document.addEventListener('mouseup', cleanupDrag);
 }
 
-function handleDropIndicator(event: MouseEvent, { id }: IMenuTreeItem, path: number[]) {
+function moveCurrentlyDraggedLink(event: MouseEvent) {
+	if (!currentlyGrabbedLink) {
+		console.warn('Grabbed node not set');
+		return;
+	}
+	currentlyGrabbedLink.element.style.left = `${event.clientX}px`;
+	currentlyGrabbedLink.element.style.top = `${event.clientY}px`;
+}
+
+function handleDropIndicator(event: MouseEvent, path: number[]) {
 	dropTarget?.element.classList.remove('drop-indicator-start', 'drop-indicator-end');
-	if (!currentlyGrabbedLink || id === currentlyGrabbedLink.item.id) {
+	if (!currentlyGrabbedLink) {
 		return;
 	}
 
@@ -138,6 +147,9 @@ function handleDropIndicator(event: MouseEvent, { id }: IMenuTreeItem, path: num
 	dropTarget = { element, path };
 
 	if (isOnSameLevel) {
+		if (path[path.length - 1] === currentlyGrabbedLink.path[currentlyGrabbedLink.path.length - 1]) {
+			return;
+		}
 		const oldIndexOnLastLevel = currentlyGrabbedLink.path[currentlyGrabbedLink.path.length - 1];
 		const newIndexOnLastLevel = path[path.length - 1];
 
@@ -153,18 +165,9 @@ function handleDropIndicator(event: MouseEvent, { id }: IMenuTreeItem, path: num
 	element.classList.toggle(isBefore ? 'drop-indicator-start' : 'drop-indicator-end', true);
 }
 
-function moveCurrentlyDraggedLink(event: MouseEvent) {
-	if (!currentlyGrabbedLink) {
-		console.warn('Grabbed node not set');
-		return;
-	}
-	currentlyGrabbedLink.element.style.left = `${event.clientX}px`;
-	currentlyGrabbedLink.element.style.top = `${event.clientY}px`;
-}
-
 function cleanupDrag(event: MouseEvent) {
-	const originalPath = currentlyGrabbedLink?.path;
-	const path = dropTarget?.path;
+	const oldPath = currentlyGrabbedLink?.path;
+	const newPath = dropTarget?.path;
 
 	document.removeEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.removeEventListener('mouseup', cleanupDrag);
@@ -173,15 +176,31 @@ function cleanupDrag(event: MouseEvent) {
 	dropTarget?.element.classList.remove('drop-indicator-end', 'drop-indicator-start');
 	dropTarget = undefined;
 
-	return;
-
-	const isDroppedOutside = !event.target || !nav.value?.contains(event.target as HTMLElement);
-	if (isDroppedOutside || !path || !originalPath || isBefore === undefined) {
+	if (!oldPath || !newPath) {
 		return;
 	}
 
-	let target = transformedMenuLinks.value[originalPath[0]];
-	for (const index of originalPath.slice(1)) {
+	const isDroppedOutside = !event.target || !nav.value?.contains(event.target as HTMLElement);
+	const isNewPathOnTheSameLevel = arePathsTheSame(oldPath.slice(0, -1), newPath.slice(0, -1));
+	const isNewPathTheSame = isNewPathOnTheSameLevel && newPath[newPath.length - 1] === oldPath[oldPath.length - 1];
+
+	if (isDroppedOutside || isNewPathTheSame) {
+		return;
+	}
+
+	let isMovedIntoItself = newPath[0] === oldPath[0];
+	if (isMovedIntoItself) {
+		for (let i = 1; i < oldPath.length; i++) {
+			isMovedIntoItself = isMovedIntoItself && newPath[i] === oldPath[i];
+		}
+		if (isMovedIntoItself) {
+			toast('nowa pozycja nie może być w sobie', 'error');
+			return;
+		}
+	}
+
+	let target = transformedMenuLinks.value[oldPath[0]];
+	for (const index of oldPath.slice(1)) {
 		target = target.children[index];
 	}
 	let maxMenuLevel = 3;
@@ -193,41 +212,25 @@ function cleanupDrag(event: MouseEvent) {
 		}
 	}
 
-	if (path.length > maxMenuLevel) {
+	if (newPath.length > maxMenuLevel) {
 		toast('nowa pozycja nie mieści w sobie dzieci', 'error');
 		return;
 	}
 
-	let isMovedOnSameLevel = path.length === originalPath.length;
-	const maxIndex = (path.length > originalPath.length ? path.length : originalPath.length) - 2;
-	for (let i = 0; i <= maxIndex; i++) {
-		isMovedOnSameLevel = isMovedOnSameLevel && path[i] === originalPath[i];
+	let oldLevelReference = transformedMenuLinks.value;
+	for (const index of oldPath.slice(0, -1)) {
+		oldLevelReference = oldLevelReference[index].children;
+	}
+	let newLevelReference = transformedMenuLinks.value;
+	for (const index of newPath.slice(0, -1)) {
+		newLevelReference = newLevelReference[index].children;
 	}
 
-	let currentLevelReference = transformedMenuLinks.value;
-	for (const index of originalPath.slice(0, -1)) {
-		currentLevelReference = currentLevelReference[index].children;
-	}
-
-	// console.log('moving from', originalPath.at(-1), 'to', path.at(-1), isBefore);
-	if (isMovedOnSameLevel) {
-		currentLevelReference.splice(
-			path[path.length - 1],
-
-			0,
-			currentLevelReference.splice(originalPath[originalPath.length - 1], 1)[0]
-		);
-	} else {
-		let newLevelReference = transformedMenuLinks.value;
-		for (const index of path.slice(0, -1)) {
-			newLevelReference = newLevelReference[index].children;
-		}
-		newLevelReference.splice(
-			path[path.length - 1] + (isBefore ? 0 : 1),
-			0,
-			currentLevelReference.splice(originalPath[originalPath.length - 1], 1)[0]
-		);
-	}
+	newLevelReference.splice(
+		newPath[newPath.length - 1],
+		0,
+		oldLevelReference.splice(oldPath[oldPath.length - 1], 1)[0]
+	);
 }
 
 function arePathsTheSame(path1: number[], path2: number[]) {

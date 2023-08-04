@@ -8,8 +8,8 @@ defineProps<{
 
 defineEmits<{
 	mousedown: [MouseEvent, IMenuTreeItem, number[]];
-	mouseenter: [MouseEvent, IMenuTreeItem, number[]];
-	mousemove: [MouseEvent, IMenuTreeItem, number[]];
+	mouseenter: [MouseEvent, number[]];
+	mousemove: [MouseEvent, number[]];
 }>();
 </script>
 
@@ -17,8 +17,8 @@ defineEmits<{
 	<button
 		class="relative h-full w-full p-2"
 		@mousedown="$emit('mousedown', $event, item, path)"
-		@mouseenter="$emit('mouseenter', $event, item, path)"
-		@mousemove="$emit('mousemove', $event, item, path)"
+		@mouseenter="$emit('mouseenter', $event, path)"
+		@mousemove="$emit('mousemove', $event, path)"
 	>
 		{{ item.text }}
 		<slot />
