@@ -74,11 +74,11 @@ const transformedMenuLinks = ref(convertToTree(menuLinks));
 
 const { toast } = useToast();
 const nav = ref<HTMLElement | undefined>();
-let currentlyGrabbedLink: {
+const currentlyGrabbedLink = shallowRef<{
 	item: IMenuTreeItem;
 	element: HTMLLIElement;
 	path: number[];
-} | undefined;
+}>();
 let dropTarget: {
 	element: HTMLLIElement;
 	path: number[];
@@ -110,24 +110,24 @@ function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: numbe
 	element.appendChild(button);
 
 	nav.value.appendChild(element);
-	currentlyGrabbedLink = { item, element, path };
+	currentlyGrabbedLink.value = { item, element, path };
 
 	document.addEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.addEventListener('mouseup', cleanupDrag);
 }
 
 function moveCurrentlyDraggedLink(event: MouseEvent) {
-	if (!currentlyGrabbedLink) {
+	if (!currentlyGrabbedLink.value) {
 		console.warn('Grabbed node not set');
 		return;
 	}
-	currentlyGrabbedLink.element.style.left = `${event.clientX}px`;
-	currentlyGrabbedLink.element.style.top = `${event.clientY}px`;
+	currentlyGrabbedLink.value.element.style.left = `${event.clientX}px`;
+	currentlyGrabbedLink.value.element.style.top = `${event.clientY}px`;
 }
 
 function handleDropIndicator(event: MouseEvent, path: number[]) {
 	dropTarget?.element.classList.remove('drop-indicator-start', 'drop-indicator-end');
-	if (!currentlyGrabbedLink) {
+	if (!currentlyGrabbedLink.value) {
 		return;
 	}
 
@@ -142,15 +142,15 @@ function handleDropIndicator(event: MouseEvent, path: number[]) {
 	const isBefore = event[isVertical ? 'offsetY' : 'offsetX'] < (
 		target[isVertical ? 'offsetHeight' : 'offsetWidth'] / 2
 	);
-	const isOnSameLevel = arePathsTheSame(path.slice(0, -1), currentlyGrabbedLink.path.slice(0, -1));
+	const isOnSameLevel = arePathsTheSame(path.slice(0, -1), currentlyGrabbedLink.value.path.slice(0, -1));
 
 	dropTarget = { element, path };
 
 	if (isOnSameLevel) {
-		if (path[path.length - 1] === currentlyGrabbedLink.path[currentlyGrabbedLink.path.length - 1]) {
+		if (path[path.length - 1] === currentlyGrabbedLink.value.path[currentlyGrabbedLink.value.path.length - 1]) {
 			return;
 		}
-		const oldIndexOnLastLevel = currentlyGrabbedLink.path[currentlyGrabbedLink.path.length - 1];
+		const oldIndexOnLastLevel = currentlyGrabbedLink.value.path[currentlyGrabbedLink.value.path.length - 1];
 		const newIndexOnLastLevel = path[path.length - 1];
 
 		const areSwapped = isBefore
@@ -162,17 +162,22 @@ function handleDropIndicator(event: MouseEvent, path: number[]) {
 		}
 	}
 
-	element.classList.toggle(isBefore ? 'drop-indicator-start' : 'drop-indicator-end', true);
+	element.classList.toggle(
+		isBefore && !element.classList.contains('menu-drop-placeholder')
+			? 'drop-indicator-start'
+			: 'drop-indicator-end',
+		true
+	);
 }
 
 function cleanupDrag(event: MouseEvent) {
-	const oldPath = currentlyGrabbedLink?.path;
+	const oldPath = currentlyGrabbedLink.value?.path;
 	const newPath = dropTarget?.path;
 
 	document.removeEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.removeEventListener('mouseup', cleanupDrag);
-	currentlyGrabbedLink?.element.remove();
-	currentlyGrabbedLink = undefined;
+	currentlyGrabbedLink.value?.element.remove();
+	currentlyGrabbedLink.value = undefined;
 	dropTarget?.element.classList.remove('drop-indicator-end', 'drop-indicator-start');
 	dropTarget = undefined;
 
@@ -270,7 +275,10 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 					</MenuLinkButton>
 
 					<menu
-						v-if="firstLevelLink.children.length"
+						v-if="
+							firstLevelLink.children.length
+								|| (currentlyGrabbedLink && currentlyGrabbedLink.item.id !== firstLevelLink.id)
+						"
 						class="bg-humbak-5 absolute bottom-0 w-full translate-y-full"
 					>
 						<li
@@ -289,7 +297,7 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 									v-if="secondLevelLink.children.length"
 									class="pointer-events-none absolute top-1/2 h-3 w-3 -translate-y-1/2"
 									:class="
-										firstLevelIndex > Math.ceil(firstLevelLink.children.length / 2)
+										firstLevelIndex >= Math.ceil(firstLevelLink.children.length / 2)
 											? 'left-0 i-solar-alt-arrow-left-linear'
 											: 'right-0 i-solar-alt-arrow-right-linear'
 									"
@@ -297,10 +305,13 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 							</MenuLinkButton>
 
 							<menu
-								v-if="secondLevelLink.children.length"
+								v-if="
+									secondLevelLink.children.length
+										|| (currentlyGrabbedLink && currentlyGrabbedLink.item.id !== secondLevelLink.id)
+								"
 								class="bg-humbak-6 absolute top-0 w-full"
 								:class="
-									firstLevelIndex > Math.ceil(firstLevelLink.children.length / 2)
+									firstLevelIndex >= Math.ceil(firstLevelLink.children.length / 2)
 										? 'left-0 -translate-x-full' : 'right-0 translate-x-full'
 								"
 							>
@@ -317,7 +328,33 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 										@mousemove="handleDropIndicator"
 									/>
 								</li>
+								<li
+									v-if="currentlyGrabbedLink && !secondLevelLink.children.length"
+									class="horizontal menu-drop-placeholder hover:bg-humbak-7 focus-within:bg-humbak-7 relative list-none"
+								>
+									<MenuLinkButton
+										:path="[firstLevelIndex, secondLevelIndex, 0]"
+										class="min-h-10"
+										@mouseenter="handleDropIndicator"
+										@mousemove="handleDropIndicator"
+									>
+										<div class="i-fa6-solid-plus pointer-events-none mx-auto h-4 w-4" />
+									</MenuLinkButton>
+								</li>
 							</menu>
+						</li>
+						<li
+							v-if="currentlyGrabbedLink && !firstLevelLink.children.length"
+							class="vertical menu-drop-placeholder hover:bg-humbak-6 focus-within:bg-humbak-6 relative list-none"
+						>
+							<MenuLinkButton
+								:path="[firstLevelIndex, 0]"
+								class="min-h-10"
+								@mouseenter="handleDropIndicator"
+								@mousemove="handleDropIndicator"
+							>
+								<div class="i-fa6-solid-plus pointer-events-none mx-auto h-4 w-4" />
+							</MenuLinkButton>
 						</li>
 					</menu>
 				</li>

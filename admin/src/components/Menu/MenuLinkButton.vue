@@ -2,7 +2,7 @@
 import type { IMenuTreeItem } from '~/types';
 
 defineProps<{
-	item: IMenuTreeItem;
+	item?: IMenuTreeItem;
 	path: number[];
 }>();
 
@@ -20,7 +20,7 @@ defineEmits<{
 		@mouseenter="$emit('mouseenter', $event, path)"
 		@mousemove="$emit('mousemove', $event, path)"
 	>
-		{{ item.text }}
+		{{ item?.text }}
 		<slot />
 	</button>
 </template>
