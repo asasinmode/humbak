@@ -72,21 +72,17 @@ function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): I
 
 const transformedMenuLinks = ref(convertToTree(menuLinks));
 
-type IGrabbedLink = {
+const { toast } = useToast();
+const nav = ref<HTMLElement | undefined>();
+let currentlyGrabbedLink: {
 	item: IMenuTreeItem;
 	element: HTMLLIElement;
 	path: number[];
-};
-type IDropPreview = {
+} | undefined;
+let dropTarget: {
 	element: HTMLLIElement;
 	path: number[];
-	isBefore: boolean;
-};
-
-const { toast } = useToast();
-let currentlyGrabbedLink: IGrabbedLink | undefined;
-let dropPreview: IDropPreview | undefined;
-const nav = ref<HTMLElement | undefined>();
+} | undefined;
 
 function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: number[]) {
 	event.preventDefault();
@@ -120,8 +116,9 @@ function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: numbe
 	document.addEventListener('mouseup', cleanupDrag);
 }
 
-function createDropIndicator(event: MouseEvent, path: number[]) {
-	if (!currentlyGrabbedLink) {
+function handleDropIndicator(event: MouseEvent, { id }: IMenuTreeItem, path: number[]) {
+	dropTarget?.element.classList.remove('drop-indicator-start', 'drop-indicator-end');
+	if (!currentlyGrabbedLink || id === currentlyGrabbedLink.item.id) {
 		return;
 	}
 
@@ -132,61 +129,28 @@ function createDropIndicator(event: MouseEvent, path: number[]) {
 		throw new Error('parent of dragged element not found');
 	}
 
-	console.log('element', element);
-
 	const isVertical = path.length > 1;
 	const isBefore = event[isVertical ? 'offsetY' : 'offsetX'] < (
 		target[isVertical ? 'offsetHeight' : 'offsetWidth'] / 2
 	);
+	const isOnSameLevel = arePathsTheSame(path.slice(0, -1), currentlyGrabbedLink.path.slice(0, -1));
 
-	dropPreview?.element.classList.remove('drop-indicator-start', 'drop-indicator-end');
+	dropTarget = { element, path };
+
+	if (isOnSameLevel) {
+		const oldIndexOnLastLevel = currentlyGrabbedLink.path[currentlyGrabbedLink.path.length - 1];
+		const newIndexOnLastLevel = path[path.length - 1];
+
+		const areSwapped = isBefore
+			? newIndexOnLastLevel === oldIndexOnLastLevel + 1
+			: newIndexOnLastLevel === oldIndexOnLastLevel - 1;
+		if (areSwapped) {
+			element.classList.toggle(isBefore ? 'drop-indicator-end' : 'drop-indicator-start', true);
+			return;
+		}
+	}
 
 	element.classList.toggle(isBefore ? 'drop-indicator-start' : 'drop-indicator-end', true);
-	dropPreview = { element, path, isBefore };
-
-	// const isPreviewInOriginalPosition = comparePreviewOriginalPosition(isBefore, path);
-	// if (!isPreviewInOriginalPosition) {
-	// 	parentMenu.insertBefore(element, isBefore ? parent : parent.nextElementSibling);
-	// 	return;
-	// }
-	// if (element.parentElement) {
-	// 	element.parentElement.removeChild(element);
-	// }
-}
-
-function adjustDropPreviewPosition(
-	event: MouseEvent,
-	path: number[]
-) {
-	return;
-	if (!dropPreview) {
-		return;
-	}
-
-	const target = event.target as HTMLButtonElement;
-	const parentLi = target.parentElement as HTMLLIElement;
-	const parentMenu = parentLi.parentElement as HTMLMenuElement;
-
-	if (!parentLi || !parentMenu) {
-		throw new Error('Parents for drop preview not found');
-	}
-
-	const isVertical = path.length > 1;
-	const isBefore = event[isVertical ? 'offsetY' : 'offsetX'] < (
-		target[isVertical ? 'offsetHeight' : 'offsetWidth'] / 2
-	);
-
-	dropPreview.path = path;
-	dropPreview.isBefore = isBefore;
-
-	const isPreviewInOriginalPosition = comparePreviewOriginalPosition(isBefore, path);
-	if (!isPreviewInOriginalPosition) {
-		parentMenu.insertBefore(dropPreview.element, isBefore ? parentLi : parentLi.nextElementSibling);
-		return;
-	}
-	if (dropPreview.element.parentElement) {
-		dropPreview.element.parentElement.removeChild(dropPreview.element);
-	}
 }
 
 function moveCurrentlyDraggedLink(event: MouseEvent) {
@@ -200,15 +164,14 @@ function moveCurrentlyDraggedLink(event: MouseEvent) {
 
 function cleanupDrag(event: MouseEvent) {
 	const originalPath = currentlyGrabbedLink?.path;
-	const path = dropPreview?.path;
-	const isBefore = dropPreview?.isBefore;
+	const path = dropTarget?.path;
 
 	document.removeEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.removeEventListener('mouseup', cleanupDrag);
 	currentlyGrabbedLink?.element.remove();
 	currentlyGrabbedLink = undefined;
-	dropPreview?.element.classList.remove('drop-indicator-end', 'drop-indicator-start');
-	dropPreview = undefined;
+	dropTarget?.element.classList.remove('drop-indicator-end', 'drop-indicator-start');
+	dropTarget = undefined;
 
 	return;
 
@@ -250,6 +213,7 @@ function cleanupDrag(event: MouseEvent) {
 	if (isMovedOnSameLevel) {
 		currentLevelReference.splice(
 			path[path.length - 1],
+
 			0,
 			currentLevelReference.splice(originalPath[originalPath.length - 1], 1)[0]
 		);
@@ -266,28 +230,16 @@ function cleanupDrag(event: MouseEvent) {
 	}
 }
 
-function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
-	if (
-		!dropPreview
-		|| !currentlyGrabbedLink
-		|| path.length !== currentlyGrabbedLink.path.length
-		|| isBefore !== dropPreview.isBefore
-	) {
+function arePathsTheSame(path1: number[], path2: number[]) {
+	let rv = path1.length === path2.length;
+	if (!rv) {
 		return false;
 	}
 
-	let rv = true;
-	for (let i = 0; i < path.length; i++) {
-		rv = rv && currentlyGrabbedLink.path[i] === path[i];
+	const biggerLength = path1.length > path2.length ? path1.length : path2.length;
+	for (let i = 0; i < biggerLength; i++) {
+		rv = rv && path1[i] === path2[i];
 	}
-
-	const lastIndex = path.length - 1;
-	if (isBefore && path[lastIndex] === currentlyGrabbedLink.path[lastIndex] + 1) {
-		return true;
-	} else if (!isBefore && path[lastIndex] === currentlyGrabbedLink.path[lastIndex] - 1) {
-		return true;
-	}
-
 	return rv;
 }
 </script>
@@ -305,8 +257,8 @@ function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
 						:item="firstLevelLink"
 						:path="[firstLevelIndex]"
 						@mousedown="initLinkElementDrag"
-						@mouseenter="createDropIndicator"
-						@mousemove="adjustDropPreviewPosition"
+						@mouseenter="handleDropIndicator"
+						@mousemove="handleDropIndicator"
 					>
 						<div
 							v-if="firstLevelLink.children.length"
@@ -327,8 +279,8 @@ function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
 								:item="secondLevelLink"
 								:path="[firstLevelIndex, secondLevelIndex]"
 								@mousedown="initLinkElementDrag"
-								@mouseenter="createDropIndicator"
-								@mousemove="adjustDropPreviewPosition"
+								@mouseenter="handleDropIndicator"
+								@mousemove="handleDropIndicator"
 							>
 								<div
 									v-if="secondLevelLink.children.length"
@@ -358,8 +310,8 @@ function comparePreviewOriginalPosition(isBefore: boolean, path: number[]) {
 										:item="thirdLevelLink"
 										:path="[firstLevelIndex, secondLevelIndex, thirdLevelIndex]"
 										@mousedown="initLinkElementDrag"
-										@mouseenter="createDropIndicator"
-										@mousemove="adjustDropPreviewPosition"
+										@mouseenter="handleDropIndicator"
+										@mousemove="handleDropIndicator"
 									/>
 								</li>
 							</menu>
