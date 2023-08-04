@@ -272,7 +272,6 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 }
 
 function isMenuToTheLeft(indexOnLevel: number) {
-	console.log({ indexOnLevel, comparedTo: Math.ceil(transformedMenuLinks.value.length / 2) });
 	return indexOnLevel + 1 > Math.ceil(transformedMenuLinks.value.length / 2);
 }
 </script>
