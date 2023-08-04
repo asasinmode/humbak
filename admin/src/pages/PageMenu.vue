@@ -10,22 +10,31 @@ type IMenuLink = {
 };
 
 const menuLinks: IMenuLink[] = [
-	{ id: 1, text: 'third', href: 'menu', position: 2, parentId: null },
-	{ id: 2, text: 'second', href: 'menu', position: 1, parentId: null },
-	{ id: 3, text: 'first', href: 'menu', position: 0, parentId: null },
-	{ id: 4, text: 'third nested', href: 'menu', position: 2, parentId: 1 },
-	{ id: 5, text: 'second nested second', href: 'menu', position: 1, parentId: 2 },
-	{ id: 6, text: 'second nested first', href: 'menu', position: 0, parentId: 2 },
-	{ id: 7, text: 'first nested', href: 'menu', position: 0, parentId: 3 },
-	{ id: 8, text: 'first nested second', href: 'menu', position: 1, parentId: 4 },
-	{ id: 9, text: 'first nested first', href: 'menu', position: 0, parentId: 4 },
-	{ id: 10, text: 'first nested third', href: 'menu', position: 2, parentId: 4 },
-	{ id: 11, text: 'second nested first', href: 'menu', position: 0, parentId: 5 },
-	{ id: 12, text: 'second nested third', href: 'menu', position: 2, parentId: 5 },
-	{ id: 13, text: 'second nested second', href: 'menu', position: 1, parentId: 5 },
-	{ id: 14, text: 'third nested first', href: 'menu', position: 0, parentId: 6 },
-	{ id: 15, text: 'third nested second', href: 'menu', position: 1, parentId: 6 },
-	{ id: 16, text: 'third nested third', href: 'menu', position: 2, parentId: 6 },
+	{ id: 1, text: 'Kursy', href: 'menu', position: 0, parentId: null },
+	{ id: 2, text: 'Sekcja nurkowa', href: 'menu', position: 0, parentId: 1 },
+	{ id: 3, text: 'Sekcja Brzesko', href: 'menu', position: 0, parentId: 2 },
+	{ id: 4, text: 'Sekcja Proszówki', href: 'menu', position: 1, parentId: 2 },
+	{ id: 5, text: 'Sekcja Dąbrowa Górnicza', href: 'menu', position: 2, parentId: 2 },
+	{ id: 6, text: 'Sekcja przygoda', href: 'menu', position: 4, parentId: 2 },
+	{ id: 7, text: 'Sekcja Niepołomice', href: 'menu', position: 3, parentId: 2 },
+	{ id: 8, text: 'OWSD podstawowy', href: 'menu', position: 1, parentId: 1 },
+	{ id: 9, text: 'Wyprawy i Aktywności', href: 'menu', position: 1, parentId: null },
+	{ id: 10, text: 'Rejsy żeglarskie planowane', href: 'menu', position: 0, parentId: 9 },
+	{ id: 11, text: 'Rejsy Ateny zatoka sarońska', href: 'menu', position: 0, parentId: 10 },
+	{ id: 12, text: 'Wyprawy nurkowe planowane', href: 'menu', position: 1, parentId: 9 },
+	{ id: 13, text: 'Safari Nurkowe Egipt - 11-18 listopad', href: 'menu', position: 0, parentId: 12 },
+	{ id: 14, text: 'Wyprawa nurkowa na Maltę - 21-28 wrzesień', href: 'menu', position: 1, parentId: 12 },
+	{ id: 15, text: 'Cennik', href: 'menu', position: 2, parentId: null },
+	{ id: 16, text: 'O nas', href: 'menu', position: 3, parentId: null },
+	{ id: 17, text: 'Usługi i serwis', href: 'menu', position: 4, parentId: null },
+	{ id: 18, text: 'Sklep', href: 'menu', position: 0, parentId: 17 },
+	{ id: 19, text: 'Wypożyczalnia', href: 'menu', position: 1, parentId: 17 },
+	{ id: 20, text: 'Serwis sprzętu nurkowego', href: 'menu', position: 2, parentId: 17 },
+	{ id: 21, text: 'Bony i kariera zawpdpwa', href: 'menu', position: 3, parentId: 17 },
+	{ id: 22, text: 'Baseny', href: 'menu', position: 5, parentId: null },
+	{ id: 23, text: 'Kuter port Nieznanowice', href: 'menu', position: 0, parentId: 22 },
+	{ id: 24, text: 'Deep spot', href: 'menu', position: 1, parentId: 22 },
+	{ id: 25, text: 'Basen Niepołomice', href: 'menu', position: 2, parentId: 22 },
 ];
 
 function convertToTree(menuLinks: IMenuLink[]) {
@@ -261,6 +270,11 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 	}
 	return rv;
 }
+
+function isMenuToTheLeft(indexOnLevel: number) {
+	console.log({ indexOnLevel, comparedTo: Math.ceil(transformedMenuLinks.value.length / 2) });
+	return indexOnLevel + 1 > Math.ceil(transformedMenuLinks.value.length / 2);
+}
 </script>
 
 <template>
@@ -306,7 +320,7 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 									v-if="secondLevelLink.children.length"
 									class="pointer-events-none absolute top-1/2 h-3 w-3 -translate-y-1/2"
 									:class="
-										firstLevelIndex > Math.ceil(firstLevelLink.children.length / 2)
+										isMenuToTheLeft(firstLevelIndex)
 											? 'left-0 i-solar-alt-arrow-left-linear'
 											: 'right-0 i-solar-alt-arrow-right-linear'
 									"
@@ -318,7 +332,7 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 									|| (currentlyGrabbedLink && currentlyGrabbedLink.item.id !== secondLevelLink.id)"
 								class="bg-humbak-6 absolute top-0 w-full"
 								:class="
-									firstLevelIndex > Math.ceil(firstLevelLink.children.length / 2)
+									isMenuToTheLeft(firstLevelIndex)
 										? 'left-0 -translate-x-full' : 'right-0 translate-x-full'
 								"
 							>
@@ -339,7 +353,7 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 									v-if="currentlyGrabbedLink && !secondLevelLink.children.length"
 									class="horizontal hover:bg-humbak-7 focus-within:bg-humbak-7 relative list-none"
 									data-menu-drop-placeholder
-									:data-indicator-on-start="firstLevelIndex > Math.ceil(firstLevelLink.children.length / 2)"
+									:data-indicator-on-start="isMenuToTheLeft(firstLevelIndex)"
 								>
 									<MenuLinkButton
 										:path="[firstLevelIndex, secondLevelIndex, 0]"
