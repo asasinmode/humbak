@@ -162,12 +162,21 @@ function handleDropIndicator(event: MouseEvent, path: number[]) {
 		}
 	}
 
-	element.classList.toggle(
-		isBefore && !element.classList.contains('menu-drop-placeholder')
-			? 'drop-indicator-start'
-			: 'drop-indicator-end',
-		true
-	);
+	if ('menuDropPlaceholder' in element.dataset) {
+		element.classList.toggle(
+			element.dataset.indicatorOnStart === 'true'
+				? 'drop-indicator-start'
+				: 'drop-indicator-end',
+			true
+		);
+	} else {
+		element.classList.toggle(
+			isBefore
+				? 'drop-indicator-start'
+				: 'drop-indicator-end',
+			true
+		);
+	}
 }
 
 function cleanupDrag(event: MouseEvent) {
@@ -236,6 +245,8 @@ function cleanupDrag(event: MouseEvent) {
 		0,
 		oldLevelReference.splice(oldPath[oldPath.length - 1], 1)[0]
 	);
+
+	// update positions & send to server
 }
 
 function arePathsTheSame(path1: number[], path2: number[]) {
@@ -275,10 +286,8 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 					</MenuLinkButton>
 
 					<menu
-						v-if="
-							firstLevelLink.children.length
-								|| (currentlyGrabbedLink && currentlyGrabbedLink.item.id !== firstLevelLink.id)
-						"
+						v-if="firstLevelLink.children.length
+							|| (currentlyGrabbedLink && currentlyGrabbedLink.item.id !== firstLevelLink.id)"
 						class="bg-humbak-5 absolute bottom-0 w-full translate-y-full"
 					>
 						<li
@@ -305,10 +314,8 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 							</MenuLinkButton>
 
 							<menu
-								v-if="
-									secondLevelLink.children.length
-										|| (currentlyGrabbedLink && currentlyGrabbedLink.item.id !== secondLevelLink.id)
-								"
+								v-if="secondLevelLink.children.length
+									|| (currentlyGrabbedLink && currentlyGrabbedLink.item.id !== secondLevelLink.id)"
 								class="bg-humbak-6 absolute top-0 w-full"
 								:class="
 									firstLevelIndex >= Math.ceil(firstLevelLink.children.length / 2)
@@ -330,7 +337,9 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 								</li>
 								<li
 									v-if="currentlyGrabbedLink && !secondLevelLink.children.length"
-									class="horizontal menu-drop-placeholder hover:bg-humbak-7 focus-within:bg-humbak-7 relative list-none"
+									class="horizontal hover:bg-humbak-7 focus-within:bg-humbak-7 relative list-none"
+									data-menu-drop-placeholder
+									:data-indicator-on-start="firstLevelIndex >= Math.ceil(firstLevelLink.children.length / 2)"
 								>
 									<MenuLinkButton
 										:path="[firstLevelIndex, secondLevelIndex, 0]"
@@ -345,11 +354,12 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 						</li>
 						<li
 							v-if="currentlyGrabbedLink && !firstLevelLink.children.length"
-							class="vertical menu-drop-placeholder hover:bg-humbak-6 focus-within:bg-humbak-6 relative list-none"
+							class="vertical hover:bg-humbak-6 focus-within:bg-humbak-6 relative list-none"
+							data-menu-drop-placeholder
 						>
 							<MenuLinkButton
-								:path="[firstLevelIndex, 0]"
 								class="min-h-10"
+								:path="[firstLevelIndex, 0]"
 								@mouseenter="handleDropIndicator"
 								@mousemove="handleDropIndicator"
 							>
