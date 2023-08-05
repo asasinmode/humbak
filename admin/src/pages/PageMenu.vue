@@ -124,7 +124,7 @@ function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: numbe
 	element.style.width = `${parentTarget.offsetWidth}px`;
 	element.style.height = `${parentTarget.offsetHeight}px`;
 	element.style.opacity = '0.6';
-	element.style.zIndex = '2';
+	element.style.zIndex = '21';
 	element.classList.add('dragged-menu-link');
 	element.classList.toggle('flex-1', true);
 
