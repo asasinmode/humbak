@@ -124,7 +124,7 @@ function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: numbe
 	element.style.width = `${parentTarget.offsetWidth}px`;
 	element.style.height = `${parentTarget.offsetHeight}px`;
 	element.style.opacity = '0.6';
-	element.style.zIndex = '1';
+	element.style.zIndex = '2';
 	element.classList.add('dragged-menu-link');
 	element.classList.toggle('flex-1', true);
 
@@ -330,9 +330,13 @@ function saveChanges() {
 </script>
 
 <template>
-	<main class="px-2 pb-4 pt-[4.375rem] md:px-0">
-		<nav ref="nav" class="relative mx-auto max-w-360 bg-humbak shadow">
-			<VButton ref="saveButton" class="right-0 h-fit !absolute -top-4 -translate-y-full neon-green" @click="saveChanges">
+	<main class="px-2 pb-4 pt-[3.625rem] md:px-0 lg:pt-[4.375rem]">
+		<!-- make valert -->
+		<h1 class="text-center text-2xl lg:hidden">
+			edytowanie menu nie jest dostępne na małych ekranach
+		</h1>
+		<nav ref="nav" class="relative mx-auto hidden max-w-360 bg-humbak shadow lg:block">
+			<VButton ref="saveButton" class="right-4 h-fit !absolute -top-4 -translate-y-full neon-green" @click="saveChanges">
 				zapisz
 			</VButton>
 			<menu class="flex flex-row text-black">
@@ -470,7 +474,7 @@ function saveChanges() {
 .drop-indicator-end:after,
 .drop-indicator-start:before,
 .drop-indicator-end:before {
-	@apply content-empty absolute z-100 pointer-events-none
+	@apply content-empty absolute z-1 pointer-events-none
 }
 
 .horizontal.drop-indicator-start:after,

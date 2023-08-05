@@ -12,15 +12,21 @@ defineEmits<{
 
 const { toastGenericError } = useToast();
 const container = ref<HTMLElement>();
+const expandButton = ref<HTMLButtonElement>();
 
 let offsetX = 0;
 let offsetY = 0;
 
 function initDrag(event: MouseEvent) {
+	if (event.target === expandButton.value) {
+		event.preventDefault();
+		return;
+	}
 	if (!container.value) {
 		toastGenericError();
 		throw new Error('container ref not set');
 	}
+	event.preventDefault();
 	offsetX = event.offsetX;
 	offsetY = event.offsetY;
 	document.addEventListener('mousemove', handleMove);
@@ -41,22 +47,36 @@ function cleanup() {
 	document.removeEventListener('mousemove', handleMove);
 	document.removeEventListener('mouseup', cleanup);
 }
+
+const isExpanded = ref(false);
 </script>
 
 <template>
-	<article ref="container" class="fixed min-h-20 w-60 flex flex-col border border-neutral">
+	<article
+		ref="container"
+		class="group fixed z-1 hidden w-60 flex-col border border-neutral shadow lg:flex"
+		:class="isExpanded ? 'min-h-20' : ''"
+		style="top: 4.875rem"
+	>
 		<h3
-			class="h-10 flex cursor-move select-none items-center border-b border-b-neutral bg-white/70 px-2 text-neutral-8 dark:bg-black/70 dark:text-neutral-2"
+			class="relative h-10 flex cursor-move select-none items-center border-neutral bg-white/70 px-2 text-neutral-8 dark:bg-black/70 dark:text-neutral-2"
 			@mousedown="initDrag"
 		>
 			schowane
+			<button ref="expandButton" class="absolute right-3 top-1/2 -translate-y-1/2" @click="isExpanded = !isExpanded">
+				<span class="visually-hidden">{{ isExpanded ? 'zminimalizuj' : 'zmaksymalizuj' }}</span>
+				<div class="pointer-events-none" :class="isExpanded ? 'i-fa6-solid-window-minimize' : 'i-fa6-solid-window-maximize'" />
+			</button>
 		</h3>
-		<ul v-if="menuLinks.length" class="group flex flex-1 flex-col of-x-hidden of-y-auto bg-humbak text-black">
+		<ul
+			v-if="menuLinks.length"
+			class="max-h-80 flex flex-col of-x-hidden border-neutral bg-humbak text-black"
+			:class="isExpanded ? 'h-auto of-y-auto flex-1 border-t' : 'h-0 of-y-hidden'"
+		>
 			<li
 				v-for="hiddenLink in menuLinks"
 				:key="hiddenLink.id"
-				class="hoverable-child-menu-visible min-w-60 flex-center flex-1 list-none"
-				:class="!isLinkGrabbed ? 'focus-within:bg-humbak-5 hover:bg-humbak-5' : ''"
+				class="hoverable-child-menu-visible min-w-60 flex-center flex-1 list-none focus-within:bg-humbak-5 hover:bg-humbak-5"
 			>
 				<MenuLinkButton
 					:item="hiddenLink"
@@ -64,12 +84,12 @@ function cleanup() {
 					@mousedown="(...args) => $emit('menuLinkMouseDown', ...args)"
 				/>
 			</li>
-			<div
-				v-show="isLinkGrabbed"
-				class="pointer-events-none absolute inset-0 hidden flex-center bg-black/10 group-hover:flex dark:bg-white/10"
-			>
-				<div class="i-fa6-solid-plus" />
-			</div>
 		</ul>
+		<div
+			v-show="isLinkGrabbed"
+			class="absolute inset-0 hidden flex-center bg-black/10 group-hover:flex dark:bg-white/10"
+		>
+			<div class="i-fa6-solid-plus" />
+		</div>
 	</article>
 </template>
