@@ -35,18 +35,14 @@ const menuLinks: IMenuLink[] = [
 	{ id: 23, text: 'Kuter port Nieznanowice', href: 'menu', position: 0, parentId: 22 },
 	{ id: 24, text: 'Deep spot', href: 'menu', position: 1, parentId: 22 },
 	{ id: 25, text: 'Basen Niepołomice', href: 'menu', position: 2, parentId: 22 },
+	{ id: 26, text: 'Schowane 1', href: 'menu', position: 0, parentId: -1 },
+	{ id: 27, text: 'Schowane 2', href: 'menu', position: 0, parentId: -1 },
+	{ id: 28, text: 'Schowane 3', href: 'menu', position: 0, parentId: -1 },
+	{ id: 29, text: 'Schowane 4', href: 'menu', position: 0, parentId: -1 },
+	{ id: 30, text: 'Schowane 5', href: 'menu', position: 0, parentId: -1 },
+	{ id: 31, text: 'Schowane 6', href: 'menu', position: 0, parentId: -1 },
+	{ id: 32, text: 'Schowane 7', href: 'menu', position: 0, parentId: -1 },
 ];
-
-function convertToTree(menuLinks: IMenuLink[]) {
-	const rv = extractWithParentId(menuLinks, null);
-	for (const child of rv) {
-		child.children = extractWithParentId(menuLinks, child.id);
-		for (const grandchild of child.children) {
-			grandchild.children = extractWithParentId(menuLinks, grandchild.id);
-		}
-	}
-	return rv;
-}
 
 function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): IMenuTreeItem[] {
 	const rv: IMenuTreeItem[] = [];
@@ -79,9 +75,19 @@ function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): I
 	return rv;
 }
 
-const transformedMenuLinks = ref(convertToTree(menuLinks));
+const { toastGenericError, toast } = useToast();
+const transformedHiddenMenuLinks = ref<IMenuTreeItem[]>(extractWithParentId(menuLinks, -1));
+const transformedMenuLinks = ref<IMenuTreeItem[]>(extractWithParentId(menuLinks, null));
 
-const { toast } = useToast();
+for (const child of transformedMenuLinks.value) {
+	child.children = extractWithParentId(menuLinks, child.id);
+	for (const grandchild of child.children) {
+		grandchild.children = extractWithParentId(menuLinks, grandchild.id);
+	}
+}
+
+const changedLinks: Pick<IMenuLink, 'id' | 'position' | 'parentId'>[] = [];
+
 const nav = ref<HTMLElement | undefined>();
 const currentlyGrabbedLink = shallowRef<{
 	item: IMenuTreeItem;
@@ -94,10 +100,15 @@ let dropTarget: {
 } | undefined;
 
 function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: number[]) {
-	event.preventDefault();
 	if (!nav.value) {
+		toastGenericError();
 		throw new Error('nav element not found');
 	}
+
+	if (event.button !== 0) {
+		return;
+	}
+	event.preventDefault();
 
 	const target = event.target as HTMLButtonElement;
 	const parentTarget = target.parentElement as HTMLLIElement;
@@ -135,7 +146,6 @@ function moveCurrentlyDraggedLink(event: MouseEvent) {
 }
 
 function handleDropIndicator(event: MouseEvent, path: number[]) {
-	dropTarget?.element.classList.remove('drop-indicator-start', 'drop-indicator-end');
 	if (!currentlyGrabbedLink.value) {
 		return;
 	}
@@ -144,6 +154,7 @@ function handleDropIndicator(event: MouseEvent, path: number[]) {
 	const element = target?.parentElement as HTMLLIElement;
 
 	if (!element) {
+		toastGenericError();
 		throw new Error('parent of dragged element not found');
 	}
 
@@ -152,7 +163,14 @@ function handleDropIndicator(event: MouseEvent, path: number[]) {
 		target[isVertical ? 'offsetHeight' : 'offsetWidth'] / 2
 	);
 	const isOnSameLevel = arePathsTheSame(path.slice(0, -1), currentlyGrabbedLink.value.path.slice(0, -1));
+	const isPathTheSame = isOnSameLevel
+		&& path[path.length - 1] === currentlyGrabbedLink.value.path[currentlyGrabbedLink.value.path.length - 1];
 
+	if (isPathTheSame) {
+		return;
+	}
+
+	dropTarget?.element.classList.remove('drop-indicator-start', 'drop-indicator-end');
 	dropTarget = { element, path };
 
 	if (isOnSameLevel) {
@@ -189,6 +207,7 @@ function handleDropIndicator(event: MouseEvent, path: number[]) {
 }
 
 function cleanupDrag(event: MouseEvent) {
+	const target = currentlyGrabbedLink.value?.item;
 	const oldPath = currentlyGrabbedLink.value?.path;
 	const newPath = dropTarget?.path;
 
@@ -199,7 +218,7 @@ function cleanupDrag(event: MouseEvent) {
 	dropTarget?.element.classList.remove('drop-indicator-end', 'drop-indicator-start');
 	dropTarget = undefined;
 
-	if (!oldPath || !newPath) {
+	if (!oldPath || !newPath || !target) {
 		return;
 	}
 
@@ -222,10 +241,6 @@ function cleanupDrag(event: MouseEvent) {
 		}
 	}
 
-	let target = transformedMenuLinks.value[oldPath[0]];
-	for (const index of oldPath.slice(1)) {
-		target = target.children[index];
-	}
 	let maxMenuLevel = 3;
 	for (const child of target.children) {
 		maxMenuLevel = 2;
@@ -245,7 +260,9 @@ function cleanupDrag(event: MouseEvent) {
 		oldLevelReference = oldLevelReference[index].children;
 	}
 	let newLevelReference = transformedMenuLinks.value;
+	let newParentId = null;
 	for (const index of newPath.slice(0, -1)) {
+		newParentId = newLevelReference[index].id;
 		newLevelReference = newLevelReference[index].children;
 	}
 
@@ -255,7 +272,34 @@ function cleanupDrag(event: MouseEvent) {
 		oldLevelReference.splice(oldPath[oldPath.length - 1], 1)[0]
 	);
 
-	// update positions & send to server
+	for (let i = 0; i < newLevelReference.length; i++) {
+		const { id } = newLevelReference[i];
+		const indexInChanged = changedLinks.findIndex(link => link.id === id);
+
+		if (indexInChanged === -1) {
+			changedLinks.push({ id, position: i } as Pick<IMenuLink, 'id' | 'position' | 'parentId'>);
+		} else {
+			changedLinks[indexInChanged].id = id;
+			changedLinks[indexInChanged].position = i;
+		}
+	}
+
+	if (!isNewPathOnTheSameLevel) {
+		for (let i = 0; i < oldLevelReference.length; i++) {
+			const { id } = oldLevelReference[i];
+			const indexInChanged = changedLinks.findIndex(link => link.id === id);
+
+			if (indexInChanged === -1) {
+				changedLinks.push({ id, position: i } as Pick<IMenuLink, 'id' | 'position' | 'parentId'>);
+			} else {
+				changedLinks[indexInChanged].id = id;
+				changedLinks[indexInChanged].position = i;
+			}
+		}
+
+		const changedLinkIndex = changedLinks.findIndex(link => link.id === target.id);
+		changedLinks[changedLinkIndex].parentId = newParentId;
+	}
 }
 
 function arePathsTheSame(path1: number[], path2: number[]) {
@@ -274,16 +318,23 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 function isMenuToTheLeft(indexOnLevel: number) {
 	return indexOnLevel + 1 > Math.ceil(transformedMenuLinks.value.length / 2);
 }
+
+function saveChanges() {
+	console.log('saving', changedLinks);
+}
 </script>
 
 <template>
 	<main class="px-2 pb-4 pt-[18px] md:px-0">
-		<nav ref="nav" class="bg-humbak mx-auto max-w-360 text-black shadow">
+		<VButton class="ml-auto neon-green" @click="saveChanges">
+			zapisz
+		</VButton>
+		<nav ref="nav" class="mx-auto max-w-360 bg-humbak text-black shadow">
 			<menu class="flex flex-row">
 				<li
 					v-for="(firstLevelLink, firstLevelIndex) in transformedMenuLinks"
 					:key="firstLevelLink.id"
-					class="hoverable-child-menu-visible horizontal hover:bg-humbak-5 focus-within:bg-humbak-5 relative flex-center flex-1 flex-col list-none"
+					class="hoverable-child-menu-visible horizontal relative flex-center flex-1 flex-col list-none focus-within:bg-humbak-5 hover:bg-humbak-5"
 				>
 					<MenuLinkButton
 						:item="firstLevelLink"
@@ -301,12 +352,12 @@ function isMenuToTheLeft(indexOnLevel: number) {
 					<menu
 						v-if="firstLevelLink.children.length
 							|| (currentlyGrabbedLink && currentlyGrabbedLink.item.id !== firstLevelLink.id)"
-						class="bg-humbak-5 absolute bottom-0 w-full translate-y-full"
+						class="absolute bottom-0 w-full translate-y-full bg-humbak-5"
 					>
 						<li
 							v-for="(secondLevelLink, secondLevelIndex) in firstLevelLink.children"
 							:key="secondLevelLink.id"
-							class="hoverable-child-menu-visible vertical hover:bg-humbak-6 focus-within:bg-humbak-6 relative list-none"
+							class="hoverable-child-menu-visible vertical relative list-none focus-within:bg-humbak-6 hover:bg-humbak-6"
 						>
 							<MenuLinkButton
 								:item="secondLevelLink"
@@ -329,7 +380,7 @@ function isMenuToTheLeft(indexOnLevel: number) {
 							<menu
 								v-if="secondLevelLink.children.length
 									|| (currentlyGrabbedLink && currentlyGrabbedLink.item.id !== secondLevelLink.id)"
-								class="bg-humbak-6 absolute top-0 w-full"
+								class="absolute top-0 w-full bg-humbak-6"
 								:class="
 									isMenuToTheLeft(firstLevelIndex)
 										? 'left-0 -translate-x-full' : 'right-0 translate-x-full'
@@ -338,7 +389,7 @@ function isMenuToTheLeft(indexOnLevel: number) {
 								<li
 									v-for="(thirdLevelLink, thirdLevelIndex) in secondLevelLink.children"
 									:key="thirdLevelLink.id"
-									class="hover:bg-humbak-7 vertical focus-within:bg-humbak-7 relative list-none"
+									class="vertical relative list-none focus-within:bg-humbak-7 hover:bg-humbak-7"
 								>
 									<MenuLinkButton
 										:item="thirdLevelLink"
@@ -350,7 +401,7 @@ function isMenuToTheLeft(indexOnLevel: number) {
 								</li>
 								<li
 									v-if="currentlyGrabbedLink && !secondLevelLink.children.length"
-									class="horizontal hover:bg-humbak-7 focus-within:bg-humbak-7 relative list-none"
+									class="horizontal relative list-none focus-within:bg-humbak-7 hover:bg-humbak-7"
 									data-menu-drop-placeholder
 									:data-indicator-on-start="isMenuToTheLeft(firstLevelIndex)"
 								>
@@ -367,7 +418,7 @@ function isMenuToTheLeft(indexOnLevel: number) {
 						</li>
 						<li
 							v-if="currentlyGrabbedLink && !firstLevelLink.children.length"
-							class="vertical hover:bg-humbak-6 focus-within:bg-humbak-6 relative list-none"
+							class="vertical relative list-none focus-within:bg-humbak-6 hover:bg-humbak-6"
 							data-menu-drop-placeholder
 						>
 							<MenuLinkButton
@@ -383,6 +434,11 @@ function isMenuToTheLeft(indexOnLevel: number) {
 				</li>
 			</menu>
 		</nav>
+		<MenuHiddenLinksWidget
+			:menu-links="transformedHiddenMenuLinks"
+			:is-link-grabbed="!!currentlyGrabbedLink"
+			@menu-link-mouse-down="initLinkElementDrag"
+		/>
 	</main>
 </template>
 
