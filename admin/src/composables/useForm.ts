@@ -2,7 +2,7 @@ import { ref } from 'vue';
 import { TRPCClientError } from '@trpc/client';
 
 const { confirm } = useConfirm();
-const { toast } = useToast();
+const { toast, toastGenericError } = useToast();
 
 type TRPCError = {
 	message: string;
@@ -60,7 +60,7 @@ export const useForm = <T extends Record<string, unknown>>(
 
 	function handleError(error: unknown) {
 		if (!(error instanceof TRPCClientError) || error.data.httpStatus !== 400) {
-			toast('coś poszło nie tak 😓', 'error');
+			toastGenericError();
 			throw error;
 		}
 
@@ -80,7 +80,7 @@ export const useForm = <T extends Record<string, unknown>>(
 			}
 		}
 
-		toastUnknown && toast('coś poszło nie tak 😓', 'error');
+		toastUnknown && toastGenericError();
 	}
 
 	async function sendForm(toastSuccess = true) {

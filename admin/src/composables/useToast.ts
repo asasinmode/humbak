@@ -8,9 +8,8 @@ type Toast = {
 const toasts = ref<Toast[]>([]);
 const timeouts: Record<string, NodeJS.Timeout> = {};
 
-export const useToast = () => ({
-	toasts,
-	toast: (text: string, variant: ToastVariant = 'success') => {
+export const useToast = () => {
+	function toast(text: string, variant: ToastVariant = 'success') {
 		const id = Math.random().toString(36).substring(2, 9);
 
 		toasts.value.push({
@@ -19,15 +18,21 @@ export const useToast = () => ({
 			variant,
 		});
 		timeouts[id] = setTimeout(() => toasts.value.shift(), 3000);
-	},
-	clearToast: (id: string) => {
-		const index = toasts.value.findIndex(toast => toast.id === id);
+	}
 
-		if (!timeouts[id] || index === -1) {
-			return;
-		}
+	return {
+		toasts,
+		toast,
+		toastGenericError: () => toast('coś poszło nie tak 😓', 'error'),
+		clearToast: (id: string) => {
+			const index = toasts.value.findIndex(toast => toast.id === id);
 
-		toasts.value.splice(index, 1);
-		clearTimeout(timeouts[id]);
-	},
-});
+			if (!timeouts[id] || index === -1) {
+				return;
+			}
+
+			toasts.value.splice(index, 1);
+			clearTimeout(timeouts[id]);
+		},
+	};
+};
