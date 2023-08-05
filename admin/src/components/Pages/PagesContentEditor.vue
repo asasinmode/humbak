@@ -138,7 +138,6 @@ defineExpose({
 
 <template>
 	<section ref="container" class="mt-6 hidden h-[60vh] min-h-64 gap-x-2 lg:flex">
-		<!-- make resizable -->
 		<VEditor
 			ref="editor"
 			class="flex-1"
@@ -167,8 +166,7 @@ defineExpose({
 		</aside>
 		<main class="bg-checker flex-1" v-text="contents.html.value" />
 	</section>
-	<!-- make valert -->
-	<h1 class="mt-4 text-center text-2xl lg:hidden">
+	<VAlert class="mt-4 max-w-3xl md:mx-auto lg:hidden" variant="warning">
 		edytowanie zawartości nie jest dostępne na małych ekranach
-	</h1>
+	</VAlert>
 </template>

@@ -20,6 +20,7 @@ declare module 'vue' {
     TheSettings: typeof import('./../components/TheSettings.vue')['default']
     TheThemeToggle: typeof import('./../components/TheThemeToggle.vue')['default']
     TheToasts: typeof import('./../components/TheToasts.vue')['default']
+    VAlert: typeof import('./../components/V/VAlert.vue')['default']
     VButton: typeof import('./../components/V/VButton.vue')['default']
     VDialog: typeof import('./../components/V/VDialog.vue')['default']
     VEditor: typeof import('./../components/V/VEditor.vue')['default']

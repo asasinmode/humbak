@@ -331,10 +331,9 @@ function saveChanges() {
 
 <template>
 	<main class="px-2 pb-4 pt-[3.625rem] md:px-0 lg:pt-[4.375rem]">
-		<!-- make valert -->
-		<h1 class="text-center text-2xl lg:hidden">
-			edytowanie menu nie jest dostępne na małych ekranach
-		</h1>
+		<VAlert class="max-w-3xl md:mx-auto lg:hidden" variant="warning">
+			edytowanie menu nie jest dostępne na małych ekranch
+		</VAlert>
 		<nav ref="nav" class="relative mx-auto hidden max-w-360 bg-humbak shadow lg:block">
 			<VButton
 				id="menu-save-button"
