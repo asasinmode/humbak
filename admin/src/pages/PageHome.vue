@@ -138,7 +138,7 @@ async function clearFormAndLoadedPage() {
 </script>
 
 <template>
-	<main class="px-2 pb-4 pt-[18px] md:px-0">
+	<main class="px-2 pb-4 pt-[1.125rem] md:px-0">
 		<PagesTable ref="table" :loading-page-id="loadingPageId" @edit="editPage" @delete="deletePage" />
 
 		<section class="grid grid-cols-[5fr_2fr] mx-auto max-w-6xl gap-x-4 gap-y-4 md:grid-cols-12">

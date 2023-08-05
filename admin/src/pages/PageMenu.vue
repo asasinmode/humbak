@@ -122,6 +122,7 @@ function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: numbe
 	element.style.width = `${parentTarget.offsetWidth}px`;
 	element.style.height = `${parentTarget.offsetHeight}px`;
 	element.style.opacity = '0.6';
+	element.style.zIndex = '1';
 	element.classList.add('dragged-menu-link');
 	element.classList.toggle('flex-1', true);
 
@@ -325,11 +326,11 @@ function saveChanges() {
 </script>
 
 <template>
-	<main class="px-2 pb-4 pt-[18px] md:px-0">
-		<VButton class="ml-auto neon-green" @click="saveChanges">
-			zapisz
-		</VButton>
-		<nav ref="nav" class="mx-auto max-w-360 bg-humbak text-black shadow">
+	<main class="px-2 pb-4 pt-[4.375rem] md:px-0">
+		<nav ref="nav" class="relative mx-auto max-w-360 bg-humbak text-black shadow">
+			<VButton class="right-0 h-fit !absolute -top-4 -translate-y-full neon-green" @click="saveChanges">
+				zapisz
+			</VButton>
 			<menu class="flex flex-row">
 				<li
 					v-for="(firstLevelLink, firstLevelIndex) in transformedMenuLinks"
@@ -434,12 +435,12 @@ function saveChanges() {
 				</li>
 			</menu>
 		</nav>
-		<MenuHiddenLinksWidget
-			:menu-links="transformedHiddenMenuLinks"
-			:is-link-grabbed="!!currentlyGrabbedLink"
-			@menu-link-mouse-down="initLinkElementDrag"
-		/>
 	</main>
+	<MenuHiddenLinksWidget
+		:menu-links="transformedHiddenMenuLinks"
+		:is-link-grabbed="!!currentlyGrabbedLink"
+		@menu-link-mouse-down="initLinkElementDrag"
+	/>
 </template>
 
 <style>
