@@ -53,7 +53,6 @@ const isExpanded = ref(false);
 
 <template>
 	<article
-		id="menu-hidden-links-widget"
 		ref="container"
 		class="group fixed z-1 hidden w-60 flex-col border border-neutral shadow lg:flex"
 		:class="isExpanded ? 'min-h-20' : ''"
@@ -94,15 +93,3 @@ const isExpanded = ref(false);
 		</div>
 	</article>
 </template>
-
-<style>
-#menu-hidden-links-widget {
-	left: 0;
-}
-
-@media (min-width: 90rem) {
-	#menu-hidden-links-widget {
-		left: calc((100% - 90rem) / 2);
-	}
-}
-</style>

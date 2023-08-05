@@ -336,7 +336,12 @@ function saveChanges() {
 			edytowanie menu nie jest dostępne na małych ekranach
 		</h1>
 		<nav ref="nav" class="relative mx-auto hidden max-w-360 bg-humbak shadow lg:block">
-			<VButton ref="saveButton" class="right-0 h-fit !absolute -top-4 -translate-y-full neon-green" @click="saveChanges">
+			<VButton
+				id="menu-save-button"
+				ref="saveButton"
+				class="right-0 h-fit !absolute -top-4 -translate-y-full neon-green"
+				@click="saveChanges"
+			>
 				zapisz
 			</VButton>
 			<menu class="flex flex-row text-black">
@@ -445,6 +450,7 @@ function saveChanges() {
 		</nav>
 	</main>
 	<MenuHiddenLinksWidget
+		id="menu-hidden-links-widget"
 		:menu-links="transformedHiddenMenuLinks"
 		:is-link-grabbed="!!currentlyGrabbedLink"
 		@menu-link-mouse-down="initLinkElementDrag"
@@ -527,5 +533,23 @@ function saveChanges() {
 .vertical.drop-indicator-end:before,
 .vertical.drop-indicator-end:after {
 	@apply bottom-0 translate-y-1/2
+}
+
+#menu-save-button {
+	right: clamp(0.00rem, calc(3.46rem + -3.85vw), 1.00rem);
+}
+
+#menu-hidden-links-widget {
+	left: clamp(0.00rem, calc(3.46rem + -3.85vw), 1.00rem);
+}
+
+@media (min-width: 90rem) {
+	#menu-save-button {
+		right: 0;
+	}
+
+	#menu-hidden-links-widget {
+		left: calc((100% - 90rem) / 2);
+	}
 }
 </style>
