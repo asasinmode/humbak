@@ -336,7 +336,7 @@ function saveChanges() {
 			edytowanie menu nie jest dostępne na małych ekranach
 		</h1>
 		<nav ref="nav" class="relative mx-auto hidden max-w-360 bg-humbak shadow lg:block">
-			<VButton ref="saveButton" class="right-4 h-fit !absolute -top-4 -translate-y-full neon-green" @click="saveChanges">
+			<VButton ref="saveButton" class="right-0 h-fit !absolute -top-4 -translate-y-full neon-green" @click="saveChanges">
 				zapisz
 			</VButton>
 			<menu class="flex flex-row text-black">
