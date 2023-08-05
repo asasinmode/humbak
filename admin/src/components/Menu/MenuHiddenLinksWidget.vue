@@ -62,7 +62,7 @@ const isExpanded = ref(false);
 			@mousedown="initDrag"
 		>
 			schowane
-			<button ref="expandButton" class="absolute right-3 top-1/2 -translate-y-1/2" @click="toggle">
+			<button ref="expandButton" class="absolute right-3 top-1/2 -translate-y-1/2" @click="isExpanded = !isExpanded">
 				<span class="visually-hidden">{{ isExpanded ? 'zminimalizuj' : 'zmaksymalizuj' }}</span>
 				<div class="pointer-events-none" :class="isExpanded ? 'i-fa6-solid-window-minimize' : 'i-fa6-solid-window-maximize'" />
 			</button>
