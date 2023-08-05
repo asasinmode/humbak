@@ -61,10 +61,10 @@ function initResizeDrag(event: MouseEvent) {
 }
 
 function onResizeMove(event: MouseEvent) {
-	event.preventDefault();
 	if (!container.value) {
 		throw new Error('Container not found');
 	}
+	event.preventDefault();
 	container.value.style.height = `${initHeight + event.clientY - initY}px`;
 }
 

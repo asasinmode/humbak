@@ -11,20 +11,42 @@ defineEmits<{
 }>();
 
 const { toastGenericError } = useToast();
-const article = ref<HTMLElement>();
+const container = ref<HTMLElement>();
+
+let offsetX = 0;
+let offsetY = 0;
 
 function initDrag(event: MouseEvent) {
-	if (!article.value) {
-		toast('coś poszło nie tak');
-		throw new Error();
+	if (!container.value) {
+		toastGenericError();
+		throw new Error('container ref not set');
 	}
+	offsetX = event.offsetX;
+	offsetY = event.offsetY;
+	document.addEventListener('mousemove', handleMove);
+	document.addEventListener('mouseup', cleanup);
+}
+
+function handleMove(event: MouseEvent) {
+	if (!container.value) {
+		toastGenericError();
+		throw new Error('container ref not set');
+	}
+	event.preventDefault();
+	container.value.style.left = `${event.clientX - offsetX}px`;
+	container.value.style.top = `${event.clientY - offsetY}px`;
+}
+
+function cleanup() {
+	document.removeEventListener('mousemove', handleMove);
+	document.removeEventListener('mouseup', cleanup);
 }
 </script>
 
 <template>
-	<article ref="article" class="fixed min-h-20 w-60 flex flex-col border border-neutral">
+	<article ref="container" class="fixed min-h-20 w-60 flex flex-col border border-neutral">
 		<h3
-			class="h-10 flex cursor-move select-none items-center border-b border-b-neutral bg-white/50 dark:bg-black/50"
+			class="h-10 flex cursor-move select-none items-center border-b border-b-neutral bg-white/70 px-2 text-neutral-8 dark:bg-black/70 dark:text-neutral-2"
 			@mousedown="initDrag"
 		>
 			schowane

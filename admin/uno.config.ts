@@ -61,4 +61,5 @@ export default defineConfig({
 			},
 		},
 	},
+	blocklist: ['container'],
 });
