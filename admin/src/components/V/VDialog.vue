@@ -18,8 +18,8 @@ type Focusable = Element & {
 
 const isOpen = ref(false);
 const dialog = ref<HTMLElement | null>();
-const openButton = ref<InstanceType<typeof VButton> | null>();
-const closeButton = ref<InstanceType<typeof VButton> | null>();
+const openButton = ref<InstanceType<typeof VButton>>();
+const closeButton = ref<InstanceType<typeof VButton>>();
 
 function open() {
 	isOpen.value = true;

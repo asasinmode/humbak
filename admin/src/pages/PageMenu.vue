@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VButton from '~/components/V/VButton.vue';
 import type { IMenuTreeItem } from '~/types';
 
 type IMenuLink = {
@@ -88,7 +89,8 @@ for (const child of transformedMenuLinks.value) {
 
 const changedLinks: Pick<IMenuLink, 'id' | 'position' | 'parentId'>[] = [];
 
-const nav = ref<HTMLElement | undefined>();
+const nav = ref<HTMLElement>();
+const saveButton = ref<InstanceType<typeof VButton>>();
 const currentlyGrabbedLink = shallowRef<{
 	item: IMenuTreeItem;
 	element: HTMLLIElement;
@@ -223,7 +225,9 @@ function cleanupDrag(event: MouseEvent) {
 		return;
 	}
 
-	const isDroppedOutside = !event.target || !nav.value?.contains(event.target as HTMLElement);
+	const isDroppedOutside = !event.target
+		|| !nav.value?.contains(event.target as HTMLElement)
+		|| event.target === saveButton.value?.element;
 	const isNewPathOnTheSameLevel = arePathsTheSame(oldPath.slice(0, -1), newPath.slice(0, -1));
 	const isNewPathTheSame = isNewPathOnTheSameLevel && newPath[newPath.length - 1] === oldPath[oldPath.length - 1];
 
@@ -327,11 +331,11 @@ function saveChanges() {
 
 <template>
 	<main class="px-2 pb-4 pt-[4.375rem] md:px-0">
-		<nav ref="nav" class="relative mx-auto max-w-360 bg-humbak text-black shadow">
-			<VButton class="right-0 h-fit !absolute -top-4 -translate-y-full neon-green" @click="saveChanges">
+		<nav ref="nav" class="relative mx-auto max-w-360 bg-humbak shadow">
+			<VButton ref="saveButton" class="right-0 h-fit !absolute -top-4 -translate-y-full neon-green" @click="saveChanges">
 				zapisz
 			</VButton>
-			<menu class="flex flex-row">
+			<menu class="flex flex-row text-black">
 				<li
 					v-for="(firstLevelLink, firstLevelIndex) in transformedMenuLinks"
 					:key="firstLevelLink.id"

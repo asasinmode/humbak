@@ -13,7 +13,7 @@ const close = ref(() => {});
 const open = ref(() => {});
 const activator = ref<HTMLElement | null>();
 const component = defineComponent(() => {
-	const dialog = ref<InstanceType<typeof VDialog> | null>();
+	const dialog = ref<InstanceType<typeof VDialog>>();
 
 	onMounted(() => {
 		if (dialog.value) {

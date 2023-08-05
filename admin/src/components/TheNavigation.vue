@@ -3,8 +3,8 @@ import type { ComponentPublicInstance } from 'vue';
 import TheThemeToggle from '~/components/TheThemeToggle.vue';
 
 const isExpanded = ref(false);
-const firstFocusableNavElement = ref<ComponentPublicInstance | null>();
-const secondToLastFocusableNavElement = ref<InstanceType<typeof TheThemeToggle> | null>();
+const firstFocusableNavElement = ref<ComponentPublicInstance>();
+const secondToLastFocusableNavElement = ref<InstanceType<typeof TheThemeToggle>>();
 
 function toggleMenu(isOpen: boolean) {
 	isExpanded.value = isOpen;
