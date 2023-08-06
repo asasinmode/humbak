@@ -49,6 +49,10 @@ function cleanup() {
 }
 
 const isExpanded = ref(false);
+
+defineExpose({
+	container,
+});
 </script>
 
 <template>
@@ -79,7 +83,7 @@ const isExpanded = ref(false);
 			>
 				<MenuLinkButton
 					:item="hiddenLink"
-					:path="[]"
+					:path="[-1]"
 					@mousedown="(...args) => $emit('menuLinkMouseDown', ...args)"
 				/>
 			</li>
@@ -88,7 +92,7 @@ const isExpanded = ref(false);
 			v-show="isLinkGrabbed"
 			class="absolute inset-0 hidden flex-center bg-black/10 group-hover:flex dark:bg-white/10"
 		>
-			<div class="i-fa6-solid-plus" />
+			<div class="i-fa6-solid-plus h-6 w-6" />
 		</div>
 	</article>
 </template>

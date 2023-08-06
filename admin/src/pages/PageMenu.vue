@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import VButton from '~/components/V/VButton.vue';
+import MenuHiddenLinksWidget from '~/components/Menu/MenuHiddenLinksWidget.vue';
 import type { IMenuTreeItem } from '~/types';
 
 type IMenuLink = {
@@ -43,6 +44,9 @@ const menuLinks: IMenuLink[] = [
 	{ id: 30, text: 'Schowane 5', href: 'menu', position: 0, parentId: -1 },
 	{ id: 31, text: 'Schowane 6', href: 'menu', position: 0, parentId: -1 },
 	{ id: 32, text: 'Schowane 7', href: 'menu', position: 0, parentId: -1 },
+	{ id: 33, text: 'Schowane 8', href: 'menu', position: 0, parentId: -1 },
+	{ id: 34, text: 'Schowane 9', href: 'menu', position: 0, parentId: -1 },
+	{ id: 35, text: 'Schowane 10', href: 'menu', position: 0, parentId: -1 },
 ];
 const originalMenuLinks = [...menuLinks];
 
@@ -92,6 +96,7 @@ const changedLinks: Pick<IMenuLink, 'id' | 'position' | 'parentId'>[] = [];
 
 const nav = ref<HTMLElement>();
 const saveButton = ref<InstanceType<typeof VButton>>();
+const hiddenLinksWidget = ref<InstanceType<typeof MenuHiddenLinksWidget>>();
 const currentlyGrabbedLink = shallowRef<{
 	item: IMenuTreeItem;
 	element: HTMLLIElement;
@@ -212,25 +217,53 @@ function handleDropIndicator(event: MouseEvent, path: number[]) {
 }
 
 function cleanupDrag(event: MouseEvent) {
-	const target = currentlyGrabbedLink.value?.item;
-	const oldPath = currentlyGrabbedLink.value?.path;
-	const newPath = dropTarget?.path;
-	const isBefore = dropTarget?.isBefore;
-
 	document.removeEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.removeEventListener('mouseup', cleanupDrag);
 	currentlyGrabbedLink.value?.element.remove();
-	currentlyGrabbedLink.value = undefined;
 	dropTarget?.element.classList.remove('drop-indicator-end', 'drop-indicator-start');
+
+	if (!currentlyGrabbedLink.value || !dropTarget) {
+		toastGenericError();
+		throw new Error(`cleanup called with related variables not set ${{
+			currentlyGrabbedLink: currentlyGrabbedLink.value,
+			dropTarget,
+		}}`);
+	}
+
+	const { path: oldPath, item: target } = currentlyGrabbedLink.value;
+	const { path: newPath, isBefore } = dropTarget;
+	currentlyGrabbedLink.value = undefined;
 	dropTarget = undefined;
 
-	if (!target || !oldPath || !newPath || isBefore === undefined) {
+	if (!nav.value || !hiddenLinksWidget.value?.container || !saveButton.value?.element || !event.target) {
+		toastGenericError();
+		throw new Error(`one of related elements not detected ${{
+			nav: nav.value,
+			hiddenLinksWidget: hiddenLinksWidget.value?.container,
+			saveButton: saveButton.value?.element,
+			eventTarget: event.target,
+		}}`);
+	}
+
+	const isBeingHidden = hiddenLinksWidget.value.container.contains(event.target as HTMLElement);
+	const isHidden = oldPath[0] === -1;
+	if (isBeingHidden) {
+		if (isHidden) {
+			return;
+		}
+
+		let oldLevelReference = transformedMenuLinks.value;
+		for (const index of oldPath.slice(0, -1)) {
+			oldLevelReference = oldLevelReference[index].children;
+		}
+
+		transformedHiddenMenuLinks.value.unshift(oldLevelReference.splice(oldPath[oldPath.length - 1], 1)[0]);
+		handleLevelChanges(oldLevelReference);
 		return;
 	}
 
-	const isDroppedOutside = !event.target
-		|| !nav.value?.contains(event.target as HTMLElement)
-		|| event.target === saveButton.value?.element;
+	const isDroppedOutside = !nav.value.contains(event.target as HTMLElement)
+		|| event.target === saveButton.value.element;
 	const isNewPathOnTheSameLevel = arePathsTheSame(oldPath.slice(0, -1), newPath.slice(0, -1));
 	const isNewPathTheSame = isNewPathOnTheSameLevel && newPath[newPath.length - 1] === oldPath[oldPath.length - 1];
 
@@ -280,30 +313,10 @@ function cleanupDrag(event: MouseEvent) {
 		oldLevelReference.splice(oldPath[oldPath.length - 1], 1)[0]
 	);
 
-	for (let i = 0; i < newLevelReference.length; i++) {
-		const { id } = newLevelReference[i];
-		const indexInChanged = changedLinks.findIndex(link => link.id === id);
-
-		if (indexInChanged === -1) {
-			changedLinks.push({ id, position: i } as Pick<IMenuLink, 'id' | 'position' | 'parentId'>);
-		} else {
-			changedLinks[indexInChanged].id = id;
-			changedLinks[indexInChanged].position = i;
-		}
-	}
+	handleLevelChanges(newLevelReference);
 
 	if (!isNewPathOnTheSameLevel) {
-		for (let i = 0; i < oldLevelReference.length; i++) {
-			const { id } = oldLevelReference[i];
-			const indexInChanged = changedLinks.findIndex(link => link.id === id);
-
-			if (indexInChanged === -1) {
-				changedLinks.push({ id, position: i } as Pick<IMenuLink, 'id' | 'position' | 'parentId'>);
-			} else {
-				changedLinks[indexInChanged].id = id;
-				changedLinks[indexInChanged].position = i;
-			}
-		}
+		handleLevelChanges(oldLevelReference);
 
 		const changedLinkIndex = changedLinks.findIndex(link => link.id === target.id);
 		changedLinks[changedLinkIndex].parentId = newParentId;
@@ -325,6 +338,20 @@ function arePathsTheSame(path1: number[], path2: number[]) {
 
 function isMenuToTheLeft(indexOnLevel: number) {
 	return indexOnLevel + 1 > Math.ceil(transformedMenuLinks.value.length / 2);
+}
+
+function handleLevelChanges(level: IMenuTreeItem[]) {
+	for (let i = 0; i < level.length; i++) {
+		const { id } = level[i];
+		const indexInChanged = changedLinks.findIndex(link => link.id === id);
+
+		if (indexInChanged === -1) {
+			changedLinks.push({ id, position: i } as Pick<IMenuLink, 'id' | 'position' | 'parentId'>);
+		} else {
+			changedLinks[indexInChanged].id = id;
+			changedLinks[indexInChanged].position = i;
+		}
+	}
 }
 
 function saveChanges() {
@@ -462,6 +489,7 @@ function saveChanges() {
 	</main>
 	<MenuHiddenLinksWidget
 		id="menu-hidden-links-widget"
+		ref="hiddenLinksWidget"
 		:menu-links="transformedHiddenMenuLinks"
 		:is-link-grabbed="!!currentlyGrabbedLink"
 		@menu-link-mouse-down="initLinkElementDrag"
