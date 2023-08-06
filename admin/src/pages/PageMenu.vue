@@ -44,6 +44,7 @@ const menuLinks: IMenuLink[] = [
 	{ id: 31, text: 'Schowane 6', href: 'menu', position: 0, parentId: -1 },
 	{ id: 32, text: 'Schowane 7', href: 'menu', position: 0, parentId: -1 },
 ];
+const originalMenuLinks = [...menuLinks];
 
 function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): IMenuTreeItem[] {
 	const rv: IMenuTreeItem[] = [];
@@ -143,7 +144,7 @@ function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: numbe
 
 function moveCurrentlyDraggedLink(event: MouseEvent) {
 	if (!currentlyGrabbedLink.value) {
-		console.warn('Grabbed node not set');
+		console.error('grabbed node not set');
 		return;
 	}
 	currentlyGrabbedLink.value.element.style.left = `${event.clientX}px`;
@@ -327,7 +328,16 @@ function isMenuToTheLeft(indexOnLevel: number) {
 }
 
 function saveChanges() {
-	console.log('saving', changedLinks);
+	const actuallyChanged = changedLinks.filter((link) => {
+		const original = originalMenuLinks.find(l => l.id === link.id);
+		if (!original) {
+			toastGenericError();
+			throw new Error(`link with id ${link.id} not found in original links`);
+		}
+		return link.position !== original.position && (link.parentId !== undefined || link.parentId !== original.parentId);
+	});
+
+	console.log('actually changed', actuallyChanged);
 }
 </script>
 
