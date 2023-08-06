@@ -213,6 +213,7 @@ function cleanupDrag(event: MouseEvent) {
 	const target = currentlyGrabbedLink.value?.item;
 	const oldPath = currentlyGrabbedLink.value?.path;
 	const newPath = dropTarget?.path;
+	const isBefore = dropTarget?.element.classList.contains('drop-indicator-start');
 
 	document.removeEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.removeEventListener('mouseup', cleanupDrag);
@@ -272,7 +273,7 @@ function cleanupDrag(event: MouseEvent) {
 	}
 
 	newLevelReference.splice(
-		newPath[newPath.length - 1],
+		newPath[newPath.length - 1] + (isNewPathOnTheSameLevel || isBefore ? 0 : 1),
 		0,
 		oldLevelReference.splice(oldPath[oldPath.length - 1], 1)[0]
 	);
