@@ -94,7 +94,7 @@ async function editPage(id: number, button: HTMLButtonElement) {
 		updateValues(page);
 		contentEditor.value?.updateValues(page);
 	} catch (e) {
-		toast('nie udało się załadować strony', 'error');
+		toast('błąd przy ładowaniu strony', 'error');
 		throw e;
 	} finally {
 		loadingPageId.value = undefined;
@@ -119,7 +119,7 @@ async function deletePage(id: number, button: HTMLButtonElement) {
 		}
 		await Promise.all([table.value?.getPages(), getLanguages()]);
 	} catch (e) {
-		toast('nie udało się usunąć strony', 'error');
+		toast('błąd przy usuwaniu strony', 'error');
 		throw e;
 	} finally {
 		loadingPageId.value = undefined;

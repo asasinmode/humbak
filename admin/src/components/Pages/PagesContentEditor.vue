@@ -51,7 +51,10 @@ let initHeight = 0;
 function initResizeDrag(event: MouseEvent) {
 	event.preventDefault();
 	if (!container.value || !document.defaultView) {
-		throw new Error('Container or document default view not found');
+		throw new Error(`container or document default view not found ${{
+			container: container.value,
+			defaultView: document.defaultView,
+		}}`);
 	}
 
 	initY = event.clientY;
@@ -62,7 +65,7 @@ function initResizeDrag(event: MouseEvent) {
 
 function onResizeMove(event: MouseEvent) {
 	if (!container.value) {
-		throw new Error('Container not found');
+		throw new Error('container not found');
 	}
 	event.preventDefault();
 	container.value.style.height = `${initHeight + event.clientY - initY}px`;

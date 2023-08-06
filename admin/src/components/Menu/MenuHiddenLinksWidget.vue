@@ -24,7 +24,7 @@ function initDrag(event: MouseEvent) {
 	}
 	if (!container.value) {
 		toastGenericError();
-		throw new Error('container ref not set');
+		throw new Error('container not found');
 	}
 	event.preventDefault();
 	offsetX = event.offsetX;
@@ -36,7 +36,7 @@ function initDrag(event: MouseEvent) {
 function handleMove(event: MouseEvent) {
 	if (!container.value) {
 		toastGenericError();
-		throw new Error('container ref not set');
+		throw new Error('containe not found');
 	}
 	event.preventDefault();
 	container.value.style.left = `${event.clientX - offsetX}px`;

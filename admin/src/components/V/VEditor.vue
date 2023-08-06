@@ -30,7 +30,7 @@ let getModels: () => IMonacoTextModel[];
 // add loading & load only once
 onMounted(async () => {
 	if (!editorRef.value) {
-		throw new Error('cannot find editor element');
+		throw new Error('editor element not found');
 	}
 
 	isLoading.value = true;

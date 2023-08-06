@@ -223,7 +223,7 @@ function cleanupDrag(event: MouseEvent) {
 
 	if (!currentlyGrabbedLink.value || !dropTarget) {
 		toastGenericError();
-		throw new Error(`cleanup called with related variables not set ${{
+		throw new Error(`one of related variables not set ${{
 			currentlyGrabbedLink: currentlyGrabbedLink.value,
 			dropTarget,
 		}}`);
@@ -236,7 +236,7 @@ function cleanupDrag(event: MouseEvent) {
 
 	if (!nav.value || !hiddenLinksWidget.value?.container || !saveButton.value?.element || !event.target) {
 		toastGenericError();
-		throw new Error(`one of related elements not detected ${{
+		throw new Error(`one of related elements not found ${{
 			nav: nav.value,
 			hiddenLinksWidget: hiddenLinksWidget.value?.container,
 			saveButton: saveButton.value?.element,
@@ -392,6 +392,8 @@ function hideLink(link: IMenuTreeItem) {
 	}
 }
 
+const isSaving = ref(false);
+
 function saveChanges() {
 	const actuallyChanged = changedLinks.filter((link) => {
 		const original = originalMenuLinks.find(l => l.id === link.id);
@@ -402,7 +404,19 @@ function saveChanges() {
 		return link.position !== original.position || (link.parentId !== undefined && link.parentId !== original.parentId);
 	});
 
-	console.log('actually changed', actuallyChanged);
+	if (actuallyChanged.length === 0) {
+		toast('zapisano zmiany');
+		return;
+	}
+
+	isSaving.value = true;
+	try {
+		console.log('actually changed', actuallyChanged);
+	} catch (e) {
+		toast('błąd przy zapisywaniu zmian');
+	} finally {
+		isSaving.value = false;
+	}
 }
 </script>
 
@@ -416,6 +430,7 @@ function saveChanges() {
 				id="menu-save-button"
 				ref="saveButton"
 				class="right-0 h-fit !absolute -top-4 -translate-y-full neon-green"
+				:is-loading="isSaving"
 				@click="saveChanges"
 			>
 				zapisz
