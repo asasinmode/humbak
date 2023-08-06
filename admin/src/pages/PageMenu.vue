@@ -175,11 +175,10 @@ function handleDropIndicator(event: MouseEvent, path: number[]) {
 	);
 
 	const isDropTargetTheSame = dropTarget && arePathsTheSame(path, dropTarget.path) && isBefore === dropTarget.isBefore;
-	if (isDropTargetTheSame) {
-		return;
+	if (!isDropTargetTheSame) {
+		dropTarget?.element.classList.remove('drop-indicator-start', 'drop-indicator-end');
 	}
 
-	dropTarget?.element.classList.remove('drop-indicator-start', 'drop-indicator-end');
 	dropTarget = { element, path, isBefore };
 
 	const isOnSameLevel = arePathsTheSame(path.slice(0, -1), currentlyGrabbedLink.value.path.slice(0, -1));
@@ -419,7 +418,10 @@ function saveChanges() {
 			>
 				zapisz
 			</VButton>
-			<menu class="flex flex-row text-black">
+			<menu
+				class="flex flex-row text-black"
+				@mouseleave="dropTarget?.element.classList.remove('drop-indicator-start', 'drop-indicator-end')"
+			>
 				<li
 					v-for="(firstLevelLink, firstLevelIndex) in transformedMenuLinks"
 					:key="firstLevelLink.id"
