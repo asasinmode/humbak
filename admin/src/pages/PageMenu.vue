@@ -223,7 +223,7 @@ function cleanupDrag(event: MouseEvent) {
 	dropTarget?.element.classList.remove('drop-indicator-end', 'drop-indicator-start');
 	dropTarget = undefined;
 
-	if (!target || !oldPath || !newPath || !isBefore) {
+	if (!target || !oldPath || !newPath || isBefore === undefined) {
 		return;
 	}
 
