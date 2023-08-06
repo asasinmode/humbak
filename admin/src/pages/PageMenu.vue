@@ -252,7 +252,7 @@ function cleanupDrag(event: MouseEvent) {
 			return;
 		}
 
-		const { levelReference: oldLevelReference } = getLevelReference(newPath);
+		const { levelReference: oldLevelReference } = getLevelReference(oldPath);
 
 		hideLink(oldLevelReference.splice(oldPath[oldPath.length - 1], 1)[0]);
 		for (const child of target.children) {
