@@ -12,6 +12,7 @@
     "db:drop-migration": "drizzle-kit drop --out ./src/db/migrations",
     "db:migrate": "tsx ./src/db/scripts/migrate.ts",
     "db:migrate:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/migrate.ts",
+    "db:seed": "tsx ./src/db/scripts/seed.ts",
     "db:drop": "tsx ./src/db/scripts/drop.ts",
     "db:drop:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/drop.ts",
     "db:truncate": "tsx ./src/db/scripts/truncate.ts",

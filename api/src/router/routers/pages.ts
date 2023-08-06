@@ -5,7 +5,7 @@ import { publicProcedure, router } from '~/router/trpc';
 import { paginationQueryInput } from '~/helpers';
 import { insertPageSchema, pages } from '~/db/schema/pages';
 import { contents, insertContentSchema } from '~/db/schema/contents';
-import { insertMenuSchema, menus } from '~/db/schema/menu';
+import { insertMenuSchema, menuLinks } from '~/db/schema/menuLinks';
 
 const upsertPageInputSchema = insertPageSchema
 	.and(z.object({
@@ -17,16 +17,16 @@ const upsertPageInputSchema = insertPageSchema
 export const pagesRouter = router({
 	list: publicProcedure.input(paginationQueryInput).query(async (opts) => {
 		const { query, limit, offset } = opts.input;
-		const select = { id: pages.id, language: pages.language, title: pages.title, menuText: menus.text };
+		const select = { id: pages.id, language: pages.language, title: pages.title, menuText: menuLinks.text };
 
 		return db
 			.select(select)
 			.from(pages)
-			.leftJoin(menus, eq(menus.pageId, pages.id))
+			.leftJoin(menuLinks, eq(menuLinks.pageId, pages.id))
 			.where(query
 				? or(
 					like(pages.title, `%${query}%`),
-					like(menus.text, `%${query}%`)
+					like(menuLinks.text, `%${query}%`)
 				)
 				: sql`1 = 1`)
 			.orderBy(pages.id)
@@ -39,11 +39,11 @@ export const pagesRouter = router({
 		const result = await db
 			.select({ count: sql<number>`COUNT(*)` })
 			.from(pages)
-			.leftJoin(menus, eq(menus.pageId, pages.id))
+			.leftJoin(menuLinks, eq(menuLinks.pageId, pages.id))
 			.where(query
 				? or(
 					like(pages.title, `%${query}%`),
-					like(menus.text, `%${query}%`)
+					like(menuLinks.text, `%${query}%`)
 				)
 				: sql`1 = 1`);
 
@@ -56,12 +56,12 @@ export const pagesRouter = router({
 				language: pages.language,
 				title: pages.title,
 				slug: pages.slug,
-				menuText: sql<string>`${menus.text}`,
+				menuText: sql<string>`${menuLinks.text}`,
 				html: sql<string>`${contents.html}`,
 				meta: sql<string>`${contents.meta}`,
 			})
 			.from(pages)
-			.leftJoin(menus, eq(menus.pageId, opts.input))
+			.leftJoin(menuLinks, eq(menuLinks.pageId, opts.input))
 			.leftJoin(contents, eq(contents.pageId, opts.input))
 			.where(eq(pages.id, opts.input));
 
@@ -82,7 +82,7 @@ export const pagesRouter = router({
 			});
 
 		await Promise.all([
-			db.insert(menus).values({ pageId, text: menuText }).onDuplicateKeyUpdate({
+			db.insert(menuLinks).values({ pageId, text: menuText }).onDuplicateKeyUpdate({
 				set: {
 					text: menuText,
 					updatedAt: new Date(),
@@ -103,12 +103,12 @@ export const pagesRouter = router({
 				language: pages.language,
 				title: pages.title,
 				slug: pages.slug,
-				menuText: sql<string>`${menus.text}`,
+				menuText: sql<string>`${menuLinks.text}`,
 				html: sql<string>`${contents.html}`,
 				meta: sql<string>`${contents.meta}`,
 			})
 			.from(pages)
-			.leftJoin(menus, eq(menus.pageId, pageId))
+			.leftJoin(menuLinks, eq(menuLinks.pageId, pageId))
 			.leftJoin(contents, eq(contents.pageId, pageId))
 			.where(eq(pages.id, pageId));
 

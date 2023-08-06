@@ -7,8 +7,10 @@ const tables = await getTableNames();
 
 await pool.execute('SET FOREIGN_KEY_CHECKS = 0');
 
+await pool.execute('TRUNCATE TABLE `pages`');
+
 await Promise.all(
-	tables.map(table =>
+	tables.filter(({ table_name }) => table_name !== 'pages').map(table =>
 		pool.execute(`TRUNCATE TABLE ${table.table_name}`)
 	)
 );

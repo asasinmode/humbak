@@ -1,4 +1,4 @@
-import { type InferModel, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
 import { datetime, int, json, mysqlTable, text } from 'drizzle-orm/mysql-core';
 import { z } from 'zod';
@@ -15,8 +15,6 @@ export const contents = mysqlTable('contents', {
 	meta: json('meta').$type<Record<string, string>[]>().notNull().default(defaultMeta),
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
-
-export type Content = InferModel<typeof contents>;
 
 export const insertContentSchema = createInsertSchema(contents, {
 	meta: () => z.array(z.object({}).catchall(z.any())),

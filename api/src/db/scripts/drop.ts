@@ -8,7 +8,9 @@ const tables = await getTableNames();
 await Promise.all(
 	tables.filter(({ table_name }) => table_name !== 'pages').map(table =>
 		pool.execute(`DROP TABLE ${table.table_name}`)
-	).concat(pool.execute('DROP TABLE pages'))
+	)
 );
+
+await pool.execute('DROP TABLE `pages`');
 
 await pool.end();

@@ -1,4 +1,4 @@
-import { type InferModel, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import { createInsertSchema } from 'drizzle-zod';
 import { datetime, index, int, mysqlTable, uniqueIndex, varchar } from 'drizzle-orm/mysql-core';
 
@@ -13,8 +13,6 @@ export const pages = mysqlTable('pages', {
 	languageIndex: index('languageIndex').on(table.language),
 	titleIndex: uniqueIndex('titleIndex').on(table.title),
 }));
-
-export type Page = InferModel<typeof pages, 'select'>;
 
 export const insertPageSchema = createInsertSchema(pages, {
 	language: schema => schema.language.nonempty(),
