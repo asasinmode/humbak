@@ -259,7 +259,9 @@ function cleanupDrag(event: MouseEvent) {
 			for (const grandchild of child.children) {
 				hideLink(grandchild);
 			}
+			child.children = [];
 		}
+		target.children = [];
 		handleLevelChanges(oldLevelReference);
 		return;
 	}
