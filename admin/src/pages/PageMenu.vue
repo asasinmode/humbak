@@ -135,6 +135,7 @@ function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: numbe
 
 	nav.value.appendChild(element);
 	currentlyGrabbedLink.value = { item, element, path };
+	dropTarget = { element: parentTarget, path, isBefore: false };
 
 	document.addEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.addEventListener('mouseup', cleanupDrag);
@@ -166,17 +167,16 @@ function handleDropIndicator(event: MouseEvent, path: number[]) {
 	const isBefore = event[isVertical ? 'offsetY' : 'offsetX'] < (
 		target[isVertical ? 'offsetHeight' : 'offsetWidth'] / 2
 	);
-	const isOnSameLevel = arePathsTheSame(path.slice(0, -1), currentlyGrabbedLink.value.path.slice(0, -1));
-	const isPathTheSame = isOnSameLevel
-		&& path[path.length - 1] === currentlyGrabbedLink.value.path[currentlyGrabbedLink.value.path.length - 1];
 
-	if (isPathTheSame) {
+	const isDropTargetTheSame = dropTarget && arePathsTheSame(path, dropTarget.path) && isBefore === dropTarget.isBefore;
+	if (isDropTargetTheSame) {
 		return;
 	}
 
 	dropTarget?.element.classList.remove('drop-indicator-start', 'drop-indicator-end');
 	dropTarget = { element, path, isBefore };
 
+	const isOnSameLevel = arePathsTheSame(path.slice(0, -1), currentlyGrabbedLink.value.path.slice(0, -1));
 	if (isOnSameLevel) {
 		if (path[path.length - 1] === currentlyGrabbedLink.value.path[currentlyGrabbedLink.value.path.length - 1]) {
 			return;
