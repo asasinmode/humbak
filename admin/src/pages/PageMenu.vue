@@ -253,7 +253,6 @@ function cleanupDrag(event: MouseEvent) {
 
 		const { levelReference: oldLevelReference } = getLevelReference(oldPath);
 
-		hideLink(oldLevelReference.splice(oldPath[oldPath.length - 1], 1)[0]);
 		for (const child of target.children) {
 			hideLink(child);
 			for (const grandchild of child.children) {
@@ -262,6 +261,8 @@ function cleanupDrag(event: MouseEvent) {
 			child.children = [];
 		}
 		target.children = [];
+
+		hideLink(oldLevelReference.splice(oldPath[oldPath.length - 1], 1)[0]);
 		handleLevelChanges(oldLevelReference);
 		return;
 	}
@@ -324,12 +325,10 @@ function cleanupDrag(event: MouseEvent) {
 		0,
 		oldLevelReference.splice(oldPath[oldPath.length - 1], 1)[0]
 	);
-
 	handleLevelChanges(newLevelReference);
 
 	if (!isNewPathOnTheSameLevel) {
 		handleLevelChanges(oldLevelReference);
-
 		const changedLinkIndex = changedLinks.findIndex(link => link.id === target.id);
 		changedLinks[changedLinkIndex].parentId = newParentId;
 	}
