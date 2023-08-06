@@ -99,6 +99,7 @@ const currentlyGrabbedLink = shallowRef<{
 let dropTarget: {
 	element: HTMLLIElement;
 	path: number[];
+	isBefore: boolean;
 } | undefined;
 
 function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: number[]) {
@@ -174,7 +175,7 @@ function handleDropIndicator(event: MouseEvent, path: number[]) {
 	}
 
 	dropTarget?.element.classList.remove('drop-indicator-start', 'drop-indicator-end');
-	dropTarget = { element, path };
+	dropTarget = { element, path, isBefore };
 
 	if (isOnSameLevel) {
 		if (path[path.length - 1] === currentlyGrabbedLink.value.path[currentlyGrabbedLink.value.path.length - 1]) {
@@ -213,7 +214,7 @@ function cleanupDrag(event: MouseEvent) {
 	const target = currentlyGrabbedLink.value?.item;
 	const oldPath = currentlyGrabbedLink.value?.path;
 	const newPath = dropTarget?.path;
-	const isBefore = dropTarget?.element.classList.contains('drop-indicator-start');
+	const isBefore = dropTarget?.isBefore;
 
 	document.removeEventListener('mousemove', moveCurrentlyDraggedLink);
 	document.removeEventListener('mouseup', cleanupDrag);
@@ -222,7 +223,7 @@ function cleanupDrag(event: MouseEvent) {
 	dropTarget?.element.classList.remove('drop-indicator-end', 'drop-indicator-start');
 	dropTarget = undefined;
 
-	if (!oldPath || !newPath || !target) {
+	if (!target || !oldPath || !newPath || !isBefore) {
 		return;
 	}
 
