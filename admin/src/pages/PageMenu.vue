@@ -252,10 +252,7 @@ function cleanupDrag(event: MouseEvent) {
 			return;
 		}
 
-		let oldLevelReference = transformedMenuLinks.value;
-		for (const index of oldPath.slice(0, -1)) {
-			oldLevelReference = oldLevelReference[index].children;
-		}
+		const { levelReference: oldLevelReference } = getLevelReference(newPath);
 
 		hideLink(oldLevelReference.splice(oldPath[oldPath.length - 1], 1)[0]);
 		for (const child of target.children) {
@@ -274,6 +271,22 @@ function cleanupDrag(event: MouseEvent) {
 	const isNewPathTheSame = isNewPathOnTheSameLevel && newPath[newPath.length - 1] === oldPath[oldPath.length - 1];
 
 	if (isDroppedOutside || isNewPathTheSame) {
+		return;
+	}
+
+	if (isHidden) {
+		const { levelReference: newLevelReference, parentId: newParentId } = getLevelReference(newPath);
+		const indexInHidden = transformedHiddenMenuLinks.value.findIndex(item => item.id === target.id);
+		newLevelReference.splice(
+			newPath[newPath.length - 1] + (isBefore ? 0 : 1),
+			0,
+			transformedHiddenMenuLinks.value.splice(indexInHidden, 1)[0]
+		);
+
+		handleLevelChanges(newLevelReference);
+		const changedLinkIndex = changedLinks.findIndex(link => link.id === target.id);
+		changedLinks[changedLinkIndex].parentId = newParentId;
+
 		return;
 	}
 
@@ -302,16 +315,8 @@ function cleanupDrag(event: MouseEvent) {
 		return;
 	}
 
-	let oldLevelReference = transformedMenuLinks.value;
-	for (const index of oldPath.slice(0, -1)) {
-		oldLevelReference = oldLevelReference[index].children;
-	}
-	let newLevelReference = transformedMenuLinks.value;
-	let newParentId = null;
-	for (const index of newPath.slice(0, -1)) {
-		newParentId = newLevelReference[index].id;
-		newLevelReference = newLevelReference[index].children;
-	}
+	const { levelReference: oldLevelReference } = getLevelReference(oldPath);
+	const { levelReference: newLevelReference, parentId: newParentId } = getLevelReference(newPath);
 
 	newLevelReference.splice(
 		newPath[newPath.length - 1] + (isNewPathOnTheSameLevel || isBefore ? 0 : 1),
@@ -346,6 +351,17 @@ function isMenuToTheLeft(indexOnLevel: number) {
 	return indexOnLevel + 1 > Math.ceil(transformedMenuLinks.value.length / 2);
 }
 
+function getLevelReference(path: number[]) {
+	let levelReference = transformedMenuLinks.value;
+	let parentId = null;
+	for (const index of path.slice(0, -1)) {
+		parentId = levelReference[index].id;
+		levelReference = levelReference[index].children;
+	}
+
+	return { levelReference, parentId };
+}
+
 function handleLevelChanges(level: IMenuTreeItem[]) {
 	for (let i = 0; i < level.length; i++) {
 		const { id } = level[i];
@@ -362,11 +378,17 @@ function handleLevelChanges(level: IMenuTreeItem[]) {
 
 function hideLink(link: IMenuTreeItem) {
 	transformedHiddenMenuLinks.value.unshift(link);
-	changedLinks.push({
+	const indexInChanged = changedLinks.findIndex(l => l.id === link.id);
+	const changedData = {
 		id: link.id,
 		parentId: -1,
 		position: 0,
-	});
+	};
+	if (indexInChanged === -1) {
+		changedLinks.push(changedData);
+	} else {
+		changedLinks[indexInChanged] = changedData;
+	}
 }
 
 function saveChanges() {
