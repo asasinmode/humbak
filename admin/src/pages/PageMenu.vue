@@ -32,7 +32,7 @@ const menuLinks: IMenuLink[] = [
 	{ id: 18, text: 'Sklep', href: 'menu', position: 0, parentId: 17 },
 	{ id: 19, text: 'Wypożyczalnia', href: 'menu', position: 1, parentId: 17 },
 	{ id: 20, text: 'Serwis sprzętu nurkowego', href: 'menu', position: 2, parentId: 17 },
-	{ id: 21, text: 'Bony i kariera zawpdpwa', href: 'menu', position: 3, parentId: 17 },
+	{ id: 21, text: 'Bony i kariera zawodowa', href: 'menu', position: 3, parentId: 17 },
 	{ id: 22, text: 'Baseny', href: 'menu', position: 5, parentId: null },
 	{ id: 23, text: 'Kuter port Nieznanowice', href: 'menu', position: 0, parentId: 22 },
 	{ id: 24, text: 'Deep spot', href: 'menu', position: 1, parentId: 22 },
@@ -257,7 +257,13 @@ function cleanupDrag(event: MouseEvent) {
 			oldLevelReference = oldLevelReference[index].children;
 		}
 
-		transformedHiddenMenuLinks.value.unshift(oldLevelReference.splice(oldPath[oldPath.length - 1], 1)[0]);
+		hideLink(oldLevelReference.splice(oldPath[oldPath.length - 1], 1)[0]);
+		for (const child of target.children) {
+			hideLink(child);
+			for (const grandchild of child.children) {
+				hideLink(grandchild);
+			}
+		}
 		handleLevelChanges(oldLevelReference);
 		return;
 	}
@@ -354,6 +360,15 @@ function handleLevelChanges(level: IMenuTreeItem[]) {
 	}
 }
 
+function hideLink(link: IMenuTreeItem) {
+	transformedHiddenMenuLinks.value.unshift(link);
+	changedLinks.push({
+		id: link.id,
+		parentId: -1,
+		position: 0,
+	});
+}
+
 function saveChanges() {
 	const actuallyChanged = changedLinks.filter((link) => {
 		const original = originalMenuLinks.find(l => l.id === link.id);
@@ -361,7 +376,7 @@ function saveChanges() {
 			toastGenericError();
 			throw new Error(`link with id ${link.id} not found in original links`);
 		}
-		return link.position !== original.position && (link.parentId !== undefined || link.parentId !== original.parentId);
+		return link.position !== original.position || (link.parentId !== undefined && link.parentId !== original.parentId);
 	});
 
 	console.log('actually changed', actuallyChanged);
