@@ -72,7 +72,6 @@ function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): I
 }
 
 const nav = ref<HTMLElement>();
-const saveButton = ref<InstanceType<typeof VButton>>();
 const hiddenLinksWidget = ref<InstanceType<typeof MenuHiddenLinksWidget>>();
 const currentlyGrabbedLink = shallowRef<{
 	item: IMenuTreeItem;
@@ -211,12 +210,11 @@ function cleanupDrag(event: MouseEvent) {
 	currentlyGrabbedLink.value = undefined;
 	dropTarget = undefined;
 
-	if (!nav.value || !hiddenLinksWidget.value?.container || !saveButton.value?.element || !event.target) {
+	if (!nav.value || !hiddenLinksWidget.value?.container || !event.target) {
 		toastGenericError();
 		throw new Error(`one of related elements not found ${{
 			nav: nav.value,
 			hiddenLinksWidget: hiddenLinksWidget.value?.container,
-			saveButton: saveButton.value?.element,
 			eventTarget: event.target,
 		}}`);
 	}
@@ -244,8 +242,7 @@ function cleanupDrag(event: MouseEvent) {
 		return;
 	}
 
-	const isDroppedOutside = !nav.value.contains(event.target as HTMLElement)
-		|| event.target === saveButton.value.element;
+	const isDroppedOutside = !nav.value.contains(event.target as HTMLElement);
 	const isNewPathOnTheSameLevel = arePathsTheSame(oldPath.slice(0, -1), newPath.slice(0, -1));
 	const isNewPathTheSame = isNewPathOnTheSameLevel && newPath[newPath.length - 1] === oldPath[oldPath.length - 1];
 
@@ -412,7 +409,6 @@ function saveChanges() {
 			label-visually-hidden
 		/>
 		<VButton
-			ref="saveButton"
 			class="menu-controls-padding-right hidden h-fit lg:block neon-green"
 			:is-loading="isSaving"
 			@click="saveChanges"
