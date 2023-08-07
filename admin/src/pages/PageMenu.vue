@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import VButton from '~/components/V/VButton.vue';
 import MenuHiddenLinksWidget from '~/components/Menu/MenuHiddenLinksWidget.vue';
-import type { IMenuLink } from '~/composables/useApi';
+import type { IMenuLink, IUniqueLanguage } from '~/composables/useApi';
 import type { IMenuTreeItem } from '~/types';
 
 const api = useApi();
 const { toastGenericError, toast } = useToast();
 const isLoading = ref(false);
+const language = ref('pl');
+const languages = ref<IUniqueLanguage[]>([]);
 const transformedHiddenMenuLinks = ref<IMenuTreeItem[]>([]);
 const transformedMenuLinks = ref<IMenuTreeItem[]>([]);
 
@@ -16,8 +18,12 @@ const changedLinks: Pick<IMenuLink, 'id' | 'position' | 'parentId'>[] = [];
 onMounted(async () => {
 	isLoading.value = true;
 	try {
-		const menuLinks = await api.menuLinks.list.query('pl');
+		const [menuLinks, uniqueLanguages] = await Promise.all([
+			api.menuLinks.list.query(language.value),
+			api.pages.uniqueLanguages.query(),
+		]);
 		originalMenuLinks = [...menuLinks];
+		languages.value = uniqueLanguages;
 
 		transformedHiddenMenuLinks.value = extractWithParentId(menuLinks, -1);
 		transformedMenuLinks.value = extractWithParentId(menuLinks, null);
@@ -391,20 +397,29 @@ function saveChanges() {
 </script>
 
 <template>
-	<main class="px-2 pb-4 pt-[3.625rem] md:px-0 lg:pt-[4.375rem]">
-		<VAlert class="max-w-3xl md:mx-auto lg:hidden" variant="warning">
+	<main class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 px-2 pb-4 pt-[3.625rem] md:px-0 lg:pt-[1.125rem]">
+		<VAlert class="col-span-full max-w-3xl md:mx-auto lg:hidden" variant="warning">
 			edytowanie menu nie jest dostępne na małych ekranch
 		</VAlert>
-		<nav ref="nav" class="relative mx-auto hidden max-w-360 min-h-10 bg-humbak shadow lg:block">
-			<VButton
-				id="menu-save-button"
-				ref="saveButton"
-				class="right-0 h-fit !absolute -top-4 -translate-y-full neon-green"
-				:is-loading="isSaving"
-				@click="saveChanges"
-			>
-				zapisz
-			</VButton>
+		<VSelect
+			id="menuLinksLanguage"
+			v-model="language"
+			class="!hidden !min-w-14 !w-14 lg:!flex"
+			label="język"
+			:options="languages"
+			:is-loading="isLoading"
+			transform-options
+		/>
+		<VButton
+			id="menu-save-button"
+			ref="saveButton"
+			class="hidden h-fit lg:block neon-green"
+			:is-loading="isSaving"
+			@click="saveChanges"
+		>
+			zapisz
+		</VButton>
+		<nav ref="nav" class="relative col-span-full hidden max-w-360 min-h-10 w-full bg-humbak shadow lg:block">
 			<menu
 				class="flex flex-row text-black"
 				@mouseleave="dropTarget?.element.classList.remove('drop-indicator-start', 'drop-indicator-end')"
