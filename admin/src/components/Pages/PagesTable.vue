@@ -89,7 +89,14 @@ defineExpose({
 
 <template>
 	<form class="mb-4 w-[calc(100%-_3.5rem)] flex gap-4 md:mx-auto md:max-w-128" @submit.prevent="getPages(true)">
-		<VInput id="pagesSearch" v-model="search" class="flex-1" suffix-icon="i-solar-magnifer-linear" />
+		<VInput
+			id="pagesSearch"
+			v-model="search"
+			label="szukaj"
+			class="flex-1"
+			suffix-icon="i-solar-magnifer-linear"
+			label-visually-hidden
+		/>
 		<VButton class="neon-blue">
 			szukaj
 		</VButton>
