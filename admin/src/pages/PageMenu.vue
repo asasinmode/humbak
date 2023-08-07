@@ -404,7 +404,7 @@ function saveChanges() {
 		<VSelect
 			id="menuLinksLanguage"
 			v-model="language"
-			class="justify-self-end !hidden !min-w-24 !w-24 lg:!flex"
+			class="menu-controls-padding-right justify-self-end !hidden !min-w-24 !w-24 lg:!flex"
 			label="język"
 			:options="languages"
 			:is-loading="isLoading"
@@ -412,9 +412,8 @@ function saveChanges() {
 			label-visually-hidden
 		/>
 		<VButton
-			id="menu-save-button"
 			ref="saveButton"
-			class="hidden h-fit lg:block neon-green"
+			class="menu-controls-padding-right hidden h-fit lg:block neon-green"
 			:is-loading="isSaving"
 			@click="saveChanges"
 		>
@@ -531,8 +530,8 @@ function saveChanges() {
 		</nav>
 	</main>
 	<MenuHiddenLinksWidget
-		id="menu-hidden-links-widget"
 		ref="hiddenLinksWidget"
+		class="menu-controls-padding-left"
 		:menu-links="transformedHiddenMenuLinks"
 		:is-link-grabbed="!!currentlyGrabbedLink"
 		@menu-link-mouse-down="initLinkElementDrag"
@@ -617,20 +616,20 @@ function saveChanges() {
 	@apply bottom-0 translate-y-1/2
 }
 
-#menu-save-button {
+.menu-controls-padding-right {
 	right: clamp(0.00rem, calc(3.46rem + -3.85vw), 1.00rem);
 }
 
-#menu-hidden-links-widget {
+.menu-controls-padding-left {
 	left: clamp(0.00rem, calc(3.46rem + -3.85vw), 1.00rem);
 }
 
 @media (min-width: 90rem) {
-	#menu-save-button {
+	.menu-controls-padding-right {
 		right: 0;
 	}
 
-	#menu-hidden-links-widget {
+	.menu-controls-padding-left {
 		left: calc((100% - 90rem) / 2);
 	}
 }
