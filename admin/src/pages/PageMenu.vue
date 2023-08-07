@@ -7,23 +7,40 @@ import type { IMenuTreeItem } from '~/types';
 const api = useApi();
 const { toastGenericError, toast } = useToast();
 const isLoading = ref(false);
+const isLoadingLanguages = ref(false);
 const language = ref('pl');
 const languages = ref<IUniqueLanguage[]>([]);
 const transformedHiddenMenuLinks = ref<IMenuTreeItem[]>([]);
 const transformedMenuLinks = ref<IMenuTreeItem[]>([]);
 
 let originalMenuLinks: IMenuLink[] = [];
+let currentLanguage = 'pl';
 const changedLinks: Pick<IMenuLink, 'id' | 'position' | 'parentId'>[] = [];
 
 onMounted(async () => {
-	isLoading.value = true;
+	isLoadingLanguages.value = true;
 	try {
-		const [menuLinks, uniqueLanguages] = await Promise.all([
-			api.menuLinks.list.query(language.value),
+		const [_, uniqueLanguages] = await Promise.all([
+			getMenuLinks(false),
 			api.pages.uniqueLanguages.query(),
 		]);
-		originalMenuLinks = [...menuLinks];
 		languages.value = uniqueLanguages;
+	} catch (e) {
+		toast('błąd przy ładowaniu menu', 'error');
+	} finally {
+		isLoadingLanguages.value = false;
+	}
+});
+
+async function getMenuLinks(checkLanguage: boolean) {
+	if (checkLanguage && (!languages.value.includes(language.value) || currentLanguage === language.value)) {
+		return;
+	}
+	isLoading.value = true;
+	try {
+		const menuLinks = await api.menuLinks.list.query(language.value);
+		originalMenuLinks = [...menuLinks];
+		currentLanguage = language.value;
 
 		transformedHiddenMenuLinks.value = extractWithParentId(menuLinks, -1);
 		transformedMenuLinks.value = extractWithParentId(menuLinks, null);
@@ -34,11 +51,12 @@ onMounted(async () => {
 			}
 		}
 	} catch (e) {
-		toast('błąd przy ładowaniu menu', 'error');
+		toast('błąd przy ładowaniu języków', 'error');
+		throw e;
 	} finally {
 		isLoading.value = false;
 	}
-});
+}
 
 function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): IMenuTreeItem[] {
 	const rv: IMenuTreeItem[] = [];
@@ -404,9 +422,10 @@ function saveChanges() {
 			class="menu-controls-padding-right justify-self-end !hidden !min-w-24 !w-24 lg:!flex"
 			label="język"
 			:options="languages"
-			:is-loading="isLoading"
+			:is-loading="isLoadingLanguages"
 			transform-options
 			label-visually-hidden
+			@update:model-value="getMenuLinks(true)"
 		/>
 		<VButton
 			class="menu-controls-padding-right hidden h-fit lg:block neon-green"
