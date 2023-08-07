@@ -14,8 +14,4 @@ export const pages = mysqlTable('pages', {
 	titleIndex: uniqueIndex('titleIndex').on(table.title),
 }));
 
-export const insertPageSchema = createInsertSchema(pages, {
-	language: schema => schema.language.nonempty(),
-	title: schema => schema.title.nonempty(),
-	slug: schema => schema.slug.nonempty(),
-}).omit({ createdAt: true, updatedAt: true });
+export const insertPageSchema = createInsertSchema(pages, {}).omit({ createdAt: true, updatedAt: true });

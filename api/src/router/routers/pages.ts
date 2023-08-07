@@ -1,15 +1,15 @@
-import { eq, like, or, sql } from 'drizzle-orm';
+import { eq, isNull, like, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '~/db';
 import { publicProcedure, router } from '~/router/trpc';
 import { paginationQueryInput } from '~/helpers';
 import { insertPageSchema, pages } from '~/db/schema/pages';
 import { contents, insertContentSchema } from '~/db/schema/contents';
-import { insertMenuSchema, menuLinks } from '~/db/schema/menuLinks';
+import { insertMenuLinkSchema, menuLinks } from '~/db/schema/menuLinks';
 
 const upsertPageInputSchema = insertPageSchema
 	.and(z.object({
-		menuText: insertMenuSchema.shape.text,
+		menuText: insertMenuLinkSchema.shape.text,
 		css: z.string().optional(),
 	}))
 	.and(insertContentSchema.omit({ pageId: true }));
@@ -81,8 +81,13 @@ export const pagesRouter = router({
 				},
 			});
 
+		const [{ count: position }] = await db
+			.select({ count: sql<number>`COUNT(*)` })
+			.from(menuLinks)
+			.where(isNull(menuLinks.parentId));
+
 		await Promise.all([
-			db.insert(menuLinks).values({ pageId, text: menuText }).onDuplicateKeyUpdate({
+			db.insert(menuLinks).values({ pageId, position, text: menuText }).onDuplicateKeyUpdate({
 				set: {
 					text: menuText,
 					updatedAt: new Date(),

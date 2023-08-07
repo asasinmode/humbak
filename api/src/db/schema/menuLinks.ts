@@ -11,6 +11,4 @@ export const menuLinks = mysqlTable('menuLinks', {
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
-export const insertMenuLinkSchema = createInsertSchema(menuLinks, {
-	text: schema => schema.text.nonempty(),
-}).omit({ updatedAt: true });
+export const insertMenuLinkSchema = createInsertSchema(menuLinks, {}).omit({ updatedAt: true });
