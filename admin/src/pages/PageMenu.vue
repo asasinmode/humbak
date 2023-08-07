@@ -107,10 +107,6 @@ function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: numbe
 		toastGenericError();
 		throw new Error('nav element not found');
 	}
-
-	if (event.button !== 0) {
-		return;
-	}
 	event.preventDefault();
 
 	const target = event.target as HTMLButtonElement;
@@ -447,7 +443,7 @@ function saveChanges() {
 					<MenuLinkButton
 						:item="firstLevelLink"
 						:path="[firstLevelIndex]"
-						@mousedown="initLinkElementDrag"
+						@mousedown.left="initLinkElementDrag"
 						@mouseenter="handleDropIndicator"
 						@mousemove="handleDropIndicator"
 					>

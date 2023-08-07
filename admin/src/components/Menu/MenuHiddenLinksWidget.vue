@@ -12,20 +12,18 @@ defineEmits<{
 
 const { toastGenericError } = useToast();
 const container = ref<HTMLElement>();
-const expandButton = ref<HTMLButtonElement>();
+const isExpanded = ref(false);
 
 let offsetX = 0;
 let offsetY = 0;
+let mouseDownTimestamp: number | undefined;
 
 function initDrag(event: MouseEvent) {
-	if (event.target === expandButton.value) {
-		event.preventDefault();
-		return;
-	}
 	if (!container.value) {
 		toastGenericError();
 		throw new Error('container not found');
 	}
+	mouseDownTimestamp = Date.now();
 	event.preventDefault();
 	offsetX = event.offsetX;
 	offsetY = event.offsetY;
@@ -44,11 +42,13 @@ function handleMove(event: MouseEvent) {
 }
 
 function cleanup() {
+	if (mouseDownTimestamp && mouseDownTimestamp + 250 > Date.now()) {
+		isExpanded.value = !isExpanded.value;
+	}
+	mouseDownTimestamp = undefined;
 	document.removeEventListener('mousemove', handleMove);
 	document.removeEventListener('mouseup', cleanup);
 }
-
-const isExpanded = ref(false);
 
 defineExpose({
 	container,
@@ -61,16 +61,13 @@ defineExpose({
 		class="group fixed top-[4.6rem] z-20 hidden w-60 flex-col border border-neutral shadow lg:flex"
 		:class="isExpanded ? 'min-h-20' : ''"
 	>
-		<h3
-			class="relative h-10 flex cursor-move select-none items-center border-neutral bg-white/70 px-2 text-neutral-8 dark:bg-black/70 dark:text-neutral-2"
-			@mousedown="initDrag"
+		<button
+			class="h-10 select-none border-neutral bg-white/70 px-2 text-neutral-8 active:cursor-move dark:bg-black/70 dark:text-neutral-2"
+			@mousedown.left="initDrag"
+			@keydown.enter="isExpanded = !isExpanded"
 		>
 			schowane
-			<button ref="expandButton" class="absolute right-3 top-1/2 -translate-y-1/2" @click="isExpanded = !isExpanded">
-				<span class="visually-hidden">{{ isExpanded ? 'zminimalizuj' : 'zmaksymalizuj' }}</span>
-				<div class="pointer-events-none" :class="isExpanded ? 'i-fa6-solid-window-minimize' : 'i-fa6-solid-window-maximize'" />
-			</button>
-		</h3>
+		</button>
 		<ul
 			v-if="menuLinks.length"
 			class="max-h-80 flex flex-col of-x-hidden border-neutral bg-humbak text-black"
