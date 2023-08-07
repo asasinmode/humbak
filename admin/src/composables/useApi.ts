@@ -15,3 +15,4 @@ export const useApi = () => client;
 export type IListedPage = Awaited<ReturnType<typeof client['pages']['list']['query']>>[number];
 export type IUniqueLanguage = Awaited<ReturnType<typeof client['pages']['uniqueLanguages']['query']>>[number];
 export type IUpsertPageInput = Parameters<typeof client['pages']['upsert']['mutate']>[0];
+export type IMenuLink = Awaited<ReturnType<typeof client['menuLinks']['list']['query']>>[number];

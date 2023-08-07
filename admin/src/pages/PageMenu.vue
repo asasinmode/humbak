@@ -1,54 +1,40 @@
 <script setup lang="ts">
 import VButton from '~/components/V/VButton.vue';
 import MenuHiddenLinksWidget from '~/components/Menu/MenuHiddenLinksWidget.vue';
+import type { IMenuLink } from '~/composables/useApi';
 import type { IMenuTreeItem } from '~/types';
 
-type IMenuLink = {
-	id: number;
-	text: string;
-	href: string;
-	position: number;
-	parentId: null | number;
-};
+const api = useApi();
+const { toastGenericError, toast } = useToast();
+const isLoading = ref(false);
+const transformedHiddenMenuLinks = ref<IMenuTreeItem[]>([]);
+const transformedMenuLinks = ref<IMenuTreeItem[]>([]);
 
-const menuLinks: IMenuLink[] = [
-	{ id: 1, text: 'Kursy', href: 'menu', position: 0, parentId: null },
-	{ id: 2, text: 'Sekcja nurkowa', href: 'menu', position: 0, parentId: 1 },
-	{ id: 3, text: 'Sekcja Brzesko', href: 'menu', position: 0, parentId: 2 },
-	{ id: 4, text: 'Sekcja Proszówki', href: 'menu', position: 1, parentId: 2 },
-	{ id: 5, text: 'Sekcja Dąbrowa Górnicza', href: 'menu', position: 2, parentId: 2 },
-	{ id: 6, text: 'Sekcja przygoda', href: 'menu', position: 4, parentId: 2 },
-	{ id: 7, text: 'Sekcja Niepołomice', href: 'menu', position: 3, parentId: 2 },
-	{ id: 8, text: 'OWSD podstawowy', href: 'menu', position: 1, parentId: 1 },
-	{ id: 9, text: 'Wyprawy i Aktywności', href: 'menu', position: 1, parentId: null },
-	{ id: 10, text: 'Rejsy żeglarskie planowane', href: 'menu', position: 0, parentId: 9 },
-	{ id: 11, text: 'Rejsy Ateny zatoka sarońska', href: 'menu', position: 0, parentId: 10 },
-	{ id: 12, text: 'Wyprawy nurkowe planowane', href: 'menu', position: 1, parentId: 9 },
-	{ id: 13, text: 'Safari Nurkowe Egipt - 11-18 listopad', href: 'menu', position: 0, parentId: 12 },
-	{ id: 14, text: 'Wyprawa nurkowa na Maltę - 21-28 wrzesień', href: 'menu', position: 1, parentId: 12 },
-	{ id: 15, text: 'Cennik', href: 'menu', position: 2, parentId: null },
-	{ id: 16, text: 'O nas', href: 'menu', position: 3, parentId: null },
-	{ id: 17, text: 'Usługi i serwis', href: 'menu', position: 4, parentId: null },
-	{ id: 18, text: 'Sklep', href: 'menu', position: 0, parentId: 17 },
-	{ id: 19, text: 'Wypożyczalnia', href: 'menu', position: 1, parentId: 17 },
-	{ id: 20, text: 'Serwis sprzętu nurkowego', href: 'menu', position: 2, parentId: 17 },
-	{ id: 21, text: 'Bony i kariera zawodowa', href: 'menu', position: 3, parentId: 17 },
-	{ id: 22, text: 'Baseny', href: 'menu', position: 5, parentId: null },
-	{ id: 23, text: 'Kuter port Nieznanowice', href: 'menu', position: 0, parentId: 22 },
-	{ id: 24, text: 'Deep spot', href: 'menu', position: 1, parentId: 22 },
-	{ id: 25, text: 'Basen Niepołomice', href: 'menu', position: 2, parentId: 22 },
-	{ id: 26, text: 'Schowane 1', href: 'menu', position: 0, parentId: -1 },
-	{ id: 27, text: 'Schowane 2', href: 'menu', position: 0, parentId: -1 },
-	{ id: 28, text: 'Schowane 3', href: 'menu', position: 0, parentId: -1 },
-	{ id: 29, text: 'Schowane 4', href: 'menu', position: 0, parentId: -1 },
-	{ id: 30, text: 'Schowane 5', href: 'menu', position: 0, parentId: -1 },
-	{ id: 31, text: 'Schowane 6', href: 'menu', position: 0, parentId: -1 },
-	{ id: 32, text: 'Schowane 7', href: 'menu', position: 0, parentId: -1 },
-	{ id: 33, text: 'Schowane 8', href: 'menu', position: 0, parentId: -1 },
-	{ id: 34, text: 'Schowane 9', href: 'menu', position: 0, parentId: -1 },
-	{ id: 35, text: 'Schowane 10', href: 'menu', position: 0, parentId: -1 },
-];
-const originalMenuLinks = [...menuLinks];
+let originalMenuLinks: IMenuLink[] = [];
+const changedLinks: Pick<IMenuLink, 'id' | 'position' | 'parentId'>[] = [];
+
+onMounted(async () => {
+	isLoading.value = true;
+
+	try {
+		await new Promise(resolve => setTimeout(resolve, 3000));
+		const menuLinks = await api.menuLinks.list.query('pl');
+		originalMenuLinks = [...menuLinks];
+
+		transformedHiddenMenuLinks.value = extractWithParentId(menuLinks, -1);
+		transformedMenuLinks.value = extractWithParentId(menuLinks, null);
+		for (const child of transformedMenuLinks.value) {
+			child.children = extractWithParentId(menuLinks, child.id);
+			for (const grandchild of child.children) {
+				grandchild.children = extractWithParentId(menuLinks, grandchild.id);
+			}
+		}
+	} catch (e) {
+		toast('błąd przy ładowaniu menu', 'error');
+	} finally {
+		isLoading.value = false;
+	}
+});
 
 function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): IMenuTreeItem[] {
 	const rv: IMenuTreeItem[] = [];
@@ -80,19 +66,6 @@ function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): I
 	}
 	return rv;
 }
-
-const { toastGenericError, toast } = useToast();
-const transformedHiddenMenuLinks = ref<IMenuTreeItem[]>(extractWithParentId(menuLinks, -1));
-const transformedMenuLinks = ref<IMenuTreeItem[]>(extractWithParentId(menuLinks, null));
-
-for (const child of transformedMenuLinks.value) {
-	child.children = extractWithParentId(menuLinks, child.id);
-	for (const grandchild of child.children) {
-		grandchild.children = extractWithParentId(menuLinks, grandchild.id);
-	}
-}
-
-const changedLinks: Pick<IMenuLink, 'id' | 'position' | 'parentId'>[] = [];
 
 const nav = ref<HTMLElement>();
 const saveButton = ref<InstanceType<typeof VButton>>();
@@ -424,7 +397,7 @@ function saveChanges() {
 		<VAlert class="max-w-3xl md:mx-auto lg:hidden" variant="warning">
 			edytowanie menu nie jest dostępne na małych ekranch
 		</VAlert>
-		<nav ref="nav" class="relative mx-auto hidden max-w-360 bg-humbak shadow lg:block">
+		<nav ref="nav" class="relative mx-auto hidden max-w-360 min-h-10 bg-humbak shadow lg:block">
 			<VButton
 				id="menu-save-button"
 				ref="saveButton"
@@ -539,6 +512,7 @@ function saveChanges() {
 						</li>
 					</menu>
 				</li>
+				<VLoading v-show="isLoading" class="absolute inset-0" size="20" />
 			</menu>
 		</nav>
 	</main>
