@@ -381,7 +381,7 @@ function hideLink(link: IMenuTreeItem) {
 
 const isSaving = ref(false);
 
-function saveChanges() {
+async function saveChanges() {
 	const actuallyChanged = changedLinks.filter((link) => {
 		const original = originalMenuLinks.find(l => l.pageId === link.pageId);
 		if (!original) {
@@ -398,7 +398,8 @@ function saveChanges() {
 
 	isSaving.value = true;
 	try {
-		console.log('actually changed', actuallyChanged);
+		await api.menuLinks.update.mutate(actuallyChanged);
+		toast('zapisano zmiany');
 	} catch (e) {
 		toast('błąd przy zapisywaniu zmian');
 	} finally {

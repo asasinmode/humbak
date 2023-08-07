@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { db } from '~/db';
 import { publicProcedure, router } from '~/router/trpc';
 import { pages } from '~/db/schema/pages';
-import { menuLinks } from '~/db/schema/menuLinks';
+import { insertMenuLinkSchema, menuLinks } from '~/db/schema/menuLinks';
 
 export const menuLinksRouter = router({
 	list: publicProcedure.input(z.string()).query(async (opts) => {
@@ -18,5 +18,12 @@ export const menuLinksRouter = router({
 			.from(menuLinks)
 			.leftJoin(pages, eq(menuLinks.pageId, pages.id))
 			.where(eq(pages.language, opts.input));
+	}),
+	update: publicProcedure.input(z.array(insertMenuLinkSchema.omit({ text: true }))).mutation(async (opts) => {
+		await Promise.all(opts.input.map(({ pageId, position, parentId }) => db
+			.update(menuLinks)
+			.set({ position, parentId, updatedAt: new Date() })
+			.where(eq(menuLinks.pageId, pageId))
+		));
 	}),
 });
