@@ -7,6 +7,7 @@ defineProps<{
 	error?: string;
 	class?: string;
 	inputClass?: string;
+	labelVisuallyHidden?: boolean;
 }>();
 
 defineEmits(['focusout']);
@@ -25,7 +26,14 @@ defineExpose({
 
 <template>
 	<div class="relative flex flex-col gap-[2px]" :class="$props.class" @focusout="$emit('focusout', $event)">
-		<label v-if="label" :for="id" class="ml-3 w-fit">{{ label }}</label>
+		<label
+			v-if="label"
+			:for="id"
+			class="ml-3 w-fit"
+			:class="labelVisuallyHidden ? 'absolute visually-hidden' : ''"
+		>
+			{{ label }}
+		</label>
 		<input
 			:id="id"
 			ref="element"

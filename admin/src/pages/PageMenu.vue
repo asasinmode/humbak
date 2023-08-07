@@ -397,18 +397,19 @@ function saveChanges() {
 </script>
 
 <template>
-	<main class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 px-2 pb-4 pt-[3.625rem] md:px-0 lg:pt-[1.125rem]">
+	<main class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 gap-x-4 gap-y-5 px-2 pb-4 pt-[3.625rem] md:px-0 lg:pt-[1.125rem]">
 		<VAlert class="col-span-full max-w-3xl md:mx-auto lg:hidden" variant="warning">
 			edytowanie menu nie jest dostępne na małych ekranch
 		</VAlert>
 		<VSelect
 			id="menuLinksLanguage"
 			v-model="language"
-			class="!hidden !min-w-14 !w-14 lg:!flex"
+			class="justify-self-end !hidden !min-w-24 !w-24 lg:!flex"
 			label="język"
 			:options="languages"
 			:is-loading="isLoading"
 			transform-options
+			label-visually-hidden
 		/>
 		<VButton
 			id="menu-save-button"
