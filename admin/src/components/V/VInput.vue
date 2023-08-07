@@ -30,7 +30,7 @@ defineExpose({
 			v-if="label"
 			:for="id"
 			class="ml-3 w-fit"
-			:class="labelVisuallyHidden ? 'absolute visually-hidden' : ''"
+			:class="labelVisuallyHidden ? 'visually-hidden' : ''"
 		>
 			{{ label }}
 		</label>

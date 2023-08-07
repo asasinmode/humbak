@@ -114,12 +114,15 @@ defineExpose({
 				:disabled="isPreviousPageDisabled"
 				@click="changeOffset(-1)"
 			>
+				<span class="visually-hidden">poprzednia strona</span>
 				<div class="i-fa6-solid-chevron-left absolute left-1/2 h-3 w-3 translate-center" />
 			</VButton>
 			<VInput
 				id="pagesOffsetInput"
 				:model-value="offset"
+				label="numer strony"
 				input-class="!min-w-14 !w-14 text-center neon-violet-5 dark:neon-violet"
+				label-visually-hidden
 				@focus="updateLastOffset"
 				@blur="onPageInputBlur"
 			/>
@@ -128,6 +131,7 @@ defineExpose({
 				:disabled="isNextPageDisabled"
 				@click="changeOffset(1)"
 			>
+				<span class="visually-hidden">następna strona</span>
 				<div class="i-fa6-solid-chevron-right absolute left-1/2 h-3 w-3 translate-center" />
 			</VButton>
 		</header>
@@ -150,7 +154,9 @@ defineExpose({
 					>
 						{{ label }}
 					</th>
-					<th class="w-30" />
+					<th class="w-30">
+						<span class="visually-hidden">akcje</span>
+					</th>
 				</tr>
 			</thead>
 			<tbody>
