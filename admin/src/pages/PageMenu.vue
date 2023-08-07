@@ -15,9 +15,7 @@ const changedLinks: Pick<IMenuLink, 'id' | 'position' | 'parentId'>[] = [];
 
 onMounted(async () => {
 	isLoading.value = true;
-
 	try {
-		await new Promise(resolve => setTimeout(resolve, 3000));
 		const menuLinks = await api.menuLinks.list.query('pl');
 		originalMenuLinks = [...menuLinks];
 
