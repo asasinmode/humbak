@@ -23,10 +23,10 @@ function initDrag(event: MouseEvent) {
 		toastGenericError();
 		throw new Error('container not found');
 	}
-	mouseDownTimestamp = Date.now();
 	event.preventDefault();
 	offsetX = event.offsetX;
 	offsetY = event.offsetY;
+	mouseDownTimestamp = Date.now();
 	document.addEventListener('mousemove', handleMove);
 	document.addEventListener('mouseup', cleanup);
 }
@@ -62,7 +62,7 @@ defineExpose({
 		:class="isExpanded ? 'min-h-20' : ''"
 	>
 		<button
-			class="h-10 select-none border-neutral bg-white/70 px-2 text-neutral-8 active:cursor-move dark:bg-black/70 dark:text-neutral-2"
+			class="h-10 select-none border-neutral bg-white/70 px-2 text-neutral-8 dark:bg-black/70 dark:text-neutral-2"
 			@mousedown.left="initDrag"
 			@keydown.enter="isExpanded = !isExpanded"
 		>
