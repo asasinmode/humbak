@@ -9,7 +9,7 @@ export const menuLinksRouter = router({
 	list: publicProcedure.input(z.string()).query(async (opts) => {
 		return db
 			.select({
-				id: menuLinks.pageId,
+				pageId: menuLinks.pageId,
 				text: menuLinks.text,
 				parentId: menuLinks.parentId,
 				position: menuLinks.position,

@@ -1,5 +1,5 @@
 export type IMenuTreeItem = {
-	id: number;
+	pageId: number;
 	text: string;
 	href: string;
 	position: number;

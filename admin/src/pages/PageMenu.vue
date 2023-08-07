@@ -15,7 +15,7 @@ const transformedMenuLinks = ref<IMenuTreeItem[]>([]);
 
 let originalMenuLinks: IMenuLink[] = [];
 let currentLanguage = 'pl';
-const changedLinks: Pick<IMenuLink, 'id' | 'position' | 'parentId'>[] = [];
+const changedLinks: Pick<IMenuLink, 'pageId' | 'position' | 'parentId'>[] = [];
 
 onMounted(async () => {
 	isLoadingLanguages.value = true;
@@ -45,9 +45,9 @@ async function getMenuLinks(checkLanguage: boolean) {
 		transformedHiddenMenuLinks.value = extractWithParentId(menuLinks, -1);
 		transformedMenuLinks.value = extractWithParentId(menuLinks, null);
 		for (const child of transformedMenuLinks.value) {
-			child.children = extractWithParentId(menuLinks, child.id);
+			child.children = extractWithParentId(menuLinks, child.pageId);
 			for (const grandchild of child.children) {
-				grandchild.children = extractWithParentId(menuLinks, grandchild.id);
+				grandchild.children = extractWithParentId(menuLinks, grandchild.pageId);
 			}
 		}
 	} catch (e) {
@@ -75,7 +75,7 @@ function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): I
 			currentLink = menuLinks.splice(index, 1)[0];
 
 			rv.splice(indexInDestination, 0, {
-				id: currentLink.id,
+				pageId: currentLink.pageId,
 				text: currentLink.text,
 				href: currentLink.href,
 				position: currentLink.position,
@@ -266,7 +266,7 @@ function cleanupDrag(event: MouseEvent) {
 
 	if (isHidden) {
 		const { levelReference: newLevelReference, parentId: newParentId } = getLevelReference(newPath);
-		const indexInHidden = transformedHiddenMenuLinks.value.findIndex(item => item.id === target.id);
+		const indexInHidden = transformedHiddenMenuLinks.value.findIndex(item => item.pageId === target.pageId);
 		newLevelReference.splice(
 			newPath[newPath.length - 1] + (isBefore ? 0 : 1),
 			0,
@@ -274,7 +274,7 @@ function cleanupDrag(event: MouseEvent) {
 		);
 
 		handleLevelChanges(newLevelReference);
-		const changedLinkIndex = changedLinks.findIndex(link => link.id === target.id);
+		const changedLinkIndex = changedLinks.findIndex(link => link.pageId === target.pageId);
 		changedLinks[changedLinkIndex].parentId = newParentId;
 
 		return;
@@ -317,7 +317,7 @@ function cleanupDrag(event: MouseEvent) {
 
 	if (!isNewPathOnTheSameLevel) {
 		handleLevelChanges(oldLevelReference);
-		const changedLinkIndex = changedLinks.findIndex(link => link.id === target.id);
+		const changedLinkIndex = changedLinks.findIndex(link => link.pageId === target.pageId);
 		changedLinks[changedLinkIndex].parentId = newParentId;
 	}
 }
@@ -343,7 +343,7 @@ function getLevelReference(path: number[]) {
 	let levelReference = transformedMenuLinks.value;
 	let parentId = null;
 	for (const index of path.slice(0, -1)) {
-		parentId = levelReference[index].id;
+		parentId = levelReference[index].pageId;
 		levelReference = levelReference[index].children;
 	}
 
@@ -352,13 +352,13 @@ function getLevelReference(path: number[]) {
 
 function handleLevelChanges(level: IMenuTreeItem[]) {
 	for (let i = 0; i < level.length; i++) {
-		const { id } = level[i];
-		const indexInChanged = changedLinks.findIndex(link => link.id === id);
+		const { pageId } = level[i];
+		const indexInChanged = changedLinks.findIndex(link => link.pageId === pageId);
 
 		if (indexInChanged === -1) {
-			changedLinks.push({ id, position: i } as Pick<IMenuLink, 'id' | 'position' | 'parentId'>);
+			changedLinks.push({ pageId, position: i } as Pick<IMenuLink, 'pageId' | 'position' | 'parentId'>);
 		} else {
-			changedLinks[indexInChanged].id = id;
+			changedLinks[indexInChanged].pageId = pageId;
 			changedLinks[indexInChanged].position = i;
 		}
 	}
@@ -366,9 +366,9 @@ function handleLevelChanges(level: IMenuTreeItem[]) {
 
 function hideLink(link: IMenuTreeItem) {
 	transformedHiddenMenuLinks.value.unshift(link);
-	const indexInChanged = changedLinks.findIndex(l => l.id === link.id);
+	const indexInChanged = changedLinks.findIndex(l => l.pageId === link.pageId);
 	const changedData = {
-		id: link.id,
+		pageId: link.pageId,
 		parentId: -1,
 		position: 0,
 	};
@@ -383,10 +383,10 @@ const isSaving = ref(false);
 
 function saveChanges() {
 	const actuallyChanged = changedLinks.filter((link) => {
-		const original = originalMenuLinks.find(l => l.id === link.id);
+		const original = originalMenuLinks.find(l => l.pageId === link.pageId);
 		if (!original) {
 			toastGenericError();
-			throw new Error(`link with id ${link.id} not found in original links`);
+			throw new Error(`link with id ${link.pageId} not found in original links`);
 		}
 		return link.position !== original.position || (link.parentId !== undefined && link.parentId !== original.parentId);
 	});
@@ -437,7 +437,7 @@ function saveChanges() {
 			>
 				<li
 					v-for="(firstLevelLink, firstLevelIndex) in transformedMenuLinks"
-					:key="firstLevelLink.id"
+					:key="firstLevelLink.pageId"
 					class="hoverable-child-menu-visible horizontal relative flex-center flex-1 flex-col list-none focus-within:bg-humbak-5 hover:bg-humbak-5"
 				>
 					<MenuLinkButton
@@ -455,12 +455,12 @@ function saveChanges() {
 
 					<menu
 						v-if="firstLevelLink.children.length
-							|| (currentlyGrabbedLink && currentlyGrabbedLink.item.id !== firstLevelLink.id)"
+							|| (currentlyGrabbedLink && currentlyGrabbedLink.item.pageId !== firstLevelLink.pageId)"
 						class="absolute bottom-0 w-full translate-y-full bg-humbak-5"
 					>
 						<li
 							v-for="(secondLevelLink, secondLevelIndex) in firstLevelLink.children"
-							:key="secondLevelLink.id"
+							:key="secondLevelLink.pageId"
 							class="hoverable-child-menu-visible vertical relative list-none focus-within:bg-humbak-6 hover:bg-humbak-6"
 						>
 							<MenuLinkButton
@@ -483,7 +483,7 @@ function saveChanges() {
 
 							<menu
 								v-if="secondLevelLink.children.length
-									|| (currentlyGrabbedLink && currentlyGrabbedLink.item.id !== secondLevelLink.id)"
+									|| (currentlyGrabbedLink && currentlyGrabbedLink.item.pageId !== secondLevelLink.pageId)"
 								class="absolute top-0 w-full bg-humbak-6"
 								:class="
 									isMenuToTheLeft(firstLevelIndex)
@@ -492,7 +492,7 @@ function saveChanges() {
 							>
 								<li
 									v-for="(thirdLevelLink, thirdLevelIndex) in secondLevelLink.children"
-									:key="thirdLevelLink.id"
+									:key="thirdLevelLink.pageId"
 									class="vertical relative list-none focus-within:bg-humbak-7 hover:bg-humbak-7"
 								>
 									<MenuLinkButton
