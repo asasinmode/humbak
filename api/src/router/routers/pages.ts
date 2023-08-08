@@ -4,7 +4,7 @@ import { eq, isNull, like, or, sql } from 'drizzle-orm';
 import { integer, merge, number, object, optional, pick, string, useDefault } from 'valibot';
 import { db } from '~/db';
 import { publicProcedure, router } from '~/router/trpc';
-import { paginationQueryInput } from '~/helpers';
+import { paginationQueryInput, valibotSchemaToTRPCInput } from '~/helpers';
 import { insertPageSchema, pages } from '~/db/schema/pages';
 import { contents, insertContentSchema } from '~/db/schema/contents';
 import { insertMenuLinkSchema, menuLinks } from '~/db/schema/menuLinks';
@@ -12,11 +12,11 @@ import { insertMenuLinkSchema, menuLinks } from '~/db/schema/menuLinks';
 const upsertPageInputSchema = merge([
 	insertPageSchema,
 	object({ menuText: insertMenuLinkSchema.object.text, css: optional(string()) }),
-	pick(insertContentSchema, ['html', 'meta'])]
-);
+	pick(insertContentSchema, ['html', 'meta']),
+]);
 
 export const pagesRouter = router({
-	list: publicProcedure.input(paginationQueryInput).query(async (opts) => {
+	list: publicProcedure.input(valibotSchemaToTRPCInput(paginationQueryInput)).query(async (opts) => {
 		const { query, limit, offset } = opts.input;
 		const select = { id: pages.id, language: pages.language, title: pages.title, menuText: menuLinks.text };
 
@@ -66,7 +66,7 @@ export const pagesRouter = router({
 
 		return result[0];
 	}),
-	upsert: publicProcedure.input(upsertPageInputSchema).mutation(async (opts) => {
+	upsert: publicProcedure.input(valibotSchemaToTRPCInput(upsertPageInputSchema)).mutation(async (opts) => {
 		const { menuText, html, meta, css, ...pageFields } = opts.input;
 
 		const [{ insertId: pageId }] = await db

@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { datetime, int, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
-import { integer, maxLength, nullable, number, object, optional, string } from 'valibot';
+import { integer, maxLength, minLength, nullable, number, object, optional, string } from 'valibot';
 import { pages } from './pages';
 
 export const menuLinks = mysqlTable('menuLinks', {
@@ -13,7 +13,7 @@ export const menuLinks = mysqlTable('menuLinks', {
 
 export const insertMenuLinkSchema = object({
 	pageId: number([integer()]),
-	text: string([maxLength(256)]),
+	text: string([minLength(1), maxLength(256)]),
 	position: number([integer()]),
 	parentId: optional(nullable(number())),
 });

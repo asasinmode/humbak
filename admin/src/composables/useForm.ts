@@ -65,22 +65,13 @@ export const useForm = <T extends Record<string, unknown>>(
 		}
 
 		clearErrors();
-		let toastUnknown = false;
 
-		for (const { path, message } of JSON.parse(error.message) as TRPCError[]) {
-			for (const property of path) {
-				// @ts-expect-error it's a valid key
-				if (property in errors.value) {
-					// @ts-expect-error it's also a valid key
-					errors.value[property] = message;
-				} else {
-					console.error(`unknown path (${property}) error: ${message}`);
-					toastUnknown = true;
-				}
-			}
+		try {
+			errors.value = JSON.parse(error.message);
+		} catch (e) {
+			toastGenericError();
+			throw e;
 		}
-
-		toastUnknown && toastGenericError();
 	}
 
 	async function sendForm(toastSuccess = true) {

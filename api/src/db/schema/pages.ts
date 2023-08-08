@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm';
-import { integer, maxLength, number, object, optional, string } from 'valibot';
+import { integer, maxLength, minLength, number, object, optional, string } from 'valibot';
 import { datetime, index, int, mysqlTable, uniqueIndex, varchar } from 'drizzle-orm/mysql-core';
 
 export const pages = mysqlTable('pages', {
@@ -16,7 +16,7 @@ export const pages = mysqlTable('pages', {
 
 export const insertPageSchema = object({
 	id: optional(number([integer()])),
-	language: string([maxLength(32)]),
-	title: string([maxLength(256)]),
-	slug: string([maxLength(256)]),
+	language: string([minLength(1), maxLength(32)]),
+	title: string([minLength(1), maxLength(256)]),
+	slug: string([minLength(1), maxLength(256)]),
 });

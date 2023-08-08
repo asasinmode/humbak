@@ -402,6 +402,7 @@ async function saveChanges() {
 		toast('zapisano zmiany');
 	} catch (e) {
 		toast('błąd przy zapisywaniu zmian');
+		throw e;
 	} finally {
 		isSaving.value = false;
 	}
