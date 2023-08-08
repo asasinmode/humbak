@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import VEditor from '~/components/V/VEditor.vue';
+import { env } from '~/env';
 
 const api = useApi();
 const { toast, toastGenericError } = useToast();
@@ -12,8 +13,9 @@ const editor = ref<InstanceType<typeof VEditor>>();
 onMounted(async () => {
 	isLoading.value = true;
 	try {
-		initCss = 'temp';
-		await new Promise(resolve => setTimeout(resolve, 1500));
+		initCss = await fetch(`${env.VITE_API_URL}/public/stylesheets/global.css`).then(data => data.text());
+		css.value = initCss;
+		editor.value?.updateModelValue(0, css.value);
 	} catch (e) {
 		toast('błąd przy ładowaniu danych', 'error');
 		throw e;

@@ -136,7 +136,9 @@ watch(isDark, (value) => {
 });
 
 function updateModelValue(index: number, value: string) {
-	editorModels.value[index].setValue(value);
+	if (editorModels.value[index] !== undefined) {
+		editorModels.value[index].setValue(value);
+	}
 }
 
 function formatCurrentModel() {
