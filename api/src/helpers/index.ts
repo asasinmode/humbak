@@ -1,6 +1,6 @@
 import { exit } from 'node:process';
 import { confirm } from '@clack/prompts';
-import { type BaseSchema, ValiError, number, object, optional, string, transform } from 'valibot';
+import { type BaseSchema, ValiError, maxLength, minLength, number, object, optional, string, transform } from 'valibot';
 import { env } from '~/env';
 import { pool } from '~/db';
 
@@ -56,4 +56,8 @@ export function valibotSchemaToTRPCInput<T extends BaseSchema>(schema: T) {
 			}
 		},
 	} as T;
+}
+
+export function nonEmptyMaxLengthString(length: number) {
+	return string([minLength(1, 'nie może być puste'), maxLength(length, `maksymalna długość: ${32}`)]);
 }

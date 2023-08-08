@@ -1,7 +1,8 @@
 import { sql } from 'drizzle-orm';
 import { datetime, int, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
-import { integer, maxLength, minLength, nullable, number, object, optional, string } from 'valibot';
+import { integer, nullable, number, object, optional } from 'valibot';
 import { pages } from './pages';
+import { nonEmptyMaxLengthString } from '~/helpers';
 
 export const menuLinks = mysqlTable('menuLinks', {
 	pageId: int('pageId').primaryKey().references(() => pages.id, { onDelete: 'cascade' }),
@@ -13,7 +14,7 @@ export const menuLinks = mysqlTable('menuLinks', {
 
 export const insertMenuLinkSchema = object({
 	pageId: number([integer()]),
-	text: string([minLength(1, 'nie może być puste'), maxLength(256, 'maksymalna długość: 256')]),
+	text: nonEmptyMaxLengthString(256),
 	position: number([integer()]),
 	parentId: optional(nullable(number())),
 });

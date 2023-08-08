@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
-import { integer, maxLength, minLength, number, object, optional, string } from 'valibot';
+import { integer, number, object, optional } from 'valibot';
 import { datetime, index, int, mysqlTable, uniqueIndex, varchar } from 'drizzle-orm/mysql-core';
+import { nonEmptyMaxLengthString } from '~/helpers';
 
 export const pages = mysqlTable('pages', {
 	id: int('id').primaryKey().autoincrement(),
@@ -16,7 +17,7 @@ export const pages = mysqlTable('pages', {
 
 export const insertPageSchema = object({
 	id: optional(number([integer()])),
-	language: string([minLength(1, 'nie może być puste'), maxLength(32, 'maksymalna długość: 32')]),
-	title: string([minLength(1, 'nie może być puste'), maxLength(256, 'maksymalna długość: 256')]),
-	slug: string([minLength(1, 'nie może być puste'), maxLength(256, 'maksymalna długość: 256')]),
+	language: nonEmptyMaxLengthString(32),
+	title: nonEmptyMaxLengthString(256),
+	slug: nonEmptyMaxLengthString(256),
 });
