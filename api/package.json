@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@fastify/cors": "^8.3.0",
+    "@fastify/static": "^6.10.2",
     "@humbak/validation": "workspace:*",
     "@trpc/server": "^10.34.0",
     "dotenv": "^16.3.1",
