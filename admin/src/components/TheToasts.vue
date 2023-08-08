@@ -20,7 +20,7 @@ const containerProgress: ClassRecord = {
 		name="toast"
 		tag="section"
 		aria-hidden="true"
-		class="pointer-events-none fixed bottom-0 right-0 top-2 z-100 box-content max-w-[calc(100%_-_4rem)] w-64 of-hidden pl-6 pr-2"
+		class="pointer-events-none fixed bottom-0 right-0 top-2 z-102 box-content max-w-[calc(100%_-_4rem)] w-64 of-hidden pl-6 pr-2"
 	>
 		<div
 			v-for="{ id, variant, text } in toasts"
