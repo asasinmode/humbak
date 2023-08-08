@@ -10,6 +10,7 @@ const props = withDefaults(
 	defineProps<{
 		models: IModel[];
 		currentModel?: number;
+		isLoading?: boolean;
 	}>(),
 	{ currentModel: 0 }
 );
@@ -20,7 +21,7 @@ const emit = defineEmits<{
 
 const { isDark } = useTheme();
 
-const isLoading = ref(false);
+const localIsLoading = ref(false);
 const editorRef = ref<HTMLDivElement>();
 const editor = shallowRef<IMonacoStandalone>();
 const editorModels = shallowRef<IMonacoTextModel[]>([]);
@@ -33,7 +34,7 @@ onMounted(async () => {
 		throw new Error('editor element not found');
 	}
 
-	isLoading.value = true;
+	localIsLoading.value = true;
 	const monaco = await loader.init();
 
 	getModels = monaco.editor.getModels;
@@ -116,7 +117,7 @@ onMounted(async () => {
 		emit('update:model-value', editorModels.value[props.currentModel].getValue());
 	});
 
-	isLoading.value = false;
+	localIsLoading.value = false;
 });
 
 onBeforeUnmount(() => {
@@ -151,6 +152,6 @@ defineExpose({
 <template>
 	<div class="relative">
 		<article ref="editorRef" class="h-full w-full" />
-		<VLoading v-if="isLoading" class="absolute inset-0" :size="40" />
+		<VLoading v-if="localIsLoading || isLoading" class="absolute inset-0" :size="40" />
 	</div>
 </template>

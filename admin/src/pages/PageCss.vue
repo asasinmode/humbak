@@ -1,12 +1,40 @@
 <script setup lang="ts">
 import VEditor from '~/components/V/VEditor.vue';
 
+const api = useApi();
+const { toast, toastGenericError } = useToast();
 const css = ref('');
+let initCss = '';
+const isLoading = ref(false);
 const isSaving = ref(false);
 const editor = ref<InstanceType<typeof VEditor>>();
 
-function saveChanges() {
-	console.log('saving', css.value);
+onMounted(async () => {
+	isLoading.value = true;
+	try {
+		initCss = 'temp';
+		await new Promise(resolve => setTimeout(resolve, 1500));
+	} catch (e) {
+		toast('błąd przy ładowaniu danych', 'error');
+		throw e;
+	} finally {
+		isLoading.value = false;
+	}
+});
+
+async function saveChanges() {
+	isSaving.value = true;
+	try {
+		if (css.value !== initCss) {
+			await api.pages.updateGlobalCss.mutate(css.value);
+		}
+		toast('zapisano zmiany');
+	} catch (e) {
+		toastGenericError();
+		throw e;
+	} finally {
+		isSaving.value = false;
+	}
 }
 </script>
 
@@ -30,6 +58,7 @@ function saveChanges() {
 				{ language: 'css', value: css },
 			]"
 			:current-model="0"
+			:is-loading="isLoading"
 			@update:model-value="$event => css = $event"
 		/>
 	</main>

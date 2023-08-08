@@ -1,3 +1,5 @@
+import { writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { eq, isNull, like, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '~/db';
@@ -126,5 +128,8 @@ export const pagesRouter = router({
 		const result = await db.selectDistinct({ language: pages.language }).from(pages);
 
 		return result.map(row => row.language);
+	}),
+	updateGlobalCss: publicProcedure.input(z.string()).mutation(async (opts) => {
+		await writeFile(fileURLToPath(new URL('../../../public/stylesheets/global.css', import.meta.url)), opts.input);
 	}),
 });
