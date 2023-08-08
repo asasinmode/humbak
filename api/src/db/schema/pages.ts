@@ -16,7 +16,7 @@ export const pages = mysqlTable('pages', {
 
 export const insertPageSchema = object({
 	id: optional(number([integer()])),
-	language: string([minLength(1), maxLength(32)]),
-	title: string([minLength(1), maxLength(256)]),
-	slug: string([minLength(1), maxLength(256)]),
+	language: string([minLength(1, 'nie może być puste'), maxLength(32, 'maksymalna długość: 32')]),
+	title: string([minLength(1, 'nie może być puste'), maxLength(256, 'maksymalna długość: 256')]),
+	slug: string([minLength(1, 'nie może być puste'), maxLength(256, 'maksymalna długość: 256')]),
 });

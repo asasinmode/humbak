@@ -13,7 +13,7 @@ export const menuLinks = mysqlTable('menuLinks', {
 
 export const insertMenuLinkSchema = object({
 	pageId: number([integer()]),
-	text: string([minLength(1), maxLength(256)]),
+	text: string([minLength(1, 'nie może być puste'), maxLength(256, 'maksymalna długość: 256')]),
 	position: number([integer()]),
 	parentId: optional(nullable(number())),
 });
