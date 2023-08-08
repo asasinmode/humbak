@@ -32,15 +32,15 @@ importers:
       pinia:
         specifier: ^2.1.4
         version: 2.1.4(typescript@5.1.6)(vue@3.3.4)
+      valibot:
+        specifier: ^0.11.1
+        version: 0.11.1
       vue:
         specifier: ^3.3.4
         version: 3.3.4
       vue-router:
         specifier: ^4.2.4
         version: 4.2.4(vue@3.3.4)
-      zod:
-        specifier: ^3.21.4
-        version: 3.21.4
     devDependencies:
       '@humbak/api':
         specifier: workspace:^
@@ -4727,3 +4727,4 @@ packages:
 
   /zod@3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+    dev: true

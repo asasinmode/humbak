@@ -1,18 +1,18 @@
 import { config } from 'dotenv';
-import { z } from 'zod';
+import { coerce, enumType, integer, number, object, string } from 'valibot';
 
 config({
 	path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development',
 });
 
-const schema = z.object({
-	NODE_ENV: z.enum(['production', 'development']),
-	PORT: z.string().transform(Number),
-	DATABASE_HOST: z.string(),
-	DATABASE_USER: z.string(),
-	DATABASE_PASSWORD: z.string(),
-	DATABASE_DATABASE: z.string(),
-	ADMIN_URL: z.string(),
+const schema = object({
+	NODE_ENV: enumType(['production', 'development']),
+	PORT: coerce(number([integer()]), Number),
+	DATABASE_HOST: string(),
+	DATABASE_USER: string(),
+	DATABASE_PASSWORD: string(),
+	DATABASE_DATABASE: string(),
+	ADMIN_URL: string(),
 });
 
 export const env = schema.parse(process.env);

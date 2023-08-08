@@ -75,7 +75,7 @@ defineExpose({
 		>
 			<li
 				v-for="hiddenLink in menuLinks"
-				:key="hiddenLink.id"
+				:key="hiddenLink.pageId"
 				class="hoverable-child-menu-visible min-w-60 flex-center flex-1 list-none focus-within:bg-humbak-5 hover:bg-humbak-5"
 			>
 				<MenuLinkButton

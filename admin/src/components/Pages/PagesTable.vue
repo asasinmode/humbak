@@ -43,7 +43,7 @@ async function getPages(resetOffset = false) {
 	try {
 		const [loadedPages, count] = await Promise.all([
 			useApi().pages.list.query({ offset: offset.value, limit: limit.value, query: search.value }),
-			useApi().pages.count.query({ query: search.value }),
+			useApi().pages.count.query(search.value),
 		]);
 		pages.value = loadedPages;
 		total.value = count;

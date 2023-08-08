@@ -1,5 +1,5 @@
 import { eq, sql } from 'drizzle-orm';
-import { array, string } from 'valibot';
+import { array, omit, string } from 'valibot';
 import { db } from '~/db';
 import { publicProcedure, router } from '~/router/trpc';
 import { pages } from '~/db/schema/pages';
@@ -19,7 +19,7 @@ export const menuLinksRouter = router({
 			.leftJoin(pages, eq(menuLinks.pageId, pages.id))
 			.where(eq(pages.language, opts.input));
 	}),
-	update: publicProcedure.input(array(insertMenuLinkSchema)).mutation(async (opts) => {
+	update: publicProcedure.input(array(omit(insertMenuLinkSchema, ['text']))).mutation(async (opts) => {
 		await Promise.all(opts.input.map(({ pageId, position, parentId }) => db
 			.update(menuLinks)
 			.set({ position, parentId, updatedAt: new Date() })

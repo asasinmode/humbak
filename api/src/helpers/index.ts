@@ -1,6 +1,6 @@
 import { exit } from 'node:process';
 import { confirm } from '@clack/prompts';
-import { z } from 'zod';
+import { number, object, optional, string, transform } from 'valibot';
 import { env } from '~/env';
 import { pool } from '~/db';
 
@@ -25,8 +25,12 @@ export async function getTableNames() {
 	return queryResult[0] as { table_name: string; }[];
 }
 
-export const paginationQueryInput = z.object({
-	query: z.string().optional().default(''),
-	limit: z.number().optional().default(5),
-	offset: z.number().optional().default(0),
-});
+export const paginationQueryInput = transform(object({
+	query: optional(string()),
+	limit: optional(number()),
+	offset: optional(number()),
+}), ({ query, limit, offset }) => ({
+	query: query === undefined ? '' : query,
+	limit: limit === undefined ? 5 : limit,
+	offset: offset === undefined ? 0 : offset,
+}));

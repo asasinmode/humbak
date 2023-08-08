@@ -17,6 +17,6 @@ export const contents = mysqlTable('contents', {
 
 export const insertContentSchema = object({
 	pageId: optional(number([integer()])),
-	html: string(),
-	meta: array(record(string())),
+	html: optional(string()),
+	meta: optional(array(record(string()))),
 });

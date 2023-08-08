@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { eq, isNull, like, or, sql } from 'drizzle-orm';
-import { integer, merge, number, object, omit, optional, string } from 'valibot';
+import { integer, merge, number, object, optional, pick, string, useDefault } from 'valibot';
 import { db } from '~/db';
 import { publicProcedure, router } from '~/router/trpc';
 import { paginationQueryInput } from '~/helpers';
@@ -12,7 +12,7 @@ import { insertMenuLinkSchema, menuLinks } from '~/db/schema/menuLinks';
 const upsertPageInputSchema = merge([
 	insertPageSchema,
 	object({ menuText: insertMenuLinkSchema.object.text, css: optional(string()) }),
-	omit(insertContentSchema, ['pageId'])]
+	pick(insertContentSchema, ['html', 'meta'])]
 );
 
 export const pagesRouter = router({
@@ -34,17 +34,15 @@ export const pagesRouter = router({
 			.limit(limit)
 			.offset(offset * limit);
 	}),
-	count: publicProcedure.input(paginationQueryInput.pick({ query: true })).query(async (opts) => {
-		const { query } = opts.input;
-
+	count: publicProcedure.input(useDefault(paginationQueryInput.object.query, '')).query(async (opts) => {
 		const result = await db
 			.select({ count: sql<number>`COUNT(*)` })
 			.from(pages)
 			.leftJoin(menuLinks, eq(menuLinks.pageId, pages.id))
-			.where(query
+			.where(opts.input
 				? or(
-					like(pages.title, `%${query}%`),
-					like(menuLinks.text, `%${query}%`)
+					like(pages.title, `%${opts.input}%`),
+					like(menuLinks.text, `%${opts.input}%`)
 				)
 				: sql`1 = 1`);
 
