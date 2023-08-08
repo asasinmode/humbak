@@ -1,12 +1,12 @@
 import { eq, sql } from 'drizzle-orm';
-import { z } from 'zod';
+import { array, string } from 'valibot';
 import { db } from '~/db';
 import { publicProcedure, router } from '~/router/trpc';
 import { pages } from '~/db/schema/pages';
 import { insertMenuLinkSchema, menuLinks } from '~/db/schema/menuLinks';
 
 export const menuLinksRouter = router({
-	list: publicProcedure.input(z.string()).query(async (opts) => {
+	list: publicProcedure.input(string()).query(async (opts) => {
 		return db
 			.select({
 				pageId: menuLinks.pageId,
@@ -19,7 +19,7 @@ export const menuLinksRouter = router({
 			.leftJoin(pages, eq(menuLinks.pageId, pages.id))
 			.where(eq(pages.language, opts.input));
 	}),
-	update: publicProcedure.input(z.array(insertMenuLinkSchema.omit({ text: true }))).mutation(async (opts) => {
+	update: publicProcedure.input(array(insertMenuLinkSchema)).mutation(async (opts) => {
 		await Promise.all(opts.input.map(({ pageId, position, parentId }) => db
 			.update(menuLinks)
 			.set({ position, parentId, updatedAt: new Date() })

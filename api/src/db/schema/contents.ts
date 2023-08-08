@@ -1,7 +1,6 @@
 import { sql } from 'drizzle-orm';
-import { createInsertSchema } from 'drizzle-zod';
 import { datetime, int, json, mysqlTable, text } from 'drizzle-orm/mysql-core';
-import { z } from 'zod';
+import { array, integer, number, object, optional, record, string } from 'valibot';
 import { pages } from './pages';
 
 const defaultHtml = `<section>
@@ -16,6 +15,8 @@ export const contents = mysqlTable('contents', {
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
-export const insertContentSchema = createInsertSchema(contents, {
-	meta: () => z.array(z.object({}).catchall(z.any())),
-}).omit({ updatedAt: true });
+export const insertContentSchema = object({
+	pageId: optional(number([integer()])),
+	html: string(),
+	meta: array(record(string())),
+});

@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import fastify from 'fastify';
 import cors from '@fastify/cors';
-import fastifyStatic from '@fastify/static'
+import fastifyStatic from '@fastify/static';
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import { createContext } from '~/router/context';
 import { appRouter } from '~/router';
@@ -19,8 +19,8 @@ server.get('/', (_, res) => {
 
 await server.register(fastifyStatic, {
 	root: fileURLToPath(new URL('../public', import.meta.url)),
-	prefix: '/public/'
-})
+	prefix: '/public/',
+});
 
 await server.register(fastifyTRPCPlugin, {
 	prefix: '/',

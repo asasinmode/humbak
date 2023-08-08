@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { eq, isNull, like, or, sql } from 'drizzle-orm';
-import { z } from 'zod';
+import { integer, merge, number, object, omit, optional, string } from 'valibot';
 import { db } from '~/db';
 import { publicProcedure, router } from '~/router/trpc';
 import { paginationQueryInput } from '~/helpers';
@@ -9,12 +9,11 @@ import { insertPageSchema, pages } from '~/db/schema/pages';
 import { contents, insertContentSchema } from '~/db/schema/contents';
 import { insertMenuLinkSchema, menuLinks } from '~/db/schema/menuLinks';
 
-const upsertPageInputSchema = insertPageSchema
-	.and(z.object({
-		menuText: insertMenuLinkSchema.shape.text,
-		css: z.string().optional(),
-	}))
-	.and(insertContentSchema.omit({ pageId: true }));
+const upsertPageInputSchema = merge([
+	insertPageSchema,
+	object({ menuText: insertMenuLinkSchema.object.text, css: optional(string()) }),
+	omit(insertContentSchema, ['pageId'])]
+);
 
 export const pagesRouter = router({
 	list: publicProcedure.input(paginationQueryInput).query(async (opts) => {
@@ -51,7 +50,7 @@ export const pagesRouter = router({
 
 		return result[0].count;
 	}),
-	byId: publicProcedure.input(z.number()).query(async (opts) => {
+	byId: publicProcedure.input(number([integer()])).query(async (opts) => {
 		const result = await db
 			.select({
 				id: pages.id,
@@ -121,7 +120,7 @@ export const pagesRouter = router({
 
 		return result[0];
 	}),
-	delete: publicProcedure.input(z.number()).mutation(async (opts) => {
+	delete: publicProcedure.input(number([integer()])).mutation(async (opts) => {
 		await db.delete(pages).where(eq(pages.id, opts.input));
 	}),
 	uniqueLanguages: publicProcedure.query(async () => {
@@ -129,7 +128,7 @@ export const pagesRouter = router({
 
 		return result.map(row => row.language);
 	}),
-	updateGlobalCss: publicProcedure.input(z.string()).mutation(async (opts) => {
+	updateGlobalCss: publicProcedure.input(string()).mutation(async (opts) => {
 		await writeFile(fileURLToPath(new URL('../../../public/stylesheets/global.css', import.meta.url)), opts.input);
 	}),
 });

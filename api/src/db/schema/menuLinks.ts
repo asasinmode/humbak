@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
-import { createInsertSchema } from 'drizzle-zod';
 import { datetime, int, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
+import { integer, maxLength, nullable, number, object, optional, string } from 'valibot';
 import { pages } from './pages';
 
 export const menuLinks = mysqlTable('menuLinks', {
@@ -11,4 +11,9 @@ export const menuLinks = mysqlTable('menuLinks', {
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
-export const insertMenuLinkSchema = createInsertSchema(menuLinks, {}).omit({ updatedAt: true });
+export const insertMenuLinkSchema = object({
+	pageId: number([integer()]),
+	text: string([maxLength(256)]),
+	position: number([integer()]),
+	parentId: optional(nullable(number())),
+});
