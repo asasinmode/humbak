@@ -52,7 +52,7 @@ async function getMenuLinks(checkLanguage: boolean) {
 		}
 	} catch (e) {
 		toast('błąd przy ładowaniu języków', 'error');
-		throw e;
+		console.error(e);
 	} finally {
 		isLoading.value = false;
 	}
@@ -402,7 +402,7 @@ async function saveChanges() {
 		toast('zapisano zmiany');
 	} catch (e) {
 		toast('błąd przy zapisywaniu zmian');
-		throw e;
+		console.error(e);
 	} finally {
 		isSaving.value = false;
 	}

@@ -18,7 +18,7 @@ onMounted(async () => {
 		editor.value?.updateModelValue(0, css.value);
 	} catch (e) {
 		toast('błąd przy ładowaniu danych', 'error');
-		throw e;
+		console.error(e);
 	} finally {
 		isLoading.value = false;
 	}
@@ -33,7 +33,7 @@ async function saveChanges() {
 		toast('zapisano zmiany');
 	} catch (e) {
 		toastGenericError();
-		throw e;
+		console.error(e);
 	} finally {
 		isSaving.value = false;
 	}

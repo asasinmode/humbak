@@ -49,7 +49,7 @@ async function getPages(resetOffset = false) {
 		total.value = count;
 	} catch (e) {
 		useToast().toast('błąd przy ładowaniu danych', 'error');
-		throw e;
+		console.error(e);
 	} finally {
 		isLoading.value = false;
 	}

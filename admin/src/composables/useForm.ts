@@ -4,11 +4,6 @@ import { TRPCClientError } from '@trpc/client';
 const { confirm } = useConfirm();
 const { toast, toastGenericError } = useToast();
 
-type TRPCError = {
-	message: string;
-	path: string[];
-};
-
 export const useForm = <T extends Record<string, unknown>>(
 	form: T,
 	saveCallback: () => Promise<unknown>,
@@ -70,7 +65,7 @@ export const useForm = <T extends Record<string, unknown>>(
 			errors.value = JSON.parse(error.message);
 		} catch (e) {
 			toastGenericError();
-			throw e;
+			throw new Error(`Parsing error message failed. ${error.message}`);
 		}
 	}
 

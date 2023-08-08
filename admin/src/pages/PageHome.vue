@@ -70,7 +70,7 @@ async function getLanguages() {
 		languages.value = await api.pages.uniqueLanguages.query();
 	} catch (e) {
 		toast('błąd przy ładowaniu języków', 'error');
-		throw e;
+		console.error(e);
 	} finally {
 		isLoading.value = false;
 	}
@@ -95,7 +95,7 @@ async function editPage(id: number, button: HTMLButtonElement) {
 		contentEditor.value?.updateValues(page);
 	} catch (e) {
 		toast('błąd przy ładowaniu strony', 'error');
-		throw e;
+		console.error(e);
 	} finally {
 		loadingPageId.value = undefined;
 	}
@@ -120,7 +120,7 @@ async function deletePage(id: number, button: HTMLButtonElement) {
 		await Promise.all([table.value?.getPages(), getLanguages()]);
 	} catch (e) {
 		toast('błąd przy usuwaniu strony', 'error');
-		throw e;
+		console.error(e);
 	} finally {
 		loadingPageId.value = undefined;
 	}
