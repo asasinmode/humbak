@@ -66,7 +66,7 @@ function lastElementFocusOut(event: FocusEvent) {
 	<button
 		id="menu-toggle"
 		title="menu"
-		class="fixed z-10 flex items-start justify-end bg-black md:hidden"
+		class="fixed z-100 flex items-start justify-end bg-black md:hidden"
 		:class="[
 			isExpanded
 				? 'bg-opacity-40 top-0 right-0 w-screen h-screen p-5 cursor-default is-expanded'
@@ -81,7 +81,7 @@ function lastElementFocusOut(event: FocusEvent) {
 	</button>
 
 	<nav
-		class="fixed z-11 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 of-auto bg-inherit py-2 transition-transform md:(relative flex translate-y-0 justify-around bg-transparent px-4)"
+		class="fixed z-102 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 of-auto bg-inherit py-2 transition-transform md:(relative flex translate-y-0 justify-around bg-transparent px-4)"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<RouterLink
