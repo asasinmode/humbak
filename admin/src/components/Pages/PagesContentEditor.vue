@@ -25,7 +25,6 @@ let wasMetaFormatted = false;
 const pageStylesheet = document.createElement('style');
 let stylesheetUpdateTimeout: NodeJS.Timeout | undefined;
 document.head.appendChild(pageStylesheet);
-console.log('style element created', pageStylesheet);
 
 onUnmounted(() => {
 	pageStylesheet.remove();
