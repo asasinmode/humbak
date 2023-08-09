@@ -6,16 +6,18 @@ import type { IMenuTreeItem } from '~/types';
 
 const api = useApi();
 const { toastGenericError, toast } = useToast();
+const { confirm } = useConfirm();
 const isLoading = ref(false);
 const isLoadingLanguages = ref(false);
 const language = ref('pl');
 const languages = ref<IUniqueLanguage[]>([]);
 const transformedHiddenMenuLinks = ref<IMenuTreeItem[]>([]);
 const transformedMenuLinks = ref<IMenuTreeItem[]>([]);
+const saveButton = ref<InstanceType<typeof VButton>>();
 
 let originalMenuLinks: IMenuLink[] = [];
 let currentLanguage = 'pl';
-const changedLinks: Pick<IMenuLink, 'pageId' | 'position' | 'parentId'>[] = [];
+let changedLinks: Pick<IMenuLink, 'pageId' | 'position' | 'parentId'>[] = [];
 
 onMounted(async () => {
 	isLoadingLanguages.value = true;
@@ -36,10 +38,18 @@ async function getMenuLinks(checkLanguage: boolean) {
 	if (checkLanguage && (!languages.value.includes(language.value) || currentLanguage === language.value)) {
 		return;
 	}
+	if (getActuallyChanged().length) {
+		const proceed = await confirm(saveButton.value?.element);
+		if (!proceed) {
+			language.value = currentLanguage;
+			return;
+		}
+	}
 	isLoading.value = true;
 	try {
 		const menuLinks = await api.menuLinks.list.query(language.value);
 		originalMenuLinks = [...menuLinks];
+		changedLinks = [];
 		currentLanguage = language.value;
 
 		transformedHiddenMenuLinks.value = extractWithParentId(menuLinks, -1);
@@ -382,14 +392,7 @@ function hideLink(link: IMenuTreeItem) {
 const isSaving = ref(false);
 
 async function saveChanges() {
-	const actuallyChanged = changedLinks.filter((link) => {
-		const original = originalMenuLinks.find(l => l.pageId === link.pageId);
-		if (!original) {
-			toastGenericError();
-			throw new Error(`link with id ${link.pageId} not found in original links`);
-		}
-		return link.position !== original.position || (link.parentId !== undefined && link.parentId !== original.parentId);
-	});
+	const actuallyChanged = getActuallyChanged();
 
 	if (actuallyChanged.length === 0) {
 		toast('zapisano zmiany');
@@ -399,6 +402,7 @@ async function saveChanges() {
 	isSaving.value = true;
 	try {
 		await api.menuLinks.update.mutate(actuallyChanged);
+		changedLinks = [];
 		toast('zapisano zmiany');
 	} catch (e) {
 		toast('błąd przy zapisywaniu zmian');
@@ -406,6 +410,17 @@ async function saveChanges() {
 	} finally {
 		isSaving.value = false;
 	}
+}
+
+function getActuallyChanged() {
+	return changedLinks.filter((link) => {
+		const original = originalMenuLinks.find(l => l.pageId === link.pageId);
+		if (!original) {
+			toastGenericError();
+			throw new Error(`link with id ${link.pageId} not found in original links`);
+		}
+		return link.position !== original.position || (link.parentId !== undefined && link.parentId !== original.parentId);
+	});
 }
 </script>
 
@@ -426,6 +441,7 @@ async function saveChanges() {
 			@update:model-value="getMenuLinks(true)"
 		/>
 		<VButton
+			ref="saveButton"
 			class="menu-controls-padding-right hidden h-fit lg:block neon-green"
 			:is-loading="isSaving"
 			@click="saveChanges"
