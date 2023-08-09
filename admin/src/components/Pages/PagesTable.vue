@@ -106,7 +106,7 @@ defineExpose({
 		class="relative mx-auto mb-4 max-w-208 of-auto border-2 border-neutral border-op-50 rounded-2 bg-neutral bg-op-20 md:min-h-[17.875rem] dark:border-op-80"
 		tabindex="0"
 		role="region"
-		aria-labelledby="h-pages-caption"
+		aria-labelledby="hPagesCaption"
 	>
 		<header class="flex justify-end gap-2 bg-black/10 px-2 py-2 dark:bg-white/20">
 			<VButton
@@ -136,7 +136,7 @@ defineExpose({
 			</VButton>
 		</header>
 		<table class="h-pages-table relative w-full table-fixed" role="table">
-			<caption id="h-pages-caption" class="absolute left-0 text-start text-5 font-600 -top-[10px] md:left-4 -translate-y-full">
+			<caption id="hPagesCaption" class="absolute left-0 text-start text-5 font-600 -top-[10px] md:left-4 -translate-y-full">
 				strony ({{ total }})
 			</caption>
 			<thead>

@@ -64,7 +64,7 @@ function lastElementFocusOut(event: FocusEvent) {
 
 <template>
 	<button
-		id="menu-toggle"
+		id="menuToggle"
 		title="menu"
 		class="fixed z-100 flex items-start justify-end bg-black md:hidden"
 		:class="[
@@ -147,7 +147,7 @@ function lastElementFocusOut(event: FocusEvent) {
 </template>
 
 <style>
-#menu-toggle {
+#menuToggle {
 	--nav-transition-duration: 150ms;
 
 	transition: background var(--nav-transition-duration) ease,
@@ -157,7 +157,7 @@ function lastElementFocusOut(event: FocusEvent) {
 		top 0ms ease var(--nav-transition-duration),
 		padding 0ms ease var(--nav-transition-duration);
 }
-#menu-toggle.is-expanded {
+#menuToggle.is-expanded {
 	transition: background var(--nav-transition-duration) ease;
 }
 </style>

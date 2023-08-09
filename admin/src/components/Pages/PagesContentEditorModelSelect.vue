@@ -23,17 +23,17 @@ updateCursoredIndexToSelected(value.value);
 
 <template>
 	<article class="relative" title="tryb edytora">
-		<span id="editor-mode-combobox-label" class="visually-hidden">tryb edytora</span>
+		<span id="editorModeComboboxLabel" class="visually-hidden">tryb edytora</span>
 		<div
 			aria-label="tryb edytora"
 			class="relative h-8 w-8 cursor-pointer shadow neon-blue"
 			role="combobox"
 			tabindex="0"
 			aria-haspopup="listbox"
-			aria-controls="editor-mode-listbox"
-			aria-labelledby="editor-mode-combobox-label"
+			aria-controls="editorModeListbox"
+			aria-labelledby="editorModeComboboxLabel"
 			:aria-expanded="isExpanded"
-			:aria-activedescendant="cursoredOverIndex !== undefined ? `editor-mode-option-${cursoredOverIndex}` : ''"
+			:aria-activedescendant="cursoredOverIndex !== undefined ? `editorModeOption-${cursoredOverIndex}` : ''"
 			@focus="expandAndSelectFirst"
 			@focusout="closeIfFocusedOutside"
 			@update:model-value="updateCursoredIndexToSelected"
@@ -49,18 +49,18 @@ updateCursoredIndexToSelected(value.value);
 
 		<ul
 			v-show="isExpanded"
-			id="editor-mode-listbox"
+			id="editorModeListbox"
 			ref="listbox"
 			class="absolute left-1/2 z-10 flex translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-neutral-2/90 shadow-md -bottom-2 -translate-x-1/2 dark:border-neutral-5 dark:bg-neutral-8/90"
 			role="listbox"
 			aria-orientation="horizontal"
-			aria-labelledby="editor-mode-combobox-label"
+			aria-labelledby="editorModeComboboxLabel"
 			@keydown.up.prevent="moveCursor(-1)"
 			@keydown.down.prevent="moveCursor(1)"
 		>
 			<li
 				v-for="({ text, value: optionValue }, index) in options"
-				:id="`editor-mode-option-${index}`"
+				:id="`editorModeOption-${index}`"
 				:key="text"
 				class="relative flex-1 cursor-pointer select-none bg-op-40 px-3 py-2 hover:bg-op-40"
 				:class=" [
