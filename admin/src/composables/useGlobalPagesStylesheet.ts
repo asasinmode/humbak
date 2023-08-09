@@ -10,9 +10,7 @@ const isLoading = ref(false);
 const globalPagesStylesheet = document.createElement('style');
 document.head.appendChild(globalPagesStylesheet);
 
-watch(value, (newValue) => {
-	globalPagesStylesheet.innerHTML = newValue;
-});
+let updateTimeout: NodeJS.Timeout | undefined;
 
 export const useGlobalPagesStylesheet = (valueFetchedCallback?: (value: string) => void) => {
 	onMounted(async () => {
@@ -20,6 +18,7 @@ export const useGlobalPagesStylesheet = (valueFetchedCallback?: (value: string) 
 		try {
 			value.value = await fetch(`${env.VITE_API_URL}/public/stylesheets/global.css`).then(data => data.text());
 			initValue.value = value.value;
+			globalPagesStylesheet.innerHTML = value.value;
 			valueFetchedCallback && valueFetchedCallback(value.value);
 		} catch (e) {
 			toast('błąd przy ładowaniu globalnych stylów', 'error');
@@ -29,9 +28,21 @@ export const useGlobalPagesStylesheet = (valueFetchedCallback?: (value: string) 
 		}
 	});
 
+	onUnmounted(() => {
+		globalPagesStylesheet.innerHTML = '';
+	});
+
 	return {
 		value,
 		initValue,
 		isLoading,
+		updateValue(newValue: string) {
+			if (updateTimeout) {
+				clearTimeout(updateTimeout);
+			}
+			updateTimeout = setTimeout(() => {
+				globalPagesStylesheet.innerHTML = newValue;
+			}, 500);
+		},
 	};
 };

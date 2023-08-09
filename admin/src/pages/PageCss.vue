@@ -4,7 +4,9 @@ import VEditor from '~/components/V/VEditor.vue';
 const api = useApi();
 const { toast, toastGenericError } = useToast();
 const editor = ref<InstanceType<typeof VEditor>>();
-const { value, isLoading, initValue } = useGlobalPagesStylesheet((value: string) => editor.value?.updateModelValue(0, value));
+const { value, isLoading, initValue, updateValue } = useGlobalPagesStylesheet(
+	(value: string) => editor.value?.updateModelValue(0, value)
+);
 const isSaving = ref(false);
 
 async function saveChanges() {
@@ -21,6 +23,11 @@ async function saveChanges() {
 	} finally {
 		isSaving.value = false;
 	}
+}
+
+function updateModelValue(newValue: string) {
+	value.value = newValue;
+	updateValue(newValue);
 }
 </script>
 
@@ -45,7 +52,7 @@ async function saveChanges() {
 			]"
 			:current-model="0"
 			:is-loading="isLoading"
-			@update:model-value="$event => value = $event"
+			@update:model-value="updateModelValue"
 		/>
 	</main>
 </template>
