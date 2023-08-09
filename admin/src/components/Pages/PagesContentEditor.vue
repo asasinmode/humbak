@@ -11,12 +11,8 @@ const contents = ref({
 		value: '',
 	},
 	css: {
-		initValue: `.selector {
-	background-color: hotpink;
-}`,
-		value: `.selector {
-	background-color: hotpink;
-}`,
+		initValue: '',
+		value: '',
 	},
 	meta: {
 		initValue: '',
@@ -83,15 +79,13 @@ function clear() {
 function updateValues(
 	data: {
 		html: string;
-		// css: string;
+		css: string;
 		meta: string;
 	} & Record<string, any>
 ) {
 	contents.value.html.value = data.html;
 	contents.value.meta.value = data.meta;
-	contents.value.css.value = `.selector {
-	background-color: lime;
-}`;
+	contents.value.css.value = data.css;
 
 	for (const key in contents.value) {
 		// @ts-expect-error it's a valid key

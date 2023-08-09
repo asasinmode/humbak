@@ -1,4 +1,4 @@
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { eq, isNull, like, or, sql } from 'drizzle-orm';
 import { integer, merge, number, object, optional, pick, string, useDefault } from 'valibot';
@@ -49,22 +49,25 @@ export const pagesRouter = router({
 		return result[0].count;
 	}),
 	byId: publicProcedure.input(number([integer()])).query(async (opts) => {
-		const result = await db
-			.select({
-				id: pages.id,
-				language: pages.language,
-				title: pages.title,
-				slug: pages.slug,
-				menuText: sql<string>`${menuLinks.text}`,
-				html: sql<string>`${contents.html}`,
-				meta: sql<string>`${contents.meta}`,
-			})
-			.from(pages)
-			.leftJoin(menuLinks, eq(menuLinks.pageId, opts.input))
-			.leftJoin(contents, eq(contents.pageId, opts.input))
-			.where(eq(pages.id, opts.input));
+		const [[result], stylesheetFileData] = await Promise.all([
+			db
+				.select({
+					id: pages.id,
+					language: pages.language,
+					title: pages.title,
+					slug: pages.slug,
+					menuText: sql<string>`${menuLinks.text}`,
+					html: sql<string>`${contents.html}`,
+					meta: sql<string>`${contents.meta}`,
+				})
+				.from(pages)
+				.leftJoin(menuLinks, eq(menuLinks.pageId, opts.input))
+				.leftJoin(contents, eq(contents.pageId, opts.input))
+				.where(eq(pages.id, opts.input)),
+			readFile(fileURLToPath(new URL(`../../../public/stylesheets/${opts.input}.css`, import.meta.url))),
+		]);
 
-		return result[0];
+		return { ...result, css: stylesheetFileData.toString() };
 	}),
 	upsert: publicProcedure.input(valibotSchemaToTRPCInput(upsertPageInputSchema)).mutation(async (opts) => {
 		const { menuText, html, meta, css, ...pageFields } = opts.input;
@@ -99,24 +102,30 @@ export const pagesRouter = router({
 					updatedAt: new Date(),
 				},
 			}),
+			css !== undefined || opts.input.id === undefined
+				? writeFile(fileURLToPath(new URL(`../../../public/stylesheets/${pageId}.css`, import.meta.url)), css || '')
+				: () => {},
 		]);
 
-		const result = await db
-			.select({
-				id: pages.id,
-				language: pages.language,
-				title: pages.title,
-				slug: pages.slug,
-				menuText: sql<string>`${menuLinks.text}`,
-				html: sql<string>`${contents.html}`,
-				meta: sql<string>`${contents.meta}`,
-			})
-			.from(pages)
-			.leftJoin(menuLinks, eq(menuLinks.pageId, pageId))
-			.leftJoin(contents, eq(contents.pageId, pageId))
-			.where(eq(pages.id, pageId));
+		const [[result], stylesheetFileData] = await Promise.all([
+			db
+				.select({
+					id: pages.id,
+					language: pages.language,
+					title: pages.title,
+					slug: pages.slug,
+					menuText: sql<string>`${menuLinks.text}`,
+					html: sql<string>`${contents.html}`,
+					meta: sql<string>`${contents.meta}`,
+				})
+				.from(pages)
+				.leftJoin(menuLinks, eq(menuLinks.pageId, pageId))
+				.leftJoin(contents, eq(contents.pageId, pageId))
+				.where(eq(pages.id, pageId)),
+			readFile(fileURLToPath(new URL(`../../../public/stylesheets/${pageId}.css`, import.meta.url))),
+		]);
 
-		return result[0];
+		return { ...result, css: stylesheetFileData.toString() };
 	}),
 	delete: publicProcedure.input(number([integer()])).mutation(async (opts) => {
 		await db.delete(pages).where(eq(pages.id, opts.input));

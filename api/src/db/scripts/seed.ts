@@ -1,3 +1,5 @@
+import { writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { db, pool } from '~/db';
 import { promptProdContinue } from '~/helpers';
 import { pages } from '~/db/schema/pages';
@@ -232,6 +234,7 @@ for (const { pageData, text, parentId, position } of [
 	await Promise.all([
 		db.insert(menuLinks).values({ text, pageId, position, parentId }),
 		db.insert(contents).values({ pageId }),
+		writeFile(fileURLToPath(new URL(`../../../public/stylesheets/${pageId}.css`, import.meta.url)), ''),
 	]);
 }
 
