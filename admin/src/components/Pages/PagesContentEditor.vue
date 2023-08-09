@@ -22,12 +22,22 @@ const contents = ref({
 const currentModelIndex = ref(0);
 let wasMetaFormatted = false;
 
+const pageStylesheet = document.createElement('style');
+let stylesheetUpdateTimeout: NodeJS.Timeout | undefined;
+document.head.appendChild(pageStylesheet);
+console.log('style element created', pageStylesheet);
+
+onUnmounted(() => {
+	pageStylesheet.remove();
+});
+
 function updateCurrentModel(value: string) {
 	const index = currentModelIndex.value;
 	if (index === 0) {
 		contents.value.html.value = value;
 	} else if (index === 1) {
 		contents.value.css.value = value;
+		updateStyleElement(value);
 	} else {
 		contents.value.meta.value = value;
 	}
@@ -92,6 +102,8 @@ function updateValues(
 		contents.value[key].initValue = contents.value[key].value;
 	}
 
+	pageStylesheet.innerHTML = contents.value.css.value;
+
 	editor.value?.updateModelValue(0, contents.value.html.value);
 	editor.value?.updateModelValue(1, contents.value.css.value);
 	editor.value?.updateModelValue(2, contents.value.meta.value);
@@ -124,6 +136,15 @@ function getChangedFields() {
 	}
 
 	return fields;
+}
+
+function updateStyleElement(newValue: string) {
+	if (stylesheetUpdateTimeout) {
+		clearTimeout(stylesheetUpdateTimeout);
+	}
+	stylesheetUpdateTimeout = setTimeout(() => {
+		pageStylesheet.innerHTML = newValue;
+	}, 500);
 }
 
 defineExpose({
