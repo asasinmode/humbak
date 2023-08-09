@@ -1,34 +1,18 @@
 <script setup lang="ts">
 import VEditor from '~/components/V/VEditor.vue';
-import { env } from '~/env';
 
 const api = useApi();
 const { toast, toastGenericError } = useToast();
-const css = ref('');
-let initCss = '';
-const isLoading = ref(false);
-const isSaving = ref(false);
 const editor = ref<InstanceType<typeof VEditor>>();
-
-onMounted(async () => {
-	isLoading.value = true;
-	try {
-		initCss = await fetch(`${env.VITE_API_URL}/public/stylesheets/global.css`).then(data => data.text());
-		css.value = initCss;
-		editor.value?.updateModelValue(0, css.value);
-	} catch (e) {
-		toast('błąd przy ładowaniu danych', 'error');
-		console.error(e);
-	} finally {
-		isLoading.value = false;
-	}
-});
+const { value, isLoading, initValue } = useGlobalPagesStylesheet((value: string) => editor.value?.updateModelValue(0, value));
+const isSaving = ref(false);
 
 async function saveChanges() {
 	isSaving.value = true;
 	try {
-		if (css.value !== initCss) {
-			await api.pages.updateGlobalCss.mutate(css.value);
+		if (value.value !== initValue.value) {
+			await api.pages.updateGlobalCss.mutate(value.value);
+			initValue.value = value.value;
 		}
 		toast('zapisano zmiany');
 	} catch (e) {
@@ -57,11 +41,11 @@ async function saveChanges() {
 			ref="editor"
 			class="col-span-full"
 			:models="[
-				{ language: 'css', value: css },
+				{ language: 'css', value },
 			]"
 			:current-model="0"
 			:is-loading="isLoading"
-			@update:model-value="$event => css = $event"
+			@update:model-value="$event => value = $event"
 		/>
 	</main>
 </template>
