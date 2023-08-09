@@ -8,7 +8,6 @@ const initValue = ref('');
 const isLoading = ref(false);
 
 const globalPagesStylesheet = document.createElement('style');
-globalPagesStylesheet.id = 'globalPagesStylesheet';
 document.head.appendChild(globalPagesStylesheet);
 
 watch(value, (newValue) => {

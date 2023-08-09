@@ -7,6 +7,7 @@ import type { IUniqueLanguage } from '~/composables/useApi';
 const api = useApi();
 const { confirm } = useConfirm();
 const { toast } = useToast();
+useGlobalPagesStylesheet();
 
 const table = ref<InstanceType<typeof PagesTable>>();
 const resetButton = ref<InstanceType<typeof VButton>>();

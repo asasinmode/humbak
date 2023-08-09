@@ -137,7 +137,7 @@ defineExpose({
 	<section ref="container" class="mt-6 hidden h-[60vh] min-h-64 gap-x-2 lg:flex">
 		<VEditor
 			ref="editor"
-			class="flex-1"
+			class="flex-1 shadow"
 			:models="[
 				{ language: 'html', value: contents.html.value },
 				{ language: 'css', value: contents.css.value },
@@ -161,7 +161,7 @@ defineExpose({
 				<div class="i-fa6-solid-arrows-up-down absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
 			</VButton>
 		</aside>
-		<main class="bg-checker flex-1" v-text="contents.html.value" />
+		<main class="flex-1 bg-white shadow" v-html="contents.html.value" />
 	</section>
 	<VAlert class="mt-4 max-w-3xl md:mx-auto lg:hidden" variant="warning">
 		edytowanie zawartości nie jest dostępne na małych ekranach
