@@ -64,15 +64,9 @@ export const useConfirm = () => {
 	) {
 		activator.value = activatorElement;
 
-		if (props.title) {
-			title.value = props.title;
-		}
-		if (props.text) {
-			text.value = props.text;
-		}
-		if (props.okText) {
-			okText.value = props.okText;
-		}
+		title.value = props.title ?? 'niezapisane zmiany';
+		text.value = props.text ?? 'Masz niezapisane zmiany. Czy na pewno chcesz kontynuować?';
+		okText.value = props.okText ?? 'kontynuuj';
 
 		promise.value = new Promise<boolean>((_resolve) => {
 			open.value?.();

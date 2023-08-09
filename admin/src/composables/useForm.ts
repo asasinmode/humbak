@@ -37,7 +37,6 @@ export const useForm = <T extends Record<string, unknown>>(
 	async function clearForm(element?: HTMLElement | null, skipConfirm = false, continueMessage = false) {
 		if (!skipConfirm && hasChanged()) {
 			const proceed = await confirm(element, {
-				title: 'niezapisane zmiany',
 				text: `Masz niezapisane zmiany. Czy na pewno chcesz ${continueMessage ? 'kontynuować' : 'wyczyścić dane'}?`,
 				okText: continueMessage ? 'kontynuuj' : 'wyczyść',
 			});
