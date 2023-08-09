@@ -66,7 +66,7 @@ defineExpose({
 			@mousedown.left="initDrag"
 			@keydown.enter="isExpanded = !isExpanded"
 		>
-			schowane
+			schowane ({{ menuLinks.length }})
 		</button>
 		<ul
 			v-if="menuLinks.length"
