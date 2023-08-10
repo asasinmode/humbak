@@ -82,6 +82,16 @@ function updateLastOffset() {
 	lastOffset.value = offset.value;
 }
 
+let searchTimeout: NodeJS.Timeout | undefined;
+
+function startSearchTimeout() {
+	if (searchTimeout) {
+		clearTimeout(searchTimeout);
+		searchTimeout = undefined;
+	}
+	searchTimeout = setTimeout(() => getPages(true), 500);
+}
+
 defineExpose({
 	getPages,
 });
@@ -96,6 +106,7 @@ defineExpose({
 			class="flex-1"
 			suffix-icon="i-solar-magnifer-linear"
 			label-visually-hidden
+			@update:model-value="startSearchTimeout"
 		/>
 		<VButton class="neon-blue">
 			szukaj
