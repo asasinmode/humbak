@@ -1,17 +1,13 @@
 <script setup lang="ts">
-import VInput from '~/components/V/VInput.vue';
-
-const props = withDefaults(defineProps<{
+const props = defineProps<{
 	transformOptions?: boolean;
-	options: Record<string, string> | string[];
+	options: Record<string, string> | (string | number)[];
 	id: string;
 	isLoading?: boolean;
-}>(), {
-	transformOptions: false,
-	isLoading: false,
-});
+	hideCheck?: boolean;
+}>();
 
-const modelValue = defineModel<string>();
+const modelValue = defineModel<string | number>();
 const listbox = ref<HTMLUListElement | null>();
 
 const computedOptions = computed(() => {
@@ -89,7 +85,7 @@ updateCursoredIndexToSelected(modelValue.value);
 				>
 					{{ text }}
 					<div
-						v-show="modelValue === value"
+						v-show="!hideCheck && modelValue === value"
 						class="i-fa6-solid-check absolute right-2 top-1/2 h-4 w-4 shrink-0 -translate-y-1/2"
 					/>
 				</li>
