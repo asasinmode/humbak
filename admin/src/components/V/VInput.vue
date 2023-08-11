@@ -45,10 +45,11 @@ defineExpose({
 			:id="id"
 			ref="element"
 			v-model="value"
-			v-bind="$attrs"
 			class="min-w-24 w-full py-1 pl-3 shadow placeholder:text-neutral"
+			:title="label"
 			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-neutral', inputClass]"
 			:placeholder="placeholder"
+			v-bind="$attrs"
 		>
 		<p v-if="error" class="pointer-events-none absolute bottom-0 left-3 translate-y-full text-3 text-red-500">
 			{{ error }}

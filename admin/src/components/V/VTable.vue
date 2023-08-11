@@ -145,6 +145,7 @@ defineExpose({
 			<VButton
 				class="relative h-9 w-9 shrink-0 dark:neon-violet neon-violet-5"
 				:disabled="isPreviousPageDisabled"
+				:title="`poprzednia ${title}`"
 				@click="changeOffset(-1)"
 			>
 				<span class="visually-hidden">poprzednia {{ title }}</span>
@@ -162,6 +163,7 @@ defineExpose({
 			<VButton
 				class="relative h-9 w-9 shrink-0 dark:neon-violet neon-violet-5"
 				:disabled="isNextPageDisabled"
+				:title="`następna ${title}`"
 				@click="changeOffset(1)"
 			>
 				<span class="visually-hidden">następna {{ title }}</span>
