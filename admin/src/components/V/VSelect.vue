@@ -6,6 +6,7 @@ const props = withDefaults(defineProps<{
 	options: Record<string, string> | string[];
 	id: string;
 	isLoading?: boolean;
+	hideCheck?: boolean;
 }>(), {
 	transformOptions: false,
 	isLoading: false,
@@ -60,7 +61,7 @@ updateCursoredIndexToSelected(modelValue.value);
 			v-show="isExpanded"
 			:id="`${id}-listbox`"
 			ref="listbox"
-			class="absolute bottom-0 left-3 z-10 w-[calc(100%_-_1.5rem)] translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-neutral-2/90 shadow-md dark:border-neutral-5 dark:bg-neutral-8/90"
+			class="absolute bottom-0 left-1/2 z-10 min-w-12 w-[calc(100%_-_1.5rem)] translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-neutral-2/90 shadow-md -translate-x-1/2 dark:border-neutral-5 dark:bg-neutral-8/90"
 			role="listbox"
 			@keydown.up.prevent="moveCursor(-1)"
 			@keydown.down.prevent="moveCursor(1)"
@@ -85,7 +86,10 @@ updateCursoredIndexToSelected(modelValue.value);
 					@mouseenter="cursoredOverIndex = index"
 				>
 					{{ text }}
-					<div v-show="modelValue === value" class="i-fa6-solid-check absolute right-2 top-1/2 h-4 w-4 shrink-0 -translate-y-1/2" />
+					<div
+						v-show="!hideCheck && modelValue === value"
+						class="i-fa6-solid-check absolute right-2 top-1/2 h-4 w-4 shrink-0 -translate-y-1/2"
+					/>
 				</li>
 			</template>
 		</ul>

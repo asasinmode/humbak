@@ -114,6 +114,18 @@ defineExpose({
 		:aria-labelledby="`${id}VTableCaption`"
 	>
 		<header class="flex justify-end gap-2 bg-black/10 px-2 py-2 dark:bg-white/20">
+			<VSelect
+				:id="`${id}VTableLimit`"
+				v-model="limit"
+				class="!min-w-12 !w-12"
+				input-class="!min-w-12 !w-12 neon-violet text-center"
+				label="ilość naraz"
+				:options="[5, 10, 15]"
+				transform-options
+				label-visually-hidden
+				hide-check
+				@update:model-value="callGetItems"
+			/>
 			<VButton
 				class="relative h-9 w-9 shrink-0 dark:neon-violet neon-violet-5"
 				:disabled="isPreviousPageDisabled"
