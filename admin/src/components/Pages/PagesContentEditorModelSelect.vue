@@ -43,7 +43,7 @@ updateCursoredIndexToSelected(value.value);
 			@keydown.enter="selectOption(cursoredOverIndex)"
 			@click="isExpanded = true"
 		>
-			<span class="visually-hidden">{{ modelValue }}</span>
+			<span class="visually-hidden">{{ options[modelValue].text }}</span>
 			<div class="i-mdi-wrench absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
 		</div>
 
