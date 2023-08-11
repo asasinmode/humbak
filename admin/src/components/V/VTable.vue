@@ -139,7 +139,7 @@ defineExpose({
 				:id="`${id}VTableLimit`"
 				v-model.number="limit"
 				class="!min-w-14 !w-14"
-				input-class="!min-w-14 !w-14 neon-violet text-center"
+				input-class="!min-w-14 !w-14 neon-neutral text-center"
 				label="pokazywana ilość naraz"
 				:options="[5, 10, 15]"
 				transform-options
