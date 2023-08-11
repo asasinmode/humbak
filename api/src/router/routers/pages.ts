@@ -17,7 +17,8 @@ const upsertPageInputSchema = merge([
 
 export const pagesRouter = router({
 	list: publicProcedure.input(valibotSchemaToTRPCInput(paginationQueryInput)).query(async (opts) => {
-		const { query, limit, offset } = opts.input;
+		const { query, limit: rawLimit, offset } = opts.input;
+		const limit = Math.min(rawLimit, 100);
 		const select = { id: pages.id, language: pages.language, title: pages.title, menuText: menuLinks.text };
 
 		return db

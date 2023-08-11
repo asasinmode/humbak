@@ -75,6 +75,8 @@ function parseLimitAndGetItems(event: FocusEvent) {
 
 	if (Number.isNaN(value) || value < 1) {
 		limit.value = 1;
+	} else if (value > 100) {
+		limit.value = 100;
 	} else {
 		limit.value = value;
 	}
@@ -122,7 +124,7 @@ defineExpose({
 			@update:model-value="startSearchTimeout"
 		/>
 		<VButton class="neon-blue">
-			szukaj {{ offset }} / {{ lastPage }}
+			szukaj
 		</VButton>
 	</form>
 
