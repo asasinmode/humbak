@@ -7,6 +7,10 @@ const props = defineProps<{
 	hideCheck?: boolean;
 }>();
 
+const emit = defineEmits<{
+	selectOption: [string | number | undefined];
+}>();
+
 const modelValue = defineModel<string | number>();
 const listbox = ref<HTMLUListElement | null>();
 
@@ -32,6 +36,11 @@ const {
 } = useCombobox(modelValue, computedOptions, listbox);
 
 updateCursoredIndexToSelected(modelValue.value);
+
+function selectOptionAndEmit(index?: number) {
+	selectOption(index);
+	emit('selectOption', modelValue.value);
+}
 </script>
 
 <template>
@@ -52,7 +61,7 @@ updateCursoredIndexToSelected(modelValue.value);
 		@keydown.up.prevent="moveCursor(-1)"
 		@keydown.down.prevent="moveCursor(1)"
 		@keydown.esc="isExpanded = false"
-		@keydown.enter="selectOption(cursoredOverIndex)"
+		@keydown.enter="selectOptionAndEmit(cursoredOverIndex)"
 		@click="isExpanded = true"
 	>
 		<ul
@@ -80,7 +89,7 @@ updateCursoredIndexToSelected(modelValue.value);
 					tabindex="-1"
 					role="option"
 					:aria-selected="modelValue === value"
-					@click="selectOption(index)"
+					@click="selectOptionAndEmit(index)"
 					@mouseenter="cursoredOverIndex = index"
 				>
 					{{ text }}

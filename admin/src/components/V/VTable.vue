@@ -21,6 +21,7 @@ const limit = ref(5);
 const search = ref('');
 
 let previousOffset = 1;
+let previousLimit = 5;
 const lastPage = computed(() => Math.floor(total.value / limit.value) + 1);
 const isPreviousPageDisabled = computed(() => offset.value === 1);
 const isNextPageDisabled = computed(() => lastPage.value === offset.value);
@@ -36,6 +37,8 @@ async function callGetItems(resetOffset = false) {
 		offset.value = 1;
 	}
 
+	previousOffset = offset.value;
+	previousLimit = limit.value;
 	try {
 		const [loadedItems, count] = await props.getItems(offset.value - 1, limit.value, search.value);
 		items.value = loadedItems;
@@ -48,7 +51,7 @@ async function callGetItems(resetOffset = false) {
 	}
 }
 
-function onSearchInputBlur(event: FocusEvent) {
+function parseOffsetAndGetItems(event: FocusEvent) {
 	const value = parseInt(`${(event.target as HTMLInputElement).value}`.replaceAll(/[^\d-\.]/g, ''));
 
 	if (Number.isNaN(value) || value < 1) {
@@ -61,7 +64,19 @@ function onSearchInputBlur(event: FocusEvent) {
 
 	(event.target as HTMLInputElement).value = offset.value.toString();
 	offset.value !== previousOffset && callGetItems();
-	previousOffset = offset.value;
+}
+
+function parseLimitAndGetItems(event: FocusEvent) {
+	const value = parseInt(`${(event.target as HTMLInputElement).value}`.replaceAll(/[^\d-\.]/g, ''));
+
+	if (Number.isNaN(value) || value < 1) {
+		limit.value = 1;
+	} else {
+		limit.value = value;
+	}
+
+	(event.target as HTMLInputElement).value = limit.value.toString();
+	limit.value !== previousLimit && callGetItems();
 }
 
 function changeOffset(value: number) {
@@ -117,14 +132,15 @@ defineExpose({
 			<VCombobox
 				:id="`${id}VTableLimit`"
 				v-model="limit"
-				class="!min-w-12 !w-12"
-				input-class="!min-w-12 !w-12 neon-violet text-center"
+				class="!min-w-14 !w-14"
+				input-class="!min-w-14 !w-14 neon-violet text-center"
 				label="ilość naraz"
 				:options="[5, 10, 15]"
 				transform-options
 				label-visually-hidden
 				hide-check
-				@update:model-value="callGetItems"
+				@blur="parseLimitAndGetItems"
+				@select-option="callGetItems()"
 			/>
 			<VButton
 				class="relative h-9 w-9 shrink-0 dark:neon-violet neon-violet-5"
@@ -141,7 +157,7 @@ defineExpose({
 				input-class="!min-w-14 !w-14 text-center neon-violet-5 dark:neon-violet"
 				label-visually-hidden
 				@focus="updatePreviousOffset"
-				@blur="onSearchInputBlur"
+				@blur="parseOffsetAndGetItems"
 			/>
 			<VButton
 				class="relative h-9 w-9 shrink-0 dark:neon-violet neon-violet-5"
