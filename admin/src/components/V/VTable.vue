@@ -22,7 +22,11 @@ const search = ref('');
 
 let previousOffset = 1;
 let previousLimit = 5;
-const lastPage = computed(() => Math.floor(total.value / limit.value) + 1);
+const lastPage = computed(() => {
+	const raw = total.value / limit.value;
+	const parsed = Math.floor(raw);
+	return parsed + (raw > parsed ? 1 : 0);
+});
 const isPreviousPageDisabled = computed(() => offset.value === 1);
 const isNextPageDisabled = computed(() => lastPage.value === offset.value);
 
@@ -76,7 +80,7 @@ function parseLimitAndGetItems(event: FocusEvent) {
 	}
 
 	(event.target as HTMLInputElement).value = limit.value.toString();
-	limit.value !== previousLimit && callGetItems();
+	limit.value !== previousLimit && callGetItems(true);
 }
 
 function changeOffset(value: number) {
@@ -118,7 +122,7 @@ defineExpose({
 			@update:model-value="startSearchTimeout"
 		/>
 		<VButton class="neon-blue">
-			szukaj
+			szukaj {{ offset }} / {{ lastPage }}
 		</VButton>
 	</form>
 
@@ -131,10 +135,10 @@ defineExpose({
 		<header class="flex justify-end gap-2 bg-black/10 px-2 py-2 dark:bg-white/20">
 			<VCombobox
 				:id="`${id}VTableLimit`"
-				v-model="limit"
+				v-model.number="limit"
 				class="!min-w-14 !w-14"
 				input-class="!min-w-14 !w-14 neon-violet text-center"
-				label="ilość naraz"
+				label="pokazywana ilość naraz"
 				:options="[5, 10, 15]"
 				transform-options
 				label-visually-hidden
