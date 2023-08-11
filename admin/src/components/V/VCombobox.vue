@@ -6,7 +6,6 @@ const props = withDefaults(defineProps<{
 	options: Record<string, string> | string[];
 	id: string;
 	isLoading?: boolean;
-	hideCheck?: boolean;
 }>(), {
 	transformOptions: false,
 	isLoading: false,
@@ -87,7 +86,7 @@ updateCursoredIndexToSelected(modelValue.value);
 				>
 					{{ text }}
 					<div
-						v-show="!hideCheck && modelValue === value"
+						v-show="modelValue === value"
 						class="i-fa6-solid-check absolute right-2 top-1/2 h-4 w-4 shrink-0 -translate-y-1/2"
 					/>
 				</li>

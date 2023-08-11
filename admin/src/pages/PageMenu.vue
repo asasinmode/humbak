@@ -429,7 +429,7 @@ function getActuallyChanged() {
 		<VAlert class="col-span-full max-w-3xl md:mx-auto lg:hidden" variant="warning">
 			edytowanie menu nie jest dostępne na małych ekranch
 		</VAlert>
-		<VSelect
+		<VCombobox
 			id="menuLinksLanguage"
 			v-model="language"
 			class="menu-controls-padding-right justify-self-end !hidden !min-w-24 !w-24 lg:!flex"

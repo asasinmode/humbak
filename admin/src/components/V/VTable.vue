@@ -114,7 +114,7 @@ defineExpose({
 		:aria-labelledby="`${id}VTableCaption`"
 	>
 		<header class="flex justify-end gap-2 bg-black/10 px-2 py-2 dark:bg-white/20">
-			<VSelect
+			<VCombobox
 				:id="`${id}VTableLimit`"
 				v-model="limit"
 				class="!min-w-12 !w-12"

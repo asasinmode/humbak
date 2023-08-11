@@ -176,7 +176,7 @@ async function clearFormAndLoadedPage() {
 				:error="errors.title"
 				@update:model-value="errors.title = ''"
 			/>
-			<VSelect
+			<VCombobox
 				id="pageLanguage"
 				v-model="language"
 				class="md:col-span-4"
