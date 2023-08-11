@@ -42,11 +42,14 @@ updateCursoredIndexToSelected(modelValue.value);
 	<VInput
 		:id="id"
 		v-model="modelValue"
-		role="combobox"
-		aria-haspopup="listbox"
-		:aria-expanded="isExpanded"
-		:aria-controls="`${id}-listbox`"
-		:aria-activedescendant="cursoredOverIndex !== undefined ? `${id}-option-${cursoredOverIndex}` : ''"
+		:container-attrs="{
+			'role': 'combobox',
+			'aria-labelledby': `${id}Label`,
+			'aria-haspopup': 'listbox',
+			'aria-expanded': 'isExpanded',
+			'aria-controls': `${id}-listbox`,
+			'aria-activedescendant': cursoredOverIndex !== undefined ? `${id}-option-${cursoredOverIndex}` : '',
+		}"
 		@focus="expandAndSelectFirst"
 		@focusout="closeIfFocusedOutside"
 		@update:model-value="updateCursoredIndexToSelected"
