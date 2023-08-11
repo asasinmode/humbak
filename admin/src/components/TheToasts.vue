@@ -25,7 +25,7 @@ const containerProgress: ClassRecord = {
 		<div
 			v-for="{ id, variant, text } in toasts"
 			:key="id"
-			class="toast-progress pointer-events-auto relative mb-3 min-h-12 w-64 flex items-center of-hidden rounded-md bg-neutral-200 p-2 pb-3 pl-12 hyphens-auto shadow-md after:(absolute bottom-0 left-0 h-1 w-full origin-left content-empty) before:(absolute left-2 top-1/2 h-8 w-8 rounded-1/2 -translate-y-1/2) dark:bg-neutral-800"
+			class="toast-progress pointer-events-auto relative mb-3 min-h-12 w-64 flex items-center of-hidden rounded-md bg-neutral-200 pb-3 pl-12 pr-5 pt-2 hyphens-auto shadow-md after:(absolute bottom-0 left-0 h-1 w-full origin-left content-empty) before:(absolute left-2 top-1/2 h-8 w-8 rounded-1/2 -translate-y-1/2) dark:bg-neutral-800"
 			:class="containerProgress[variant]"
 		>
 			<div class="absolute left-3 top-1/2 h-6 w-6 -translate-y-1/2" :class="icon[variant]" />
