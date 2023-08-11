@@ -12,7 +12,6 @@ declare module 'vue' {
     MenuLinkButton: typeof import('./../components/Menu/MenuLinkButton.vue')['default']
     PagesContentEditor: typeof import('./../components/Pages/PagesContentEditor.vue')['default']
     PagesContentEditorModelSelect: typeof import('./../components/Pages/PagesContentEditorModelSelect.vue')['default']
-    PagesTable: typeof import('./../components/Pages/PagesTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TheConfirm: typeof import('./../components/TheConfirm.vue')['default']
@@ -27,5 +26,6 @@ declare module 'vue' {
     VInput: typeof import('./../components/V/VInput.vue')['default']
     VLoading: typeof import('./../components/V/VLoading.vue')['default']
     VSelect: typeof import('./../components/V/VSelect.vue')['default']
+    VTable: typeof import('./../components/V/VTable.vue')['default']
   }
 }

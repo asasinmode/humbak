@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PagesContentEditor from '~/components/Pages/PagesContentEditor.vue';
-import PagesTable from '~/components/Pages/PagesTable.vue';
+import VTable from '~/components/V/VTable.vue';
 import VButton from '~/components/V/VButton.vue';
 import type { IUniqueLanguage } from '~/composables/useApi';
 
@@ -9,7 +9,8 @@ const { confirm } = useConfirm();
 const { toast } = useToast();
 useGlobalPagesStylesheet();
 
-const table = ref<InstanceType<typeof PagesTable>>();
+// https://github.com/vuejs/language-tools/issues/3206
+const table = ref<{ callGetItems: (resetOffset?: boolean) => void; } | undefined>();
 const resetButton = ref<InstanceType<typeof VButton>>();
 const saveButton = ref<InstanceType<typeof VButton>>();
 const contentEditor = ref<InstanceType<typeof PagesContentEditor>>();
@@ -54,7 +55,7 @@ const {
 
 		updateValues(page);
 		contentEditor.value?.updateValues(page);
-		await Promise.all([table.value?.getPages(true), getLanguages()]);
+		await Promise.all([table.value?.callGetItems(true), getLanguages()]);
 		loadingPageId.value = undefined;
 		loadedPageId.value = page.id;
 
@@ -75,6 +76,20 @@ async function getLanguages() {
 	} finally {
 		isLoading.value = false;
 	}
+}
+
+const tableLabels = {
+	id: 'id',
+	title: 'tytuł',
+	menuText: 'tekst w menu',
+	language: 'język',
+};
+
+async function getPages(offset: number, limit: number, query: string) {
+	return Promise.all([
+		useApi().pages.list.query({ offset, limit, query }),
+		useApi().pages.count.query(query),
+	]);
 }
 
 async function editPage(id: number, button: HTMLButtonElement) {
@@ -118,7 +133,7 @@ async function deletePage(id: number, button: HTMLButtonElement) {
 			clearForm(undefined, true);
 			contentEditor.value?.clear();
 		}
-		await Promise.all([table.value?.getPages(), getLanguages()]);
+		await Promise.all([table.value?.callGetItems(), getLanguages()]);
 	} catch (e) {
 		toast('błąd przy usuwaniu strony', 'error');
 		console.error(e);
@@ -140,7 +155,17 @@ async function clearFormAndLoadedPage() {
 
 <template>
 	<main class="px-2 pb-4 pt-[1.125rem] md:px-0">
-		<PagesTable ref="table" :loading-page-id="loadingPageId" @edit="editPage" @delete="deletePage" />
+		<VTable
+			id="pages"
+			ref="table"
+			title="strona"
+			plural-title="strony"
+			:loading-item-id="loadingPageId"
+			:labels="tableLabels"
+			:get-items="getPages"
+			@edit="editPage"
+			@delete="deletePage"
+		/>
 
 		<section class="grid grid-cols-[5fr_2fr] mx-auto max-w-6xl gap-x-4 gap-y-4 md:grid-cols-12">
 			<VInput

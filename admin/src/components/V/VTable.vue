@@ -1,8 +1,11 @@
-<script setup lang="ts">
-import type { IListedPage } from '~/composables/useApi';
-
-defineProps<{
-	loadingPageId?: number;
+<script setup lang="ts" generic="T extends { id: number; [key: string]: unknown }">
+const props = defineProps<{
+	id: string;
+	title: string;
+	pluralTitle: string;
+	labels: Record<keyof T, string>;
+	getItems: (offset: number, limit: number, search: string) => [T[], number] | Promise<[T[], number]>;
+	loadingItemId?: number;
 }>();
 
 defineEmits<{
@@ -10,42 +13,32 @@ defineEmits<{
 	delete: [id: number, button: HTMLButtonElement];
 }>();
 
+const items = shallowRef<T[]>([]);
 const isLoading = ref(false);
-const pages = ref<IListedPage[]>([]);
-const offset = ref(0);
-const limit = ref(5);
 const total = ref(0);
+const offset = ref(1);
+const limit = ref(5);
 const search = ref('');
 
-const labels = {
-	id: 'id',
-	title: 'tytuł',
-	menuText: 'tekst w menu',
-	language: 'język',
-};
-
-onMounted(() => {
-	getPages();
-});
-
-const lastOffset = ref(0);
-const lastPage = computed(() => Math.floor(total.value / limit.value));
-const isPreviousPageDisabled = computed(() => offset.value === 0);
+let previousOffset = 1;
+const lastPage = computed(() => Math.floor(total.value / limit.value) + 1);
+const isPreviousPageDisabled = computed(() => offset.value === 1);
 const isNextPageDisabled = computed(() => lastPage.value === offset.value);
 
-async function getPages(resetOffset = false) {
+onMounted(() => {
+	callGetItems();
+});
+
+async function callGetItems(resetOffset = false) {
 	isLoading.value = true;
 
 	if (resetOffset) {
-		offset.value = 0;
+		offset.value = 1;
 	}
 
 	try {
-		const [loadedPages, count] = await Promise.all([
-			useApi().pages.list.query({ offset: offset.value, limit: limit.value, query: search.value }),
-			useApi().pages.count.query(search.value),
-		]);
-		pages.value = loadedPages;
+		const [loadedItems, count] = await props.getItems(offset.value - 1, limit.value, search.value);
+		items.value = loadedItems;
 		total.value = count;
 	} catch (e) {
 		useToast().toast('błąd przy ładowaniu danych', 'error');
@@ -55,31 +48,32 @@ async function getPages(resetOffset = false) {
 	}
 }
 
-function onPageInputBlur(event: FocusEvent) {
-	const value = parseInt(`${(event.target as HTMLInputElement).value}`.replaceAll(/[^\d-]/g, ''));
+function onSearchInputBlur(event: FocusEvent) {
+	const value = parseInt(`${(event.target as HTMLInputElement).value}`.replaceAll(/[^\d-\.]/g, ''));
 
-	if (Number.isNaN(value) || value < 0) {
-		offset.value = 0;
+	if (Number.isNaN(value) || value < 1) {
+		offset.value = 1;
 	} else if (value > lastPage.value) {
 		offset.value = lastPage.value;
 	} else {
 		offset.value = value;
 	}
 
-	offset.value !== lastOffset.value && getPages();
-	lastOffset.value = offset.value;
+	(event.target as HTMLInputElement).value = offset.value.toString();
+	offset.value !== previousOffset && callGetItems();
+	previousOffset = offset.value;
 }
 
 function changeOffset(value: number) {
-	if ((offset.value === 0 && value < 0) || (offset.value === lastPage.value && value > 0)) {
+	if ((offset.value === 1 && value < 0) || (offset.value === lastPage.value && value > 0)) {
 		return;
 	}
 	offset.value += value;
-	getPages();
+	callGetItems();
 }
 
-function updateLastOffset() {
-	lastOffset.value = offset.value;
+function updatePreviousOffset() {
+	previousOffset = offset.value;
 }
 
 let searchTimeout: NodeJS.Timeout | undefined;
@@ -89,18 +83,18 @@ function startSearchTimeout() {
 		clearTimeout(searchTimeout);
 		searchTimeout = undefined;
 	}
-	searchTimeout = setTimeout(() => getPages(true), 500);
+	searchTimeout = setTimeout(() => callGetItems(true), 500);
 }
 
 defineExpose({
-	getPages,
+	callGetItems,
 });
 </script>
 
 <template>
-	<form class="mb-4 w-[calc(100%-_3.5rem)] flex gap-4 md:mx-auto md:max-w-128" @submit.prevent="getPages(true)">
+	<form class="mb-4 w-[calc(100%-_3.5rem)] flex gap-4 md:mx-auto md:max-w-128" @submit.prevent="callGetItems(true)">
 		<VInput
-			id="pagesSearch"
+			:id="`${id}VTableSearch`"
 			v-model="search"
 			label="szukaj"
 			class="flex-1"
@@ -117,7 +111,7 @@ defineExpose({
 		class="relative mx-auto mb-4 max-w-208 of-auto border-2 border-neutral border-op-50 rounded-2 bg-neutral bg-op-20 md:min-h-[17.875rem] dark:border-op-80"
 		tabindex="0"
 		role="region"
-		aria-labelledby="hPagesCaption"
+		:aria-labelledby="`${id}VTableCaption`"
 	>
 		<header class="flex justify-end gap-2 bg-black/10 px-2 py-2 dark:bg-white/20">
 			<VButton
@@ -125,30 +119,30 @@ defineExpose({
 				:disabled="isPreviousPageDisabled"
 				@click="changeOffset(-1)"
 			>
-				<span class="visually-hidden">poprzednia strona</span>
+				<span class="visually-hidden">poprzednia {{ title }}</span>
 				<div class="i-fa6-solid-chevron-left absolute left-1/2 h-3 w-3 translate-center" />
 			</VButton>
 			<VInput
-				id="pagesOffsetInput"
+				:id="`${id}VTableOffset`"
 				:model-value="offset"
-				label="numer strony"
+				:label="`numer ${pluralTitle}`"
 				input-class="!min-w-14 !w-14 text-center neon-violet-5 dark:neon-violet"
 				label-visually-hidden
-				@focus="updateLastOffset"
-				@blur="onPageInputBlur"
+				@focus="updatePreviousOffset"
+				@blur="onSearchInputBlur"
 			/>
 			<VButton
 				class="relative h-9 w-9 shrink-0 dark:neon-violet neon-violet-5"
 				:disabled="isNextPageDisabled"
 				@click="changeOffset(1)"
 			>
-				<span class="visually-hidden">następna strona</span>
+				<span class="visually-hidden">następna {{ title }}</span>
 				<div class="i-fa6-solid-chevron-right absolute left-1/2 h-3 w-3 translate-center" />
 			</VButton>
 		</header>
-		<table class="h-pages-table relative w-full table-fixed" role="table">
-			<caption id="hPagesCaption" class="absolute left-0 text-start text-5 font-600 -top-[10px] md:left-4 -translate-y-full">
-				strony ({{ total }})
+		<table class="vTable relative w-full table-fixed" role="table">
+			<caption :id="`${id}VTableCaption`" class="absolute left-0 text-start text-5 font-600 -top-[10px] md:left-4 -translate-y-full">
+				{{ pluralTitle }} ({{ total }})
 			</caption>
 			<thead>
 				<tr role="row">
@@ -172,8 +166,8 @@ defineExpose({
 			</thead>
 			<tbody>
 				<tr
-					v-for="page in pages"
-					:key="page.id"
+					v-for="item in items"
+					:key="item.id"
 					role="row"
 				>
 					<td
@@ -184,24 +178,24 @@ defineExpose({
 						:class="{ 'md:text-end': key === 'id' }"
 						role="cell"
 					>
-						{{ page[key] }}
+						{{ item[key] }}
 					</td>
 					<td role="cell">
 						<div class="relative h-full flex items-center gap-2 md:w-full md:justify-around md:gap-0">
-							<VLoading v-show="loadingPageId === page.id" class="absolute left-1/2 top-1/2 translate-center" />
+							<VLoading v-show="loadingItemId === item.id" class="absolute left-1/2 top-1/2 translate-center" />
 							<VButton
 								class="md:text-[0.85rem] neon-blue md:!px-2 md:!py-[2px]"
-								:class="{ 'op-0': loadingPageId === page.id }"
-								:disabled="loadingPageId === page.id"
-								@click="$emit('edit', page.id, $event.target)"
+								:class="{ 'op-0': loadingItemId === item.id }"
+								:disabled="loadingItemId === item.id"
+								@click="$emit('edit', item.id, $event.target)"
 							>
 								edytuj
 							</VButton>
 							<VButton
 								class="md:text-[0.85rem] neon-red md:!px-2 md:!py-[2px]"
-								:class="{ 'op-0': loadingPageId === page.id }"
-								:disabled="loadingPageId === page.id"
-								@click="$emit('delete', page.id, $event.target)"
+								:class="{ 'op-0': loadingItemId === item.id }"
+								:disabled="loadingItemId === item.id"
+								@click="$emit('delete', item.id, $event.target)"
 							>
 								usuń
 							</VButton>
@@ -215,49 +209,49 @@ defineExpose({
 </template>
 
 <style>
-.h-pages-table tbody tr:nth-of-type(even) {
+.vTable tbody tr:nth-of-type(even) {
 	background-color: hsl(0 0% 0% / 0.05);
 }
 
-.dark .h-pages-table tbody tr:nth-of-type(even) {
+.dark .vTable tbody tr:nth-of-type(even) {
 	background-color: hsl(0 0% 100% / 0.08);
 }
 
-.h-pages-table thead tr{
+.vTable thead tr{
 	background-color: hsl(0 0% 0% / 0.1)
 }
 
-.dark .h-pages-table thead tr{
+.dark .vTable thead tr{
 	background-color: hsl(0 0% 100% / 0.2)
 }
 
 @media (max-width: 767px){
-	.h-pages-table caption, .h-pages-table tr {
+	.vTable caption, .vTable tr {
 		padding-inline: 0.5rem;
 	}
 
-	.h-pages-table thead tr:first-of-type {
+	.vTable thead tr:first-of-type {
 		display: none;
 	}
 
-	.h-pages-table tr {
+	.vTable tr {
 		display: block;
 		padding-block: clamp(0.50rem, calc(0.23rem + 1.34vw), 0.88rem);
 	}
 
-	.h-pages-table td {
+	.vTable td {
 		display: grid;
 		grid-template-columns: 6.25rem auto;
 		gap: 1rem;
 		font-weight: 700;
 	}
 
-	.h-pages-table td::before {
+	.vTable td::before {
 		content: attr(data-cell);
 		font-weight: 400;
 	}
 
-	.h-pages-table td:last-of-type{
+	.vTable td:last-of-type{
 		display: flex;
 		justify-content: end;
 		gap: 0.5rem;
