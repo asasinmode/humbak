@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="T extends { id: number; [key: string]: unknown }">
+<script setup lang="ts" generic="T extends { id: number }">
 const props = defineProps<{
 	id: string;
 	title: string;
@@ -171,14 +171,14 @@ defineExpose({
 					role="row"
 				>
 					<td
-						v-for="(_, key) in labels"
+						v-for="(value, key) in labels"
 						:key="key"
-						:data-cell="`${labels[key]}:`"
+						:data-cell="value"
 						class="md:px-4 md:py-2 md:vertical-text-top"
 						:class="{ 'md:text-end': key === 'id' }"
 						role="cell"
 					>
-						{{ item[key] }}
+						{{ item[key as never] }}
 					</td>
 					<td role="cell">
 						<div class="relative h-full flex items-center gap-2 md:w-full md:justify-around md:gap-0">
