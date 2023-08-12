@@ -58,11 +58,11 @@ defineExpose({
 <template>
 	<article
 		ref="container"
-		class="group fixed top-[4.6rem] z-20 hidden w-60 flex-col border border-neutral shadow lg:flex"
-		:class="isExpanded ? 'min-h-20' : ''"
+		class="group fixed top-[4.6rem] z-20 hidden w-60 flex-col border border-neutral bg-white/70 shadow lg:flex dark:bg-black/70"
+		:class="[isExpanded ? 'min-h-20' : '', !isExpanded || menuLinks.length ? 'border-b-none' : '']"
 	>
 		<button
-			class="h-10 select-none border-neutral bg-white/70 px-2 text-neutral-8 dark:bg-black/70 dark:text-neutral-2"
+			class="h-10 select-none border-b border-neutral border-neutral px-2 text-neutral-8 dark:text-neutral-2"
 			@mousedown.left="initDrag"
 			@keydown.enter="isExpanded = !isExpanded"
 		>
@@ -70,8 +70,8 @@ defineExpose({
 		</button>
 		<ul
 			v-if="menuLinks.length"
-			class="max-h-80 flex flex-col of-x-hidden border-neutral bg-humbak text-black"
-			:class="isExpanded ? 'h-auto of-y-auto flex-1 border-t' : 'h-0 of-y-hidden'"
+			class="max-h-80 flex flex-col of-x-hidden bg-humbak text-black"
+			:class="isExpanded ? 'h-auto of-y-auto flex-1' : 'h-0 of-y-hidden'"
 		>
 			<li
 				v-for="hiddenLink in menuLinks"
