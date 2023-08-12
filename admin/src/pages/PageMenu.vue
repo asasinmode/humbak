@@ -554,6 +554,20 @@ function getActuallyChanged() {
 						</li>
 					</menu>
 				</li>
+				<li
+					v-if="currentlyGrabbedLink && !transformedMenuLinks.length"
+					class="horizontal relative w-full list-none focus-within:bg-humbak-5 hover:bg-humbak-5"
+					data-menu-drop-placeholder
+				>
+					<MenuLinkButton
+						class="min-h-10"
+						:path="[0]"
+						@mouseenter="handleDropIndicator"
+						@mousemove="handleDropIndicator"
+					>
+						<div class="i-fa6-solid-plus pointer-events-none mx-auto h-4 w-4" />
+					</MenuLinkButton>
+				</li>
 				<VLoading v-show="isLoading" class="absolute inset-0" size="20" />
 			</menu>
 		</nav>
