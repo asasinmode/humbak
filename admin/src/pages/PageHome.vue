@@ -213,11 +213,11 @@ async function clearFormAndLoadedPage() {
 			</VButton>
 			<VButton
 				ref="saveButton"
-				class="neon-green"
+				class="min-w-20 neon-green"
 				:is-loading="isSaving"
 				@click="sendForm(false)"
 			>
-				zapisz
+				{{ loadedPageId ? 'zapisz' : 'utwórz' }}
 			</VButton>
 		</section>
 	</main>
