@@ -64,11 +64,11 @@ function initResizeDrag(event: MouseEvent) {
 
 	initY = event.clientY;
 	initHeight = parseInt(document.defaultView.getComputedStyle(container.value).height);
-	document.addEventListener('mousemove', onResizeMove);
+	document.addEventListener('mousemove', handleResizeDrag);
 	document.addEventListener('mouseup', cleanupResizeDrag);
 }
 
-function onResizeMove(event: MouseEvent) {
+function handleResizeDrag(event: MouseEvent) {
 	if (!container.value) {
 		throw new Error('container not found');
 	}
@@ -77,7 +77,7 @@ function onResizeMove(event: MouseEvent) {
 }
 
 function cleanupResizeDrag() {
-	document.removeEventListener('mousemove', onResizeMove);
+	document.removeEventListener('mousemove', handleResizeDrag);
 	document.removeEventListener('mouseup', cleanupResizeDrag);
 }
 

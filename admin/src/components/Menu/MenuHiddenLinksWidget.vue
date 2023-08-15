@@ -18,7 +18,7 @@ let offsetX = 0;
 let offsetY = 0;
 let mouseDownTimestamp: number | undefined;
 
-function initDrag(event: MouseEvent) {
+function initMove(event: MouseEvent) {
 	if (!container.value) {
 		toastGenericError();
 		throw new Error('container not found');
@@ -28,7 +28,7 @@ function initDrag(event: MouseEvent) {
 	offsetY = event.offsetY;
 	mouseDownTimestamp = Date.now();
 	document.addEventListener('mousemove', handleMove);
-	document.addEventListener('mouseup', cleanup);
+	document.addEventListener('mouseup', cleanupMove);
 }
 
 function handleMove(event: MouseEvent) {
@@ -41,13 +41,13 @@ function handleMove(event: MouseEvent) {
 	container.value.style.top = `${event.clientY - offsetY}px`;
 }
 
-function cleanup() {
+function cleanupMove() {
 	if (mouseDownTimestamp && mouseDownTimestamp + 250 > Date.now()) {
 		isExpanded.value = !isExpanded.value;
 	}
 	mouseDownTimestamp = undefined;
 	document.removeEventListener('mousemove', handleMove);
-	document.removeEventListener('mouseup', cleanup);
+	document.removeEventListener('mouseup', cleanupMove);
 }
 
 defineExpose({
@@ -63,7 +63,7 @@ defineExpose({
 	>
 		<button
 			class="h-10 select-none border-b border-neutral border-neutral px-2 text-neutral-8 dark:text-neutral-2"
-			@mousedown.left="initDrag"
+			@mousedown.left="initMove"
 			@keydown.enter="isExpanded = !isExpanded"
 		>
 			schowane ({{ menuLinks.length }})
