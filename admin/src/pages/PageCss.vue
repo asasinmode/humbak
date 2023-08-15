@@ -46,7 +46,7 @@ function updateModelValue(newValue: string) {
 		</VButton>
 		<VEditor
 			ref="editor"
-			class="col-span-full"
+			class="col-span-full min-h-64"
 			:models="[
 				{ language: 'css', value },
 			]"

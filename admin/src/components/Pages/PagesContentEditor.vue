@@ -5,6 +5,8 @@ import type { IUpsertPageInput } from '~/composables/useApi';
 const editor = ref<InstanceType<typeof VEditor>>();
 const container = ref<HTMLDivElement>();
 
+const { initResizeDrag } = useResizeHandler(container);
+
 const contents = ref({
 	html: {
 		initValue: '',
@@ -49,8 +51,6 @@ async function formatMeta() {
 		wasMetaFormatted = true;
 	}
 }
-
-const { initResizeDrag } = useResizeHandler(container);
 
 function clear() {
 	updateValues({ html: '', css: '', meta: '' });
