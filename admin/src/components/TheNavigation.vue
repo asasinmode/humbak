@@ -8,7 +8,7 @@ const secondToLastFocusableNavElement = ref<InstanceType<typeof TheThemeToggle>>
 
 function toggleMenu(isOpen: boolean) {
 	isExpanded.value = isOpen;
-	document.body.style.overflow = isOpen ? 'hidden' : 'unset';
+	document.body.style.overflow = isOpen ? 'hidden' : '';
 }
 
 function toggleButtonFocusIn(event: FocusEvent) {

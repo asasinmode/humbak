@@ -37,7 +37,7 @@ function close() {
 
 	document.removeEventListener('keydown', callActionIfEnter);
 	document.removeEventListener('keydown', closeIfEscape);
-	document.body.style.overflow = 'unset';
+	document.body.style.overflow = '';
 
 	if (!props.noOpenButton) {
 		openButton.value?.element?.focus();
