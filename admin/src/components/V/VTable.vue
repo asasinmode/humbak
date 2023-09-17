@@ -34,7 +34,14 @@ onMounted(() => {
 	callGetItems();
 });
 
+let searchTimeout: NodeJS.Timeout | undefined;
+
 async function callGetItems(resetOffset = false) {
+	if (searchTimeout) {
+		clearTimeout(searchTimeout);
+		searchTimeout = undefined;
+	}
+
 	isLoading.value = true;
 
 	if (resetOffset) {
@@ -97,14 +104,15 @@ function updatePreviousOffset() {
 	previousOffset = offset.value;
 }
 
-let searchTimeout: NodeJS.Timeout | undefined;
-
 function startSearchTimeout() {
 	if (searchTimeout) {
 		clearTimeout(searchTimeout);
 		searchTimeout = undefined;
 	}
-	searchTimeout = setTimeout(() => callGetItems(true), 500);
+	searchTimeout = setTimeout(() => {
+		searchTimeout = undefined;
+		callGetItems(true);
+	}, 500);
 }
 
 defineExpose({
