@@ -15,7 +15,7 @@ let metaUri: ReturnType<IMonaco['Uri']['parse']>;
 
 export const useMonaco = (
 	containerRef: Ref<HTMLElement | undefined>,
-	models: IModel[],
+	models: Ref<IModel[]>,
 	currentModel: Ref<number>,
 	emitUpdate: (value: string) => void
 ) => {
@@ -90,7 +90,7 @@ export const useMonaco = (
 			isLoading.value = false;
 		}
 
-		for (const { value, language } of models) {
+		for (const { value, language } of models.value) {
 			editorModels.value.push(
 				monaco.editor.createModel(value, language, language === 'json' ? metaUri : undefined)
 			);

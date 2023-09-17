@@ -18,7 +18,7 @@ const editorRef = ref<HTMLDivElement>();
 
 const { isLoading: editorIsLoading, updateModelValue, formatCurrentModel } = useMonaco(
 	editorRef,
-	props.models,
+	toRef(() => props.models),
 	toRef(() => props.currentModel),
 	value => emit('update:model-value', value)
 );
