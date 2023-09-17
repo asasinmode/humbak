@@ -209,7 +209,7 @@ async function clearFormAndLoadedPage() {
 		<PagesContentEditor ref="contentEditor" />
 
 		<section class="mt-6 flex justify-center gap-4">
-			<VButton ref="resetButton" class="-ml-[0.8rem] neon-red" @click="clearFormAndLoadedPage">
+			<VButton ref="resetButton" class="-ml-[0.8rem] neon-amber" @click="clearFormAndLoadedPage">
 				wyczyść
 			</VButton>
 			<VButton
