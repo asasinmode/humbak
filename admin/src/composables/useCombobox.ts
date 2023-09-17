@@ -3,7 +3,8 @@ import type { MaybeRef } from 'vue';
 export const useCombobox = <T>(
 	modelValue: Ref<T>,
 	rawOptions: MaybeRef<{ text: string; value: T; }[]>,
-	listboxRef: Ref<HTMLElement | null | undefined>
+	listboxRef: Ref<HTMLElement | null | undefined>,
+	selectOnly?: Ref<boolean>
 ) => {
 	const isExpanded = ref(false);
 	const cursoredOverIndex = ref<number | undefined>();
@@ -29,12 +30,15 @@ export const useCombobox = <T>(
 
 		if (cursoredOverIndex.value === undefined) {
 			cursoredOverIndex.value = value > 0 ? 0 : (options.value.length - 1);
-			return;
+		} else {
+			cursoredOverIndex.value = (cursoredOverIndex.value + value) % options.value.length;
+			if (cursoredOverIndex.value < 0) {
+				cursoredOverIndex.value = options.value.length + cursoredOverIndex.value;
+			}
 		}
 
-		cursoredOverIndex.value = (cursoredOverIndex.value + value) % options.value.length;
-		if (cursoredOverIndex.value < 0) {
-			cursoredOverIndex.value = options.value.length + cursoredOverIndex.value;
+		if (selectOnly?.value) {
+			modelValue.value = options.value[cursoredOverIndex.value].value;
 		}
 	}
 
@@ -54,7 +58,7 @@ export const useCombobox = <T>(
 	function closeIfFocusedOutside(event: FocusEvent) {
 		const target = event.relatedTarget as HTMLElement | null;
 		if (!target || !listboxRef.value || !listboxRef.value.contains(target)) {
-			// isExpanded.value = false;
+			isExpanded.value = false;
 		}
 	}
 

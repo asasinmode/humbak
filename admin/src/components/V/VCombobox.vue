@@ -34,7 +34,7 @@ const {
 	selectOption,
 	expandAndSelectFirst,
 	closeIfFocusedOutside,
-} = useCombobox(modelValue, computedOptions, listbox);
+} = useCombobox(modelValue, computedOptions, listbox, toRef(() => props.selectOnly));
 
 updateCursoredIndexToSelected(modelValue.value);
 
