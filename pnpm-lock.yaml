@@ -78,6 +78,9 @@ importers:
       vite:
         specifier: ^4.4.1
         version: 4.4.1
+      vue-component-type-helpers:
+        specifier: ^1.8.11
+        version: 1.8.11
 
   api:
     dependencies:
@@ -4600,6 +4603,10 @@ packages:
       rollup: 3.26.2
     optionalDependencies:
       fsevents: 2.3.2
+    dev: true
+
+  /vue-component-type-helpers@1.8.11:
+    resolution: {integrity: sha512-CWItFzuEWjkSXDeMGwQEc5cFH4FaueyPQHfi1mBDe+wA2JABqNjFxFUtmZJ9WHkb0HpEwqgBg1umiXrWYXkXHw==}
     dev: true
 
   /vue-demi@0.14.5(vue@3.3.4):

@@ -31,7 +31,8 @@
     "unocss": "^0.53.4",
     "unplugin-auto-import": "^0.16.6",
     "unplugin-vue-components": "^0.25.1",
-    "vite": "^4.4.1"
+    "vite": "^4.4.1",
+    "vue-component-type-helpers": "^1.8.11"
   },
   "eslintConfig": {
     "extends": [

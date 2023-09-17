@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ComponentExposed } from 'vue-component-type-helpers';
+
 import PagesContentEditor from '~/components/Pages/PagesContentEditor.vue';
 import VTable from '~/components/V/VTable.vue';
 import VButton from '~/components/V/VButton.vue';
@@ -9,8 +11,7 @@ const { confirm } = useConfirm();
 const { toast } = useToast();
 useGlobalPagesStylesheet();
 
-// https://github.com/vuejs/language-tools/issues/3206
-const table = ref<{ callGetItems: (resetOffset?: boolean) => void; } | undefined>();
+const table = ref<ComponentExposed<typeof VTable>>();
 const resetButton = ref<InstanceType<typeof VButton>>();
 const saveButton = ref<InstanceType<typeof VButton>>();
 const contentEditor = ref<InstanceType<typeof PagesContentEditor>>();
