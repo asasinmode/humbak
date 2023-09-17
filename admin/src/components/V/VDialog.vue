@@ -106,7 +106,7 @@ defineExpose({
 	<Teleport to="body">
 		<div
 			v-if="isOpen"
-			class="fixed inset-0 z-100 grid h-screen w-screen place-items-center of-x-hidden of-y-auto bg-black/40 pb-20 pt-14 lg:pt-24"
+			class="fixed inset-0 z-200 grid h-screen w-screen place-items-center of-x-hidden of-y-auto bg-black/40 pb-20 pt-14 lg:pt-24"
 			@click.self="!disableClickOutside && close" @keydown="handleTab"
 		>
 			<article
