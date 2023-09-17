@@ -1,5 +1,8 @@
 <script setup lang="ts">
+useGlobalPagesStylesheet();
+
 const value = ref('');
+const selectedId = ref<string>();
 </script>
 
 <template>
@@ -7,7 +10,7 @@ const value = ref('');
 		<VButton
 			class="mr-12 justify-self-end md:mr-0 neon-green"
 		>
-			zapisz
+			{{ selectedId ? 'zapisz' : 'utwórz' }}
 		</VButton>
 		<VEditor
 			ref="editor"
@@ -16,7 +19,9 @@ const value = ref('');
 				{ language: 'html', value },
 			]"
 			:current-model="0"
-			@update:model-value="$event => value = $event"
+			@update:model-value="value = $event"
 		/>
+
+		<div v-html="value" />
 	</main>
 </template>
