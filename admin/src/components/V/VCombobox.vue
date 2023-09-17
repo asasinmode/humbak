@@ -5,6 +5,7 @@ const props = defineProps<{
 	id: string;
 	isLoading?: boolean;
 	hideCheck?: boolean;
+	selectOnly?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -47,14 +48,15 @@ function selectOptionAndEmit(index?: number) {
 	<VInput
 		:id="id"
 		v-model="modelValue"
-		:container-attrs="{
-			'role': 'combobox',
-			'aria-labelledby': `${id}Label`,
-			'aria-haspopup': 'listbox',
-			'aria-expanded': 'isExpanded',
-			'aria-controls': `${id}-listbox`,
-			'aria-activedescendant': cursoredOverIndex !== undefined ? `${id}-option-${cursoredOverIndex}` : '',
-		}"
+		role="combobox"
+		:aria-labelledby="`${id}Label`"
+		:aria-haspopup="listbox"
+		:aria-expanded="isExpanded"
+		:aria-controls="`${id}-listbox`"
+		:aria-activedescendant="cursoredOverIndex !== undefined
+			? `${id}-option-${cursoredOverIndex}`
+			: ''"
+		:readonly="selectOnly"
 		@focus="expandAndSelectFirst"
 		@focusout="closeIfFocusedOutside"
 		@update:model-value="updateCursoredIndexToSelected"
@@ -70,6 +72,8 @@ function selectOptionAndEmit(index?: number) {
 			ref="listbox"
 			class="absolute bottom-0 left-1/2 z-10 min-w-12 w-[calc(100%_-_1.5rem)] translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-neutral-2/90 shadow-md -translate-x-1/2 dark:border-neutral-5 dark:bg-neutral-8/90"
 			role="listbox"
+			tabindex="-1"
+			:aria-labelledby="`${id}Label`"
 			@keydown.up.prevent="moveCursor(-1)"
 			@keydown.down.prevent="moveCursor(1)"
 		>
@@ -86,7 +90,6 @@ function selectOptionAndEmit(index?: number) {
 							: 'bg-blue'
 						: ''
 					"
-					tabindex="-1"
 					role="option"
 					:aria-selected="modelValue === value"
 					@click="selectOptionAndEmit(index)"

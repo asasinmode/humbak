@@ -9,6 +9,7 @@ defineProps<{
 	inputClass?: string;
 	labelVisuallyHidden?: boolean;
 	containerAttrs?: Record<string, unknown>;
+	readonly?: boolean;
 }>();
 
 defineEmits(['focusout']);
@@ -18,11 +19,6 @@ defineOptions({
 });
 
 const value = defineModel<string | number>();
-const element = ref<HTMLInputElement | null>();
-
-defineExpose({
-	element,
-});
 </script>
 
 <template>
@@ -42,8 +38,8 @@ defineExpose({
 			{{ label }}
 		</label>
 		<input
+			v-if="!readonly"
 			:id="id"
-			ref="element"
 			v-model="value"
 			class="min-w-24 w-full py-1 pl-3 shadow placeholder:text-neutral"
 			:title="label"
@@ -51,6 +47,18 @@ defineExpose({
 			:placeholder="placeholder"
 			v-bind="$attrs"
 		>
+		<div
+			v-else
+			:id="id"
+			class="h-9 min-w-24 w-full cursor-pointer py-1 pl-3 shadow placeholder:text-neutral"
+			tabindex="0"
+			:title="label"
+			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-neutral', inputClass]"
+			:aria-labelledby="`${id}Label`"
+			v-bind="$attrs"
+		>
+			{{ value }}
+		</div>
 		<p v-if="error" class="pointer-events-none absolute bottom-0 left-3 translate-y-full text-3 text-red-500">
 			{{ error }}
 		</p>

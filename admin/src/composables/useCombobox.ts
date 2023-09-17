@@ -49,15 +49,12 @@ export const useCombobox = <T>(
 	function expandAndSelectFirst() {
 		isExpanded.value = true;
 		updateCursoredIndexToSelected(modelValue.value);
-		if (cursoredOverIndex.value === undefined) {
-			cursoredOverIndex.value = 0;
-		}
 	}
 
 	function closeIfFocusedOutside(event: FocusEvent) {
 		const target = event.relatedTarget as HTMLElement | null;
 		if (!target || !listboxRef.value || !listboxRef.value.contains(target)) {
-			isExpanded.value = false;
+			// isExpanded.value = false;
 		}
 	}
 
