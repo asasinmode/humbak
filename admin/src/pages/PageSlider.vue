@@ -40,18 +40,18 @@ async function clearFormAndEditor() {
 
 <template>
 	<main class="grid grid-cols-1 mx-auto max-w-256 w-full gap-y-5 px-4 pb-4 pt-[1.125rem] lg:px-0">
-		<div class="flex gap-3 pr-12 md:pr-0">
+		<div id="slidePageControls" class="grid grid-cols-[1fr_max-content_max-content] gap-3 md:flex">
 			<VCombobox
 				id="slideSelect"
 				v-model="selectedId"
-				class="mr-auto"
+				class="col-span-full mr-12 md:mr-auto"
 				label="slide"
 				:options="[1, 2, 3]"
 				label-visually-hidden
 				transform-options
 				select-only
 			/>
-			<VButton class="h-9 w-9 justify-self-end p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
+			<VButton class="h-9 w-9 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
 				<span class="visually-hidden">formatuj</span>
 				<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
 			</VButton>
