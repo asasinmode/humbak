@@ -1,8 +1,41 @@
 <script setup lang="ts">
+import VButton from '~/components/V/VButton.vue';
+import VEditor from '~/components/V/VEditor.vue';
+
 useGlobalPagesStylesheet();
 
-const value = ref('');
 const selectedId = ref<string>();
+const isLoading = ref(false);
+
+const resetButton = ref<InstanceType<typeof VButton>>();
+const saveButton = ref<InstanceType<typeof VButton>>();
+const editor = ref<InstanceType<typeof VEditor>>();
+
+const {
+	clearForm, sendForm, updateValues, isSaving, value,
+} = useForm(
+	{ value: '' },
+	async () => {},
+	saveButton.value?.element
+);
+
+onMounted(async () => {
+	updateValues({ value: '<span class="selector">init</span>' });
+	editor.value?.updateModelValue(0, '<span class="selector">init</span>');
+	await editor.value?.formatCurrentModel();
+});
+
+// todo select on focus out & alert if changes
+
+async function clearFormAndEditor() {
+	const proceed = await clearForm(resetButton.value?.element);
+	if (!proceed) {
+		return;
+	}
+
+	selectedId.value = undefined;
+	editor.value?.updateModelValue(0, '');
+}
 </script>
 
 <template>
@@ -17,10 +50,10 @@ const selectedId = ref<string>();
 				transform-options
 				select-only
 			/>
-			<VButton class="ml-auto neon-amber">
+			<VButton ref="resetButton" class="ml-auto neon-amber" @click="clearFormAndEditor">
 				wyczyść
 			</VButton>
-			<VButton class="min-w-20 neon-green">
+			<VButton ref="saveButton" class="min-w-20 neon-green" :is-loading="isSaving" @click="sendForm">
 				{{ selectedId ? 'zapisz' : 'utwórz' }}
 			</VButton>
 		</div>
@@ -31,6 +64,7 @@ const selectedId = ref<string>();
 				{ language: 'html', value },
 			]"
 			:current-model="0"
+			:is-loading="isLoading"
 			@update:model-value="value = $event"
 		/>
 
