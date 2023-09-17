@@ -79,13 +79,6 @@ async function getLanguages() {
 	}
 }
 
-const tableLabels = {
-	id: 'id',
-	title: 'tytuł',
-	menuText: 'tekst w menu',
-	language: 'język',
-};
-
 async function getPages(offset: number, limit: number, query: string) {
 	return Promise.all([
 		useApi().pages.list.query({ offset, limit, query }),
@@ -162,7 +155,12 @@ async function clearFormAndLoadedPage() {
 			title="strona"
 			plural-title="strony"
 			:loading-item-id="loadingPageId"
-			:labels="tableLabels"
+			:labels="{
+				id: 'id',
+				title: 'tytuł',
+				menuText: 'tekst w menu',
+				language: 'język',
+			}"
 			:get-items="getPages"
 			@edit="editPage"
 			@delete="deletePage"
