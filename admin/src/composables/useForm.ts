@@ -8,7 +8,7 @@ export const useForm = <T extends Record<string, unknown>>(
 	form: T,
 	saveCallback: () => Promise<unknown>,
 	elementToShake?: Parameters<typeof useShake>[0],
-	checkForExternalHasChanged = () => true
+	checkForExternalHasChanged = () => false
 ) => {
 	const isSaving = ref(false);
 	const initValue = structuredClone(form);
