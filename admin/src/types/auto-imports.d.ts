@@ -61,6 +61,7 @@ declare global {
   const useForm: typeof import('../composables/useForm')['useForm']
   const useGlobalPagesStylesheet: typeof import('../composables/useGlobalPagesStylesheet')['useGlobalPagesStylesheet']
   const useLink: typeof import('vue-router')['useLink']
+  const useMonaco: typeof import('../composables/useMonaco')['useMonaco']
   const useResizeHandler: typeof import('../composables/useResizeHandler')['useResizeHandler']
   const useRoute: typeof import('vue-router')['useRoute']
   const useRouter: typeof import('vue-router')['useRouter']
@@ -138,6 +139,7 @@ declare module 'vue' {
     readonly useForm: UnwrapRef<typeof import('../composables/useForm')['useForm']>
     readonly useGlobalPagesStylesheet: UnwrapRef<typeof import('../composables/useGlobalPagesStylesheet')['useGlobalPagesStylesheet']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
+    readonly useMonaco: UnwrapRef<typeof import('../composables/useMonaco')['useMonaco']>
     readonly useResizeHandler: UnwrapRef<typeof import('../composables/useResizeHandler')['useResizeHandler']>
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
     readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
@@ -209,6 +211,7 @@ declare module '@vue/runtime-core' {
     readonly useForm: UnwrapRef<typeof import('../composables/useForm')['useForm']>
     readonly useGlobalPagesStylesheet: UnwrapRef<typeof import('../composables/useGlobalPagesStylesheet')['useGlobalPagesStylesheet']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
+    readonly useMonaco: UnwrapRef<typeof import('../composables/useMonaco')['useMonaco']>
     readonly useResizeHandler: UnwrapRef<typeof import('../composables/useResizeHandler')['useResizeHandler']>
     readonly useRoute: UnwrapRef<typeof import('vue-router')['useRoute']>
     readonly useRouter: UnwrapRef<typeof import('vue-router')['useRouter']>
