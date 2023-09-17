@@ -3,74 +3,15 @@ import loader from '@monaco-editor/loader';
 const { isDark } = useTheme();
 
 export type IModel = { value: string; language: 'html' | 'css' | 'json'; };
+type IMonaco = Awaited<ReturnType<typeof loader['init']>>;
 type IMonacoEditor = Awaited<ReturnType<typeof loader['init']>>['editor'];
 type IMonacoTextModel = ReturnType<IMonacoEditor['createModel']>;
 type IMonacoStandalone = ReturnType<IMonacoEditor['create']>;
 
-const isLoading = ref(false);
-
-const monaco = await loader.init();
-
-const metaUri = monaco.Uri.parse('meta.json');
-
-monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-	validate: true,
-	schemas: [{
-		uri: 'metaSchema.json',
-		fileMatch: [metaUri.toString()],
-		schema: {
-			type: 'array',
-			items: {
-				type: 'object',
-				properties: {
-					name: {
-						type: 'string',
-						description: [
-							'The name and content attributes can be used together to provide document metadata in terms of name-value pairs,',
-							'with the name attribute giving the metadata name, and the content attribute giving the value.',
-							'@see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#attr-name',
-						].join('\n'),
-						anyOf: [
-							{
-								enum: [
-									'description',
-									'author',
-									'creator',
-									'publisher',
-									'generator',
-									'referrer',
-									'robots',
-									'google',
-									'googlebot',
-									'rating',
-									'format-detection',
-									'x-ua-compatible',
-									'refresh',
-									'keywords',
-								],
-							},
-							{ pattern: '.*' },
-						],
-					},
-					content: {
-						description: [
-							'This attribute contains the value for the http-equiv or name attribute, depending on which is used.',
-							'@see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#attr-content',
-						].join('\n'),
-						type: 'string',
-					},
-				},
-				additionalProperties: true,
-			},
-		},
-	}],
-});
-
-const getModels = monaco.editor.getModels;
-const setTheme = monaco.editor.setTheme;
-setTheme(isDark.value ? 'vs-dark' : 'vs');
-
-isLoading.value = false;
+let monaco: IMonaco;
+let getModels: IMonaco['editor']['getModels'];
+let setTheme: IMonaco['editor']['setTheme'];
+let metaUri: ReturnType<IMonaco['Uri']['parse']>;
 
 export const useMonaco = (
 	containerRef: Ref<HTMLElement | undefined>,
@@ -78,16 +19,83 @@ export const useMonaco = (
 	currentModel: Ref<number>,
 	emitUpdate: (value: string) => void
 ) => {
+	const isLoading = ref(false);
 	const editor = shallowRef<IMonacoStandalone>();
 	const editorModels = shallowRef<IMonacoTextModel[]>([]);
 
-	for (const { value, language } of models) {
-		editorModels.value.push(
-			monaco.editor.createModel(value, language, language === 'json' ? metaUri : undefined)
-		);
-	}
+	onMounted(async () => {
+		if (!monaco) {
+			isLoading.value = true;
 
-	onMounted(() => {
+			monaco = await loader.init();
+			metaUri = monaco.Uri.parse('meta.json');
+
+			monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+				validate: true,
+				schemas: [{
+					uri: 'metaSchema.json',
+					fileMatch: [metaUri.toString()],
+					schema: {
+						type: 'array',
+						items: {
+							type: 'object',
+							properties: {
+								name: {
+									type: 'string',
+									description: [
+										'The name and content attributes can be used together to provide document metadata in terms of name-value pairs,',
+										'with the name attribute giving the metadata name, and the content attribute giving the value.',
+										'@see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#attr-name',
+									].join('\n'),
+									anyOf: [
+										{
+											enum: [
+												'description',
+												'author',
+												'creator',
+												'publisher',
+												'generator',
+												'referrer',
+												'robots',
+												'google',
+												'googlebot',
+												'rating',
+												'format-detection',
+												'x-ua-compatible',
+												'refresh',
+												'keywords',
+											],
+										},
+										{ pattern: '.*' },
+									],
+								},
+								content: {
+									description: [
+										'This attribute contains the value for the http-equiv or name attribute, depending on which is used.',
+										'@see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta#attr-content',
+									].join('\n'),
+									type: 'string',
+								},
+							},
+							additionalProperties: true,
+						},
+					},
+				}],
+			});
+
+			getModels = monaco.editor.getModels;
+			setTheme = monaco.editor.setTheme;
+			setTheme(isDark.value ? 'vs-dark' : 'vs');
+
+			isLoading.value = false;
+		}
+
+		for (const { value, language } of models) {
+			editorModels.value.push(
+				monaco.editor.createModel(value, language, language === 'json' ? metaUri : undefined)
+			);
+		}
+
 		if (!containerRef.value) {
 			throw new Error('editor container not found');
 		}
