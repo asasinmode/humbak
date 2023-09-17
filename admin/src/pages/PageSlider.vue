@@ -20,9 +20,9 @@ const {
 );
 
 onMounted(async () => {
-	updateValues({ value: '<span class="selector">init</span>' });
-	editor.value?.updateModelValue(0, '<span class="selector">init</span>');
-	await editor.value?.formatCurrentModel();
+	console.log('get slides');
+	updateValues({ value: '<div><h1 class="selector">init</h1></div>' });
+	editor.value?.updateModelValue(0, '<div><h1 class="selector">init</h1></div>');
 });
 
 // todo select on focus out & alert if changes
@@ -44,13 +44,18 @@ async function clearFormAndEditor() {
 			<VCombobox
 				id="slideSelect"
 				v-model="selectedId"
+				class="mr-auto"
 				label="slide"
 				:options="[1, 2, 3]"
 				label-visually-hidden
 				transform-options
 				select-only
 			/>
-			<VButton ref="resetButton" class="ml-auto neon-amber" @click="clearFormAndEditor">
+			<VButton class="h-9 w-9 justify-self-end p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
+				<span class="visually-hidden">formatuj</span>
+				<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
+			</VButton>
+			<VButton ref="resetButton" class="neon-amber" @click="clearFormAndEditor">
 				wyczyść
 			</VButton>
 			<VButton ref="saveButton" class="min-w-20 neon-green" :is-loading="isSaving" @click="sendForm">
