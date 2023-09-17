@@ -16,11 +16,9 @@ function toggleButtonFocusIn(event: FocusEvent) {
 		toggleMenu(false);
 		return;
 	}
-
 	if (event.relatedTarget !== null && event.relatedTarget !== document.documentElement) {
 		return;
 	}
-
 	toggleMenu(true);
 }
 
@@ -29,35 +27,23 @@ function toggleButtonFocusOut(event: FocusEvent) {
 		toggleMenu(true);
 		return;
 	}
-
 	if (event.relatedTarget !== null && event.relatedTarget !== document.documentElement) {
 		return;
 	}
-
 	toggleMenu(false);
 }
 
 function lastElementFocusIn(event: FocusEvent) {
-	if (window.innerWidth >= 768) {
+	if (window.innerWidth >= 768 || event.relatedTarget === secondToLastFocusableNavElement.value?.element) {
 		return;
 	}
-
-	if (event.relatedTarget === secondToLastFocusableNavElement.value?.element) {
-		return;
-	}
-
 	toggleMenu(true);
 }
 
 function lastElementFocusOut(event: FocusEvent) {
-	if (window.innerWidth >= 768) {
+	if (window.innerWidth >= 768 || event.relatedTarget === secondToLastFocusableNavElement.value?.element) {
 		return;
 	}
-
-	if (event.relatedTarget === secondToLastFocusableNavElement.value?.element) {
-		return;
-	}
-
 	toggleMenu(false);
 }
 </script>
