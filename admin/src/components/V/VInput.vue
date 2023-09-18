@@ -23,7 +23,7 @@ const value = defineModel<string | number>();
 
 <template>
 	<div
-		class="relative flex flex-col gap-[2px]"
+		class="relative flex flex-col gap-[0.125rem]"
 		:class="$props.class"
 		v-bind="containerAttrs"
 		@focusout="$emit('focusout', $event)"
