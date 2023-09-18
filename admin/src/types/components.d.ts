@@ -19,6 +19,7 @@ declare module 'vue' {
     TheToasts: typeof import('./../components/TheToasts.vue')['default']
     VAlert: typeof import('./../components/V/VAlert.vue')['default']
     VButton: typeof import('./../components/V/VButton.vue')['default']
+    VCheckbox: typeof import('./../components/V/VCheckbox.vue')['default']
     VCombobox: typeof import('./../components/V/VCombobox.vue')['default']
     VDialog: typeof import('./../components/V/VDialog.vue')['default']
     VEditor: typeof import('./../components/V/VEditor.vue')['default']
