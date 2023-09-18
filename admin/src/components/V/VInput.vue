@@ -32,7 +32,7 @@ const value = defineModel<string | number>();
 			v-if="label"
 			:id="`${id}Label`"
 			:for="id"
-			class="ml-3 w-fit"
+			class="ml-[0.875rem] w-fit"
 			:class="labelVisuallyHidden ? 'visually-hidden' : ''"
 		>
 			{{ label }}
