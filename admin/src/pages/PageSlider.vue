@@ -12,17 +12,18 @@ const saveButton = ref<InstanceType<typeof VButton>>();
 const editor = ref<InstanceType<typeof VEditor>>();
 
 const {
-	clearForm, sendForm, updateValues, isSaving, value,
+	clearForm, sendForm, updateValues, isSaving,
+	name, content, isHidden,
 } = useForm(
-	{ value: '' },
+	{ name: '', content: '', isHidden: false },
 	async () => {},
 	saveButton.value?.element
 );
 
 onMounted(async () => {
 	console.log('get slides');
-	updateValues({ value: '<div><h1 class="selector">init</h1></div>' });
-	editor.value?.updateModelValue(0, '<div><h1 class="selector">init</h1></div>');
+	// updateValues({ content: '<div><h1 class="selector">init</h1></div>' });
+	// editor.value?.updateModelValue(0, '<div><h1 class="selector">init</h1></div>');
 });
 
 // todo select on focus out & alert if changes
@@ -39,8 +40,8 @@ async function clearFormAndEditor() {
 </script>
 
 <template>
-	<main class="grid grid-cols-1 mx-auto max-w-256 w-full gap-y-5 px-4 pb-4 pt-[1.125rem] lg:px-0">
-		<div id="slidePageControls" class="grid grid-cols-[1fr_max-content_max-content] gap-3 md:flex">
+	<main class="grid grid-cols-[min-content_1fr] mx-auto max-w-256 w-full gap-x-3 gap-y-5 px-4 pb-4 pt-[1.125rem] lg:px-0">
+		<div id="slidePageControls" class="grid col-span-full grid-cols-[1fr_max-content_max-content] w-full gap-3 md:flex">
 			<VCombobox
 				id="slideSelect"
 				v-model="selectedId"
@@ -62,17 +63,21 @@ async function clearFormAndEditor() {
 				{{ selectedId ? 'zapisz' : 'utwórz' }}
 			</VButton>
 		</div>
+
 		<VEditor
 			ref="editor"
-			class="h-72 shadow"
+			class="col-span-full h-72 shadow"
 			:models="[
-				{ language: 'html', value },
+				{ language: 'html', value: content },
 			]"
 			:current-model="0"
 			:is-loading="isLoading"
-			@update:model-value="value = $event"
+			@update:model-value="content = $event"
 		/>
 
-		<div v-html="value" />
+		<VInput id="slideName" v-model="name" label="nazwa" />
+		<VCheckbox id="slideIsHidden" v-model="isHidden" :label="isHidden ? 'schowany' : 'schowaj'" />
+
+		<div class="col-span-full" v-html="content" />
 	</main>
 </template>
