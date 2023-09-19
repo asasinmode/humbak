@@ -75,7 +75,8 @@ async function clearFormAndEditor() {
 				id="languageSelect"
 				ref="languageSelect"
 				v-model="selectedLanguage"
-				class="col-span-full mr-12 md:mr-auto md:w-64"
+				class="!min-w-20 !w-20"
+				input-class="!w-20 !min-w-20"
 				label="język"
 				:options="languages"
 				:is-loading="isLoading"
@@ -86,7 +87,7 @@ async function clearFormAndEditor() {
 			<VCombobox
 				id="slideSelect"
 				v-model="selectedSlideId"
-				class="col-span-full mr-12 md:mr-auto md:w-64"
+				class="col-span-3 mr-12 md:mr-auto md:w-64"
 				label="slide"
 				:options="slideSelectOptions"
 				:is-loading="isLoading"
@@ -101,7 +102,7 @@ async function clearFormAndEditor() {
 					{{ itemProps.text }}
 				</template>
 			</VCombobox>
-			<VButton class="h-9 w-9 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
+			<VButton class="col-span-2 h-9 w-9 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
 				<span class="visually-hidden">formatuj</span>
 				<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
 			</VButton>
