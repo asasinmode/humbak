@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import type { ComponentExposed } from 'vue-component-type-helpers';
+
 import VButton from '~/components/V/VButton.vue';
 import VEditor from '~/components/V/VEditor.vue';
+import VCombobox from '~/components/V/VCombobox.vue';
 
 import type { IListedSlide, IUniqueLanguage } from '~/composables/useApi';
 
@@ -8,15 +11,16 @@ useGlobalPagesStylesheet();
 const api = useApi();
 const { toast } = useToast();
 
+const languageSelect = ref<ComponentExposed<typeof VCombobox>>();
+const resetButton = ref<InstanceType<typeof VButton>>();
+const saveButton = ref<InstanceType<typeof VButton>>();
+const editor = ref<InstanceType<typeof VEditor>>();
+
 const isLoading = ref(false);
 const availableSlides = ref<IListedSlide[]>([]);
 const selectedSlideId = ref<string>();
 const languages = ref<IUniqueLanguage[]>([]);
 const selectedLanguage = ref('');
-
-const resetButton = ref<InstanceType<typeof VButton>>();
-const saveButton = ref<InstanceType<typeof VButton>>();
-const editor = ref<InstanceType<typeof VEditor>>();
 
 const {
 	clearForm, sendForm, updateValues, isSaving,
@@ -37,6 +41,8 @@ onMounted(async () => {
 
 		selectedLanguage.value = languages.value[0];
 		availableSlides.value = await api.slides.list.query(selectedLanguage.value);
+
+		languageSelect.value && languageSelect.value.selectOption(0);
 	} catch (e) {
 		toast('błąd przy ładowaniu slideów', 'error');
 	} finally {
@@ -49,7 +55,7 @@ const slideSelectOptions = computed(() =>
 );
 
 // todo select on focus out & alert if changes
-// add language select
+// add language input
 
 async function clearFormAndEditor() {
 	const proceed = await clearForm(resetButton.value?.element);
@@ -64,13 +70,26 @@ async function clearFormAndEditor() {
 
 <template>
 	<main class="grid grid-cols-[auto_1fr] mx-auto max-w-256 w-full gap-x-3 gap-y-5 px-4 pb-4 pt-[1.125rem] lg:px-0">
-		<div id="slidePageControls" class="grid col-span-full grid-cols-[1fr_max-content_max-content] w-full gap-3 md:flex">
+		<div id="slidePageControls" class="grid col-span-full grid-cols-[min-content_1fr_max-content_max-content] w-full gap-3 md:flex">
+			<VCombobox
+				id="languageSelect"
+				ref="languageSelect"
+				v-model="selectedLanguage"
+				class="col-span-full mr-12 md:mr-auto md:w-64"
+				label="język"
+				:options="languages"
+				:is-loading="isLoading"
+				transform-options
+				label-visually-hidden
+				select-only
+			/>
 			<VCombobox
 				id="slideSelect"
 				v-model="selectedSlideId"
-				class="col-span-full mr-12 md:mr-auto md:w-76"
+				class="col-span-full mr-12 md:mr-auto md:w-64"
 				label="slide"
 				:options="slideSelectOptions"
+				:is-loading="isLoading"
 				label-visually-hidden
 				select-only
 			>
