@@ -36,9 +36,15 @@ const {
 	selectOption,
 	expandAndSelectFirst,
 	closeIfFocusedOutside,
+	selectedOptionText,
 } = useCombobox(modelValue, computedOptions, listbox, toRef(() => props.selectOnly));
 
 updateCursoredIndexToSelected(modelValue.value);
+
+function updateValue(value: string) {
+	modelValue.value = value;
+	updateCursoredIndexToSelected(value);
+}
 
 function selectOptionAndEmit(index?: number) {
 	selectOption(index);
@@ -49,7 +55,7 @@ function selectOptionAndEmit(index?: number) {
 <template>
 	<VInput
 		:id="id"
-		v-model="modelValue"
+		:model-value="selectOnly ? selectedOptionText : modelValue"
 		role="combobox"
 		aria-haspopup="listbox"
 		:aria-labelledby="`${id}Label`"
@@ -61,12 +67,12 @@ function selectOptionAndEmit(index?: number) {
 		:readonly="selectOnly"
 		@focus="expandAndSelectFirst"
 		@focusout="closeIfFocusedOutside"
-		@update:model-value="updateCursoredIndexToSelected"
 		@keydown.up.prevent="moveCursor(-1)"
 		@keydown.down.prevent="moveCursor(1)"
 		@keydown.esc="isExpanded = false"
 		@keydown.enter="selectOptionAndEmit(cursoredOverIndex)"
 		@click="isExpanded = true"
+		@update:model-value="updateValue"
 	>
 		<ul
 			v-show="isExpanded"

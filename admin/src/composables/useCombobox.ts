@@ -9,6 +9,7 @@ export const useCombobox = <T>(
 	const isExpanded = ref(false);
 	const cursoredOverIndex = ref<number | undefined>();
 	const options = computed(() => toValue(rawOptions));
+	const selectedOptionText = ref<string>();
 
 	function updateCursoredIndexToSelected(value?: T) {
 		cursoredOverIndex.value = undefined;
@@ -19,6 +20,8 @@ export const useCombobox = <T>(
 					break;
 				}
 			}
+		} else {
+			selectedOptionText.value = undefined;
 		}
 	}
 
@@ -44,8 +47,12 @@ export const useCombobox = <T>(
 
 	function selectOption(index?: number) {
 		if (index !== undefined) {
-			modelValue.value = options.value[index].value;
+			const { text, value } = options.value[index];
+			modelValue.value = value;
+			selectedOptionText.value = text;
 			cursoredOverIndex.value = index;
+		} else {
+			selectedOptionText.value = undefined;
 		}
 		isExpanded.value = false;
 	}
@@ -70,5 +77,6 @@ export const useCombobox = <T>(
 		selectOption,
 		expandAndSelectFirst,
 		closeIfFocusedOutside,
+		selectedOptionText,
 	};
 };
