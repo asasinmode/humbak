@@ -1,7 +1,9 @@
 <script setup lang="ts">
+type IOption = { text: string; value: string | number; };
+
 const props = defineProps<{
 	transformOptions?: boolean;
-	options: Record<string, string> | (string | number)[];
+	options: Array<IOption | IOption['value']>;
 	id: string;
 	isLoading?: boolean;
 	hideCheck?: boolean;
@@ -17,13 +19,13 @@ const listbox = ref<HTMLUListElement | null>();
 
 const computedOptions = computed(() => {
 	if (props.transformOptions) {
-		return (props.options as string[]).map(value => ({
+		return (props.options as IOption['value'][]).map(value => ({
 			text: `${value}`,
 			value,
 		}));
 	}
 
-	return Object.entries(props.options as Record<string, string>).map(([text, value]) => ({ text, value }));
+	return props.options as IOption[];
 });
 
 const {
