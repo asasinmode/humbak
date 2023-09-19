@@ -2,10 +2,17 @@
 import VButton from '~/components/V/VButton.vue';
 import VEditor from '~/components/V/VEditor.vue';
 
-useGlobalPagesStylesheet();
+import type { IListedSlide, IUniqueLanguage } from '~/composables/useApi';
 
-const selectedId = ref<string>();
+useGlobalPagesStylesheet();
+const api = useApi();
+const { toast } = useToast();
+
 const isLoading = ref(false);
+const availableSlides = ref<IListedSlide[]>([]);
+const selectedSlideId = ref<string>();
+const languages = ref<IUniqueLanguage[]>([]);
+const selectedLanguage = ref('');
 
 const resetButton = ref<InstanceType<typeof VButton>>();
 const saveButton = ref<InstanceType<typeof VButton>>();
@@ -21,10 +28,25 @@ const {
 );
 
 onMounted(async () => {
-	console.log('get slides');
-	// updateValues({ content: '<div><h1 class="selector">init</h1></div>' });
-	// editor.value?.updateModelValue(0, '<div><h1 class="selector">init</h1></div>');
+	isLoading.value = true;
+	try {
+		languages.value = await api.pages.uniqueLanguages.query();
+		if (!languages.value.length) {
+			return;
+		}
+
+		selectedLanguage.value = languages.value[0];
+		availableSlides.value = await api.slides.list.query(selectedLanguage.value);
+	} catch (e) {
+		toast('błąd przy slideów', 'error');
+	} finally {
+		isLoading.value = false;
+	}
 });
+
+const slideSelectOptions = computed(() =>
+	availableSlides.value.map(({ id, name }) => ({ text: name, value: id }))
+);
 
 // todo select on focus out & alert if changes
 
@@ -34,7 +56,7 @@ async function clearFormAndEditor() {
 		return;
 	}
 
-	selectedId.value = undefined;
+	selectedSlideId.value = undefined;
 	editor.value?.updateModelValue(0, '');
 }
 </script>
@@ -44,12 +66,11 @@ async function clearFormAndEditor() {
 		<div id="slidePageControls" class="grid col-span-full grid-cols-[1fr_max-content_max-content] w-full gap-3 md:flex">
 			<VCombobox
 				id="slideSelect"
-				v-model="selectedId"
+				v-model="selectedSlideId"
 				class="col-span-full mr-12 md:mr-auto md:w-76"
 				label="slide"
-				:options="[1, 2, 3]"
+				:options="slideSelectOptions"
 				label-visually-hidden
-				transform-options
 				select-only
 			/>
 			<VButton class="h-9 w-9 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
@@ -60,7 +81,7 @@ async function clearFormAndEditor() {
 				wyczyść
 			</VButton>
 			<VButton ref="saveButton" class="min-w-20 neon-green" :is-loading="isSaving" @click="sendForm">
-				{{ selectedId ? 'zapisz' : 'utwórz' }}
+				{{ selectedSlideId ? 'zapisz' : 'utwórz' }}
 			</VButton>
 		</div>
 

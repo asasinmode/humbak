@@ -16,3 +16,4 @@ export type IListedPage = Awaited<ReturnType<typeof client['pages']['list']['que
 export type IUniqueLanguage = Awaited<ReturnType<typeof client['pages']['uniqueLanguages']['query']>>[number];
 export type IUpsertPageInput = Parameters<typeof client['pages']['upsert']['mutate']>[0];
 export type IMenuLink = Awaited<ReturnType<typeof client['menuLinks']['list']['query']>>[number];
+export type IListedSlide = Awaited<ReturnType<typeof client['slides']['list']['query']>>[number];
