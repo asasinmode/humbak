@@ -1,5 +1,6 @@
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { slides } from '../schema/slides';
 import { db, pool } from '~/db';
 import { promptProdContinue } from '~/helpers';
 import { pages } from '~/db/schema/pages';
@@ -236,6 +237,28 @@ for (const { pageData, text, parentId, position } of [
 		db.insert(contents).values({ pageId }),
 		writeFile(fileURLToPath(new URL(`../../../public/stylesheets/${pageId}.css`, import.meta.url)), ''),
 	]);
+}
+
+for (const { name, content, isHidden } of [
+	{
+		name: 'slide1', content: `<div>
+<h6>1</h6>
+</div>`,
+	},
+	{
+		name: 'slide2', content: `<div>
+<h6>2</h6>
+</div>`,
+	},
+	{
+		name: 'slide3',
+		content: `<div>
+<h6>3</h6>
+</div>`,
+		isHidden: true,
+	},
+]) {
+	await db.insert(slides).values({ name, content, isHidden });
 }
 
 await pool.end();
