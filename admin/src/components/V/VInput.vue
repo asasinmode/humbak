@@ -50,7 +50,7 @@ const value = defineModel<string | number>();
 		<div
 			v-else
 			:id="id"
-			class="h-9 min-w-24 w-full cursor-pointer py-1 pl-3 shadow placeholder:text-neutral"
+			class="h-9 min-w-24 w-full cursor-pointer py-1 pl-3 shadow placeholder:text-neutral focus:outline-auto"
 			tabindex="0"
 			:title="label"
 			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-neutral', inputClass]"
