@@ -38,17 +38,18 @@ onMounted(async () => {
 		selectedLanguage.value = languages.value[0];
 		availableSlides.value = await api.slides.list.query(selectedLanguage.value);
 	} catch (e) {
-		toast('błąd przy slideów', 'error');
+		toast('błąd przy ładowaniu slideów', 'error');
 	} finally {
 		isLoading.value = false;
 	}
 });
 
 const slideSelectOptions = computed(() =>
-	availableSlides.value.map(({ id, name }) => ({ text: name, value: id }))
+	availableSlides.value.map(({ id, name, isHidden }) => ({ text: name, value: id, isHidden }))
 );
 
 // todo select on focus out & alert if changes
+// add language select
 
 async function clearFormAndEditor() {
 	const proceed = await clearForm(resetButton.value?.element);
@@ -72,17 +73,25 @@ async function clearFormAndEditor() {
 				:options="slideSelectOptions"
 				label-visually-hidden
 				select-only
-			/>
-			<VButton class="h-9 w-9 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
-				<span class="visually-hidden">formatuj</span>
-				<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
-			</VButton>
-			<VButton ref="resetButton" class="neon-amber" @click="clearFormAndEditor">
-				wyczyść
-			</VButton>
-			<VButton ref="saveButton" class="min-w-20 neon-green" :is-loading="isSaving" @click="sendForm">
-				{{ selectedSlideId ? 'zapisz' : 'utwórz' }}
-			</VButton>
+			>
+				<template #item="itemProps">
+					<div
+						class="mr-[2px] inline-block h-3 align-mid text-neutral"
+						:class="itemProps.isHidden ? 'i-fa6-solid:eye-slash' : 'i-fa6-solid:eye'"
+					/>
+					{{ itemProps.text }}
+				</template>
+				<VButton class="h-9 w-9 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
+					<span class="visually-hidden">formatuj</span>
+					<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
+				</VButton>
+				<VButton ref="resetButton" class="neon-amber" @click="clearFormAndEditor">
+					wyczyść
+				</VButton>
+				<VButton ref="saveButton" class="min-w-20 neon-green" :is-loading="isSaving" @click="sendForm">
+					{{ selectedSlideId ? 'zapisz' : 'utwórz' }}
+				</VButton>
+			</vcombobox>
 		</div>
 
 		<VEditor

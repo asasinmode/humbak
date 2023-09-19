@@ -10,6 +10,7 @@ export const slidesRouter = router({
 			.select({
 				id: slides.id,
 				name: slides.name,
+				isHidden: slides.isHidden,
 			})
 			.from(slides)
 			.orderBy(slides.createdAt)
