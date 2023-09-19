@@ -48,6 +48,10 @@ function selectOptionAndEmit(index?: number) {
 	selectOption(index);
 	emit('selectOption', modelValue.value);
 }
+
+defineExpose({
+	selectOption,
+});
 </script>
 
 <template>

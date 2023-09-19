@@ -20,8 +20,6 @@ export const useCombobox = <T>(
 					break;
 				}
 			}
-		} else {
-			selectedOptionText.value = undefined;
 		}
 	}
 
