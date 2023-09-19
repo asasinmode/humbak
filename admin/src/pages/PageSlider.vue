@@ -40,12 +40,12 @@ async function clearFormAndEditor() {
 </script>
 
 <template>
-	<main class="grid grid-cols-[min-content_1fr] mx-auto max-w-256 w-full gap-x-3 gap-y-5 px-4 pb-4 pt-[1.125rem] lg:px-0">
+	<main class="grid grid-cols-[auto_1fr] mx-auto max-w-256 w-full gap-x-3 gap-y-5 px-4 pb-4 pt-[1.125rem] lg:px-0">
 		<div id="slidePageControls" class="grid col-span-full grid-cols-[1fr_max-content_max-content] w-full gap-3 md:flex">
 			<VCombobox
 				id="slideSelect"
 				v-model="selectedId"
-				class="col-span-full mr-12 md:mr-auto"
+				class="col-span-full mr-12 md:mr-auto md:w-76"
 				label="slide"
 				:options="[1, 2, 3]"
 				label-visually-hidden
