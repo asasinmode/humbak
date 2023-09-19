@@ -49,8 +49,8 @@ function selectOptionAndEmit(index?: number) {
 		:id="id"
 		v-model="modelValue"
 		role="combobox"
+		aria-haspopup="listbox"
 		:aria-labelledby="`${id}Label`"
-		:aria-haspopup="listbox"
 		:aria-expanded="isExpanded"
 		:aria-controls="`${id}-listbox`"
 		:aria-activedescendant="cursoredOverIndex !== undefined
