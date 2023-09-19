@@ -41,7 +41,9 @@ export const useCombobox = <T>(
 		}
 
 		if (selectOnly?.value) {
-			modelValue.value = options.value[cursoredOverIndex.value].value;
+			const { text, value } = options.value[cursoredOverIndex.value];
+			modelValue.value = value;
+			selectedOptionText.value = text;
 		}
 	}
 
