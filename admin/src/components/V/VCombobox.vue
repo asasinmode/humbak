@@ -1,9 +1,7 @@
-<script setup lang="ts">
-type IOption = { text: string; value: string | number; };
-
+<script setup lang="ts" generic="T extends { text: string; value: string | number }">
 const props = defineProps<{
 	transformOptions?: boolean;
-	options: Array<IOption | IOption['value']>;
+	options: Array<T | T['value']>;
 	id: string;
 	isLoading?: boolean;
 	hideCheck?: boolean;
@@ -19,13 +17,13 @@ const listbox = ref<HTMLUListElement | null>();
 
 const computedOptions = computed(() => {
 	if (props.transformOptions) {
-		return (props.options as IOption['value'][]).map(value => ({
+		return (props.options as T['value'][]).map(value => ({
 			text: `${value}`,
 			value,
-		}));
+		})) as T[];
 	}
 
-	return props.options as IOption[];
+	return props.options as T[];
 });
 
 const {
@@ -88,24 +86,26 @@ function selectOptionAndEmit(index?: number) {
 			<v-loading v-if="isLoading" class="py-2" />
 			<template v-else>
 				<li
-					v-for="({ text, value }, index) in computedOptions"
+					v-for="(option, index) in computedOptions"
 					:id="`${id}-option-${index}`"
-					:key="text"
+					:key="option.text"
 					class="relative w-full cursor-pointer select-none truncate bg-op-40 py-2 pl-2 pr-8 hover:bg-op-40"
 					:class="cursoredOverIndex === index
-						? modelValue === value
+						? modelValue === option.value
 							? 'bg-green'
 							: 'bg-blue'
 						: ''
 					"
 					role="option"
-					:aria-selected="modelValue === value"
+					:aria-selected="modelValue === option.value"
 					@click="selectOptionAndEmit(index)"
 					@mouseenter="cursoredOverIndex = index"
 				>
-					{{ text }}
+					<slot name="item" v-bind="option">
+						{{ option.text }}
+					</slot>
 					<div
-						v-show="!hideCheck && modelValue === value"
+						v-show="!hideCheck && modelValue === option.value"
 						class="i-fa6-solid-check absolute right-2 top-1/2 h-4 w-4 shrink-0 -translate-y-1/2"
 					/>
 				</li>
