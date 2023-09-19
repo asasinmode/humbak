@@ -81,17 +81,17 @@ async function clearFormAndEditor() {
 					/>
 					{{ itemProps.text }}
 				</template>
-				<VButton class="h-9 w-9 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
-					<span class="visually-hidden">formatuj</span>
-					<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
-				</VButton>
-				<VButton ref="resetButton" class="neon-amber" @click="clearFormAndEditor">
-					wyczyść
-				</VButton>
-				<VButton ref="saveButton" class="min-w-20 neon-green" :is-loading="isSaving" @click="sendForm">
-					{{ selectedSlideId ? 'zapisz' : 'utwórz' }}
-				</VButton>
-			</vcombobox>
+			</VCombobox>
+			<VButton class="h-9 w-9 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
+				<span class="visually-hidden">formatuj</span>
+				<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
+			</VButton>
+			<VButton ref="resetButton" class="neon-amber" @click="clearFormAndEditor">
+				wyczyść
+			</VButton>
+			<VButton ref="saveButton" class="min-w-20 neon-green" :is-loading="isSaving" @click="sendForm">
+				{{ selectedSlideId ? 'zapisz' : 'utwórz' }}
+			</VButton>
 		</div>
 
 		<VEditor
