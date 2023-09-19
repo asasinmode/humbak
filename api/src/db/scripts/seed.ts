@@ -239,26 +239,27 @@ for (const { pageData, text, parentId, position } of [
 	]);
 }
 
-for (const { name, content, isHidden } of [
+for (const { name, content, isHidden, language } of [
 	{
-		name: 'slide1', content: `<div>
+		name: 'slide1', language: 'pl', content: `<div>
 <h6>1</h6>
 </div>`,
 	},
 	{
-		name: 'slide2', content: `<div>
+		name: 'slide2', language: 'pl', content: `<div>
 <h6>2</h6>
 </div>`,
 	},
 	{
 		name: 'slide3',
+		language: 'pl',
 		content: `<div>
 <h6>3</h6>
 </div>`,
 		isHidden: true,
 	},
 ]) {
-	await db.insert(slides).values({ name, content, isHidden });
+	await db.insert(slides).values({ name, content, isHidden, language });
 }
 
 await pool.end();

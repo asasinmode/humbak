@@ -12,6 +12,7 @@ export const slides = mysqlTable('slides', {
 	name: varchar('name', { length: 256 }).notNull(),
 	content: text('content').notNull().default(defaultContent),
 	isHidden: boolean('isHidden').notNull().default(false),
+	language: varchar('language', { length: 32 }).notNull(),
 	createdAt: datetime('createdAt').notNull().default(sql`NOW()`),
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
@@ -19,5 +20,6 @@ export const slides = mysqlTable('slides', {
 export const insertSlideSchema = object({
 	id: optional(number([integer()])),
 	name: nonEmptyMaxLengthString(256),
+	language: nonEmptyMaxLengthString(32),
 	content: optional(string()),
 });
