@@ -8,7 +8,6 @@ defineProps<{
 	class?: string;
 	inputClass?: string;
 	labelVisuallyHidden?: boolean;
-	containerAttrs?: Record<string, unknown>;
 	readonly?: boolean;
 }>();
 
@@ -25,7 +24,6 @@ const value = defineModel<string | number>();
 	<div
 		class="relative flex flex-col gap-[0.125rem]"
 		:class="$props.class"
-		v-bind="containerAttrs"
 		@focusout="$emit('focusout', $event)"
 	>
 		<label
