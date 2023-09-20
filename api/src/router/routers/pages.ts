@@ -132,7 +132,7 @@ export const pagesRouter = router({
 		await db.delete(pages).where(eq(pages.id, opts.input));
 	}),
 	uniqueLanguages: publicProcedure.query(async () => {
-		const result = await db.selectDistinct({ language: pages.language }).from(pages);
+		const result = await db.selectDistinct({ language: pages.language }).from(pages).orderBy(pages.createdAt);
 
 		return result.map(row => row.language);
 	}),
