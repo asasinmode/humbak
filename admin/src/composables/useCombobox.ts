@@ -4,7 +4,8 @@ export const useCombobox = <T>(
 	modelValue: Ref<T>,
 	rawOptions: MaybeRef<{ text: string; value: T; }[]>,
 	listboxRef: Ref<HTMLElement | null | undefined>,
-	selectOnly?: Ref<boolean>
+	selectOnly?: Ref<boolean>,
+	emitCallback?: (value: T) => void
 ) => {
 	const isExpanded = ref(false);
 	const cursoredOverIndex = ref<number | undefined>();
@@ -42,19 +43,23 @@ export const useCombobox = <T>(
 			const { text, value } = options.value[cursoredOverIndex.value];
 			modelValue.value = value;
 			selectedOptionText.value = text;
+			emitCallback && emitCallback(value);
 		}
 	}
 
-	function selectOption(index?: number) {
+	function selectOption(index?: number, skipEmit = false) {
+		let emitValue;
 		if (index !== undefined) {
 			const { text, value } = options.value[index];
 			modelValue.value = value;
 			selectedOptionText.value = text;
 			cursoredOverIndex.value = index;
+			emitValue = value;
 		} else {
-			selectedOptionText.value = undefined;
+			emitValue = modelValue.value;
 		}
 		isExpanded.value = false;
+		!skipEmit && emitCallback && emitCallback(emitValue);
 	}
 
 	function expandAndSelectFirst() {

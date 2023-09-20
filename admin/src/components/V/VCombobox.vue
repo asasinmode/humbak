@@ -35,18 +35,19 @@ const {
 	expandAndSelectFirst,
 	closeIfFocusedOutside,
 	selectedOptionText,
-} = useCombobox(modelValue, computedOptions, listbox, toRef(() => props.selectOnly));
+} = useCombobox(
+	modelValue,
+	computedOptions,
+	listbox,
+	toRef(() => props.selectOnly),
+	(value?: T['value']) => emit('selectOption', value)
+);
 
 updateCursoredIndexToSelected(modelValue.value);
 
 function updateValue(value: string) {
 	modelValue.value = value;
 	updateCursoredIndexToSelected(value);
-}
-
-function selectOptionAndEmit(index?: number) {
-	selectOption(index);
-	emit('selectOption', modelValue.value);
 }
 
 defineExpose({
@@ -72,7 +73,7 @@ defineExpose({
 		@keydown.up.prevent="moveCursor(-1)"
 		@keydown.down.prevent="moveCursor(1)"
 		@keydown.esc="isExpanded = false"
-		@keydown.enter="selectOptionAndEmit(cursoredOverIndex)"
+		@keydown.enter="selectOption(cursoredOverIndex)"
 		@click="isExpanded = true"
 		@update:model-value="updateValue"
 	>
@@ -102,7 +103,7 @@ defineExpose({
 					"
 					role="option"
 					:aria-selected="modelValue === option.value"
-					@click="selectOptionAndEmit(index)"
+					@click="selectOption(index)"
 					@mouseenter="cursoredOverIndex = index"
 				>
 					<slot name="item" v-bind="option">
