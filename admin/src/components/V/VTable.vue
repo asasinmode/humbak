@@ -42,6 +42,10 @@ async function callGetItems(resetOffset = false) {
 		searchTimeout = undefined;
 	}
 
+	if (limit.value as number | string === '') {
+		return;
+	}
+
 	isLoading.value = true;
 
 	if (resetOffset) {
