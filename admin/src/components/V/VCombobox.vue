@@ -12,7 +12,7 @@ const emit = defineEmits<{
 	selectOption: [T['value'] | undefined];
 }>();
 
-const modelValue = defineModel<string | number>();
+const modelValue = defineModel<T['value']>();
 const listbox = ref<HTMLUListElement | null>();
 
 const computedOptions = computed(() => {

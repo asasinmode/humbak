@@ -47,6 +47,7 @@ export const useCombobox = <T>(
 		}
 	}
 
+	// rework all
 	function selectOption(index?: number, skipEmit = false) {
 		let emitValue;
 		if (index !== undefined) {
@@ -55,11 +56,15 @@ export const useCombobox = <T>(
 			selectedOptionText.value = text;
 			cursoredOverIndex.value = index;
 			emitValue = value;
+		} else if (selectOnly) {
+			modelValue.value = undefined as T;
+			selectedOptionText.value = undefined;
+			emitValue = undefined;
 		} else {
 			emitValue = modelValue.value;
 		}
 		isExpanded.value = false;
-		!skipEmit && emitCallback && emitCallback(emitValue);
+		!skipEmit && emitCallback && emitCallback(emitValue as T);
 	}
 
 	function expandAndSelectFirst() {

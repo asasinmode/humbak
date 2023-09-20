@@ -23,6 +23,7 @@ const availableSlides = ref<IListedSlide[]>([]);
 const selectedSlideId = ref<string>();
 const languages = ref<IUniqueLanguage[]>([]);
 const selectedLanguage = ref('');
+const previousLoadedSlidesLanguage = ref('');
 
 const {
 	clearForm, sendForm, updateValues, isSaving,
@@ -42,9 +43,10 @@ onMounted(async () => {
 		}
 
 		selectedLanguage.value = languages.value[0];
+		previousLoadedSlidesLanguage.value = selectedLanguage.value;
 
 		await nextTick();
-		languageSelect.value && languageSelect.value.selectOption(0);
+		languageSelect.value && languageSelect.value.selectOption(0, true);
 
 		getSlides();
 	} catch (e) {
@@ -58,18 +60,12 @@ const slideSelectOptions = computed(() =>
 	availableSlides.value.map(({ id, name, isHidden }) => ({ text: name, value: id, isHidden }))
 );
 
-// todo select on focus out & alert if changes
 // add language input
 
 async function getSlides() {
-	const proceed = await clearForm(resetButton.value?.element);
-	if (!proceed) {
-		return;
-	}
-
 	isLoadingSlides.value = true;
+	slideSelect.value?.selectOption(undefined, false);
 	selectedSlideId.value = undefined;
-	slideSelect.value?.selectOption(undefined);
 	try {
 		availableSlides.value = await api.slides.list.query(selectedLanguage.value);
 	} catch (e) {
@@ -77,6 +73,19 @@ async function getSlides() {
 	} finally {
 		isLoadingSlides.value = false;
 	}
+}
+
+async function getSlidesIfLanguageChanged() {
+	if (previousLoadedSlidesLanguage.value === selectedLanguage.value) {
+		return;
+	}
+	const proceed = await clearForm(resetButton.value?.element);
+	if (!proceed) {
+		return;
+	}
+
+	await getSlides();
+	previousLoadedSlidesLanguage.value = selectedLanguage.value;
 }
 
 async function clearFormAndEditor() {
@@ -105,9 +114,11 @@ async function clearFormAndEditor() {
 				transform-options
 				label-visually-hidden
 				select-only
+				@select-option="getSlidesIfLanguageChanged"
 			/>
 			<VCombobox
 				id="slideSelect"
+				ref="slideSelect"
 				v-model="selectedSlideId"
 				class="col-span-3 mr-12 md:mr-auto md:w-64"
 				label="slide"
