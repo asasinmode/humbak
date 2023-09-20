@@ -9,7 +9,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	selectOption: [string | number | undefined];
+	selectOption: [T['value'] | undefined];
 }>();
 
 const modelValue = defineModel<string | number>();

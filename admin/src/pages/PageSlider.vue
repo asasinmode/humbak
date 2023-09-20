@@ -12,11 +12,13 @@ const api = useApi();
 const { toast } = useToast();
 
 const languageSelect = ref<ComponentExposed<typeof VCombobox>>();
+const slideSelect = ref<ComponentExposed<typeof VCombobox>>();
 const resetButton = ref<InstanceType<typeof VButton>>();
 const saveButton = ref<InstanceType<typeof VButton>>();
 const editor = ref<InstanceType<typeof VEditor>>();
 
-const isLoading = ref(false);
+const isLoadingLanguages = ref(false);
+const isLoadingSlides = ref(false);
 const availableSlides = ref<IListedSlide[]>([]);
 const selectedSlideId = ref<string>();
 const languages = ref<IUniqueLanguage[]>([]);
@@ -32,7 +34,7 @@ const {
 );
 
 onMounted(async () => {
-	isLoading.value = true;
+	isLoadingLanguages.value = true;
 	try {
 		languages.value = await api.pages.uniqueLanguages.query();
 		if (!languages.value.length) {
@@ -40,13 +42,15 @@ onMounted(async () => {
 		}
 
 		selectedLanguage.value = languages.value[0];
-		availableSlides.value = await api.slides.list.query(selectedLanguage.value);
 
+		await nextTick();
 		languageSelect.value && languageSelect.value.selectOption(0);
+
+		getSlides();
 	} catch (e) {
-		toast('błąd przy ładowaniu slideów', 'error');
+		toast('błąd przy ładowaniu języków', 'error');
 	} finally {
-		isLoading.value = false;
+		isLoadingLanguages.value = false;
 	}
 });
 
@@ -56,6 +60,24 @@ const slideSelectOptions = computed(() =>
 
 // todo select on focus out & alert if changes
 // add language input
+
+async function getSlides() {
+	const proceed = await clearForm(resetButton.value?.element);
+	if (!proceed) {
+		return;
+	}
+
+	isLoadingSlides.value = true;
+	selectedSlideId.value = undefined;
+	slideSelect.value?.selectOption(undefined);
+	try {
+		availableSlides.value = await api.slides.list.query(selectedLanguage.value);
+	} catch (e) {
+		toast('błąd przy ładowaniu slideów', 'error');
+	} finally {
+		isLoadingSlides.value = false;
+	}
+}
 
 async function clearFormAndEditor() {
 	const proceed = await clearForm(resetButton.value?.element);
@@ -79,7 +101,7 @@ async function clearFormAndEditor() {
 				input-class="!w-20 !min-w-20"
 				label="język"
 				:options="languages"
-				:is-loading="isLoading"
+				:is-loading="isLoadingLanguages"
 				transform-options
 				label-visually-hidden
 				select-only
@@ -90,7 +112,7 @@ async function clearFormAndEditor() {
 				class="col-span-3 mr-12 md:mr-auto md:w-64"
 				label="slide"
 				:options="slideSelectOptions"
-				:is-loading="isLoading"
+				:is-loading="isLoadingSlides"
 				label-visually-hidden
 				select-only
 			>
@@ -121,7 +143,7 @@ async function clearFormAndEditor() {
 				{ language: 'html', value: content },
 			]"
 			:current-model="0"
-			:is-loading="isLoading"
+			:is-loading="isLoadingLanguages || isLoadingSlides"
 			@update:model-value="content = $event"
 		/>
 
