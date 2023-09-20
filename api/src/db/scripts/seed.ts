@@ -222,7 +222,7 @@ for (const { pageData, text, parentId, position } of [
 	},
 	{
 		id: 31,
-		pageData: { language: 'pl', title: 'Schowane 6', slug: 'schowane-6' },
+		pageData: { language: 'en', title: 'Schowane 6', slug: 'schowane-6' },
 		text: 'Schowane 6',
 		parentId: -1,
 		position: 0,
@@ -257,6 +257,11 @@ for (const { name, content, isHidden, language } of [
 <h6>3</h6>
 </div>`,
 		isHidden: true,
+	},
+	{
+		name: 'slideOne', language: 'en', content: `<div>
+<h6>One</h6>
+</div>`,
 	},
 ]) {
 	await db.insert(slides).values({ name, content, isHidden, language });
