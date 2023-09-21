@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import type { ComponentExposed } from 'vue-component-type-helpers';
-
 import VButton from '~/components/V/VButton.vue';
 import VEditor from '~/components/V/VEditor.vue';
-import VCombobox from '~/components/V/VCombobox.vue';
 
 import type { IListedSlide, IUniqueLanguage } from '~/composables/useApi';
 
@@ -11,8 +8,6 @@ useGlobalPagesStylesheet();
 const api = useApi();
 const { toast } = useToast();
 
-const languageSelect = ref<ComponentExposed<typeof VCombobox>>();
-const slideSelect = ref<ComponentExposed<typeof VCombobox>>();
 const resetButton = ref<InstanceType<typeof VButton>>();
 const saveButton = ref<InstanceType<typeof VButton>>();
 const editor = ref<InstanceType<typeof VEditor>>();
@@ -20,7 +15,7 @@ const editor = ref<InstanceType<typeof VEditor>>();
 const isLoadingLanguages = ref(false);
 const isLoadingSlides = ref(false);
 const availableSlides = ref<IListedSlide[]>([]);
-const selectedSlideId = ref<string>();
+const selectedSlideId = ref<number>();
 const languages = ref<IUniqueLanguage[]>([]);
 const selectedLanguage = ref('');
 const previousLoadedSlidesLanguage = ref('');
@@ -45,9 +40,6 @@ onMounted(async () => {
 		selectedLanguage.value = languages.value[0];
 		previousLoadedSlidesLanguage.value = selectedLanguage.value;
 
-		await nextTick();
-		languageSelect.value && languageSelect.value.selectOption(0, true);
-
 		getSlides();
 	} catch (e) {
 		toast('błąd przy ładowaniu języków', 'error');
@@ -64,7 +56,6 @@ const slideSelectOptions = computed(() =>
 
 async function getSlides() {
 	isLoadingSlides.value = true;
-	slideSelect.value?.selectOption(undefined, false);
 	selectedSlideId.value = undefined;
 	try {
 		availableSlides.value = await api.slides.list.query(selectedLanguage.value);
@@ -81,6 +72,7 @@ async function getSlidesIfLanguageChanged() {
 	}
 	const proceed = await clearForm(resetButton.value?.element);
 	if (!proceed) {
+		selectedLanguage.value = previousLoadedSlidesLanguage.value;
 		return;
 	}
 
@@ -104,7 +96,6 @@ async function clearFormAndEditor() {
 		<div id="slidePageControls" class="grid col-span-full grid-cols-[min-content_1fr_max-content_max-content] w-full gap-3 md:flex">
 			<VCombobox
 				id="languageSelect"
-				ref="languageSelect"
 				v-model="selectedLanguage"
 				class="!min-w-20 !w-20"
 				input-class="!w-20 !min-w-20"
@@ -118,7 +109,6 @@ async function clearFormAndEditor() {
 			/>
 			<VCombobox
 				id="slideSelect"
-				ref="slideSelect"
 				v-model="selectedSlideId"
 				class="col-span-3 mr-12 md:mr-auto md:w-64"
 				label="slide"

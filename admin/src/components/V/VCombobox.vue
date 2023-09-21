@@ -1,7 +1,7 @@
 <script setup lang="ts" generic="T extends { text: string; value: string | number }">
 const props = defineProps<{
-	transformOptions?: boolean;
 	options: Array<T | T['value']>;
+	transformOptions?: boolean;
 	id: string;
 	isLoading?: boolean;
 	hideCheck?: boolean;
@@ -9,11 +9,11 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	selectOption: [T['value'] | undefined];
+	'selectOption': [T['value'] | undefined];
 }>();
 
-const modelValue = defineModel<T['value']>();
-const listbox = ref<HTMLUListElement | null>();
+const modelValue = defineModel<T['value'] | undefined>();
+const listbox = ref<HTMLUListElement>();
 
 const computedOptions = computed(() => {
 	if (props.transformOptions) {
@@ -22,37 +22,87 @@ const computedOptions = computed(() => {
 			value,
 		})) as T[];
 	}
-
 	return props.options as T[];
 });
 
-const {
-	isExpanded,
-	cursoredOverIndex,
-	updateCursoredIndexToSelected,
-	moveCursor,
-	selectOption,
-	expandAndSelectFirst,
-	closeIfFocusedOutside,
-	selectedOptionText,
-} = useCombobox(
-	modelValue,
-	computedOptions,
-	listbox,
-	toRef(() => props.selectOnly),
-	(value?: T['value']) => emit('selectOption', value)
-);
+const isExpanded = ref(false);
+const cursoredOverIndex = ref<number>();
+const selectedOptionText = ref<string>();
 
-updateCursoredIndexToSelected(modelValue.value);
+watch(modelValue, (value) => {
+	cursoredOverIndex.value = undefined;
+	selectedOptionText.value = undefined;
+	for (let i = 0; i < computedOptions.value.length; i++) {
+		if (computedOptions.value[i].value === value) {
+			cursoredOverIndex.value = i;
+			selectedOptionText.value = computedOptions.value[i].text;
+			break;
+		}
+	}
+});
 
-function updateValue(value: string) {
-	modelValue.value = value;
-	updateCursoredIndexToSelected(value);
+function moveCursor(value: number) {
+	if (!isExpanded.value) {
+		isExpanded.value = true;
+		return;
+	}
+
+	if (cursoredOverIndex.value === undefined) {
+		cursoredOverIndex.value = value > 0 ? 0 : computedOptions.value.length - 1;
+	} else {
+		cursoredOverIndex.value = (cursoredOverIndex.value + value) % computedOptions.value.length;
+		if (cursoredOverIndex.value < 0) {
+			cursoredOverIndex.value = computedOptions.value.length + cursoredOverIndex.value;
+		}
+	}
+
+	if (props.selectOnly) {
+		selectOption(cursoredOverIndex.value, false, false);
+	}
 }
 
-defineExpose({
-	selectOption,
-});
+function selectOption(index?: number, skipEmit = false, collapse = true) {
+	if (index === undefined) {
+		modelValue.value = undefined;
+		selectedOptionText.value = undefined;
+	} else {
+		const { text, value } = computedOptions.value[index];
+		modelValue.value = value;
+		selectedOptionText.value = text;
+	}
+
+	if (collapse) {
+		isExpanded.value = false;
+	}
+
+	nextTick(() => {
+		!skipEmit && emit('selectOption', modelValue.value);
+	});
+}
+
+function closeIfFocusedOutside(event: FocusEvent) {
+	const target = event.relatedTarget as HTMLElement | null;
+	if (!target || !listbox.value || !listbox.value.contains(target)) {
+		isExpanded.value = false;
+	}
+}
+
+function updateValue(value?: T['value']) {
+	modelValue.value = value;
+}
+
+function confirmChoice() {
+	isExpanded.value = false;
+	if (props.selectOnly) {
+		return;
+	}
+
+	if (cursoredOverIndex.value !== undefined) {
+		selectOption(cursoredOverIndex.value);
+	} else {
+		emit('selectOption', modelValue.value);
+	}
+}
 </script>
 
 <template>
@@ -68,12 +118,12 @@ defineExpose({
 			? `${id}-option-${cursoredOverIndex}`
 			: ''"
 		:readonly="selectOnly"
-		@focus="expandAndSelectFirst"
+		@focus="isExpanded = true"
 		@focusout="closeIfFocusedOutside"
 		@keydown.up.prevent="moveCursor(-1)"
 		@keydown.down.prevent="moveCursor(1)"
 		@keydown.esc="isExpanded = false"
-		@keydown.enter="selectOption(cursoredOverIndex)"
+		@keydown.enter="confirmChoice"
 		@click="isExpanded = true"
 		@update:model-value="updateValue"
 	>
