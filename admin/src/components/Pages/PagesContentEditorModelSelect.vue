@@ -11,14 +11,12 @@ const options = [
 const {
 	isExpanded,
 	cursoredOverIndex,
-	updateCursoredIndexToSelected,
 	moveCursor,
 	selectOption,
-	expandAndSelectFirst,
 	closeIfFocusedOutside,
-} = useCombobox(value, options, listbox);
+} = useCombobox(value, computed(() => options), listbox);
 
-updateCursoredIndexToSelected(value.value);
+cursoredOverIndex.value = 0;
 </script>
 
 <template>
@@ -34,9 +32,8 @@ updateCursoredIndexToSelected(value.value);
 			aria-labelledby="editorModeComboboxLabel"
 			:aria-expanded="isExpanded"
 			:aria-activedescendant="cursoredOverIndex !== undefined ? `editorModeOption-${cursoredOverIndex}` : ''"
-			@focus="expandAndSelectFirst"
+			@focus="isExpanded = true"
 			@focusout="closeIfFocusedOutside"
-			@update:model-value="updateCursoredIndexToSelected"
 			@keydown.up.prevent="moveCursor(-1)"
 			@keydown.down.prevent="moveCursor(1)"
 			@keydown.esc="isExpanded = false"
