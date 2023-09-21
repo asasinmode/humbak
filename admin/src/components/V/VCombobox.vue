@@ -25,83 +25,24 @@ const computedOptions = computed(() => {
 	return props.options as T[];
 });
 
-const isExpanded = ref(false);
-const cursoredOverIndex = ref<number>();
-const selectedOptionText = ref<string>();
-
-watch(modelValue, (value) => {
-	cursoredOverIndex.value = undefined;
-	selectedOptionText.value = undefined;
-	for (let i = 0; i < computedOptions.value.length; i++) {
-		if (computedOptions.value[i].value === value) {
-			cursoredOverIndex.value = i;
-			selectedOptionText.value = computedOptions.value[i].text;
-			break;
-		}
-	}
-});
-
-function moveCursor(value: number) {
-	if (!isExpanded.value) {
-		isExpanded.value = true;
-		return;
-	}
-
-	if (cursoredOverIndex.value === undefined) {
-		cursoredOverIndex.value = value > 0 ? 0 : computedOptions.value.length - 1;
-	} else {
-		cursoredOverIndex.value = (cursoredOverIndex.value + value) % computedOptions.value.length;
-		if (cursoredOverIndex.value < 0) {
-			cursoredOverIndex.value = computedOptions.value.length + cursoredOverIndex.value;
-		}
-	}
-
-	if (props.selectOnly) {
-		selectOption(cursoredOverIndex.value, false, false);
-	}
-}
-
-function selectOption(index?: number, skipEmit = false, collapse = true) {
-	if (index === undefined) {
-		modelValue.value = undefined;
-		selectedOptionText.value = undefined;
-	} else {
-		const { text, value } = computedOptions.value[index];
-		modelValue.value = value;
-		selectedOptionText.value = text;
-	}
-
-	if (collapse) {
-		isExpanded.value = false;
-	}
-
-	nextTick(() => {
-		!skipEmit && emit('selectOption', modelValue.value);
-	});
-}
-
-function closeIfFocusedOutside(event: FocusEvent) {
-	const target = event.relatedTarget as HTMLElement | null;
-	if (!target || !listbox.value || !listbox.value.contains(target)) {
-		isExpanded.value = false;
-	}
-}
+const {
+	isExpanded,
+	cursoredOverIndex,
+	moveCursor,
+	selectOption,
+	confirmChoice,
+	closeIfFocusedOutside,
+	selectedOptionText,
+} = useCombobox(
+	modelValue,
+	computedOptions,
+	listbox,
+	toRef(() => props.selectOnly),
+	value => emit('selectOption', value)
+);
 
 function updateValue(value?: T['value']) {
 	modelValue.value = value;
-}
-
-function confirmChoice() {
-	isExpanded.value = false;
-	if (props.selectOnly) {
-		return;
-	}
-
-	if (cursoredOverIndex.value !== undefined) {
-		selectOption(cursoredOverIndex.value);
-	} else {
-		emit('selectOption', modelValue.value);
-	}
 }
 </script>
 

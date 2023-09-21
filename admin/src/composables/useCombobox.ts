@@ -1,28 +1,25 @@
-import type { MaybeRef } from 'vue';
-
 export const useCombobox = <T>(
-	modelValue: Ref<T>,
-	rawOptions: MaybeRef<{ text: string; value: T; }[]>,
+	modelValue: Ref<T | undefined>,
+	computedOptions: ComputedRef<{ text: string; value: T | undefined; }[]>,
 	listboxRef: Ref<HTMLElement | null | undefined>,
 	selectOnly?: Ref<boolean>,
-	emitCallback?: (value: T) => void
+	emitCallback?: (value?: T) => void
 ) => {
 	const isExpanded = ref(false);
-	const cursoredOverIndex = ref<number | undefined>();
-	const options = computed(() => toValue(rawOptions));
+	const cursoredOverIndex = ref<number>();
 	const selectedOptionText = ref<string>();
 
-	function updateCursoredIndexToSelected(value?: T) {
+	watch(modelValue, (value) => {
 		cursoredOverIndex.value = undefined;
-		if (value) {
-			for (let i = 0; i < options.value.length; i++) {
-				if (value === options.value[i].value) {
-					cursoredOverIndex.value = i;
-					break;
-				}
+		selectedOptionText.value = undefined;
+		for (let i = 0; i < computedOptions.value.length; i++) {
+			if (computedOptions.value[i].value === value) {
+				cursoredOverIndex.value = i;
+				selectedOptionText.value = computedOptions.value[i].text;
+				break;
 			}
 		}
-	}
+	});
 
 	function moveCursor(value: number) {
 		if (!isExpanded.value) {
@@ -31,45 +28,37 @@ export const useCombobox = <T>(
 		}
 
 		if (cursoredOverIndex.value === undefined) {
-			cursoredOverIndex.value = value > 0 ? 0 : (options.value.length - 1);
+			cursoredOverIndex.value = value > 0 ? 0 : computedOptions.value.length - 1;
 		} else {
-			cursoredOverIndex.value = (cursoredOverIndex.value + value) % options.value.length;
+			cursoredOverIndex.value = (cursoredOverIndex.value + value) % computedOptions.value.length;
 			if (cursoredOverIndex.value < 0) {
-				cursoredOverIndex.value = options.value.length + cursoredOverIndex.value;
+				cursoredOverIndex.value = computedOptions.value.length + cursoredOverIndex.value;
 			}
 		}
 
 		if (selectOnly?.value) {
-			const { text, value } = options.value[cursoredOverIndex.value];
-			modelValue.value = value;
-			selectedOptionText.value = text;
-			emitCallback && emitCallback(value);
+			selectOption(cursoredOverIndex.value, false, false);
 		}
 	}
 
-	// rework all
-	function selectOption(index?: number, skipEmit = false) {
-		let emitValue;
-		if (index !== undefined) {
-			const { text, value } = options.value[index];
-			modelValue.value = value;
-			selectedOptionText.value = text;
-			cursoredOverIndex.value = index;
-			emitValue = value;
-		} else if (selectOnly) {
-			modelValue.value = undefined as T;
+	function selectOption(index?: number, skipEmit = false, collapse = true) {
+		if (index === undefined) {
+			modelValue.value = undefined;
 			selectedOptionText.value = undefined;
-			emitValue = undefined;
 		} else {
-			emitValue = modelValue.value;
+			const { text, value } = computedOptions.value[index];
+			modelValue.value = value;
+			selectedOptionText.value = text;
 		}
-		isExpanded.value = false;
-		!skipEmit && emitCallback && emitCallback(emitValue as T);
-	}
 
-	function expandAndSelectFirst() {
-		isExpanded.value = true;
-		updateCursoredIndexToSelected(modelValue.value);
+		if (collapse) {
+			isExpanded.value = false;
+		}
+
+		// eslint-disable-next-line
+		nextTick(() => {
+			!skipEmit && emitCallback && emitCallback(modelValue.value);
+		});
 	}
 
 	function closeIfFocusedOutside(event: FocusEvent) {
@@ -79,13 +68,25 @@ export const useCombobox = <T>(
 		}
 	}
 
+	function confirmChoice() {
+		isExpanded.value = false;
+		if (selectOnly?.value) {
+			return;
+		}
+
+		if (cursoredOverIndex.value !== undefined) {
+			selectOption(cursoredOverIndex.value);
+		} else {
+			emitCallback && emitCallback(modelValue.value);
+		}
+	}
+
 	return {
 		isExpanded,
 		cursoredOverIndex,
-		updateCursoredIndexToSelected,
 		moveCursor,
 		selectOption,
-		expandAndSelectFirst,
+		confirmChoice,
 		closeIfFocusedOutside,
 		selectedOptionText,
 	};
