@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { boolean, datetime, int, mysqlTable, text, varchar } from 'drizzle-orm/mysql-core';
-import { integer, number, object, optional, string } from 'valibot';
+import { boolean as booleanValidation, integer, number, object, optional, string } from 'valibot';
 import { nonEmptyMaxLengthString } from '~/helpers';
 
 const defaultContent = `<div>
@@ -22,4 +22,5 @@ export const insertSlideSchema = object({
 	name: nonEmptyMaxLengthString(256),
 	language: nonEmptyMaxLengthString(32),
 	content: optional(string()),
+	isHidden: booleanValidation(),
 });

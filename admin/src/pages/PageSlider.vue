@@ -22,10 +22,23 @@ const previousLoadedSlidesLanguage = ref('');
 
 const {
 	clearForm, sendForm, updateValues, isSaving,
-	name, content, isHidden,
+	name, content, isHidden, language,
 } = useForm(
-	{ name: '', content: '', isHidden: false },
-	async () => {},
+	{ name: '', content: '', language: '', isHidden: false },
+	async () => {
+		const slide = await api.slides.upsert.mutate({
+			id: selectedSlideId.value,
+			name: name.value,
+			content: content.value,
+			isHidden: isHidden.value,
+			language: language.value,
+		});
+
+		updateValues(slide);
+		editor.value?.updateModelValue(0, slide.content);
+
+		// update slide in place
+	},
 	saveButton.value?.element
 );
 
@@ -148,8 +161,19 @@ async function clearFormAndEditor() {
 			@update:model-value="content = $event"
 		/>
 
-		<VInput id="slideName" v-model="name" label="nazwa" />
+		<VInput id="slideName" v-model="name" label="nazwa" class="col-span-full md:col-span-1" />
 		<VCheckbox id="slideIsHidden" v-model="isHidden" :label="isHidden ? 'schowany' : 'schowaj'" />
+		<VCombobox
+			id="editedLanguageSelect"
+			v-model="language"
+			class="!min-w-20 !w-20"
+			input-class="!w-20 !min-w-20"
+			label="język"
+			:options="languages"
+			:is-loading="isLoadingLanguages"
+			transform-options
+			select-only
+		/>
 
 		<div class="col-span-full" v-html="content" />
 	</main>
