@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
 	id: string;
 	label?: string;
 	placeholder?: string;
@@ -18,6 +18,15 @@ defineOptions({
 });
 
 const value = defineModel<string | number>();
+
+const element = ref<HTMLInputElement>();
+
+function manageReadonlyFocus() {
+	if (!props.readonly) {
+		return;
+	}
+	element.value?.focus();
+}
 </script>
 
 <template>
@@ -30,8 +39,9 @@ const value = defineModel<string | number>();
 			v-if="label"
 			:id="`${id}Label`"
 			:for="id"
-			class="ml-[0.875rem] w-fit"
+			class="v-input-label ml-[0.875rem] w-fit"
 			:class="labelVisuallyHidden ? 'visually-hidden' : ''"
+			@click="manageReadonlyFocus"
 		>
 			{{ label }}
 		</label>
@@ -48,7 +58,8 @@ const value = defineModel<string | number>();
 		<div
 			v-else
 			:id="id"
-			class="h-9 min-w-24 w-full cursor-pointer py-1 pl-3 shadow placeholder:text-neutral focus:outline-auto"
+			ref="element"
+			class="v-input-readonly h-9 min-w-24 w-full cursor-pointer py-1 pl-3 shadow placeholder:text-neutral focus:outline-auto"
 			tabindex="0"
 			:title="label"
 			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-neutral', inputClass]"
@@ -69,3 +80,10 @@ const value = defineModel<string | number>();
 		<slot />
 	</div>
 </template>
+
+<style>
+.v-input-label:hover + .v-input-readonly,
+.v-input-readonly:focus {
+	@apply bg-op-30 border-op-100
+}
+</style>
