@@ -65,8 +65,6 @@ const slideSelectOptions = computed(() =>
 	availableSlides.value.map(({ id, name, isHidden }) => ({ text: name, value: id, isHidden }))
 );
 
-// add language input
-
 async function getSlides() {
 	isLoadingSlides.value = true;
 	selectedSlideId.value = undefined;
