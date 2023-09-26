@@ -89,6 +89,7 @@ async function getSlidesIfLanguageChanged() {
 		return;
 	}
 
+	editor.value?.updateModelValue(0, '');
 	await getSlides();
 	previousLoadedSlidesLanguage.value = selectedLanguage.value;
 }
@@ -105,7 +106,7 @@ async function clearFormAndEditor() {
 </script>
 
 <template>
-	<main class="grid grid-cols-[auto_1fr] mx-auto max-w-256 w-full gap-x-3 gap-y-5 px-4 pb-4 pt-[1.125rem] lg:px-0">
+	<main class="grid grid-cols-[auto_auto_1fr] mx-auto max-w-256 w-full gap-x-3 gap-y-5 px-4 pb-4 pt-[1.125rem] lg:px-0">
 		<div id="slidePageControls" class="grid col-span-full grid-cols-[min-content_1fr_max-content_max-content] w-full gap-3 md:flex">
 			<VCombobox
 				id="languageSelect"
@@ -161,8 +162,7 @@ async function clearFormAndEditor() {
 			@update:model-value="content = $event"
 		/>
 
-		<VInput id="slideName" v-model="name" label="nazwa" class="col-span-full md:col-span-1" />
-		<VCheckbox id="slideIsHidden" v-model="isHidden" :label="isHidden ? 'schowany' : 'schowaj'" />
+		<VInput id="slideName" v-model="name" label="nazwa" class="col-span-full sm:col-span-1" />
 		<VCombobox
 			id="editedLanguageSelect"
 			v-model="language"
@@ -174,6 +174,7 @@ async function clearFormAndEditor() {
 			transform-options
 			select-only
 		/>
+		<VCheckbox id="slideIsHidden" v-model="isHidden" :label="isHidden ? 'schowany' : 'schowaj'" />
 
 		<div class="col-span-full" v-html="content" />
 	</main>
