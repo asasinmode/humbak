@@ -174,7 +174,7 @@ async function clearFormAndEditor() {
 			transform-options
 			select-only
 		/>
-		<VCheckbox id="slideIsHidden" v-model="isHidden" :label="isHidden ? 'schowany' : 'schowaj'" />
+		<VSwitch id="slideIsHidden" v-model="isHidden" :label="isHidden ? 'schowany' : 'schowaj'" />
 
 		<div class="col-span-full" v-html="content" />
 	</main>

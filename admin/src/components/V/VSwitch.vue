@@ -27,7 +27,7 @@ const value = defineModel<boolean>();
 			:id="id"
 			v-model="value"
 			type="checkbox"
-			class="v-checkbox visually-hidden"
+			class="v-switch visually-hidden"
 			:title="label"
 			v-bind="$attrs"
 		>
@@ -35,7 +35,7 @@ const value = defineModel<boolean>();
 			v-if="label"
 			:id="`${id}Label`"
 			:for="id"
-			class="v-checkbox-label relative w-fit after:(absolute bottom-[calc(-0.125rem_-_2px)] left-[2px] h-[calc(2.25rem_-_4px)] w-[calc(2.25rem_-_4px)] translate-y-full rounded-1/2 bg-neutral-8 transition-transform content-empty dark:bg-neutral-2) before:(absolute bottom-[-0.125rem] h-9 w-[calc(4.5rem_-_4px)] translate-y-full rounded-full content-empty neon-neutral)"
+			class="v-switch-label relative w-fit after:(absolute bottom-[calc(-0.125rem_-_2px)] left-[2px] h-[calc(2.25rem_-_4px)] w-[calc(2.25rem_-_4px)] translate-y-full rounded-1/2 bg-neutral-8 transition-transform content-empty dark:bg-neutral-2) before:(absolute bottom-[-0.125rem] h-9 w-[calc(4.5rem_-_4px)] translate-y-full rounded-full content-empty neon-neutral)"
 			:class="labelVisuallyHidden ? 'visually-hidden' : ''"
 		>
 			{{ label }}
@@ -47,26 +47,26 @@ const value = defineModel<boolean>();
 </template>
 
 <style>
-.v-checkbox:checked + label::before {
+.v-switch:checked + label::before {
 	@apply border-green border-op-50 dark:border-op-80 bg-green bg-op-20
 }
-.v-checkbox:checked + label::after {
+.v-switch:checked + label::after {
 	@apply translate-x-full
 }
-.v-checkbox:indeterminate + label::after {
+.v-switch:indeterminate + label::after {
 	@apply translate-x-1/2
 }
-.v-checkbox:focus + label::before,
-.v-checkbox:focus-visible + label::before,
-.v-checkbox-label:hover::before {
+.v-switch:focus + label::before,
+.v-switch:focus-visible + label::before,
+.v-switch-label:hover::before {
 	@apply !border-op-100 !bg-op-30
 }
-.v-checkbox:focus + label::after,
-.v-checkbox-label:hover::after {
+.v-switch:focus + label::after,
+.v-switch-label:hover::after {
 	@apply bg-black dark:bg-white
 }
-.v-checkbox:focus + label::before,
-.v-checkbox:focus-visible + label::before {
+.v-switch:focus + label::before,
+.v-switch:focus-visible + label::before {
 	@apply outline-auto
 }
 </style>
