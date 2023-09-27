@@ -44,6 +44,12 @@ const {
 function updateValue(value?: T['value']) {
 	modelValue.value = value;
 }
+
+function getActiveDescendantId() {
+	return cursoredOverIndex.value !== undefined
+		? `${props.id}-option-${cursoredOverIndex.value}`
+		: '';
+}
 </script>
 
 <template>
@@ -55,9 +61,7 @@ function updateValue(value?: T['value']) {
 		:aria-labelledby="`${id}Label`"
 		:aria-expanded="isExpanded"
 		:aria-controls="`${id}-listbox`"
-		:aria-activedescendant="cursoredOverIndex !== undefined
-			? `${id}-option-${cursoredOverIndex}`
-			: ''"
+		:aria-activedescendant="getActiveDescendantId"
 		:readonly="selectOnly"
 		@focus="isExpanded = true"
 		@focusout="closeIfFocusedOutside"
