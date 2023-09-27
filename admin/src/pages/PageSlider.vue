@@ -35,10 +35,29 @@ const {
 			language: language.value,
 		});
 
+		const slideIndex = availableSlides.value.findIndex(element => element.name === slide.name);
+
+		if (slide.language !== selectedLanguage.value) {
+			selectedLanguage.value = slide.language;
+			await getSlides();
+			selectedSlideId.value = slide.id;
+		} else if (slideIndex === -1) {
+			availableSlides.value.push({
+				name: slide.name,
+				id: slide.id,
+				isHidden: slide.isHidden,
+			});
+			selectedSlideId.value = slide.id;
+		} else {
+			availableSlides.value[slideIndex] = {
+				name: slide.name,
+				id: slide.id,
+				isHidden: slide.isHidden,
+			};
+		}
+
 		updateValues(slide);
 		editor.value?.updateModelValue(0, slide.content);
-
-		// update slide in place
 	},
 	saveButton.value?.element
 );
