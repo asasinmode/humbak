@@ -22,6 +22,7 @@ const previousLoadedSlidesLanguage = ref('');
 
 const {
 	clearForm, sendForm, updateValues, isSaving,
+	errors,
 	name, content, isHidden, language,
 } = useForm(
 	{ name: '', content: '', language: '', isHidden: false },
@@ -101,6 +102,11 @@ async function clearFormAndEditor() {
 	selectedSlideId.value = undefined;
 	editor.value?.updateModelValue(0, '');
 }
+
+function updateContent(value: string) {
+	content.value = value;
+	errors.value.content = '';
+}
 </script>
 
 <template>
@@ -157,10 +163,18 @@ async function clearFormAndEditor() {
 			]"
 			:current-model="0"
 			:is-loading="isLoadingLanguages || isLoadingSlides"
-			@update:model-value="content = $event"
+			:error="errors.content"
+			@update:model-value="updateContent"
 		/>
 
-		<VInput id="slideName" v-model="name" label="nazwa" class="col-span-full sm:col-span-1" />
+		<VInput
+			id="slideName"
+			v-model="name"
+			label="nazwa"
+			class="col-span-full sm:col-span-1"
+			:error="errors.name"
+			@update:model-value="errors.name = ''"
+		/>
 		<VCombobox
 			id="editedLanguageSelect"
 			v-model="language"
@@ -171,8 +185,16 @@ async function clearFormAndEditor() {
 			:is-loading="isLoadingLanguages"
 			transform-options
 			select-only
+			:error="errors.language"
+			@update:model-value="errors.language = ''"
 		/>
-		<VSwitch id="slideIsHidden" v-model="isHidden" :label="isHidden ? 'schowany' : 'schowaj'" />
+		<VSwitch
+			id="slideIsHidden"
+			v-model="isHidden"
+			:label="isHidden ? 'schowany' : 'schowaj'"
+			:error="errors.isHidden"
+			@update:model-value="errors.isHidden = ''"
+		/>
 
 		<div class="col-span-full" v-html="content" />
 	</main>
