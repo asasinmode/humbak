@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import { coerce, enumType, integer, number, object, string } from 'valibot';
+import { coerce, enumType, integer, number, object, string, parse } from 'valibot';
 
 config({
 	path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development',
@@ -15,4 +15,4 @@ const schema = object({
 	ADMIN_URL: string(),
 });
 
-export const env = schema.parse(process.env);
+export const env = parse(schema, process.env);

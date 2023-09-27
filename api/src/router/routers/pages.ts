@@ -1,10 +1,11 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { eq, isNull, like, or, sql } from 'drizzle-orm';
-import { integer, merge, number, object, optional, pick, string, useDefault } from 'valibot';
+import { integer, merge, number, object, optional, pick, string } from 'valibot';
+import { wrap } from '@decs/typeschema';
 import { db } from '~/db';
 import { publicProcedure, router } from '~/router/trpc';
-import { paginationQueryInput, valibotSchemaToTRPCInput } from '~/helpers';
+import { paginationQueryInput } from '~/helpers';
 import { insertPageSchema, pages } from '~/db/schema/pages';
 import { contents, insertContentSchema } from '~/db/schema/contents';
 import { insertMenuLinkSchema, menuLinks } from '~/db/schema/menuLinks';
@@ -16,7 +17,7 @@ const upsertPageInputSchema = merge([
 ]);
 
 export const pagesRouter = router({
-	list: publicProcedure.input(valibotSchemaToTRPCInput(paginationQueryInput)).query(async (opts) => {
+	list: publicProcedure.input(wrap(paginationQueryInput)).query(async (opts) => {
 		const { query, limit: rawLimit, offset } = opts.input;
 		const limit = Math.min(rawLimit, 100);
 		const select = { id: pages.id, language: pages.language, title: pages.title, menuText: menuLinks.text };
@@ -35,7 +36,7 @@ export const pagesRouter = router({
 			.limit(limit)
 			.offset(offset * limit);
 	}),
-	count: publicProcedure.input(useDefault(paginationQueryInput.object.query, '')).query(async (opts) => {
+	count: publicProcedure.input(wrap(optional(paginationQueryInput.object.query, ''))).query(async (opts) => {
 		const result = await db
 			.select({ count: sql<number>`COUNT(*)` })
 			.from(pages)
@@ -49,7 +50,7 @@ export const pagesRouter = router({
 
 		return result[0].count;
 	}),
-	byId: publicProcedure.input(number([integer()])).query(async (opts) => {
+	byId: publicProcedure.input(wrap(number([integer()]))).query(async (opts) => {
 		const [[result], stylesheetFileData] = await Promise.all([
 			db
 				.select({
@@ -70,7 +71,7 @@ export const pagesRouter = router({
 
 		return { ...result, css: stylesheetFileData.toString() };
 	}),
-	upsert: publicProcedure.input(valibotSchemaToTRPCInput(upsertPageInputSchema)).mutation(async (opts) => {
+	upsert: publicProcedure.input(wrap(upsertPageInputSchema)).mutation(async (opts) => {
 		const { menuText, html, meta, css, ...pageFields } = opts.input;
 
 		const [{ insertId: pageId }] = await db
@@ -128,7 +129,7 @@ export const pagesRouter = router({
 
 		return { ...result, css: stylesheetFileData.toString() };
 	}),
-	delete: publicProcedure.input(number([integer()])).mutation(async (opts) => {
+	delete: publicProcedure.input(wrap(number([integer()]))).mutation(async (opts) => {
 		await db.delete(pages).where(eq(pages.id, opts.input));
 	}),
 	uniqueLanguages: publicProcedure.query(async () => {
@@ -136,7 +137,7 @@ export const pagesRouter = router({
 
 		return result.map(row => row.language);
 	}),
-	updateGlobalCss: publicProcedure.input(string()).mutation(async (opts) => {
+	updateGlobalCss: publicProcedure.input(wrap(string())).mutation(async (opts) => {
 		await writeFile(fileURLToPath(new URL('../../../public/stylesheets/global.css', import.meta.url)), opts.input);
 	}),
 });

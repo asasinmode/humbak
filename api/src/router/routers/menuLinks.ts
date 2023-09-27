@@ -1,13 +1,13 @@
 import { eq, sql } from 'drizzle-orm';
 import { array, omit, string } from 'valibot';
+import { wrap } from '@decs/typeschema';
 import { db } from '~/db';
 import { publicProcedure, router } from '~/router/trpc';
 import { pages } from '~/db/schema/pages';
 import { insertMenuLinkSchema, menuLinks } from '~/db/schema/menuLinks';
-import { valibotSchemaToTRPCInput } from '~/helpers';
 
 export const menuLinksRouter = router({
-	list: publicProcedure.input(string()).query(async (opts) => {
+	list: publicProcedure.input(wrap(string())).query(async (opts) => {
 		return db
 			.select({
 				pageId: menuLinks.pageId,
@@ -20,7 +20,7 @@ export const menuLinksRouter = router({
 			.leftJoin(pages, eq(menuLinks.pageId, pages.id))
 			.where(eq(pages.language, opts.input));
 	}),
-	update: publicProcedure.input(valibotSchemaToTRPCInput(array(omit(insertMenuLinkSchema, ['text'])))).mutation(async (opts) => {
+	update: publicProcedure.input(wrap(array(omit(insertMenuLinkSchema, ['text'])))).mutation(async (opts) => {
 		await Promise.all(opts.input.map(({ pageId, position, parentId }) => db
 			.update(menuLinks)
 			.set({ position, parentId, updatedAt: new Date() })
