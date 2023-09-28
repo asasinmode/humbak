@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { integer, number, string } from 'valibot';
-import { wrap } from '@decs/typeschema';
 import { db } from '~/db';
+import { wrap } from '~/helpers';
 import { publicProcedure, router } from '~/router/trpc';
 import { insertSlideSchema, slides } from '~/db/schema/slides';
 
