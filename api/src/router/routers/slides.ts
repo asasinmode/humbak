@@ -37,7 +37,7 @@ export const slidesRouter = router({
 			.values(opts.input)
 			.onDuplicateKeyUpdate({
 				set: {
-					...insertSlideSchema,
+					...opts.input,
 					id: undefined,
 					updatedAt: new Date(),
 				},
