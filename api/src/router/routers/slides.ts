@@ -32,25 +32,16 @@ export const slidesRouter = router({
 		return result;
 	}),
 	upsert: publicProcedure.input(wrap(insertSlideSchema)).mutation(async (opts) => {
-		console.log('inserting', opts.input);
-		try {
-			const [{ insertId: slideId }] = await db
-				.insert(slides)
-				.values(opts.input)
-				.onDuplicateKeyUpdate({
-					set: {
-						...insertSlideSchema,
-						id: undefined,
-						updatedAt: new Date(),
-					},
-				});
-		} catch (e) {
-			console.log('caught');
-			console.error(e);
-			throw e;
-		}
-
-		console.log('craeted', slideId);
+		const [{ insertId: slideId }] = await db
+			.insert(slides)
+			.values(opts.input)
+			.onDuplicateKeyUpdate({
+				set: {
+					...insertSlideSchema,
+					id: undefined,
+					updatedAt: new Date(),
+				},
+			});
 
 		const [result] = await db
 			.select({
@@ -62,8 +53,6 @@ export const slidesRouter = router({
 			})
 			.from(slides)
 			.where(eq(slides.id, slideId));
-
-		console.log('found and returning');
 
 		return result;
 	}),

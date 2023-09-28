@@ -93,9 +93,6 @@ importers:
       '@fastify/static':
         specifier: ^6.11.2
         version: 6.11.2
-      '@humbak/validation':
-        specifier: workspace:*
-        version: link:../packages/validation
       '@trpc/server':
         specifier: ^10.38.4
         version: 10.38.4
@@ -139,8 +136,6 @@ importers:
       typescript:
         specifier: ^5.2.2
         version: 5.2.2
-
-  packages/validation: {}
 
 packages:
 
