@@ -27,6 +27,8 @@ function manageReadonlyFocus() {
 	}
 	element.value?.focus();
 }
+
+defineExpose({ element });
 </script>
 
 <template>
@@ -48,6 +50,7 @@ function manageReadonlyFocus() {
 		<input
 			v-if="!readonly"
 			:id="id"
+			ref="element"
 			v-model="value"
 			class="min-w-24 w-full py-1 pl-3 shadow placeholder:text-neutral"
 			:title="label"

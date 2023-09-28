@@ -1,28 +1,34 @@
 <script setup lang="ts">
+import type { ComponentExposed } from 'vue-component-type-helpers';
+
 import VButton from '~/components/V/VButton.vue';
 import VEditor from '~/components/V/VEditor.vue';
+import VCombobox from '~/components/V/VCombobox.vue';
 
 import type { IListedSlide, IUniqueLanguage } from '~/composables/useApi';
 
 useGlobalPagesStylesheet();
 const api = useApi();
-const { toast } = useToast();
+const { confirm } = useConfirm();
+const { toast, toastGenericError } = useToast();
 
 const resetButton = ref<InstanceType<typeof VButton>>();
 const saveButton = ref<InstanceType<typeof VButton>>();
 const editor = ref<InstanceType<typeof VEditor>>();
+const slideIdSelect = ref<ComponentExposed<typeof VCombobox>>();
 
 const isLoadingLanguages = ref(false);
 const isLoadingSlides = ref(false);
 const availableSlides = ref<IListedSlide[]>([]);
 const selectedSlideId = ref<number>();
 const languages = ref<IUniqueLanguage[]>([]);
-const selectedLanguage = ref('');
-const previousLoadedSlidesLanguage = ref('');
+const selectedLanguage = ref<string>();
+const previousLoadedSlidesLanguage = ref<string>();
+const previousSelectedSlideId = ref<number>();
 
 const {
 	clearForm, sendForm, updateValues, isSaving,
-	errors,
+	errors, hasChanged,
 	name, content, isHidden, language,
 } = useForm(
 	{ name: '', content: '', language: '', isHidden: false },
@@ -76,6 +82,7 @@ onMounted(async () => {
 		getSlides();
 	} catch (e) {
 		toast('błąd przy ładowaniu języków', 'error');
+		console.error(e);
 	} finally {
 		isLoadingLanguages.value = false;
 	}
@@ -86,12 +93,20 @@ const slideSelectOptions = computed(() =>
 );
 
 async function getSlides() {
+	if (!selectedLanguage.value) {
+		toastGenericError();
+		throw new Error('calling get slides without selected language');
+	}
+
 	isLoadingSlides.value = true;
 	selectedSlideId.value = undefined;
+	previousSelectedSlideId.value = undefined;
+
 	try {
 		availableSlides.value = await api.slides.list.query(selectedLanguage.value);
 	} catch (e) {
 		toast('błąd przy ładowaniu slideów', 'error');
+		console.error(e);
 	} finally {
 		isLoadingSlides.value = false;
 	}
@@ -126,6 +141,40 @@ function updateContent(value: string) {
 	content.value = value;
 	errors.value.content = '';
 }
+
+async function selectSlide() {
+	if (typeof selectedSlideId.value !== 'number') {
+		toastGenericError();
+		throw new Error('calling select slide without selected slide id');
+	}
+
+	if (selectedSlideId.value === previousSelectedSlideId.value) {
+		return;
+	}
+	if (hasChanged()) {
+		const proceed = await confirm(slideIdSelect.value?.element, {
+			text: 'Masz niezapisane zmiany. Czy na pewno chcesz kontynuować?',
+			okText: 'kontynuuj',
+		});
+		if (!proceed) {
+			selectedSlideId.value = previousSelectedSlideId.value;
+			return;
+		}
+	}
+
+	isLoadingSlides.value = true;
+	try {
+		const slide = await api.slides.byId.query(selectedSlideId.value);
+		updateValues(slide);
+		editor.value?.updateModelValue(0, content.value);
+		previousSelectedSlideId.value = selectedSlideId.value;
+	} catch (e) {
+		toast('błąd przy ładowaniu slideu', 'error');
+		console.error(e);
+	} finally {
+		isLoadingSlides.value = false;
+	}
+}
 </script>
 
 <template>
@@ -145,7 +194,8 @@ function updateContent(value: string) {
 				@select-option="getSlidesIfLanguageChanged"
 			/>
 			<VCombobox
-				id="slideSelect"
+				id="slideIdSelect"
+				ref="slideIdSelect"
 				v-model="selectedSlideId"
 				class="col-span-3 mr-12 md:mr-auto md:w-64"
 				label="slide"
@@ -153,6 +203,7 @@ function updateContent(value: string) {
 				:is-loading="isLoadingSlides"
 				label-visually-hidden
 				select-only
+				@select-option="selectSlide"
 			>
 				<template #item="itemProps">
 					<div

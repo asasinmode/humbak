@@ -29,6 +29,7 @@ onMounted(async () => {
 		languages.value = uniqueLanguages;
 	} catch (e) {
 		toast('błąd przy ładowaniu menu', 'error');
+		console.error(e);
 	} finally {
 		isLoadingLanguages.value = false;
 	}

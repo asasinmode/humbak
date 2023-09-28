@@ -232,7 +232,7 @@ defineExpose({
 						<div class="relative h-full flex items-center gap-2 md:w-full md:justify-around md:gap-0">
 							<VLoading v-show="loadingItemId === item.id" class="absolute left-1/2 top-1/2 translate-center" />
 							<VButton
-								class="md:text-[0.85rem] neon-blue md:!px-2 md:!py-[2px]"
+								class="neon-blue md:text-[0.85rem] md:!px-2 md:!py-[2px]"
 								:class="{ 'op-0': loadingItemId === item.id }"
 								:disabled="loadingItemId === item.id"
 								@click="$emit('edit', item.id, $event.target)"
@@ -240,7 +240,7 @@ defineExpose({
 								edytuj
 							</VButton>
 							<VButton
-								class="md:text-[0.85rem] neon-red md:!px-2 md:!py-[2px]"
+								class="neon-red md:text-[0.85rem] md:!px-2 md:!py-[2px]"
 								:class="{ 'op-0': loadingItemId === item.id }"
 								:disabled="loadingItemId === item.id"
 								@click="$emit('delete', item.id, $event.target)"

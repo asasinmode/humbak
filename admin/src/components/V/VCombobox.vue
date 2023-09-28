@@ -1,4 +1,6 @@
 <script setup lang="ts" generic="T extends { text: string; value: string | number }">
+import VInput from './VInput.vue';
+
 const props = defineProps<{
 	options: Array<T | T['value']>;
 	transformOptions?: boolean;
@@ -14,6 +16,7 @@ const emit = defineEmits<{
 
 const modelValue = defineModel<T['value'] | undefined>();
 const listbox = ref<HTMLUListElement>();
+const inputComponent = ref<InstanceType<typeof VInput>>();
 
 const computedOptions = computed(() => {
 	if (props.transformOptions) {
@@ -50,11 +53,16 @@ function getActiveDescendantId() {
 		? `${props.id}-option-${cursoredOverIndex.value}`
 		: '';
 }
+
+defineExpose({
+	element: inputComponent.value?.element,
+});
 </script>
 
 <template>
 	<VInput
 		:id="id"
+		ref="inputComponent"
 		:model-value="selectOnly ? selectedOptionText : modelValue"
 		role="combobox"
 		aria-haspopup="listbox"
