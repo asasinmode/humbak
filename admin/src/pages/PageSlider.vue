@@ -83,8 +83,8 @@ const {
 	saveButton.value?.element
 );
 
-const aspectRatio = ref<string>();
-const previousAspectRatio = ref<string>();
+const aspectRatio = ref('');
+const previousAspectRatio = ref('');
 
 onMounted(async () => {
 	isLoadingLanguages.value = true;
