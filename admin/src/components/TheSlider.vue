@@ -55,29 +55,34 @@ async function loadSlides(language: string) {
 	try {
 		slides.value = await api.slides.listPublic.query(language);
 
-		if (!container.value) {
-			toastGenericError();
-			throw new Error('slider container not found');
-		}
-
 		await nextTick();
-		blazeSlider && blazeSlider.destroy();
-		blazeSlider = new BlazeSlider(container.value, {
-			all: {
-				enableAutoplay: true,
-				slidesToScroll: 1,
-				slidesToShow: 1,
-				transitionDuration: 300,
-				autoplayInterval: 1000,
-				loop: true,
-			},
-		});
+		resetSlider();
 	} catch (e) {
 		toast('błąd przy ładowaniu sliedów', 'error');
 		console.error(e);
 	} finally {
 		isLoading.value = false;
 	}
+}
+
+function resetSlider() {
+	if (!container.value) {
+		toastGenericError();
+		throw new Error('slider container not found');
+	}
+
+	blazeSlider && blazeSlider.destroy();
+	blazeSlider = new BlazeSlider(container.value, {
+		all: {
+			enableAutoplay: true,
+			slidesToScroll: 1,
+			slidesToShow: 1,
+			transitionDuration: 300,
+			autoplayInterval: 6000,
+			loop: true,
+			slideGap: '0px',
+		},
+	});
 }
 
 defineExpose({
@@ -100,7 +105,24 @@ defineExpose({
 						<div v-for="slide in slides" :key="slide.id" class="h-full w-full" v-html="slide.content" />
 					</div>
 				</div>
+
+				<button class="blaze-prev absolute left-0 top-0 hidden h-full flex-center px-2 md:flex hover:bg-white/10" tabindex="-1">
+					<div class="i-fa6-solid:angle-left h-4 w-4 text-white" />
+				</button>
+				<div class="blaze-pagination absolute bottom-2 left-1/2 flex gap-3 -translate-x-1/2" />
+				<button class="blaze-next absolute right-0 top-0 hidden h-full flex-center px-2 md:flex hover:bg-white/10" tabindex="-1">
+					<div class="i-fa6-solid:angle-right h-4 w-4 text-white" />
+				</button>
 			</div>
 		</div>
 	</article>
 </template>
+
+<style>
+.blaze-pagination button {
+	@apply p-0 w-3 h-3 rounded-[50%] bg-neutral of-hidden transition-transform text-transparent
+}
+.blaze-pagination button.active {
+	@apply bg-white scale-[1.2]
+}
+</style>
