@@ -1,6 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { slides } from '../schema/slides';
+import { slideAspectRatio } from '../schema/slideAspectRatio';
 import { db, pool } from '~/db';
 import { promptProdContinue } from '~/helpers';
 import { pages } from '~/db/schema/pages';
@@ -266,5 +267,7 @@ for (const { name, content, isHidden, language } of [
 ]) {
 	await db.insert(slides).values({ name, content, isHidden, language });
 }
+
+await db.insert(slideAspectRatio).values({ value: '1 / 2' });
 
 await pool.end();
