@@ -251,7 +251,7 @@ async function handleSlider(id?: number, content?: string) {
 
 <template>
 	<main id="content" class="grid grid-cols-[min-content_min-content_1fr] mx-auto max-w-256 w-full gap-x-3 gap-y-5 px-4 pb-4 pt-[1.125rem] sm:grid-cols-[auto_auto_auto_1fr] lg:px-0">
-		<div id="slidePageControls" class="grid col-span-full grid-cols-[min-content_1fr_max-content_max-content] w-full gap-3 md:flex">
+		<div id="slidePageControls" class="grid col-span-full grid-cols-[min-content_1fr_max-content] w-full gap-3 md:flex">
 			<VCombobox
 				id="languageSelect"
 				ref="languageSelect"
@@ -270,7 +270,7 @@ async function handleSlider(id?: number, content?: string) {
 				id="slideIdSelect"
 				ref="slideIdSelect"
 				v-model="selectedSlideId"
-				class="col-span-3 mr-12 md:mr-auto md:w-64"
+				class="col-span-2 mr-12 md:mr-auto md:w-64"
 				label="slide"
 				:options="slideSelectOptions"
 				:is-loading="isLoadingSlides"
@@ -286,11 +286,21 @@ async function handleSlider(id?: number, content?: string) {
 					{{ itemProps.text }}
 				</template>
 			</VCombobox>
-			<VButton class="col-span-2 h-9 w-9 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
-				<span class="visually-hidden">formatuj</span>
-				<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
-			</VButton>
-			<VButton ref="resetButton" class="neon-amber" @click="clearFormAndEditor">
+			<div class="flex gap-2">
+				<VDialog class="h-9 w-9 neon-blue" title="konfiguracja">
+					<template #button>
+						<span class="visually-hidden">konfiguracja</span>
+						<div class="i-mdi-wrench absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
+					</template>
+
+					content
+				</VDialog>
+				<VButton class="h-9 w-9 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
+					<span class="visually-hidden">formatuj</span>
+					<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
+				</VButton>
+			</div>
+			<VButton ref="resetButton" class="w-fit justify-self-end neon-amber" @click="clearFormAndEditor">
 				wyczyść
 			</VButton>
 			<VButton ref="saveButton" class="min-w-20 neon-green" :is-loading="isSaving" @click="sendForm">
