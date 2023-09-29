@@ -418,7 +418,7 @@ function revertAspectRatioIfUnsaved() {
 		<article
 			class="relative col-span-full w-full outline-(1px black dashed) outline dark:outline-white"
 			:style="{ paddingTop: `calc(${aspectRatio} * 100%)` }"
-			aria-hidden
+			aria-hidden="true"
 			tabindex="-1"
 		>
 			<div class="absolute inset-0" v-html="content" />

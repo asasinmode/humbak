@@ -64,10 +64,18 @@ defineExpose({
 	<article
 		class="relative w-full"
 		:style="{ paddingTop: `calc(${aspectRatio} * 100%)` }"
-		aria-hidden
+		aria-hidden="true"
 		tabindex="-1"
 	>
 		<VLoading v-if="isLoading" class="absolute inset-0" />
-		<div ref="container" class="absolute inset-0" />
+		<div ref="container" class="blaze-slider absolute inset-0">
+			<div class="blaze-container h-full">
+				<div class="blaze-track-container h-full">
+					<div class="blaze-track h-full">
+						<div v-for="slide in slides" :key="slide.id" class="h-full w-full" v-html="slide.content" />
+					</div>
+				</div>
+			</div>
+		</div>
 	</article>
 </template>
