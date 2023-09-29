@@ -263,7 +263,7 @@ async function handleSlider(id?: number, content?: string) {
 				ref="languageSelect"
 				v-model="selectedLanguage"
 				class="!min-w-20 !w-full md:!w-fit"
-				input-class="!w-full !min-w-20"
+				class-input="!w-full !min-w-20"
 				label="język"
 				:options="languages"
 				:is-loading="isLoadingLanguages"
@@ -311,7 +311,7 @@ async function handleSlider(id?: number, content?: string) {
 						id="sliderAspectRatio"
 						v-model="aspectRatio"
 						class="col-span-full mb-2"
-						input-class="!w-fit"
+						class-input="!w-fit"
 						label="aspect ratio"
 					/>
 
@@ -358,7 +358,7 @@ async function handleSlider(id?: number, content?: string) {
 			id="editedLanguageSelect"
 			v-model="language"
 			class="!min-w-20 !w-20"
-			input-class="!w-20 !min-w-20"
+			class-input="!w-20 !min-w-20"
 			label="język"
 			:options="languages"
 			:is-loading="isLoadingLanguages"

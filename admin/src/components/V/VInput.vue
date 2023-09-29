@@ -6,7 +6,7 @@ const props = defineProps<{
 	suffixIcon?: string;
 	error?: string;
 	class?: string;
-	inputClass?: string;
+	classInput?: string;
 	labelVisuallyHidden?: boolean;
 	readonly?: boolean;
 }>();
@@ -54,7 +54,7 @@ defineExpose({ element });
 			v-model="value"
 			class="min-w-24 w-full py-1 pl-3 shadow placeholder:text-neutral"
 			:title="label"
-			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-neutral', inputClass]"
+			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-neutral', classInput]"
 			:placeholder="placeholder"
 			v-bind="$attrs"
 		>
@@ -65,7 +65,7 @@ defineExpose({ element });
 			class="v-input-readonly h-9 min-w-24 w-full cursor-pointer py-1 pl-3 shadow placeholder:text-neutral focus:outline-auto"
 			tabindex="0"
 			:title="label"
-			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-neutral', inputClass]"
+			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-neutral', classInput]"
 			:aria-labelledby="`${id}Label`"
 			v-bind="$attrs"
 		>

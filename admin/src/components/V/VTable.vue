@@ -151,7 +151,7 @@ defineExpose({
 				:id="`${id}VTableLimit`"
 				v-model.number="limit"
 				class="!min-w-14 !w-14"
-				input-class="!min-w-14 !w-14 neon-neutral text-center"
+				class-input="!min-w-14 !w-14 neon-neutral text-center"
 				label="pokazywana ilość naraz"
 				:options="[5, 10, 15]"
 				transform-options
@@ -173,7 +173,7 @@ defineExpose({
 				:id="`${id}VTableOffset`"
 				:model-value="offset"
 				:label="`numer ${pluralTitle}`"
-				input-class="!min-w-14 !w-14 text-center neon-violet-5 dark:neon-violet"
+				class-input="!min-w-14 !w-14 text-center neon-violet-5 dark:neon-violet"
 				label-visually-hidden
 				@focus="updatePreviousOffset"
 				@blur="parseOffsetAndGetItems"
