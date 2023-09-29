@@ -249,11 +249,11 @@ async function saveAspectRatio() {
 	isSavingAspectRatio.value = true;
 
 	try {
-		console.log('saving');
+		await api.slides.updateAspectRatio.mutate(aspectRatio.value);
 		previousAspectRatio.value = aspectRatio.value;
 		configurationDialog.value?.close();
 	} catch (error) {
-		toastGenericError();
+		toast('błąd przy zapisywaniu aspect ratio', 'error');
 		console.error(error);
 	} finally {
 		isSavingAspectRatio.value = false;
