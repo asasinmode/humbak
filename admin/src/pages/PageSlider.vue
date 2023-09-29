@@ -293,16 +293,30 @@ async function handleSlider(id?: number, content?: string) {
 				</template>
 			</VCombobox>
 			<div class="flex gap-3">
-				<VDialog class="h-9 w-9 neon-blue" title="konfiguracja">
+				<VDialog
+					class="h-9 w-9 neon-blue"
+					title="konfiguracja"
+					class-container="grid grid-cols-2 gap-x-2 gap-y-3"
+					class-close-button="justify-self-end"
+				>
 					<template #button>
 						<span class="visually-hidden">konfiguracja</span>
 						<div class="i-mdi-wrench absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
 					</template>
 
-					content
+					<h3 class="col-span-full text-center text-5 font-600">
+						konfiguracja slidera
+					</h3>
+					<VInput
+						id="sliderAspectRatio"
+						v-model="aspectRatio"
+						class="col-span-full mb-2"
+						input-class="!w-fit"
+						label="aspect ratio"
+					/>
 
 					<template #post>
-						<VButton class="neon-green" :is-loading="isSavingAspectRatio" @click="saveAspectRatio">
+						<VButton class="justify-self-start neon-green" :is-loading="isSavingAspectRatio" @click="saveAspectRatio">
 							zapisz
 						</VButton>
 					</template>
