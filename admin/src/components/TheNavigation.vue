@@ -70,15 +70,15 @@ function lastElementFocusOut(event: FocusEvent) {
 		class="fixed z-102 grid grid-cols-2 max-h-[calc(100%_-_4rem)] w-full justify-items-center gap-x-4 gap-y-2 of-auto bg-inherit py-2 transition-transform md:(relative flex translate-y-0 justify-around bg-transparent px-[clamp(2.25rem,calc(4.13rem_+_-3.91vw),1.00rem)])"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
-		<RouterLink
+		<a
 			id="skipContent"
 			ref="firstFocusableNavElement"
-			to="#content"
+			href="#content"
 			class="fixed col-span-2 w-fit border border-black rounded-full bg-black px-3 py-1 text-5 text-white text-white shadow transition-transform -translate-y-full focus-visible:translate-y-2 focus:translate-y-2 dark:(border-white bg-white text-black) md:-translate-y-[calc(100%_+_0.5rem)] md:focus-visible:translate-y-0 md:focus:translate-y-0"
 			@click="toggleMenu(false)"
 		>
 			skip navigation
-		</RouterLink>
+		</a>
 
 		<RouterLink
 			to="/" class="col-span-2 w-fit px-3 py-1 text-5 shadow transition-margin neon-cyan"
