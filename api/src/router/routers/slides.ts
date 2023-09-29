@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { integer, number, string } from 'valibot';
 import { db } from '~/db';
-import { wrap } from '~/helpers';
+import { nonEmptyMaxLengthString, wrap } from '~/helpers';
 import { publicProcedure, router } from '~/router/trpc';
 import { insertSlideSchema, slides } from '~/db/schema/slides';
 import { slideAspectRatio } from '~/db/schema/slideAspectRatio';
@@ -79,7 +79,7 @@ export const slidesRouter = router({
 
 		return result.value;
 	}),
-	updateAspectRatio: publicProcedure.input(wrap(string())).mutation(async (opts) => {
+	updateAspectRatio: publicProcedure.input(wrap(nonEmptyMaxLengthString())).mutation(async (opts) => {
 		await db.update(slideAspectRatio).set({ value: opts.input, updatedAt: new Date() });
 	}),
 });

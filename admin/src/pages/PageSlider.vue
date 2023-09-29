@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { TRPCClientError } from '@trpc/client';
 import 'blaze-slider/dist/blaze.css';
 import BlazeSlider from 'blaze-slider';
 import type { ComponentExposed } from 'vue-component-type-helpers';
@@ -82,8 +83,8 @@ const {
 	saveButton.value?.element
 );
 
-const aspectRatio = ref('1 / 2');
-const previousAspectRatio = ref('1 / 2');
+const aspectRatio = ref<string>();
+const previousAspectRatio = ref<string>();
 
 onMounted(async () => {
 	isLoadingLanguages.value = true;
@@ -242,6 +243,7 @@ async function deleteSlide() {
 	}
 }
 
+const aspectRatioError = ref('');
 const isSavingAspectRatio = ref(false);
 const configurationDialog = ref<InstanceType<typeof VDialog>>();
 
@@ -253,14 +255,27 @@ async function saveAspectRatio() {
 		previousAspectRatio.value = aspectRatio.value;
 		configurationDialog.value?.close();
 	} catch (error) {
-		toast('błąd przy zapisywaniu aspect ratio', 'error');
-		console.error(error);
+		if (!(error instanceof TRPCClientError) || error.data.httpStatus !== 400) {
+			toast('błąd przy zapisywaniu aspect ratio', 'error');
+			console.error(error);
+			return;
+		}
+
+		aspectRatioError.value = '';
+
+		try {
+			aspectRatioError.value = JSON.parse(error.message).unknown;
+		} catch (e) {
+			toastGenericError();
+			throw new Error(`Parsing error message failed. ${error.message}`);
+		}
 	} finally {
 		isSavingAspectRatio.value = false;
 	}
 }
 
 function revertAspectRatioIfUnsaved() {
+	aspectRatioError.value = '';
 	if (aspectRatio.value !== previousAspectRatio.value) {
 		aspectRatio.value = previousAspectRatio.value;
 	}
@@ -343,6 +358,8 @@ async function handleSlider(id?: number, content?: string) {
 						class="col-span-full mb-2"
 						class-input="!w-fit"
 						label="aspect ratio"
+						:error="aspectRatioError"
+						@update:model-value="aspectRatioError = ''"
 					/>
 
 					<template #post>
@@ -423,6 +440,6 @@ async function handleSlider(id?: number, content?: string) {
 			<div class="absolute inset-0" v-html="content" />
 		</article>
 
-		<TheSlider class="col-span-full" :language="selectedLanguage" />
+		<TheSlider class="col-span-full" :language="selectedLanguage" :aspect-ratio="aspectRatio" />
 	</main>
 </template>
