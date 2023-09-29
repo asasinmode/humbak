@@ -225,6 +225,7 @@ async function deleteSlide() {
 	isLoadingSlides.value = true;
 	try {
 		await api.slides.delete.mutate(selectedSlideId.value);
+		selectedLanguage.value && theSlider.value?.handleSlide({ id: selectedSlideId.value, isHidden: true, content: '', name: '', language: selectedLanguage.value });
 
 		const slideIndex = availableSlides.value.findIndex(slide => slide.id === selectedSlideId.value);
 		selectedSlideId.value = undefined;

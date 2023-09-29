@@ -29,11 +29,18 @@ watch(() => props.language, (value) => {
 }, { immediate: true });
 
 async function handleSlide({ id, content, isHidden, language }: ISlide) {
-	if (language !== props.language || isHidden) {
+	if (language !== props.language) {
 		return;
 	}
-
 	const slideIndex = slides.value.findIndex(slide => slide.id === id);
+
+	if (isHidden) {
+		if (slideIndex === -1) {
+			return;
+		}
+		slides.value.splice(slideIndex, 1);
+	}
+
 	if (slideIndex === -1) {
 		slides.value.push({ id, content });
 	} else {
