@@ -5,6 +5,7 @@ import type { ComponentExposed } from 'vue-component-type-helpers';
 
 import VButton from '~/components/V/VButton.vue';
 import VEditor from '~/components/V/VEditor.vue';
+import VDialog from '~/components/V/VDialog.vue';
 import VCombobox from '~/components/V/VCombobox.vue';
 
 import type { IListedSlide, IPublicListedSlide, IUniqueLanguage } from '~/composables/useApi';
@@ -233,10 +234,29 @@ async function deleteSlide() {
 }
 
 const aspectRatio = ref('1 / 2');
+const previousAspectRatio = ref('1 / 2');
 const isSavingAspectRatio = ref(false);
+const configurationDialog = ref<InstanceType<typeof VDialog>>();
 
 async function saveAspectRatio() {
-	console.log('saving');
+	isSavingAspectRatio.value = true;
+
+	try {
+		console.log('saving');
+		previousAspectRatio.value = aspectRatio.value;
+		configurationDialog.value?.close();
+	} catch (error) {
+		toastGenericError();
+		console.error(error);
+	} finally {
+		isSavingAspectRatio.value = false;
+	}
+}
+
+function revertAspectRatioIfUnsaved() {
+	if (aspectRatio.value !== previousAspectRatio.value) {
+		aspectRatio.value = previousAspectRatio.value;
+	}
 }
 
 const isLoadingPreview = ref(false);
@@ -294,14 +314,16 @@ async function handleSlider(id?: number, content?: string) {
 			</VCombobox>
 			<div class="flex gap-3">
 				<VDialog
+					ref="configurationDialog"
 					class="h-9 w-9 neon-blue"
-					title="konfiguracja"
 					class-container="grid grid-cols-2 gap-x-2 gap-y-3"
 					class-close-button="justify-self-end"
 					close-button-text="zamknij"
+					@open="previousAspectRatio = aspectRatio"
+					@close="revertAspectRatioIfUnsaved"
 				>
 					<template #button>
-						<span class="visually-hidden">konfiguracja</span>
+						<span class="visually-hidden">konfiguracja slidera</span>
 						<div class="i-mdi-wrench absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
 					</template>
 
