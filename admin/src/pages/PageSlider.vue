@@ -133,6 +133,7 @@ async function getSlidesIfLanguageChanged() {
 		}
 	}
 
+	clearForm(undefined, true);
 	editor.value?.updateModelValue(0, '');
 	await getSlides();
 	previousLoadedSlidesLanguage.value = selectedLanguage.value;
