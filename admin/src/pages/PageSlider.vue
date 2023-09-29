@@ -48,8 +48,10 @@ const {
 		if (slide.language !== selectedLanguage.value) {
 			console.log('different language', slideIndex, slide);
 			selectedLanguage.value = slide.language;
+			previousLoadedSlidesLanguage.value = slide.language;
 			await getSlides();
 			selectedSlideId.value = slide.id;
+			previousSelectedSlideId.value = slide.id;
 			await selectSlide();
 		} else if (slideIndex === -1) {
 			console.log('new slide same language', slideIndex, slide);
