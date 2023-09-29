@@ -1,19 +1,34 @@
 <script setup lang="ts">
-import type { IPublicListedSlide } from '~/composables/useApi';
+import 'blaze-slider/dist/blaze.css';
+import BlazeSlider from 'blaze-slider';
 
-const props = defineProps<{
+import type { IPublicListedSlide, ISlide } from '~/composables/useApi';
+
+const props = withDefaults(defineProps<{
 	language?: string;
 	aspectRatio?: string;
-}>();
+}>(), {
+	aspectRatio: '1 / 2',
+});
 
 const isLoading = ref(true);
 const slides = ref<IPublicListedSlide[]>([]);
 
 onMounted(() => {
-	console.log('if', props.language, 'and', props.aspectRatio, 'then fetch, otherwise stay loading');
+	if (!props.language) {
+		return;
+	}
+
+	loadSlides();
+
+	// probably init blazing slider here
 });
 
-async function handleSlide(id: number, content: string) {
+async function handleSlide({ id, content, isHidden, language }: ISlide) {
+	if (language !== props.language || isHidden) {
+		return;
+	}
+
 	const slideIndex = slides.value.findIndex(slide => slide.id === id);
 
 	if (slideIndex === -1) {
@@ -24,7 +39,7 @@ async function handleSlide(id: number, content: string) {
 	console.log('changing existing slide', { id, content });
 }
 
-async function loadSlies() {
+async function loadSlides() {
 	console.log('loading slides for', props.language, 'with', props.aspectRatio);
 }
 
@@ -40,6 +55,7 @@ defineExpose({
 		aria-hidden
 		tabindex="-1"
 	>
+		<VLoading v-if="isLoading" class="absolute inset-0" />
 		<div ref="container" class="absolute inset-0" />
 	</article>
 </template>
