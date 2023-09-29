@@ -34,13 +34,11 @@ async function handleSlide({ id, content, isHidden, language }: ISlide) {
 	}
 
 	const slideIndex = slides.value.findIndex(slide => slide.id === id);
-
 	if (slideIndex === -1) {
-		console.log('new slide, pushing', { id, content });
-		return;
+		slides.value.push({ id, content });
+	} else {
+		slides.value[slideIndex] = { id, content };
 	}
-
-	console.log('changing existing slide', { id, content });
 }
 
 async function loadSlides(language: string) {
