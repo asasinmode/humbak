@@ -30,24 +30,29 @@ watch(() => props.language, (value) => {
 	loadSlides(value);
 }, { immediate: true });
 
-async function handleSlide({ id, content, isHidden, language }: ISlide) {
+function handleSlide({ id, content, isHidden, language }: ISlide) {
 	if (language !== props.language) {
 		return;
 	}
 	const slideIndex = slides.value.findIndex(slide => slide.id === id);
+	let hasToResetSlider = false;
 
 	if (isHidden) {
 		if (slideIndex === -1) {
 			return;
 		}
 		slides.value.splice(slideIndex, 1);
+		hasToResetSlider = true;
 	}
 
 	if (slideIndex === -1) {
 		slides.value.push({ id, content });
+		hasToResetSlider = true;
 	} else {
 		slides.value[slideIndex] = { id, content };
 	}
+
+	hasToResetSlider && nextTick(() => resetSlider());
 }
 
 async function loadSlides(language: string) {
