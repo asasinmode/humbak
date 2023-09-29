@@ -152,7 +152,7 @@ async function selectSlide() {
 		return;
 	}
 	if (hasChanged()) {
-		const proceed = await confirm(slideIdSelect.value?.element, {
+		const proceed = await confirm(slideIdSelect.value?.getInputRef()?.element, {
 			text: 'Masz niezapisane zmiany. Czy na pewno chcesz kontynuować?',
 			okText: 'kontynuuj',
 		});

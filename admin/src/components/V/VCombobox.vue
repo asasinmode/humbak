@@ -55,7 +55,7 @@ function getActiveDescendantId() {
 }
 
 defineExpose({
-	element: inputComponent.value?.element,
+	getInputRef: () => inputComponent.value,
 });
 </script>
 
