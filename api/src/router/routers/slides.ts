@@ -56,4 +56,7 @@ export const slidesRouter = router({
 
 		return result;
 	}),
+	delete: publicProcedure.input(wrap(number([integer()]))).mutation(async (opts) => {
+		await db.delete(slides).where(eq(slides.id, opts.input));
+	}),
 });

@@ -14,6 +14,7 @@ const { toast, toastGenericError } = useToast();
 
 const resetButton = ref<InstanceType<typeof VButton>>();
 const saveButton = ref<InstanceType<typeof VButton>>();
+const deleteButton = ref<InstanceType<typeof VButton>>();
 const editor = ref<InstanceType<typeof VEditor>>();
 const slideIdSelect = ref<ComponentExposed<typeof VCombobox>>();
 
@@ -93,7 +94,7 @@ const slideSelectOptions = computed(() =>
 );
 
 async function getSlides() {
-	if (!selectedLanguage.value) {
+	if (selectedLanguage.value === undefined) {
 		toastGenericError();
 		throw new Error('calling get slides without selected language');
 	}
@@ -143,7 +144,7 @@ function updateContent(value: string) {
 }
 
 async function selectSlide() {
-	if (typeof selectedSlideId.value !== 'number') {
+	if (selectedSlideId.value === undefined) {
 		toastGenericError();
 		throw new Error('calling select slide without selected slide id');
 	}
@@ -175,10 +176,44 @@ async function selectSlide() {
 		isLoadingSlides.value = false;
 	}
 }
+
+async function deleteSlide() {
+	if (selectedSlideId.value === undefined) {
+		toastGenericError();
+		throw new Error('calling delete slide without selected slide id');
+	}
+
+	const proceed = await confirm(
+		deleteButton.value?.element,
+		{ title: 'usuń slide', text: 'Usuwasz slide. Jesteś pewien?', okText: 'usuń' }
+	);
+	if (!proceed) {
+		return;
+	}
+
+	isLoadingSlides.value = true;
+
+	try {
+		await api.pages.delete.mutate(selectedSlideId.value);
+
+		const slideIndex = availableSlides.value.findIndex(slide => slide.id === selectedSlideId.value);
+		selectedSlideId.value = undefined;
+		previousSelectedSlideId.value = undefined;
+		availableSlides.value.splice(slideIndex, 1);
+
+		clearForm(undefined, true);
+		editor.value?.updateModelValue(0, '');
+	} catch (e) {
+		toast('błąd przy usuwaniu slideu', 'error');
+		console.error(e);
+	} finally {
+		isLoadingSlides.value = false;
+	}
+}
 </script>
 
 <template>
-	<main class="grid grid-cols-[auto_auto_1fr] mx-auto max-w-256 w-full gap-x-3 gap-y-5 px-4 pb-4 pt-[1.125rem] lg:px-0">
+	<main class="grid grid-cols-[auto_auto_1fr] mx-auto max-w-256 w-full gap-x-3 gap-y-5 px-4 pb-4 pt-[1.125rem] sm:grid-cols-[auto_auto_auto_1fr] lg:px-0">
 		<div id="slidePageControls" class="grid col-span-full grid-cols-[min-content_1fr_max-content_max-content] w-full gap-3 md:flex">
 			<VCombobox
 				id="languageSelect"
@@ -265,6 +300,15 @@ async function selectSlide() {
 			:error="errors.isHidden"
 			@update:model-value="errors.isHidden = ''"
 		/>
+		<VButton
+			v-if="selectedSlideId !== undefined"
+			ref="deleteButton"
+			class="h-fit self-end justify-self-end neon-red"
+			:is-loading="isLoadingSlides"
+			@click="deleteSlide"
+		>
+			usuń
+		</VButton>
 
 		<div class="col-span-full" v-html="content" />
 	</main>
