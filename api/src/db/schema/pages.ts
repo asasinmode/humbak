@@ -18,6 +18,6 @@ export const pages = mysqlTable('pages', {
 export const insertPageSchema = object({
 	id: optional(number([integer()])),
 	language: nonEmptyMaxLengthString(32),
-	title: nonEmptyMaxLengthString(256),
-	slug: nonEmptyMaxLengthString(256),
+	title: nonEmptyMaxLengthString(),
+	slug: nonEmptyMaxLengthString(),
 });

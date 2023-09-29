@@ -35,7 +35,7 @@ export const paginationQueryInput = transform(object({
 	offset: offset === undefined ? 0 : offset,
 }));
 
-export function nonEmptyMaxLengthString(length: number) {
+export function nonEmptyMaxLengthString(length = 256) {
 	return string([minLength(1, 'nie może być puste'), maxLength(length, `maksymalna długość: ${32}`)]);
 }
 

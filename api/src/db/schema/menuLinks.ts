@@ -14,7 +14,7 @@ export const menuLinks = mysqlTable('menuLinks', {
 
 export const insertMenuLinkSchema = object({
 	pageId: number([integer()]),
-	text: nonEmptyMaxLengthString(256),
+	text: nonEmptyMaxLengthString(),
 	position: number([integer()]),
 	parentId: optional(nullable(number())),
 });

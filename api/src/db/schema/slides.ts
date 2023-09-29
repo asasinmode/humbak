@@ -19,7 +19,7 @@ export const slides = mysqlTable('slides', {
 
 export const insertSlideSchema = object({
 	id: optional(number([integer()])),
-	name: nonEmptyMaxLengthString(256),
+	name: nonEmptyMaxLengthString(),
 	language: nonEmptyMaxLengthString(32),
 	content: optional(string()),
 	isHidden: booleanValidation(),
