@@ -88,6 +88,7 @@ export const useForm = <T extends Record<string, unknown>>(
 			fields[key].value = data[key];
 			initValue[key] = data[key];
 		}
+		clearErrors();
 	}
 
 	function hasChanged() {
