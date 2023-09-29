@@ -11,18 +11,22 @@ const props = withDefaults(defineProps<{
 	aspectRatio: '1 / 2',
 });
 
+const api = useApi();
+const { toast } = useToast();
+
 const isLoading = ref(true);
 const slides = ref<IPublicListedSlide[]>([]);
 
 onMounted(() => {
-	if (!props.language) {
+	console.log('i think i need to init slider here');
+});
+
+watch(() => props.language, (value) => {
+	if (!value) {
 		return;
 	}
-
-	loadSlides();
-
-	// probably init blazing slider here
-});
+	loadSlides(value);
+}, { immediate: true });
 
 async function handleSlide({ id, content, isHidden, language }: ISlide) {
 	if (language !== props.language || isHidden) {
@@ -39,8 +43,16 @@ async function handleSlide({ id, content, isHidden, language }: ISlide) {
 	console.log('changing existing slide', { id, content });
 }
 
-async function loadSlides() {
-	console.log('loading slides for', props.language, 'with', props.aspectRatio);
+async function loadSlides(language: string) {
+	isLoading.value = true;
+	try {
+		slides.value = await api.slides.listPublic.query(language);
+	} catch (e) {
+		toast('błąd przy ładowaniu sliedów', 'error');
+		console.error(e);
+	} finally {
+		isLoading.value = false;
+	}
 }
 
 defineExpose({
