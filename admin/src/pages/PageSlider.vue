@@ -256,8 +256,8 @@ async function handleSlider(id?: number, content?: string) {
 				id="languageSelect"
 				ref="languageSelect"
 				v-model="selectedLanguage"
-				class="!min-w-20 !w-20"
-				input-class="!w-20 !min-w-20"
+				class="!min-w-20 !w-full md:!w-fit"
+				input-class="!w-full !min-w-20 md:!w-fit"
 				label="język"
 				:options="languages"
 				:is-loading="isLoadingLanguages"
@@ -286,7 +286,7 @@ async function handleSlider(id?: number, content?: string) {
 					{{ itemProps.text }}
 				</template>
 			</VCombobox>
-			<div class="flex gap-2">
+			<div class="flex gap-3">
 				<VDialog class="h-9 w-9 neon-blue" title="konfiguracja">
 					<template #button>
 						<span class="visually-hidden">konfiguracja</span>
