@@ -148,7 +148,7 @@ async function clearFormAndLoadedPage() {
 </script>
 
 <template>
-	<main class="px-2 pb-4 pt-[1.125rem] md:px-0">
+	<main id="content" class="px-2 pb-4 pt-[1.125rem] md:px-0">
 		<VTable
 			id="pages"
 			ref="table"

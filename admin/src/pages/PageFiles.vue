@@ -2,7 +2,7 @@
 </script>
 
 <template>
-	<main class="flex-center">
+	<main id="content" class="flex-center">
 		pliki
 	</main>
 </template>

@@ -14,7 +14,7 @@ const backTarget: string = history.state.back ?? '/';
 </script>
 
 <template>
-	<main class="flex-center flex-col gap-4">
+	<main id="content" class="flex-center flex-col gap-4">
 		<h1 class="text-6xl font-bold">
 			{{ status }}
 		</h1>

@@ -71,8 +71,17 @@ function lastElementFocusOut(event: FocusEvent) {
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<RouterLink
+			id="skipContent"
 			ref="firstFocusableNavElement"
-			to="/" class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-cyan"
+			to="#content"
+			class="fixed col-span-2 w-fit rounded-full bg-black px-3 py-1 text-5 text-white text-white shadow transition-transform -translate-y-full focus-visible:translate-y-2 focus:translate-y-2 dark:(bg-white text-black)"
+			@click="toggleMenu(false)"
+		>
+			skip navigation
+		</RouterLink>
+
+		<RouterLink
+			to="/" class="col-span-2 w-fit px-3 py-1 text-5 shadow transition-margin neon-cyan"
 			@click="toggleMenu(false)"
 		>
 			<div class="i-solar-document-text-linear mr-[2px] inline-block align-sub text-cyan" />
@@ -145,5 +154,9 @@ function lastElementFocusOut(event: FocusEvent) {
 }
 #menuToggle.is-expanded {
 	transition: background var(--nav-transition-duration) ease;
+}
+
+#skipContent:focus + a, #skipContent:focus-visible + a {
+	margin-top: 3.125rem;
 }
 </style>

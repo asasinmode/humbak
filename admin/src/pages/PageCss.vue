@@ -32,7 +32,7 @@ function updateModelValue(newValue: string) {
 </script>
 
 <template>
-	<main class="grid grid-cols-[1fr_max-content] grid-rows-[min-content_1fr] mx-auto max-w-256 min-h-inherit w-full gap-x-3 gap-y-5 px-4 pb-4 pt-[1.125rem] lg:px-0">
+	<main id="content" class="grid grid-cols-[1fr_max-content] grid-rows-[min-content_1fr] mx-auto max-w-256 min-h-inherit w-full gap-x-3 gap-y-5 px-4 pb-4 pt-[1.125rem] lg:px-0">
 		<VButton class="h-9 w-9 justify-self-end p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
 			<span class="visually-hidden">formatuj</span>
 			<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-5 w-5 translate-center" />

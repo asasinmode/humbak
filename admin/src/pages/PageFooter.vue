@@ -2,7 +2,7 @@
 </script>
 
 <template>
-	<main class="flex-center">
+	<main id="content" class="flex-center">
 		stopka
 	</main>
 </template>

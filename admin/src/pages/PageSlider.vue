@@ -247,7 +247,7 @@ async function handleSlider(id?: number, content?: string) {
 </script>
 
 <template>
-	<main class="grid grid-cols-[auto_auto_1fr] mx-auto max-w-256 w-full gap-x-3 gap-y-5 px-4 pb-4 pt-[1.125rem] sm:grid-cols-[auto_auto_auto_1fr] lg:px-0">
+	<main id="content" class="grid grid-cols-[auto_auto_1fr] mx-auto max-w-256 w-full gap-x-3 gap-y-5 px-4 pb-4 pt-[1.125rem] sm:grid-cols-[auto_auto_auto_1fr] lg:px-0">
 		<div id="slidePageControls" class="grid col-span-full grid-cols-[min-content_1fr_max-content_max-content] w-full gap-3 md:flex">
 			<VCombobox
 				id="languageSelect"
