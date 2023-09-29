@@ -74,7 +74,7 @@ function lastElementFocusOut(event: FocusEvent) {
 			id="skipContent"
 			ref="firstFocusableNavElement"
 			to="#content"
-			class="fixed col-span-2 w-fit rounded-full bg-black px-3 py-1 text-5 text-white text-white shadow transition-transform -translate-y-full focus-visible:translate-y-2 focus:translate-y-2 dark:(bg-white text-black)"
+			class="fixed col-span-2 w-fit border border-black rounded-full bg-black px-3 py-1 text-5 text-white text-white shadow transition-transform -translate-y-full focus-visible:translate-y-2 focus:translate-y-2 dark:(border-white bg-white text-black) md:-translate-y-[calc(100%_+_0.5rem)] md:focus-visible:translate-y-0 md:focus:translate-y-0"
 			@click="toggleMenu(false)"
 		>
 			skip navigation
@@ -156,7 +156,9 @@ function lastElementFocusOut(event: FocusEvent) {
 	transition: background var(--nav-transition-duration) ease;
 }
 
-#skipContent:focus + a, #skipContent:focus-visible + a {
-	margin-top: 3.125rem;
+@media (max-width: 767px){
+	#skipContent:focus + a, #skipContent:focus-visible + a {
+		margin-top: 3.125rem;
+	}
 }
 </style>
