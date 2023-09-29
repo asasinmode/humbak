@@ -46,7 +46,6 @@ const {
 		const slideIndex = availableSlides.value.findIndex(element => element.name === slide.name);
 
 		if (slide.language !== selectedLanguage.value) {
-			console.log('different language', slideIndex, slide);
 			selectedLanguage.value = slide.language;
 			previousLoadedSlidesLanguage.value = slide.language;
 			await getSlides();
@@ -148,6 +147,7 @@ async function clearFormAndEditor() {
 	}
 
 	selectedSlideId.value = undefined;
+	previousSelectedSlideId.value = undefined;
 	editor.value?.updateModelValue(0, '');
 }
 
