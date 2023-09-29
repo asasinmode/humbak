@@ -43,9 +43,7 @@ function handleSlide({ id, content, isHidden, language }: ISlide) {
 		}
 		slides.value.splice(slideIndex, 1);
 		hasToResetSlider = true;
-	}
-
-	if (slideIndex === -1) {
+	} else if (slideIndex === -1) {
 		slides.value.push({ id, content });
 		hasToResetSlider = true;
 	} else {
