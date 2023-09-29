@@ -82,10 +82,19 @@ const {
 	saveButton.value?.element
 );
 
+const aspectRatio = ref('1 / 2');
+const previousAspectRatio = ref('1 / 2');
+
 onMounted(async () => {
 	isLoadingLanguages.value = true;
 	try {
-		languages.value = await api.pages.uniqueLanguages.query();
+		const [uniqueLanguages, savedAspectRatio] = await Promise.all([
+			api.pages.uniqueLanguages.query(),
+			api.slides.aspectRatio.query(),
+		]);
+		languages.value = uniqueLanguages;
+		aspectRatio.value = savedAspectRatio;
+		previousAspectRatio.value = savedAspectRatio;
 		if (!languages.value.length) {
 			return;
 		}
@@ -233,8 +242,6 @@ async function deleteSlide() {
 	}
 }
 
-const aspectRatio = ref('1 / 2');
-const previousAspectRatio = ref('1 / 2');
 const isSavingAspectRatio = ref(false);
 const configurationDialog = ref<InstanceType<typeof VDialog>>();
 
