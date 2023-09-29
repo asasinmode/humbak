@@ -16,6 +16,7 @@ const resetButton = ref<InstanceType<typeof VButton>>();
 const saveButton = ref<InstanceType<typeof VButton>>();
 const deleteButton = ref<InstanceType<typeof VButton>>();
 const editor = ref<InstanceType<typeof VEditor>>();
+const languageSelect = ref<ComponentExposed<typeof VCombobox>>();
 const slideIdSelect = ref<ComponentExposed<typeof VCombobox>>();
 
 const isLoadingLanguages = ref(false);
@@ -45,10 +46,13 @@ const {
 		const slideIndex = availableSlides.value.findIndex(element => element.name === slide.name);
 
 		if (slide.language !== selectedLanguage.value) {
+			console.log('different language', slideIndex, slide);
 			selectedLanguage.value = slide.language;
 			await getSlides();
 			selectedSlideId.value = slide.id;
+			await selectSlide();
 		} else if (slideIndex === -1) {
+			console.log('new slide same language', slideIndex, slide);
 			availableSlides.value.push({
 				name: slide.name,
 				id: slide.id,
@@ -56,6 +60,7 @@ const {
 			});
 			selectedSlideId.value = slide.id;
 		} else {
+			console.log('existing slide', slideIndex, slide);
 			availableSlides.value[slideIndex] = {
 				name: slide.name,
 				id: slide.id,
@@ -117,10 +122,15 @@ async function getSlidesIfLanguageChanged() {
 	if (previousLoadedSlidesLanguage.value === selectedLanguage.value) {
 		return;
 	}
-	const proceed = await clearForm(resetButton.value?.element);
-	if (!proceed) {
-		selectedLanguage.value = previousLoadedSlidesLanguage.value;
-		return;
+	if (hasChanged()) {
+		const proceed = await confirm(languageSelect.value?.getInputRef()?.element, {
+			text: 'Masz niezapisane zmiany. Czy na pewno chcesz kontynuować?',
+			okText: 'kontynuuj',
+		});
+		if (!proceed) {
+			selectedLanguage.value = previousLoadedSlidesLanguage.value;
+			return;
+		}
 	}
 
 	editor.value?.updateModelValue(0, '');
@@ -194,7 +204,7 @@ async function deleteSlide() {
 	isLoadingSlides.value = true;
 
 	try {
-		await api.pages.delete.mutate(selectedSlideId.value);
+		await api.slides.delete.mutate(selectedSlideId.value);
 
 		const slideIndex = availableSlides.value.findIndex(slide => slide.id === selectedSlideId.value);
 		selectedSlideId.value = undefined;
@@ -217,6 +227,7 @@ async function deleteSlide() {
 		<div id="slidePageControls" class="grid col-span-full grid-cols-[min-content_1fr_max-content_max-content] w-full gap-3 md:flex">
 			<VCombobox
 				id="languageSelect"
+				ref="languageSelect"
 				v-model="selectedLanguage"
 				class="!min-w-20 !w-20"
 				input-class="!w-20 !min-w-20"
