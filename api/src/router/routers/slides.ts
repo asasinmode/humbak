@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { integer, number, string } from 'valibot';
 import { db } from '~/db';
 import { nonEmptyMaxLengthString, wrap } from '~/helpers';
@@ -26,7 +26,10 @@ export const slidesRouter = router({
 			})
 			.from(slides)
 			.orderBy(slides.createdAt)
-			.where(eq(slides.language, opts.input));
+			.where(and(
+				eq(slides.language, opts.input),
+				eq(slides.isHidden, false)
+			));
 	}),
 	byId: publicProcedure.input(wrap(number([integer()]))).query(async (opts) => {
 		const [result] = await db
