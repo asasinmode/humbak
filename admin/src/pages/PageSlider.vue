@@ -232,8 +232,14 @@ async function deleteSlide() {
 	}
 }
 
-const isLoadingPreview = ref(false);
 const aspectRatio = ref('1 / 2');
+const isSavingAspectRatio = ref(false);
+
+async function saveAspectRatio() {
+	console.log('saving');
+}
+
+const isLoadingPreview = ref(false);
 const previewSlides = ref<IPublicListedSlide[]>([]);
 
 async function handleSlider(id?: number, content?: string) {
@@ -257,7 +263,7 @@ async function handleSlider(id?: number, content?: string) {
 				ref="languageSelect"
 				v-model="selectedLanguage"
 				class="!min-w-20 !w-full md:!w-fit"
-				input-class="!w-full !min-w-20 md:!w-fit"
+				input-class="!w-full !min-w-20"
 				label="język"
 				:options="languages"
 				:is-loading="isLoadingLanguages"
@@ -294,6 +300,12 @@ async function handleSlider(id?: number, content?: string) {
 					</template>
 
 					content
+
+					<template #post>
+						<VButton class="neon-green" :is-loading="isSavingAspectRatio" @click="saveAspectRatio">
+							zapisz
+						</VButton>
+					</template>
 				</VDialog>
 				<VButton class="h-9 w-9 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
 					<span class="visually-hidden">formatuj</span>
