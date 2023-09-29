@@ -7,18 +7,20 @@ export const useCombobox = <T>(
 ) => {
 	const isExpanded = ref(false);
 	const cursoredOverIndex = ref<number>();
-	const selectedOptionText = ref<string>();
 
 	watch(modelValue, (value) => {
 		cursoredOverIndex.value = undefined;
-		selectedOptionText.value = undefined;
 		for (let i = 0; i < computedOptions.value.length; i++) {
 			if (computedOptions.value[i].value === value) {
 				cursoredOverIndex.value = i;
-				selectedOptionText.value = computedOptions.value[i].text;
 				break;
 			}
 		}
+	});
+
+	const selectedOptionText = computed(() => {
+		const selectedOptionIndex = computedOptions.value.findIndex(option => option.value === modelValue.value);
+		return computedOptions.value[selectedOptionIndex]?.text;
 	});
 
 	function moveCursor(value: number) {
@@ -44,11 +46,8 @@ export const useCombobox = <T>(
 	function selectOption(index?: number, skipEmit = false, collapse = true) {
 		if (index === undefined) {
 			modelValue.value = undefined;
-			selectedOptionText.value = undefined;
 		} else {
-			const { text, value } = computedOptions.value[index];
-			modelValue.value = value;
-			selectedOptionText.value = text;
+			modelValue.value = computedOptions.value[index].value;
 		}
 
 		if (collapse) {
