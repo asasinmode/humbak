@@ -43,7 +43,7 @@ const {
 			language: language.value,
 		});
 
-		const slideIndex = availableSlides.value.findIndex(element => element.name === slide.name);
+		const slideIndex = availableSlides.value.findIndex(element => element.id === slide.id);
 
 		if (slide.language !== selectedLanguage.value) {
 			selectedLanguage.value = slide.language;
@@ -53,15 +53,14 @@ const {
 			previousSelectedSlideId.value = slide.id;
 			await selectSlide();
 		} else if (slideIndex === -1) {
-			console.log('new slide same language', slideIndex, slide);
 			availableSlides.value.push({
 				name: slide.name,
 				id: slide.id,
 				isHidden: slide.isHidden,
 			});
 			selectedSlideId.value = slide.id;
+			previousSelectedSlideId.value = slide.id;
 		} else {
-			console.log('existing slide', slideIndex, slide);
 			availableSlides.value[slideIndex] = {
 				name: slide.name,
 				id: slide.id,
