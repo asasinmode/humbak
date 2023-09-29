@@ -21,6 +21,7 @@ const slideIdSelect = ref<ComponentExposed<typeof VCombobox>>();
 
 const isLoadingLanguages = ref(false);
 const isLoadingSlides = ref(false);
+const isLoadingSlide = ref(false);
 const availableSlides = ref<IListedSlide[]>([]);
 const selectedSlideId = ref<number>();
 const languages = ref<IUniqueLanguage[]>([]);
@@ -105,6 +106,7 @@ async function getSlides() {
 	}
 
 	isLoadingSlides.value = true;
+	isLoadingSlide.value = true;
 	selectedSlideId.value = undefined;
 	previousSelectedSlideId.value = undefined;
 
@@ -115,6 +117,7 @@ async function getSlides() {
 		console.error(e);
 	} finally {
 		isLoadingSlides.value = false;
+		isLoadingSlide.value = false;
 	}
 }
 
@@ -175,7 +178,7 @@ async function selectSlide() {
 		}
 	}
 
-	isLoadingSlides.value = true;
+	isLoadingSlide.value = true;
 	try {
 		const slide = await api.slides.byId.query(selectedSlideId.value);
 		updateValues(slide);
@@ -185,7 +188,7 @@ async function selectSlide() {
 		toast('błąd przy ładowaniu slideu', 'error');
 		console.error(e);
 	} finally {
-		isLoadingSlides.value = false;
+		isLoadingSlide.value = false;
 	}
 }
 
@@ -203,8 +206,8 @@ async function deleteSlide() {
 		return;
 	}
 
+	isLoadingSlide.value = true;
 	isLoadingSlides.value = true;
-
 	try {
 		await api.slides.delete.mutate(selectedSlideId.value);
 
@@ -220,6 +223,7 @@ async function deleteSlide() {
 		console.error(e);
 	} finally {
 		isLoadingSlides.value = false;
+		isLoadingSlide.value = false;
 	}
 }
 </script>
@@ -280,7 +284,7 @@ async function deleteSlide() {
 				{ language: 'html', value: content },
 			]"
 			:current-model="0"
-			:is-loading="isLoadingLanguages || isLoadingSlides"
+			:is-loading="isLoadingSlide"
 			:error="errors.content"
 			@update:model-value="updateContent"
 		/>
@@ -317,7 +321,7 @@ async function deleteSlide() {
 			v-if="selectedSlideId !== undefined"
 			ref="deleteButton"
 			class="h-fit self-end justify-self-end neon-red"
-			:is-loading="isLoadingSlides"
+			:is-loading="isLoadingSlide"
 			@click="deleteSlide"
 		>
 			usuń
