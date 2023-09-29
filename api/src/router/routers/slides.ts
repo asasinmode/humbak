@@ -4,6 +4,7 @@ import { db } from '~/db';
 import { wrap } from '~/helpers';
 import { publicProcedure, router } from '~/router/trpc';
 import { insertSlideSchema, slides } from '~/db/schema/slides';
+import { slideAspectRatio } from '~/db/schema/slideAspectRatio';
 
 export const slidesRouter = router({
 	list: publicProcedure.input(wrap(string())).query(async (opts) => {
@@ -68,5 +69,17 @@ export const slidesRouter = router({
 	}),
 	delete: publicProcedure.input(wrap(number([integer()]))).mutation(async (opts) => {
 		await db.delete(slides).where(eq(slides.id, opts.input));
+	}),
+	aspectRatio: publicProcedure.query(async () => {
+		const [result] = await db
+			.select({
+				value: slideAspectRatio.value,
+			})
+			.from(slideAspectRatio);
+
+		return result.value;
+	}),
+	updateAspectRatio: publicProcedure.input(wrap(string())).mutation(async (opts) => {
+		await db.update(slideAspectRatio).set({ value: opts.input, updatedAt: new Date() });
 	}),
 });
