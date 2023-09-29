@@ -233,6 +233,7 @@ async function deleteSlide() {
 }
 
 const isLoadingPreview = ref(false);
+const aspectRatio = ref('1 / 2');
 const previewSlides = ref<IPublicListedSlide[]>([]);
 
 async function handleSlider(id?: number, content?: string) {
@@ -242,6 +243,8 @@ async function handleSlider(id?: number, content?: string) {
 		console.log('new or updated', { id, content });
 		return;
 	}
+
+	isLoadingPreview.value = true;
 	console.log('fetching for', selectedLanguage.value);
 }
 </script>
@@ -345,6 +348,15 @@ async function handleSlider(id?: number, content?: string) {
 			usuń
 		</VButton>
 
-		<div class="col-span-full" v-html="content" />
+		<article
+			class="relative col-span-full w-full outline-(1px black dashed) outline dark:outline-white"
+			:style="{ paddingTop: `calc(${aspectRatio} * 100%)` }"
+			aria-hidden
+			tabindex="-1"
+		>
+			<div class="absolute inset-0" v-html="content" />
+		</article>
+
+		<TheSlider :language="selectedLanguage" />
 	</main>
 </template>

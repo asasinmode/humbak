@@ -15,6 +15,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     TheNavigation: typeof import('./../components/TheNavigation.vue')['default']
     TheSettings: typeof import('./../components/TheSettings.vue')['default']
+    TheSlider: typeof import('./../components/TheSlider.vue')['default']
     TheThemeToggle: typeof import('./../components/TheThemeToggle.vue')['default']
     TheToasts: typeof import('./../components/TheToasts.vue')['default']
     VAlert: typeof import('./../components/V/VAlert.vue')['default']
