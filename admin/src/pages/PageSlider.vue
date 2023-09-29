@@ -1,11 +1,13 @@
 <script setup lang="ts">
+import 'blaze-slider/dist/blaze.css';
+import BlazeSlider from 'blaze-slider';
 import type { ComponentExposed } from 'vue-component-type-helpers';
 
 import VButton from '~/components/V/VButton.vue';
 import VEditor from '~/components/V/VEditor.vue';
 import VCombobox from '~/components/V/VCombobox.vue';
 
-import type { IListedSlide, IUniqueLanguage } from '~/composables/useApi';
+import type { IListedSlide, IPublicListedSlide, IUniqueLanguage } from '~/composables/useApi';
 
 useGlobalPagesStylesheet();
 const api = useApi();
@@ -61,12 +63,14 @@ const {
 			});
 			selectedSlideId.value = slide.id;
 			previousSelectedSlideId.value = slide.id;
+			handleSlider(slide.id, slide.content);
 		} else {
 			availableSlides.value[slideIndex] = {
 				name: slide.name,
 				id: slide.id,
 				isHidden: slide.isHidden,
 			};
+			handleSlider(slide.id, slide.content);
 		}
 
 		updateValues(slide);
@@ -112,6 +116,7 @@ async function getSlides() {
 
 	try {
 		availableSlides.value = await api.slides.list.query(selectedLanguage.value);
+		handleSlider();
 	} catch (e) {
 		toast('błąd przy ładowaniu slideów', 'error');
 		console.error(e);
@@ -225,6 +230,19 @@ async function deleteSlide() {
 		isLoadingSlides.value = false;
 		isLoadingSlide.value = false;
 	}
+}
+
+const isLoadingPreview = ref(false);
+const previewSlides = ref<IPublicListedSlide[]>([]);
+
+async function handleSlider(id?: number, content?: string) {
+	console.log('gotta update slider preview', previewSlides.value);
+
+	if (id !== undefined && content !== undefined) {
+		console.log('new or updated', { id, content });
+		return;
+	}
+	console.log('fetching for', selectedLanguage.value);
 }
 </script>
 

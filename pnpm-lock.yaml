@@ -29,6 +29,9 @@ importers:
       '@trpc/client':
         specifier: ^10.38.4
         version: 10.38.4(@trpc/server@10.38.4)
+      blaze-slider:
+        specifier: ^1.9.3
+        version: 1.9.3
       pinia:
         specifier: ^2.1.6
         version: 2.1.6(typescript@5.2.2)(vue@3.3.4)
@@ -1641,6 +1644,10 @@ packages:
     resolution: {integrity: sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==}
     engines: {node: '>=8'}
     dev: true
+
+  /blaze-slider@1.9.3:
+    resolution: {integrity: sha512-u8i4AhbjICF6gpyKeMEg65kupT2JoN+E7yOJjOt3ocUtS+r4SKYU79DPNSBV2Zb61fix4ChIxfPyyRUSmLao5g==}
+    dev: false
 
   /boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}

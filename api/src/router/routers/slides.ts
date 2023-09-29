@@ -17,6 +17,16 @@ export const slidesRouter = router({
 			.orderBy(slides.createdAt)
 			.where(eq(slides.language, opts.input));
 	}),
+	listPublic: publicProcedure.input(wrap(string())).query(async (opts) => {
+		return db
+			.select({
+				id: slides.id,
+				content: slides.content,
+			})
+			.from(slides)
+			.orderBy(slides.createdAt)
+			.where(eq(slides.language, opts.input));
+	}),
 	byId: publicProcedure.input(wrap(number([integer()]))).query(async (opts) => {
 		const [result] = await db
 			.select({
