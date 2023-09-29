@@ -24,12 +24,14 @@ const slideIdSelect = ref<ComponentExposed<typeof VCombobox>>();
 const isLoadingLanguages = ref(false);
 const isLoadingSlides = ref(false);
 const isLoadingSlide = ref(false);
+
 const availableSlides = ref<IListedSlide[]>([]);
 const selectedSlideId = ref<number>();
+const previousSelectedSlideId = ref<number>();
+
 const languages = ref<IUniqueLanguage[]>([]);
 const selectedLanguage = ref<string>();
-const previousLoadedSlidesLanguage = ref<string>();
-const previousSelectedSlideId = ref<number>();
+const previousSelectedLanguage = ref<string>();
 
 const {
 	clearForm, sendForm, updateValues, isSaving,
@@ -50,7 +52,7 @@ const {
 
 		if (slide.language !== selectedLanguage.value) {
 			selectedLanguage.value = slide.language;
-			previousLoadedSlidesLanguage.value = slide.language;
+			previousSelectedLanguage.value = slide.language;
 			await getSlides();
 			selectedSlideId.value = slide.id;
 			previousSelectedSlideId.value = slide.id;
@@ -88,7 +90,7 @@ onMounted(async () => {
 		}
 
 		selectedLanguage.value = languages.value[0];
-		previousLoadedSlidesLanguage.value = selectedLanguage.value;
+		previousSelectedLanguage.value = selectedLanguage.value;
 
 		getSlides();
 	} catch (e) {
@@ -110,7 +112,6 @@ async function getSlides() {
 	}
 
 	isLoadingSlides.value = true;
-	isLoadingSlide.value = true;
 	selectedSlideId.value = undefined;
 	previousSelectedSlideId.value = undefined;
 
@@ -122,12 +123,11 @@ async function getSlides() {
 		console.error(e);
 	} finally {
 		isLoadingSlides.value = false;
-		isLoadingSlide.value = false;
 	}
 }
 
 async function getSlidesIfLanguageChanged() {
-	if (previousLoadedSlidesLanguage.value === selectedLanguage.value) {
+	if (previousSelectedLanguage.value === selectedLanguage.value) {
 		return;
 	}
 	if (hasChanged()) {
@@ -136,7 +136,7 @@ async function getSlidesIfLanguageChanged() {
 			okText: 'kontynuuj',
 		});
 		if (!proceed) {
-			selectedLanguage.value = previousLoadedSlidesLanguage.value;
+			selectedLanguage.value = previousSelectedLanguage.value;
 			return;
 		}
 	}
@@ -144,7 +144,7 @@ async function getSlidesIfLanguageChanged() {
 	clearForm(undefined, true);
 	editor.value?.updateModelValue(0, '');
 	await getSlides();
-	previousLoadedSlidesLanguage.value = selectedLanguage.value;
+	previousSelectedLanguage.value = selectedLanguage.value;
 }
 
 async function clearFormAndEditor() {
