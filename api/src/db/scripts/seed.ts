@@ -242,25 +242,31 @@ for (const { pageData, text, parentId, position } of [
 
 for (const { name, content, isHidden, language } of [
 	{
-		name: 'slide1', language: 'pl', content: `<div>
+		name: 'slide1',
+		language: 'pl',
+		content: `<div class="flex-center w-full h-full" style="background-color: hsla(0, 100%, 50%, 0.3)">
 <h6>1</h6>
 </div>`,
 	},
 	{
-		name: 'slide2', language: 'pl', content: `<div>
+		name: 'slide2',
+		language: 'pl',
+		content: `<div class="flex-center w-full h-full" style="background-color: hsla(120, 100%, 50%, 0.3)">
 <h6>2</h6>
 </div>`,
 	},
 	{
 		name: 'slide3',
 		language: 'pl',
-		content: `<div>
+		content: `<div class="flex-center w-full h-full" style="background-color: hsla(240, 100%, 50%, 0.3)">
 <h6>3</h6>
 </div>`,
 		isHidden: true,
 	},
 	{
-		name: 'slideOne', language: 'en', content: `<div>
+		name: 'slideOne',
+		language: 'en',
+		content: `<div class="flex-center w-full h-full" style="background-color: hsla(60, 100%, 50%, 0.3)">
 <h6>One</h6>
 </div>`,
 	},
