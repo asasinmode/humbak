@@ -13,6 +13,11 @@ const props = defineProps<{
 	closeButtonText?: string;
 }>();
 
+const emit = defineEmits<{
+	open: [];
+	close: [];
+}>();
+
 type Focusable = Element & {
 	focus: () => void;
 };
@@ -24,6 +29,7 @@ const closeButton = ref<InstanceType<typeof VButton>>();
 
 function open() {
 	isOpen.value = true;
+	emit('open');
 	nextTick(() => dialog.value && focusableElements(dialog.value)[0].focus());
 
 	document.body.style.overflow = 'hidden';
@@ -32,7 +38,6 @@ function open() {
 }
 
 function close() {
-	console.log('closing?');
 	if (props.loading) {
 		return;
 	}
@@ -49,6 +54,7 @@ function close() {
 
 	props.closeAction && props.closeAction();
 	isOpen.value = false;
+	emit('close');
 }
 
 function closeIfEscape(event: KeyboardEvent) {
