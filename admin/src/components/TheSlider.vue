@@ -12,13 +12,15 @@ const props = withDefaults(defineProps<{
 });
 
 const api = useApi();
-const { toast } = useToast();
+const { toast, toastGenericError } = useToast();
 
 const isLoading = ref(true);
+const container = ref<HTMLElement>();
 const slides = ref<IPublicListedSlide[]>([]);
+let blazeSlider: BlazeSlider | undefined;
 
-onMounted(() => {
-	console.log('i think i need to init slider here');
+onBeforeUnmount(() => {
+	blazeSlider && blazeSlider.destroy();
 });
 
 watch(() => props.language, (value) => {
@@ -52,6 +54,24 @@ async function loadSlides(language: string) {
 	isLoading.value = true;
 	try {
 		slides.value = await api.slides.listPublic.query(language);
+
+		if (!container.value) {
+			toastGenericError();
+			throw new Error('slider container not found');
+		}
+
+		await nextTick();
+		blazeSlider && blazeSlider.destroy();
+		blazeSlider = new BlazeSlider(container.value, {
+			all: {
+				enableAutoplay: true,
+				slidesToScroll: 1,
+				slidesToShow: 1,
+				transitionDuration: 300,
+				autoplayInterval: 1000,
+				loop: true,
+			},
+		});
 	} catch (e) {
 		toast('błąd przy ładowaniu sliedów', 'error');
 		console.error(e);

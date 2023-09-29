@@ -1,6 +1,7 @@
 import loader from '@monaco-editor/loader';
 
 const { isDark } = useTheme();
+const { toastGenericError } = useToast();
 
 export type IModel = { value: string; language: 'html' | 'css' | 'json'; };
 type IMonaco = Awaited<ReturnType<typeof loader['init']>>;
@@ -97,6 +98,7 @@ export const useMonaco = (
 		}
 
 		if (!containerRef.value) {
+			toastGenericError();
 			throw new Error('editor container not found');
 		}
 
