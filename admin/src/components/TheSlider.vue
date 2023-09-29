@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-	language: string;
+	language?: string;
 }>();
 </script>
 
