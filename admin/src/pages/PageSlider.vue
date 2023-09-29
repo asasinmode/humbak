@@ -298,6 +298,7 @@ async function handleSlider(id?: number, content?: string) {
 					title="konfiguracja"
 					class-container="grid grid-cols-2 gap-x-2 gap-y-3"
 					class-close-button="justify-self-end"
+					close-button-text="zamknij"
 				>
 					<template #button>
 						<span class="visually-hidden">konfiguracja</span>

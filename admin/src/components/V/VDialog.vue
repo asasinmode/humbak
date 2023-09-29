@@ -10,6 +10,7 @@ const props = defineProps<{
 	noOpenButton?: boolean;
 	activator?: HTMLElement | null;
 	disableClickOutside?: boolean;
+	closeButtonText?: string;
 }>();
 
 type Focusable = Element & {
@@ -124,7 +125,7 @@ defineExpose({
 					:disabled="loading"
 					@click="close"
 				>
-					anuluj
+					{{ closeButtonText || 'anuluj' }}
 				</VButton>
 				<slot name="post" />
 			</article>
