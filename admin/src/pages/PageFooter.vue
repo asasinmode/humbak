@@ -82,6 +82,7 @@ function saveChanges() {
 		</VButton>
 		<footer class="relative col-span-full max-w-360 min-h-10 w-full bg-humbak">
 			test
+			<VLoading v-show="isLoading" class="absolute inset-0" size="20" />
 		</footer>
 	</main>
 </template>
