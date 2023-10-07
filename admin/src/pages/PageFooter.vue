@@ -59,30 +59,34 @@ function saveChanges() {
 </script>
 
 <template>
-	<main id="content" class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 gap-x-3 gap-y-5 pb-4 pt-[1.125rem]">
-		<VCombobox
-			id="footerLanguage"
-			v-model="selectedLanguage"
-			class="footer-controls-padding-left footer-language-select !min-w-20 !w-20"
-			class-input="!min-w-20 !w-20"
-			label="język"
-			:options="languages"
-			:is-loading="isLoadingLanguages"
-			transform-options
-			select-only
-			label-visually-hidden
-			@select-option="getFooterContent"
-		/>
-		<VButton
-			ref="saveButton"
-			class="footer-controls-padding-right mr-12 h-fit md:mr-0 neon-green"
-			:is-loading="isSaving"
-			@click="saveChanges"
-		>
-			zapisz
-		</VButton>
-		<footer class="relative col-span-full max-w-360 min-h-10 w-full bg-humbak">
-			test
+	<main id="content" class="flex flex-col gap-x-3 gap-y-5 pb-4 pt-[1.125rem]">
+		<div class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 w-full gap-x-3">
+			<VCombobox
+				id="footerLanguage"
+				v-model="selectedLanguage"
+				class="footer-controls-padding-left footer-language-select !min-w-20 !w-20"
+				class-input="!min-w-20 !w-20"
+				label="język"
+				:options="languages"
+				:is-loading="isLoadingLanguages"
+				transform-options
+				select-only
+				label-visually-hidden
+				@select-option="getFooterContent"
+			/>
+			<VButton
+				ref="saveButton"
+				class="footer-controls-padding-right mr-12 h-fit md:mr-0 neon-green"
+				:is-loading="isSaving"
+				@click="saveChanges"
+			>
+				zapisz
+			</VButton>
+		</div>
+		<footer class="relative col-span-full w-full bg-humbak">
+			<div class="mx-auto max-w-360 min-h-10 w-full text-black">
+				test
+			</div>
 			<VLoading v-show="isLoading" class="absolute inset-0" size="20" />
 		</footer>
 	</main>
