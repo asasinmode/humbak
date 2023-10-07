@@ -437,14 +437,14 @@ function getActuallyChanged() {
 </script>
 
 <template>
-	<main id="content" class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 gap-x-3 gap-y-5 px-2 pb-4 pt-[3.625rem] md:px-0 lg:pt-[1.125rem]">
+	<main id="content" class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 gap-x-3 gap-y-5 bg-pink-200 px-2 pb-4 pt-[3.625rem] md:px-0 lg:pt-[1.125rem]">
 		<VAlert class="col-span-full max-w-3xl md:mx-auto lg:hidden" variant="warning">
 			edytowanie menu nie jest dostępne na małych ekranch
 		</VAlert>
 		<VCombobox
 			id="menuLinksLanguage"
 			v-model="selectedLanguage"
-			class="menu-footer-controls-padding-right justify-self-end !hidden !min-w-20 !w-20 lg:!flex"
+			class="menu-controls-padding-right justify-self-end !hidden !min-w-20 !w-20 lg:!flex"
 			class-input="!w-20 !min-w-20"
 			label="język"
 			:options="languages"
@@ -456,7 +456,7 @@ function getActuallyChanged() {
 		/>
 		<VButton
 			ref="saveButton"
-			class="menu-footer-controls-padding-right hidden h-fit lg:block neon-green"
+			class="menu-controls-padding-right hidden h-fit lg:block neon-green"
 			:is-loading="isSaving"
 			@click="saveChanges"
 		>
@@ -588,7 +588,7 @@ function getActuallyChanged() {
 	</main>
 	<MenuHiddenLinksWidget
 		ref="hiddenLinksWidget"
-		class="menu-footer-controls-padding-left"
+		class="menu-controls-padding-left"
 		:menu-links="transformedHiddenMenuLinks"
 		:is-link-grabbed="!!currentlyGrabbedLink"
 		@menu-link-mouse-down="initLinkElementDrag"
@@ -671,5 +671,23 @@ function getActuallyChanged() {
 .vertical.drop-indicator-end:before,
 .vertical.drop-indicator-end:after {
 	@apply bottom-0 translate-y-1/2
+}
+
+.menu-controls-padding-left {
+	left: 1rem;
+}
+
+.menu-controls-padding-right {
+	right: 1rem;
+}
+
+@media(min-width: 90rem){
+	.menu-controls-padding-left {
+		left: clamp((100% - 90rem) / 2, 37rem + -40vw, 1rem);
+	}
+
+	.menu-controls-padding-right {
+		right: clamp(0rem, 81rem + -88.8889vw, 1rem);
+	}
 }
 </style>

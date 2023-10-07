@@ -63,7 +63,7 @@ function saveChanges() {
 		<VCombobox
 			id="footerLanguage"
 			v-model="selectedLanguage"
-			class="menu-footer-controls-padding-left footer-language-select !min-w-20 !w-20"
+			class="footer-controls-padding-left footer-language-select !min-w-20 !w-20"
 			class-input="!min-w-20 !w-20"
 			label="język"
 			:options="languages"
@@ -75,7 +75,7 @@ function saveChanges() {
 		/>
 		<VButton
 			ref="saveButton"
-			class="menu-footer-controls-padding-right mr-12 h-fit md:mr-0 neon-green"
+			class="footer-controls-padding-right mr-12 h-fit md:mr-0 neon-green"
 			:is-loading="isSaving"
 			@click="saveChanges"
 		>
@@ -89,9 +89,21 @@ function saveChanges() {
 </template>
 
 <style>
-@media (min-width: 1440px){
-	.footer-language-select {
-		left: 0;
+.footer-controls-padding-left {
+	left: 1rem;
+}
+
+.footer-controls-padding-right {
+	right: 1rem;
+}
+
+@media(min-width: 90rem){
+	.footer-controls-padding-left {
+		left: clamp(0rem, 73rem + -80vw, 1rem);
+	}
+
+	.footer-controls-padding-right {
+		right: clamp(0rem, 73rem + -80vw, 1rem);
 	}
 }
 </style>
