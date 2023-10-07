@@ -185,6 +185,7 @@ function handleDropIndicator(event: MouseEvent, path: number[]) {
 	);
 
 	const isDropTargetTheSame = dropTarget && arePathsTheSame(path, dropTarget.path) && isBefore === dropTarget.isBefore;
+
 	if (!isDropTargetTheSame) {
 		dropTarget?.element.classList.remove('drop-indicator-start', 'drop-indicator-end');
 	}
@@ -200,7 +201,7 @@ function handleDropIndicator(event: MouseEvent, path: number[]) {
 		const newIndexOnLastLevel = path[path.length - 1];
 
 		const areSwapped = isBefore
-			? newIndexOnLastLevel === oldIndexOnLastLevel + 1
+			? (newIndexOnLastLevel === oldIndexOnLastLevel + 1) && oldIndexOnLastLevel !== -1
 			: newIndexOnLastLevel === oldIndexOnLastLevel - 1;
 		if (areSwapped) {
 			element.classList.toggle(isBefore ? 'drop-indicator-end' : 'drop-indicator-start', true);
