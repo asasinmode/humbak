@@ -7,6 +7,7 @@ import type { IMenuTreeItem } from '~/types';
 const api = useApi();
 const { toastGenericError, toast } = useToast();
 const { confirm } = useConfirm();
+
 const isLoading = ref(false);
 const isLoadingLanguages = ref(false);
 const selectedLanguage = ref<string>();
@@ -29,9 +30,9 @@ onMounted(async () => {
 		}
 
 		selectedLanguage.value = languages.value[0];
-		await getMenuLinks();
+		getMenuLinks();
 	} catch (e) {
-		toast('błąd przy ładowaniu menu', 'error');
+		toast('błąd przy ładowaniu języków', 'error');
 		console.error(e);
 	} finally {
 		isLoadingLanguages.value = false;
@@ -71,7 +72,7 @@ async function getMenuLinks() {
 			}
 		}
 	} catch (e) {
-		toast('błąd przy ładowaniu języków', 'error');
+		toast('błąd przy ładowaniu menu', 'error');
 		console.error(e);
 	} finally {
 		isLoading.value = false;
