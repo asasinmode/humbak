@@ -158,7 +158,7 @@ defineExpose({
 				label-visually-hidden
 				hide-check
 				@blur="parseLimitAndGetItems"
-				@select-option="callGetItems()"
+				@select-option="callGetItems(true)"
 			/>
 			<VButton
 				class="relative h-9 w-9 shrink-0 dark:neon-violet neon-violet-5"
