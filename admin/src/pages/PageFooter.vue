@@ -63,7 +63,7 @@ function saveChanges() {
 		<VCombobox
 			id="footerLanguage"
 			v-model="selectedLanguage"
-			class="menu-controls-padding-right justify-self-end !hidden !min-w-24 !w-24 lg:!flex"
+			class="menu-footer-controls-padding-right justify-self-end !hidden !min-w-24 !w-24 lg:!flex"
 			label="język"
 			:options="languages"
 			:is-loading="isLoadingLanguages"
@@ -74,7 +74,7 @@ function saveChanges() {
 		/>
 		<VButton
 			ref="saveButton"
-			class="menu-controls-padding-right hidden h-fit lg:block neon-green"
+			class="menu-footer-controls-padding-right hidden h-fit lg:block neon-green"
 			:is-loading="isSaving"
 			@click="saveChanges"
 		>
