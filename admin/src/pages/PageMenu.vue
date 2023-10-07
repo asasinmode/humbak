@@ -9,24 +9,27 @@ const { toastGenericError, toast } = useToast();
 const { confirm } = useConfirm();
 const isLoading = ref(false);
 const isLoadingLanguages = ref(false);
-const language = ref('pl');
+const selectedLanguage = ref<string>();
+let previousSelectedLanguage: string | undefined;
 const languages = ref<IUniqueLanguage[]>([]);
 const transformedHiddenMenuLinks = ref<IMenuTreeItem[]>([]);
 const transformedMenuLinks = ref<IMenuTreeItem[]>([]);
 const saveButton = ref<InstanceType<typeof VButton>>();
 
 let originalMenuLinks: IMenuLink[] = [];
-let currentLanguage = 'pl';
 let changedLinks: Pick<IMenuLink, 'pageId' | 'position' | 'parentId'>[] = [];
 
 onMounted(async () => {
 	isLoadingLanguages.value = true;
 	try {
-		const [_, uniqueLanguages] = await Promise.all([
-			getMenuLinks(false),
-			api.pages.uniqueLanguages.query(),
-		]);
-		languages.value = uniqueLanguages;
+		languages.value = await api.pages.uniqueLanguages.query();
+
+		if (!languages.value.length) {
+			return;
+		}
+
+		selectedLanguage.value = languages.value[0];
+		await getMenuLinks();
 	} catch (e) {
 		toast('błąd przy ładowaniu menu', 'error');
 		console.error(e);
@@ -35,23 +38,29 @@ onMounted(async () => {
 	}
 });
 
-async function getMenuLinks(checkLanguage: boolean) {
-	if (checkLanguage && (!languages.value.includes(language.value) || currentLanguage === language.value)) {
+async function getMenuLinks() {
+	if (selectedLanguage.value === undefined) {
+		toastGenericError();
+		throw new Error('calling get menu links without selected language');
+	}
+
+	if (previousSelectedLanguage === selectedLanguage.value) {
 		return;
 	}
 	if (getActuallyChanged().length) {
 		const proceed = await confirm(saveButton.value?.element);
 		if (!proceed) {
-			language.value = currentLanguage;
+			selectedLanguage.value = previousSelectedLanguage;
 			return;
 		}
 	}
+
 	isLoading.value = true;
 	try {
-		const menuLinks = await api.menuLinks.list.query(language.value);
+		const menuLinks = await api.menuLinks.list.query(selectedLanguage.value);
 		originalMenuLinks = [...menuLinks];
 		changedLinks = [];
-		currentLanguage = language.value;
+		previousSelectedLanguage = selectedLanguage.value;
 
 		transformedHiddenMenuLinks.value = extractWithParentId(menuLinks, -1);
 		transformedMenuLinks.value = extractWithParentId(menuLinks, null);
@@ -432,14 +441,15 @@ function getActuallyChanged() {
 		</VAlert>
 		<VCombobox
 			id="menuLinksLanguage"
-			v-model="language"
+			v-model="selectedLanguage"
 			class="menu-controls-padding-right justify-self-end !hidden !min-w-24 !w-24 lg:!flex"
 			label="język"
 			:options="languages"
 			:is-loading="isLoadingLanguages"
 			transform-options
+			select-only
 			label-visually-hidden
-			@update:model-value="getMenuLinks(true)"
+			@select-option="getMenuLinks"
 		/>
 		<VButton
 			ref="saveButton"
