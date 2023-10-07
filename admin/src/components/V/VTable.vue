@@ -284,7 +284,7 @@ defineExpose({
 
 	.vTable tr {
 		display: block;
-		padding-block: clamp(0.50rem, calc(0.23rem + 1.34vw), 0.88rem);
+		padding-block: clamp(0.50rem, 0.23rem + 1.34vw, 0.88rem);
 	}
 
 	.vTable td {

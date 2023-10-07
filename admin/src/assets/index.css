@@ -42,11 +42,11 @@
 }
 
 .menu-footer-controls-padding-right {
-	right: clamp(0.00rem, calc(3.46rem + -3.85vw), 1.00rem);
+	right: clamp(0.00rem, 3.4615rem + -3.8462vw, 1.00rem);
 }
 
 .menu-footer-controls-padding-left {
-	left: clamp(0.00rem, calc(3.46rem + -3.85vw), 1.00rem);
+	left: clamp(0.00rem, 3.4615rem + -3.8462vw, 1.00rem);
 }
 
 @media (min-width: 90rem) {
