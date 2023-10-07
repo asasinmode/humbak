@@ -33,7 +33,7 @@ const previousSelectedSlideId = ref<number>();
 
 const languages = ref<IUniqueLanguage[]>([]);
 const selectedLanguage = ref<string>();
-const previousSelectedLanguage = ref<string>();
+let previousSelectedLanguage: string | undefined;
 
 const {
 	clearForm, sendForm, updateValues, isSaving,
@@ -54,7 +54,7 @@ const {
 
 		if (slide.language !== selectedLanguage.value) {
 			selectedLanguage.value = slide.language;
-			previousSelectedLanguage.value = slide.language;
+			previousSelectedLanguage = slide.language;
 			await getSlides();
 			selectedSlideId.value = slide.id;
 			previousSelectedSlideId.value = slide.id;
@@ -101,7 +101,7 @@ onMounted(async () => {
 		}
 
 		selectedLanguage.value = languages.value[0];
-		previousSelectedLanguage.value = selectedLanguage.value;
+		previousSelectedLanguage = selectedLanguage.value;
 
 		getSlides();
 	} catch (e) {
@@ -137,7 +137,7 @@ async function getSlides() {
 }
 
 async function getSlidesIfLanguageChanged() {
-	if (previousSelectedLanguage.value === selectedLanguage.value) {
+	if (previousSelectedLanguage === selectedLanguage.value) {
 		return;
 	}
 	if (hasChanged()) {
@@ -146,7 +146,7 @@ async function getSlidesIfLanguageChanged() {
 			okText: 'kontynuuj',
 		});
 		if (!proceed) {
-			selectedLanguage.value = previousSelectedLanguage.value;
+			selectedLanguage.value = previousSelectedLanguage;
 			return;
 		}
 	}
@@ -154,7 +154,7 @@ async function getSlidesIfLanguageChanged() {
 	clearForm(undefined, true);
 	editor.value?.updateModelValue(0, '');
 	await getSlides();
-	previousSelectedLanguage.value = selectedLanguage.value;
+	previousSelectedLanguage = selectedLanguage.value;
 }
 
 async function clearFormAndEditor() {
