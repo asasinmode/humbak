@@ -59,11 +59,12 @@ function saveChanges() {
 </script>
 
 <template>
-	<main id="content" class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 gap-x-4 gap-y-5 px-2 pb-4 pt-[3.625rem] md:px-0 lg:pt-[1.125rem]">
+	<main id="content" class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 gap-x-3 gap-y-5 pb-4 pt-[1.125rem]">
 		<VCombobox
 			id="footerLanguage"
 			v-model="selectedLanguage"
-			class="menu-footer-controls-padding-right justify-self-end !hidden !min-w-24 !w-24 lg:!flex"
+			class="menu-footer-controls-padding-left footer-language-select !min-w-20 !w-20"
+			class-input="!min-w-20 !w-20"
 			label="język"
 			:options="languages"
 			:is-loading="isLoadingLanguages"
@@ -74,7 +75,7 @@ function saveChanges() {
 		/>
 		<VButton
 			ref="saveButton"
-			class="menu-footer-controls-padding-right hidden h-fit lg:block neon-green"
+			class="menu-footer-controls-padding-right mr-12 h-fit md:mr-0 neon-green"
 			:is-loading="isSaving"
 			@click="saveChanges"
 		>
@@ -86,3 +87,11 @@ function saveChanges() {
 		</footer>
 	</main>
 </template>
+
+<style>
+@media (min-width: 1440px){
+	.footer-language-select {
+		left: 0;
+	}
+}
+</style>

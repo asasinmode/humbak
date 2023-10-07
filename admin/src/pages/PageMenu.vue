@@ -437,14 +437,15 @@ function getActuallyChanged() {
 </script>
 
 <template>
-	<main id="content" class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 gap-x-4 gap-y-5 px-2 pb-4 pt-[3.625rem] md:px-0 lg:pt-[1.125rem]">
+	<main id="content" class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 gap-x-3 gap-y-5 px-2 pb-4 pt-[3.625rem] md:px-0 lg:pt-[1.125rem]">
 		<VAlert class="col-span-full max-w-3xl md:mx-auto lg:hidden" variant="warning">
 			edytowanie menu nie jest dostępne na małych ekranch
 		</VAlert>
 		<VCombobox
 			id="menuLinksLanguage"
 			v-model="selectedLanguage"
-			class="menu-footer-controls-padding-right justify-self-end !hidden !min-w-24 !w-24 lg:!flex"
+			class="menu-footer-controls-padding-right justify-self-end !hidden !min-w-20 !w-20 lg:!flex"
+			class-input="!w-20 !min-w-20"
 			label="język"
 			:options="languages"
 			:is-loading="isLoadingLanguages"
