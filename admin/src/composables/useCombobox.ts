@@ -1,7 +1,7 @@
 export const useCombobox = <T>(
 	modelValue: Ref<T | undefined>,
 	computedOptions: ComputedRef<{ text: string; value: T | undefined; }[]>,
-	listboxRef: Ref<HTMLElement | null | undefined>,
+	listboxRef: Ref<HTMLElement | undefined>,
 	selectOnly?: Ref<boolean>,
 	emitCallback?: (value?: T) => void
 ) => {

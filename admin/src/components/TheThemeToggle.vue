@@ -5,7 +5,7 @@ const props = withDefaults(defineProps<{
 
 const { toggleTheme, isDark } = useTheme();
 
-const element = ref<HTMLButtonElement | null>(null);
+const element = ref<HTMLButtonElement>();
 const style = computed(() => `--size: ${props.size}rem`);
 
 defineExpose({

@@ -8,7 +8,7 @@ const props = defineProps<{
 	classContainer?: string;
 	classCloseButton?: string;
 	noOpenButton?: boolean;
-	activator?: HTMLElement | null;
+	activator?: HTMLElement;
 	disableClickOutside?: boolean;
 	closeButtonText?: string;
 }>();
@@ -23,7 +23,7 @@ type Focusable = Element & {
 };
 
 const isOpen = ref(false);
-const dialog = ref<HTMLElement | null>();
+const dialog = ref<HTMLElement>();
 const openButton = ref<InstanceType<typeof VButton>>();
 const closeButton = ref<InstanceType<typeof VButton>>();
 

@@ -1,6 +1,6 @@
 import type { MaybeRef } from 'vue';
 
-export const useShake = async (element?: MaybeRef<HTMLElement | null | undefined>) => {
+export const useShake = async (element?: MaybeRef<HTMLElement | undefined>) => {
 	const target = toValue(element);
 
 	if (!element || !target) {

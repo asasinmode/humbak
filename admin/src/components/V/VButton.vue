@@ -3,7 +3,7 @@ defineProps<{
 	isLoading?: boolean;
 }>();
 
-const element = ref<HTMLButtonElement | null>();
+const element = ref<HTMLButtonElement>();
 
 defineExpose({ element });
 </script>

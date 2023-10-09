@@ -11,7 +11,7 @@ const okText = ref('kontynuuj');
 
 const close = ref(() => {});
 const open = ref(() => {});
-const activator = ref<HTMLElement | null>();
+const activator = ref<HTMLElement>();
 const component = defineComponent(() => {
 	const dialog = ref<InstanceType<typeof VDialog>>();
 
@@ -55,7 +55,7 @@ const component = defineComponent(() => {
 
 export const useConfirm = () => {
 	function confirm(
-		activatorElement?: HTMLElement | null,
+		activatorElement?: HTMLElement,
 		props: {
 			title?: string;
 			text?: string;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const value = defineModel<number>({ required: true });
-const listbox = ref<HTMLUListElement | null>();
+const listbox = ref<HTMLUListElement>();
 
 const options = [
 	{ text: 'html', value: 0 },
