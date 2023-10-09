@@ -22,9 +22,9 @@ export const footerContents = mysqlTable('footerContents', {
 });
 
 export const insertFooterContentSchema = object({
-	language: optional(nonEmptyMaxLengthString(32)),
+	language: nonEmptyMaxLengthString(32),
 	emails: optional(array(string())),
 	phoneNumbers: optional(array(string())),
 	location: optional(object({ text: nonEmptyMaxLengthString(), value: nonEmptyMaxLengthString() })),
-	socials: optional(object({ type: enumType(knownSocials), value: nonEmptyMaxLengthString() })),
+	socials: optional(array(object({ type: enumType(knownSocials), value: nonEmptyMaxLengthString() }))),
 });
