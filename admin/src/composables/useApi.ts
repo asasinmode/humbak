@@ -19,3 +19,4 @@ export type IMenuLink = Awaited<ReturnType<typeof client['menuLinks']['list']['q
 export type ISlide = Awaited<ReturnType<typeof client['slides']['byId']['query']>>;
 export type IListedSlide = Awaited<ReturnType<typeof client['slides']['list']['query']>>[number];
 export type IPublicListedSlide = Awaited<ReturnType<typeof client['slides']['listPublic']['query']>>[number];
+export type IFooterContents = Awaited<ReturnType<typeof client['footer']['byLanguage']['query']>>;

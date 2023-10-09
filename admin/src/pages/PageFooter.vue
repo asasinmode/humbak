@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import type { IUniqueLanguage } from '~/composables/useApi';
+import VButton from '~/components/V/VButton.vue';
+import type { IFooterContents, IUniqueLanguage } from '~/composables/useApi';
 
 const { toast, toastGenericError } = useToast();
 const api = useApi();
+
+const saveButton = ref<InstanceType<typeof VButton>>();
 
 const isLoadingLanguages = ref(false);
 const languages = ref<IUniqueLanguage[]>([]);
@@ -10,7 +13,18 @@ const selectedLanguage = ref<string>();
 let previousSelectedLanguage: string | undefined;
 
 const isLoading = ref(false);
-const isSaving = ref(false);
+
+const {
+	clearForm, sendForm, updateValues, isSaving,
+	errors, hasChanged,
+	emails, phoneNumbers, location, socials,
+} = useForm<Omit<IFooterContents, 'language'>>(
+	{ emails: [], phoneNumbers: [], location: { text: '', value: '' }, socials: [] },
+	async () => {
+		await new Promise(resolve => setTimeout(resolve, 500));
+	},
+	saveButton.value?.element
+);
 
 onMounted(async () => {
 	isLoadingLanguages.value = true;
@@ -43,18 +57,24 @@ async function getFooterContent() {
 
 	isLoading.value = true;
 	try {
-		await new Promise(resolve => setTimeout(resolve, 500));
+		const data = await api.footer.byLanguage.query(selectedLanguage.value);
 		previousSelectedLanguage = selectedLanguage.value;
+
+		if (!data) {
+			clearForm(undefined, true);
+			return;
+		}
+
+		emails.value = data.emails;
+		phoneNumbers.value = data.phoneNumbers;
+		location.value = data.location;
+		socials.value = data.socials;
 	} catch (e) {
 		toast('błąd przy ładowaniu stopki', 'error');
 		console.error(e);
 	} finally {
 		isLoading.value = false;
 	}
-}
-
-function saveChanges() {
-	toast('zapisano zmiany');
 }
 </script>
 
@@ -78,14 +98,17 @@ function saveChanges() {
 				ref="saveButton"
 				class="footer-controls-padding-right mr-12 h-fit md:mr-0 neon-green"
 				:is-loading="isSaving"
-				@click="saveChanges"
+				@click="sendForm"
 			>
 				zapisz
 			</VButton>
 		</div>
 		<footer class="relative col-span-full w-full bg-humbak">
 			<div class="mx-auto max-w-360 min-h-10 w-full text-black">
-				test
+				{{ emails }} <br>
+				{{ phoneNumbers }} <br>
+				{{ location }} <br>
+				{{ socials }} <br>
 			</div>
 			<VLoading v-show="isLoading" class="absolute inset-0" size="20" />
 		</footer>
