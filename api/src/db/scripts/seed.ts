@@ -2,6 +2,7 @@ import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { slides } from '../schema/slides';
 import { slideAspectRatio } from '../schema/slideAspectRatio';
+import { footerContents } from '../schema/footerContents';
 import { db, pool } from '~/db';
 import { promptProdContinue } from '~/helpers';
 import { pages } from '~/db/schema/pages';
@@ -275,5 +276,13 @@ for (const { name, content, isHidden, language } of [
 }
 
 await db.insert(slideAspectRatio).values({ value: '1 / 2' });
+
+await db.insert(footerContents).values({
+	language: 'pl',
+	emails: ['biuro@humbak.eu'],
+	phoneNumbers: ['Filip 608 062 911'],
+	location: { text: 'Gdzie nas znaleźć', value: 'https://goo.gl/maps/eRCtgre1uTpySr3L6' },
+	socials: [{ type: 'facebook', value: 'https://www.facebook.com/filip.perek.77' }],
+});
 
 await pool.end();
