@@ -109,11 +109,11 @@ defineExpose({
 					</div>
 				</div>
 
-				<button class="blaze-prev absolute left-0 top-0 hidden h-full flex-center px-2 md:flex hover:bg-white/10" tabindex="-1">
+				<button v-if="slides.length > 1" class="blaze-prev absolute left-0 top-0 hidden h-full flex-center px-2 md:flex hover:bg-white/10" tabindex="-1">
 					<div class="i-fa6-solid:angle-left h-4 w-4 text-white" />
 				</button>
 				<div class="blaze-pagination absolute bottom-2 left-1/2 flex gap-3 -translate-x-1/2" />
-				<button class="blaze-next absolute right-0 top-0 hidden h-full flex-center px-2 md:flex hover:bg-white/10" tabindex="-1">
+				<button v-if="slides.length > 1" class="blaze-next absolute right-0 top-0 hidden h-full flex-center px-2 md:flex hover:bg-white/10" tabindex="-1">
 					<div class="i-fa6-solid:angle-right h-4 w-4 text-white" />
 				</button>
 			</div>
