@@ -3,7 +3,7 @@ import { datetime, json, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
 import { array, enumType, object, optional, string } from 'valibot';
 import { nonEmptyMaxLengthString } from '~/helpers';
 
-const knownSocials = ['facebook', 'youtube', 'instagram', 'x'] as const;
+const knownSocials = ['facebook', 'youtube', 'instagram', 'twitter'] as const;
 
 export const footerContents = mysqlTable('footerContents', {
 	language: varchar('language', { length: 32 }).primaryKey().notNull(),

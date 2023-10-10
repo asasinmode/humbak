@@ -16,7 +16,7 @@ const isLoading = ref(false);
 
 const {
 	clearForm, sendForm, updateValues, isSaving,
-	errors, hasChanged,
+	errors,
 	emails, phoneNumbers, location, socials,
 } = useForm<Omit<IFooterContents, 'language'>>(
 	{ emails: [], phoneNumbers: [], location: { text: '', value: '' }, socials: [] },
@@ -76,6 +76,13 @@ async function getFooterContent() {
 		isLoading.value = false;
 	}
 }
+
+const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> = {
+	facebook: 'i-logos-facebook',
+	youtube: 'i-logos-youtube-icon',
+	instagram: 'i-logos-instagram',
+	twitter: 'i-logos-twitter',
+};
 </script>
 
 <template>
@@ -103,12 +110,30 @@ async function getFooterContent() {
 				zapisz
 			</VButton>
 		</div>
-		<footer class="relative col-span-full w-full bg-humbak">
-			<div class="mx-auto max-w-360 min-h-10 w-full text-black">
-				{{ emails }} <br>
-				{{ phoneNumbers }} <br>
-				{{ location }} <br>
-				{{ socials }} <br>
+		<footer class="relative col-span-full w-full bg-humbak text-black">
+			<!-- <div class="mx-auto max-w-360 min-h-10 w-full text-black"> -->
+			<!-- </div> -->
+			<a
+				v-for="email in emails"
+				:key="email"
+				:href="`mailto:${email}`"
+				class="hoverable:underline"
+			>
+				{{ email }}
+			</a>
+			{{ phoneNumbers }} <br>
+			{{ location }} <br>
+			<div class="flex">
+				<a
+					v-for="social in socials"
+					:key="social.value"
+					:title="`${social.type} link`"
+					:href="social.value"
+					target="_blank"
+				>
+					<span class="visually-hidden">{{ social.type }} link</span>
+					<div class="h-8 w-8" :class="socialToIcon[social.type]" />
+				</a>
 			</div>
 			<VLoading v-show="isLoading" class="absolute inset-0" size="20" />
 		</footer>

@@ -51,6 +51,9 @@ importers:
       '@iconify-json/fa6-solid':
         specifier: ^1.1.15
         version: 1.1.15
+      '@iconify-json/logos':
+        specifier: ^1.1.37
+        version: 1.1.37
       '@iconify-json/mdi':
         specifier: ^1.1.54
         version: 1.1.54
@@ -773,6 +776,12 @@ packages:
 
   /@iconify-json/fa6-solid@1.1.15:
     resolution: {integrity: sha512-RMiUSSdnxD4BLDW2QBskqr/+i1/6xhZK+E3sq24URnB3fSQUCWvyhNN3ZnU3RMjWaMVNxPy9pEXr1i/8s63GRQ==}
+    dependencies:
+      '@iconify/types': 2.0.0
+    dev: true
+
+  /@iconify-json/logos@1.1.37:
+    resolution: {integrity: sha512-H2S8frTEznk6paX2kMzeUGn4KSiykghvO0b8UvEDd1fFFzt0WxCXpP1tBv67XaWK99e6JgA34hhv4lRGAm1hJg==}
     dependencies:
       '@iconify/types': 2.0.0
     dev: true
