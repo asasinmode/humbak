@@ -127,7 +127,7 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 					<p> {{ phone }} </p>
 				</template>
 
-				<span class="i-fa6-solid-location-dot h-6 w-6 self-center justify-self-end" />
+				<span class="i-fa6-solid-map-location-dot h-6 w-6 self-center justify-self-end" />
 				<a :href="location.value" class="hoverable:underline" target="_blank">
 					{{ location.text }}
 				</a>
