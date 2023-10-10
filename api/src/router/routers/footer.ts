@@ -18,6 +18,15 @@ export const footerRouter = router({
 			.from(footerContents)
 			.where(eq(footerContents.language, opts.input));
 
+		// @ts-expect-error db returns strings but types are correct
+		result.emails = JSON.parse(result.emails);
+		// @ts-expect-error db returns strings but types are correct
+		result.phoneNumbers = JSON.parse(result.phoneNumbers);
+		// @ts-expect-error db returns strings but types are correct
+		result.location = JSON.parse(result.location);
+		// @ts-expect-error db returns strings but types are correct
+		result.socials = JSON.parse(result.socials);
+
 		return result;
 	}),
 	upsert: publicProcedure.input(wrap(insertFooterContentSchema)).mutation(async (opts) => {
@@ -41,6 +50,15 @@ export const footerRouter = router({
 			})
 			.from(footerContents)
 			.where(eq(footerContents.language, opts.input.language));
+
+		// @ts-expect-error db returns strings but types are correct
+		result.emails = JSON.parse(result.emails);
+		// @ts-expect-error db returns strings but types are correct
+		result.phoneNumbers = JSON.parse(result.phoneNumbers);
+		// @ts-expect-error db returns strings but types are correct
+		result.location = JSON.parse(result.location);
+		// @ts-expect-error db returns strings but types are correct
+		result.socials = JSON.parse(result.socials);
 
 		return result;
 	}),
