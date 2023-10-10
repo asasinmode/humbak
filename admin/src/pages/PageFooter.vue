@@ -119,10 +119,20 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 				:href="`mailto:${email}`"
 				class="hoverable:underline"
 			>
+				<span class="i-fa6-solid-envelope inline-block h-6 w-6 align-mid" />
 				{{ email }}
 			</a>
-			{{ phoneNumbers }} <br>
-			{{ location }} <br>
+			<p
+				v-for="phone in phoneNumbers"
+				:key="phone"
+			>
+				<span class="i-fa6-solid-phone inline-block h-6 w-6 align-mid" />
+				{{ phone }}
+			</p>
+			<a :href="location.value" class="hoverable:underline" target="_blank">
+				<span class="i-fa6-solid-location-dot inline-block h-6 w-6 align-mid" />
+				{{ location.text }}
+			</a>
 			<div class="flex">
 				<a
 					v-for="social in socials"
