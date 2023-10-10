@@ -110,41 +110,41 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 				zapisz
 			</VButton>
 		</div>
-		<footer class="relative col-span-full w-full bg-humbak text-black">
-			<!-- <div class="mx-auto max-w-360 min-h-10 w-full text-black"> -->
-			<!-- </div> -->
-			<a
-				v-for="email in emails"
-				:key="email"
-				:href="`mailto:${email}`"
-				class="hoverable:underline"
-			>
-				<span class="i-fa6-solid-envelope inline-block h-6 w-6 align-mid" />
-				{{ email }}
-			</a>
-			<p
-				v-for="phone in phoneNumbers"
-				:key="phone"
-			>
-				<span class="i-fa6-solid-phone inline-block h-6 w-6 align-mid" />
-				{{ phone }}
-			</p>
-			<a :href="location.value" class="hoverable:underline" target="_blank">
-				<span class="i-fa6-solid-location-dot inline-block h-6 w-6 align-mid" />
-				{{ location.text }}
-			</a>
-			<div class="flex">
+		<footer class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-4 bg-humbak px-2 pb-4 pt-6 text-black">
+			<section class="grid grid-cols-[min-content_max-content] gap-x-3 gap-y-4">
+				<h6 class="visually-hidden">
+					maile kontaktowe
+				</h6>
+				<template v-for="email in emails" :key="email">
+					<div class="i-fa6-solid-envelope h-6 w-6 self-center justify-self-end" />
+					<a :href="`mailto:${email}`" class="hoverable:underline">
+						{{ email }}
+					</a>
+				</template>
+
+				<template v-for="phone in phoneNumbers" :key="phone">
+					<div class="i-fa6-solid-phone h-6 w-6 self-center justify-self-end" />
+					<p> {{ phone }} </p>
+				</template>
+
+				<span class="i-fa6-solid-location-dot h-6 w-6 self-center justify-self-end" />
+				<a :href="location.value" class="hoverable:underline" target="_blank">
+					{{ location.text }}
+				</a>
+			</section>
+
+			<section class="flex flex-wrap justify-center gap-4">
 				<a
 					v-for="social in socials"
 					:key="social.value"
-					:title="`${social.type} link`"
+					:title="`link ${social.type}`"
 					:href="social.value"
 					target="_blank"
 				>
-					<span class="visually-hidden">{{ social.type }} link</span>
+					<span class="visually-hidden">link {{ social.type }}</span>
 					<div class="h-8 w-8" :class="socialToIcon[social.type]" />
 				</a>
-			</div>
+			</section>
 			<VLoading v-show="isLoading" class="absolute inset-0" size="20" />
 		</footer>
 	</main>
