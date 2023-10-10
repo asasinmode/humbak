@@ -140,6 +140,7 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 					:title="`link ${social.type}`"
 					:href="social.value"
 					target="_blank"
+					class="transition-transform hoverable:scale-120"
 				>
 					<span class="visually-hidden">link {{ social.type }}</span>
 					<div class="h-8 w-8" :class="socialToIcon[social.type]" />
