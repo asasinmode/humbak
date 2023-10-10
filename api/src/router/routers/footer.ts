@@ -18,14 +18,16 @@ export const footerRouter = router({
 			.from(footerContents)
 			.where(eq(footerContents.language, opts.input));
 
+		if (result) {
 		// @ts-expect-error db returns strings but types are correct
-		result.emails = JSON.parse(result.emails);
-		// @ts-expect-error db returns strings but types are correct
-		result.phoneNumbers = JSON.parse(result.phoneNumbers);
-		// @ts-expect-error db returns strings but types are correct
-		result.location = JSON.parse(result.location);
-		// @ts-expect-error db returns strings but types are correct
-		result.socials = JSON.parse(result.socials);
+			result.emails = JSON.parse(result.emails);
+			// @ts-expect-error db returns strings but types are correct
+			result.phoneNumbers = JSON.parse(result.phoneNumbers);
+			// @ts-expect-error db returns strings but types are correct
+			result.location = JSON.parse(result.location);
+			// @ts-expect-error db returns strings but types are correct
+			result.socials = JSON.parse(result.socials);
+		}
 
 		return result;
 	}),
@@ -51,14 +53,16 @@ export const footerRouter = router({
 			.from(footerContents)
 			.where(eq(footerContents.language, opts.input.language));
 
+		if (result) {
 		// @ts-expect-error db returns strings but types are correct
-		result.emails = JSON.parse(result.emails);
-		// @ts-expect-error db returns strings but types are correct
-		result.phoneNumbers = JSON.parse(result.phoneNumbers);
-		// @ts-expect-error db returns strings but types are correct
-		result.location = JSON.parse(result.location);
-		// @ts-expect-error db returns strings but types are correct
-		result.socials = JSON.parse(result.socials);
+			result.emails = JSON.parse(result.emails);
+			// @ts-expect-error db returns strings but types are correct
+			result.phoneNumbers = JSON.parse(result.phoneNumbers);
+			// @ts-expect-error db returns strings but types are correct
+			result.location = JSON.parse(result.location);
+			// @ts-expect-error db returns strings but types are correct
+			result.socials = JSON.parse(result.socials);
+		}
 
 		return result;
 	}),
