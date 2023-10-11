@@ -77,9 +77,9 @@ async function getFooterContent() {
 	}
 }
 
-const largestNumberOfLinksInColumn = computed(() => Math.max(emails.value.length, phoneNumbers.value.length, 1) + 1);
-const emailRowSpan = computed(() => largestNumberOfLinksInColumn.value - emails.value.length);
-const phoneNumbersRowSpan = computed(() => largestNumberOfLinksInColumn.value - phoneNumbers.value.length);
+const maxElementsInColumn = computed(() => Math.max(emails.value.length + 1, phoneNumbers.value.length + 1, 1));
+const emailRowSpan = computed(() => maxElementsInColumn.value - emails.value.length - (maxElementsInColumn.value === emails.value.length + 1 ? 0 : 1));
+const phoneNumbersRowSpan = computed(() => maxElementsInColumn.value - phoneNumbers.value.length - (maxElementsInColumn.value === phoneNumbers.value.length + 1 ? 0 : 1));
 
 const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> = {
 	facebook: 'i-logos-facebook',
@@ -119,37 +119,43 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 				<template v-for="(email, index) in emails" :key="email">
 					<div
 						class="md:footer-row-span i-fa6-solid-envelope h-6 w-6 justify-self-end"
-						:style="`--f-col-start: ${index + 1}; --f-col-span: ${emailRowSpan}`"
+						:style="`--f-row-start: ${index + 1}; --f-row-span: ${emailRowSpan}`"
 					/>
 					<a
 						:href="`mailto:${email}`"
 						class="md:footer-row-span h-fit w-fit hoverable:underline"
-						:style="`--f-col-start: ${index + 1}; --f-col-span: ${emailRowSpan}`"
+						:style="`--f-row-start: ${index + 1}; --f-row-span: ${emailRowSpan}`"
 					>
 						{{ email }}
 					</a>
 				</template>
+				<button class="md:footer-row-span col-span-2 mx-auto w-fit self-center px-3 neon-green" :style="`--f-row-start: ${emails.length * emailRowSpan + 1}`">
+					dodaj email
+				</button>
 
 				<template v-for="(phone, index) in phoneNumbers" :key="phone">
 					<div
 						class="md:footer-row-span i-fa6-solid-phone h-6 w-6 justify-self-end -mr-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)]"
-						:style="`--f-col-start: ${index + 1}; --f-col-span: ${phoneNumbersRowSpan}`"
+						:style="`--f-row-start: ${index + 1}; --f-row-span: ${phoneNumbersRowSpan}`"
 					/>
-					<p class="md:footer-row-span ml-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)] h-fit w-fit" :style="`--f-col-start: ${index + 1}; --f-col-span: ${phoneNumbersRowSpan}`">
+					<p class="md:footer-row-span ml-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)] h-fit w-fit" :style="`--f-row-start: ${index + 1}; --f-row-span: ${phoneNumbersRowSpan}`">
 						{{ phone }}
 					</p>
 				</template>
+				<button class="md:footer-row-span col-span-2 mx-auto w-fit self-center px-3 neon-green" :style="`--f-row-start: ${phoneNumbers.length * phoneNumbersRowSpan + 1};`">
+					dodaj telefon
+				</button>
 
 				<div
 					v-if="location.value"
 					class="md:footer-row-span i-fa6-solid-map-location-dot h-6 w-6 justify-self-end"
-					:style="`--f-col-start: 1; --f-col-span: ${largestNumberOfLinksInColumn - 1}`"
+					:style="`--f-row-start: 1; --f-row-span: ${maxElementsInColumn}`"
 				/>
 				<a
 					:href="location.value"
 					class="md:footer-row-span h-fit w-fit hoverable:underline"
 					target="_blank"
-					:style="`--f-col-start: 1; --f-col-span: ${largestNumberOfLinksInColumn - 1}`"
+					:style="`--f-row-start: 1; --f-row-span: ${maxElementsInColumn}`"
 				>
 					{{ location.text }}
 				</a>
@@ -184,7 +190,7 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 
 @media (min-width: 768px){
 	.md\:footer-row-span {
-		grid-row: var(--f-col-start, 1) / span var(--f-col-span, 1);
+		grid-row: var(--f-row-start, 1) / span var(--f-row-span, 1);
 	}
 }
 
