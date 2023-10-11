@@ -141,6 +141,7 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 				</template>
 
 				<div
+					v-if="location.value"
 					class="md:footer-row-span i-fa6-solid-map-location-dot h-6 w-6 justify-self-end"
 					:style="`--f-col-start: 1; --f-col-span: ${largestNumberOfLinksInColumn - 1}`"
 				/>
