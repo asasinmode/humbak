@@ -78,8 +78,12 @@ async function getFooterContent() {
 }
 
 const maxElementsInColumn = computed(() => Math.max(emails.value.length + 1, phoneNumbers.value.length + 1, 1));
-const emailRowSpan = computed(() => maxElementsInColumn.value - emails.value.length - (maxElementsInColumn.value === emails.value.length + 1 ? 0 : 1));
-const phoneNumbersRowSpan = computed(() => maxElementsInColumn.value - phoneNumbers.value.length - (maxElementsInColumn.value === phoneNumbers.value.length + 1 ? 0 : 1));
+const emailRowSpan = computed(() =>
+	maxElementsInColumn.value - emails.value.length - (maxElementsInColumn.value === emails.value.length + 1 ? 0 : 1)
+);
+const phoneNumbersRowSpan = computed(() =>
+	maxElementsInColumn.value - phoneNumbers.value.length - (maxElementsInColumn.value === phoneNumbers.value.length + 1 ? 0 : 1)
+);
 
 const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> = {
 	facebook: 'i-logos-facebook',
@@ -87,6 +91,8 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 	instagram: 'i-logos-instagram',
 	twitter: 'i-logos-twitter',
 };
+
+const currentModelIndex = ref(0);
 </script>
 
 <template>
@@ -123,10 +129,15 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 					/>
 					<a
 						:href="`mailto:${email}`"
-						class="md:footer-row-span h-fit w-fit hoverable:underline"
+						class="md:footer-row-span relative h-fit w-fit hoverable:underline"
 						:style="`--f-row-start: ${index + 1}; --f-row-span: ${emailRowSpan}`"
 					>
 						{{ email }}
+						<FooterRowActionSelect
+							class="top-1/2 translate-x-full !absolute -right-2 -translate-y-1/2"
+							:value="email"
+							@click.prevent=""
+						/>
 					</a>
 				</template>
 				<button class="md:footer-row-span col-span-2 mx-auto w-fit self-center px-3 neon-green" :style="`--f-row-start: ${emails.length * emailRowSpan + 1}`">
