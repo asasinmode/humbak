@@ -114,8 +114,8 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 				zapisz
 			</VButton>
 		</div>
-		<footer class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-4 bg-humbak px-2 pb-4 pt-6 text-black">
-			<section class="grid grid-cols-[min-content_max-content] max-w-360 w-full gap-x-3 gap-y-4 md:grid-cols-[repeat(3,_4fr_6fr)]">
+		<footer class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-4 bg-humbak px-2 pb-4 pt-6 text-black lg:px-8 md:px-[clamp(2rem,_-12.25rem_+_29.6875vw,_6.75rem)]">
+			<section class="grid grid-cols-[min-content_max-content] max-w-360 gap-x-3 gap-y-4 lg:grid-cols-[repeat(3,_1fr_2fr)] md:grid-cols-[min-content_6fr_4fr_6fr_4fr_max-content] md:w-full">
 				<template v-for="(email, index) in emails" :key="email">
 					<div
 						class="md:footer-row-span i-fa6-solid-envelope h-6 w-6 justify-self-end"
@@ -132,15 +132,15 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 
 				<template v-for="(phone, index) in phoneNumbers" :key="phone">
 					<div
-						class="md:footer-row-span i-fa6-solid-phone h-6 w-6 justify-self-end"
+						class="md:footer-row-span i-fa6-solid-phone h-6 w-6 justify-self-end -mr-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)]"
 						:style="`--f-col-start: ${index + 1}; --f-col-span: ${phoneNumbersRowSpan}`"
 					/>
-					<p class="md:footer-row-span h-fit w-fit" :style="`--f-col-start: ${index + 1}; --f-col-span: ${phoneNumbersRowSpan}`">
+					<p class="md:footer-row-span ml-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)] h-fit w-fit" :style="`--f-col-start: ${index + 1}; --f-col-span: ${phoneNumbersRowSpan}`">
 						{{ phone }}
 					</p>
 				</template>
 
-				<span
+				<div
 					class="md:footer-row-span i-fa6-solid-map-location-dot h-6 w-6 justify-self-end"
 					:style="`--f-col-start: 1; --f-col-span: ${largestNumberOfLinksInColumn - 1}`"
 				/>
