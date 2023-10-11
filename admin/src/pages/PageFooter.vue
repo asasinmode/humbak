@@ -115,7 +115,7 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 			</VButton>
 		</div>
 		<footer class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-4 bg-humbak px-2 pb-4 pt-6 text-black">
-			<section class="grid grid-cols-[min-content_max-content] gap-x-3 gap-y-4 md:grid-cols-[repeat(3,_min-content_1fr)]">
+			<section class="grid grid-cols-[min-content_max-content] max-w-360 w-full gap-x-3 gap-y-4 md:grid-cols-[repeat(3,_4fr_6fr)]">
 				<template v-for="(email, index) in emails" :key="email">
 					<div
 						class="md:footer-row-span i-fa6-solid-envelope h-6 w-6 justify-self-end"
@@ -123,7 +123,7 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 					/>
 					<a
 						:href="`mailto:${email}`"
-						class="md:footer-row-span hoverable:underline"
+						class="md:footer-row-span h-fit w-fit hoverable:underline"
 						:style="`--f-col-start: ${index + 1}; --f-col-span: ${emailRowSpan}`"
 					>
 						{{ email }}
@@ -132,10 +132,10 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 
 				<template v-for="(phone, index) in phoneNumbers" :key="phone">
 					<div
-						class="md:footer-row-span i-fa6-solid-phone ml-3 h-6 w-6 justify-self-end"
+						class="md:footer-row-span i-fa6-solid-phone h-6 w-6 justify-self-end"
 						:style="`--f-col-start: ${index + 1}; --f-col-span: ${phoneNumbersRowSpan}`"
 					/>
-					<p class="md:footer-row-span mr-3 h-fit w-fit" :style="`--f-col-start: ${index + 1}; --f-col-span: ${phoneNumbersRowSpan}`">
+					<p class="md:footer-row-span h-fit w-fit" :style="`--f-col-start: ${index + 1}; --f-col-span: ${phoneNumbersRowSpan}`">
 						{{ phone }}
 					</p>
 				</template>
