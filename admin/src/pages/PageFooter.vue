@@ -77,6 +77,10 @@ async function getFooterContent() {
 	}
 }
 
+const largestNumberOfLinksInColumn = computed(() => Math.max(emails.value.length, phoneNumbers.value.length, 1) + 1);
+const emailRowSpan = computed(() => largestNumberOfLinksInColumn.value - emails.value.length);
+const phoneNumbersRowSpan = computed(() => largestNumberOfLinksInColumn.value - phoneNumbers.value.length);
+
 const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> = {
 	facebook: 'i-logos-facebook',
 	youtube: 'i-logos-youtube-icon',
@@ -111,29 +115,49 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 			</VButton>
 		</div>
 		<footer class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-4 bg-humbak px-2 pb-4 pt-6 text-black">
-			<section class="grid grid-cols-[min-content_max-content] gap-x-3 gap-y-4">
+			<section class="grid grid-cols-[min-content_max-content] gap-x-3 gap-y-4 md:grid-cols-[repeat(3,_min-content_max-content)]">
 				<h6 class="visually-hidden">
 					maile kontaktowe
 				</h6>
-				<template v-for="email in emails" :key="email">
-					<div class="i-fa6-solid-envelope h-6 w-6 self-center justify-self-end" />
-					<a :href="`mailto:${email}`" class="hoverable:underline">
+				<template v-for="(email, index) in emails" :key="email">
+					<div
+						class="md:footer-row-span i-fa6-solid-envelope h-6 w-6 justify-self-end"
+						:style="`--f-col-start: ${index + 1}; --f-col-span: ${emailRowSpan}`"
+					/>
+					<a
+						:href="`mailto:${email}`"
+						class="md:footer-row-span hoverable:underline"
+						:style="`--f-col-start: ${index + 1}; --f-col-span: ${emailRowSpan}`"
+					>
 						{{ email }}
 					</a>
 				</template>
 
-				<template v-for="phone in phoneNumbers" :key="phone">
-					<div class="i-fa6-solid-phone h-6 w-6 self-center justify-self-end" />
-					<p> {{ phone }} </p>
+				<template v-for="(phone, index) in phoneNumbers" :key="phone">
+					<div
+						class="md:footer-row-span i-fa6-solid-phone ml-auto h-6 w-6 justify-self-end"
+						:style="`--f-col-start: ${index + 1}; --f-col-span: ${phoneNumbersRowSpan}`"
+					/>
+					<p class="md:footer-row-span mr-auto h-fit" :style="`--f-col-start: ${index + 1}; --f-col-span: ${phoneNumbersRowSpan}`">
+						{{ phone }}
+					</p>
 				</template>
 
-				<span class="i-fa6-solid-map-location-dot h-6 w-6 self-center justify-self-end" />
-				<a :href="location.value" class="hoverable:underline" target="_blank">
+				<span
+					class="md:footer-row-span i-fa6-solid-map-location-dot h-6 w-6 justify-self-end"
+					:style="`--f-col-start: 1; --f-col-span: ${largestNumberOfLinksInColumn - 1}`"
+				/>
+				<a
+					:href="location.value"
+					class="md:footer-row-span h-fit hoverable:underline"
+					target="_blank"
+					:style="`--f-col-start: 1; --f-col-span: ${largestNumberOfLinksInColumn - 1}`"
+				>
 					{{ location.text }}
 				</a>
 			</section>
 
-			<section class="flex flex-wrap justify-center gap-4">
+			<section class="col-span-full flex flex-wrap justify-center gap-4">
 				<a
 					v-for="social in socials"
 					:key="social.value"
@@ -158,6 +182,12 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 
 .footer-controls-padding-right {
 	right: 1rem;
+}
+
+@media (min-width: 768px){
+	.md\:footer-row-span {
+		grid-row: var(--f-col-start, 1) / span var(--f-col-span, 1);
+	}
 }
 
 @media(min-width: 90rem){
