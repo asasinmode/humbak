@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineProps<{
 	id: number;
-	value: string;
+	title: string;
 }>();
 
 const emit = defineEmits<{
@@ -13,16 +13,16 @@ const options = [
 	{
 		text: 'edytuj',
 		value: () => emit('edit'),
-		class: 'bg-blue bg-op-80 border-r hoverable:bg-op-90',
-		activeClass: 'bg-op-90',
+		class: '!bg-blue',
 	},
 	{
 		text: 'usuń',
 		value: () => emit('delete'),
-		class: 'bg-red bg-op-70 border-l hoverable:bg-op-90',
-		activeClass: 'bg-op-90',
+		class: '!bg-red',
 	},
 ];
+
+const container = ref<HTMLDivElement>();
 
 const isExpanded = ref(false);
 const cursoredOverIndex = ref<number>();
@@ -30,16 +30,12 @@ const cursoredOverIndex = ref<number>();
 function expandOrSelectOption() {
 	if (isExpanded.value && cursoredOverIndex.value !== undefined) {
 		selectOption(cursoredOverIndex.value);
-		collapse();
+		isExpanded.value = false;
 		return;
 	}
 
 	isExpanded.value = true;
 	cursoredOverIndex.value = 0;
-}
-
-function collapse() {
-	isExpanded.value = false;
 }
 
 function moveCursor(value: number) {
@@ -59,43 +55,60 @@ function moveCursor(value: number) {
 	}
 }
 
+function closeIfFocusedOutside(event: FocusEvent) {
+	const target = event.relatedTarget as HTMLElement | null;
+	if (!target || !container.value || !container.value.contains(target)) {
+		isExpanded.value = false;
+	}
+}
+
 function selectOption(index: number) {
 	console.log('selecting', options[index]);
 }
 </script>
 
 <template>
-	<div class="relative">
+	<div
+		ref="container"
+		class="relative"
+		@keydown.esc="isExpanded = false"
+	>
+		<!-- @focusout="closeIfFocusedOutside" -->
 		<button
+			:id="`footerRowExpandActions${id}`"
 			class="relative h-8 w-8 cursor-pointer shadow neon-blue"
 			aria-haspopup="menu"
-			:aria-expanded="isExpanded"
+			:aria-controls="`footerRowActions${id}`"
 			@click="expandOrSelectOption"
 			@keydown.up.prevent="moveCursor(-1)"
 			@keydown.left.prevent="moveCursor(-1)"
 			@keydown.down.prevent="moveCursor(1)"
 			@keydown.right.prevent="moveCursor(1)"
 		>
-			<span class="visually-hidden">akcje dla {{ value }}</span>
+			<span class="visually-hidden">akcje dla {{ title }}</span>
 			<div class="i-mdi-wrench absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
 		</button>
 
 		<ul
 			v-show="isExpanded"
-			class="absolute left-1/2 z-10 flex translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-white shadow-md -bottom-2 -translate-x-1/2 dark:border-neutral-5"
+			:id="`footerRowActions${id}`"
+			class="absolute left-1/2 isolate z-10 flex translate-y-full of-hidden border-2 border-neutral-7 border-op-80 rounded-md bg-white shadow-md -bottom-1 -translate-x-1/2"
 			role="menu"
 			aria-orientation="horizontal"
-			@focusout="collapse"
+			:aria-labelledby="`footerRowExpandActions${id}`"
 		>
 			<li
 				v-for="(option, index) in options"
 				:key="option.text"
-				class="relative flex-1 cursor-pointer select-none border-neutral px-2 py-1 text-3 dark:border-neutral-5 hoverable:bg-op-90"
+				class="flex-1 select-none bg-neutral-5"
+				:class="[cursoredOverIndex === index ? option.class : '']"
 				role="presentation"
-				:class="[option.class, cursoredOverIndex === index ? option.activeClass : '']"
 				@mouseenter="cursoredOverIndex = index"
 			>
-				<button class="">
+				<button
+					role="menuitem"
+					class="h-full w-full px-2 py-1"
+				>
 					{{ option.text }}
 				</button>
 			</li>

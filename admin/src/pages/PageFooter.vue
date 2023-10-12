@@ -91,8 +91,6 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 	instagram: 'i-logos-instagram',
 	twitter: 'i-logos-twitter',
 };
-
-const currentModelIndex = ref(0);
 </script>
 
 <template>
@@ -127,19 +125,20 @@ const currentModelIndex = ref(0);
 						class="md:footer-row-span i-fa6-solid-envelope h-6 w-6 justify-self-end"
 						:style="`--f-row-start: ${index + 1}; --f-row-span: ${emailRowSpan}`"
 					/>
-					<a
-						:href="`mailto:${email}`"
-						class="md:footer-row-span relative h-fit w-fit hoverable:underline"
+					<div
+						class="md:footer-row-span relative h-fit w-fit"
 						:style="`--f-row-start: ${index + 1}; --f-row-span: ${emailRowSpan}`"
 					>
-						{{ email }}
+						<a :href="`mailto:${email}`" class="hoverable:underline">
+							{{ email }}
+						</a>
 						<FooterRowActionSelect
 							:id="index"
 							class="top-1/2 translate-x-full !absolute -right-2 -translate-y-1/2"
-							:value="email"
+							:title="email"
 							@click.prevent=""
 						/>
-					</a>
+					</div>
 				</template>
 				<button class="md:footer-row-span col-span-2 mx-auto w-fit self-center px-3 neon-green" :style="`--f-row-start: ${emails.length * emailRowSpan + 1}`">
 					dodaj email
