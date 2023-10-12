@@ -34,7 +34,9 @@ cursoredOverIndex.value = 0;
 			:aria-activedescendant="cursoredOverIndex !== undefined ? `editorModeOption-${cursoredOverIndex}` : ''"
 			@focus="isExpanded = true"
 			@focusout="closeIfFocusedOutside"
+			@keydown.left.prevent="moveCursor(-1)"
 			@keydown.up.prevent="moveCursor(-1)"
+			@keydown.right.prevent="moveCursor(1)"
 			@keydown.down.prevent="moveCursor(1)"
 			@keydown.esc="isExpanded = false"
 			@keydown.enter="selectOption(cursoredOverIndex)"
@@ -52,8 +54,6 @@ cursoredOverIndex.value = 0;
 			role="listbox"
 			aria-orientation="horizontal"
 			aria-labelledby="editorModeComboboxLabel"
-			@keydown.up.prevent="moveCursor(-1)"
-			@keydown.down.prevent="moveCursor(1)"
 		>
 			<li
 				v-for="({ text, value: optionValue }, index) in options"
