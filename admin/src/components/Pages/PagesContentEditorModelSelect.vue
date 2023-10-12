@@ -20,7 +20,7 @@ cursoredOverIndex.value = 0;
 </script>
 
 <template>
-	<article class="relative" title="tryb edytora">
+	<div class="relative" title="tryb edytora">
 		<span id="editorModeComboboxLabel" class="visually-hidden">tryb edytora</span>
 		<div
 			aria-label="tryb edytora"
@@ -73,5 +73,5 @@ cursoredOverIndex.value = 0;
 				{{ text }}
 			</li>
 		</ul>
-	</article>
+	</div>
 </template>

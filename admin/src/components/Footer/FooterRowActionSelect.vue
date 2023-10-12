@@ -10,8 +10,18 @@ const emit = defineEmits<{
 }>();
 
 const options = [
-	{ text: 'edytuj', value: () => emit('edit'), class: 'bg-blue bg-op-80 border-r' },
-	{ text: 'usuń', value: () => emit('delete'), class: 'bg-red bg-op-70 border-l' },
+	{
+		text: 'edytuj',
+		value: () => emit('edit'),
+		class: 'bg-blue bg-op-80 border-r hoverable:bg-op-90',
+		activeClass: 'bg-op-90',
+	},
+	{
+		text: 'usuń',
+		value: () => emit('delete'),
+		class: 'bg-red bg-op-70 border-l hoverable:bg-op-90',
+		activeClass: 'bg-op-90',
+	},
 ];
 
 const isExpanded = ref(false);
@@ -55,17 +65,16 @@ function selectOption(index: number) {
 </script>
 
 <template>
-	<article
-		class="relative"
-	>
+	<div class="relative">
 		<button
 			class="relative h-8 w-8 cursor-pointer shadow neon-blue"
 			aria-haspopup="menu"
 			:aria-expanded="isExpanded"
 			@click="expandOrSelectOption"
 			@keydown.up.prevent="moveCursor(-1)"
+			@keydown.left.prevent="moveCursor(-1)"
 			@keydown.down.prevent="moveCursor(1)"
-			@focusout="collapse"
+			@keydown.right.prevent="moveCursor(1)"
 		>
 			<span class="visually-hidden">akcje dla {{ value }}</span>
 			<div class="i-mdi-wrench absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
@@ -76,16 +85,20 @@ function selectOption(index: number) {
 			class="absolute left-1/2 z-10 flex translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-white shadow-md -bottom-2 -translate-x-1/2 dark:border-neutral-5"
 			role="menu"
 			aria-orientation="horizontal"
+			@focusout="collapse"
 		>
 			<li
-				v-for="option in options"
+				v-for="(option, index) in options"
 				:key="option.text"
 				class="relative flex-1 cursor-pointer select-none border-neutral px-2 py-1 text-3 dark:border-neutral-5 hoverable:bg-op-90"
-				:class="option.class"
-				role="menuitem"
+				role="presentation"
+				:class="[option.class, cursoredOverIndex === index ? option.activeClass : '']"
+				@mouseenter="cursoredOverIndex = index"
 			>
-				{{ option.text }}
+				<button class="">
+					{{ option.text }}
+				</button>
 			</li>
 		</ul>
-	</article>
+	</div>
 </template>
