@@ -1,85 +1,91 @@
 <script setup lang="ts">
 defineProps<{
+	id: number;
 	value: string;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
 	edit: [];
 	delete: [];
 }>();
 
-const placeholderValue = ref(0);
-const listbox = ref<HTMLUListElement>();
-
 const options = [
-	{ text: 'edytuj', value: 0 },
-	{ text: 'usuń', value: 1 },
+	{ text: 'edytuj', value: () => emit('edit'), class: 'bg-blue bg-op-80 border-r' },
+	{ text: 'usuń', value: () => emit('delete'), class: 'bg-red bg-op-70 border-l' },
 ];
 
-const {
-	isExpanded,
-	cursoredOverIndex,
-	moveCursor,
-	selectOption,
-	closeIfFocusedOutside,
-} = useCombobox(placeholderValue, computed(() => options), listbox);
+const isExpanded = ref(false);
+const cursoredOverIndex = ref<number>();
 
-cursoredOverIndex.value = 0;
+function expandOrSelectOption() {
+	if (isExpanded.value && cursoredOverIndex.value !== undefined) {
+		selectOption(cursoredOverIndex.value);
+		collapse();
+		return;
+	}
+
+	isExpanded.value = true;
+	cursoredOverIndex.value = 0;
+}
+
+function collapse() {
+	isExpanded.value = false;
+}
+
+function moveCursor(value: number) {
+	if (!isExpanded.value) {
+		isExpanded.value = true;
+		cursoredOverIndex.value = 0;
+		return;
+	}
+
+	if (cursoredOverIndex.value === undefined) {
+		cursoredOverIndex.value = value > 0 ? 0 : options.length - 1;
+	} else {
+		cursoredOverIndex.value = (cursoredOverIndex.value + value) % options.length;
+		if (cursoredOverIndex.value < 0) {
+			cursoredOverIndex.value = options.length + cursoredOverIndex.value;
+		}
+	}
+}
+
+function selectOption(index: number) {
+	console.log('selecting', options[index]);
+}
 </script>
 
 <template>
-	<article class="relative" title="tryb edytora">
-		<span id="editorModeComboboxLabel" class="visually-hidden">akcje dla {{ value }}</span>
-		<div
-			aria-label="tryb edytora"
+	<article
+		class="relative"
+	>
+		<button
 			class="relative h-8 w-8 cursor-pointer shadow neon-blue"
-			role="combobox"
-			tabindex="0"
-			aria-haspopup="listbox"
-			aria-controls="editorModeListbox"
-			aria-labelledby="editorModeComboboxLabel"
+			aria-haspopup="menu"
 			:aria-expanded="isExpanded"
-			@focus="isExpanded = true"
-			@focusout="closeIfFocusedOutside"
+			@click="expandOrSelectOption"
 			@keydown.up.prevent="moveCursor(-1)"
 			@keydown.down.prevent="moveCursor(1)"
-			@keydown.esc="isExpanded = false"
-			@keydown.enter="selectOption(cursoredOverIndex)"
-			@click="isExpanded = true"
+			@focusout="collapse"
 		>
-			<span class="visually-hidden">pokaż akcje</span>
+			<span class="visually-hidden">akcje dla {{ value }}</span>
 			<div class="i-mdi-wrench absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
-		</div>
+		</button>
 
 		<ul
 			v-show="isExpanded"
-			id="editorModeListbox"
-			ref="listbox"
 			class="absolute left-1/2 z-10 flex translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-white shadow-md -bottom-2 -translate-x-1/2 dark:border-neutral-5"
-			role="listbox"
+			role="menu"
 			aria-orientation="horizontal"
-			aria-labelledby="editorModeComboboxLabel"
-			@keydown.up.prevent="moveCursor(-1)"
-			@keydown.down.prevent="moveCursor(1)"
 		>
-			<button
-				id="editorModeOption-0"
-				class="relative flex-1 cursor-pointer select-none bg-blue bg-op-80 px-3 py-2 hoverable:bg-op-90"
-				role="option"
-				@click="$emit('edit')"
-				@mouseenter="cursoredOverIndex = 0"
+			<li
+				v-for="option in options"
+				:key="option.text"
+				class="relative flex-1 cursor-pointer select-none border-neutral px-2 py-1 text-3 dark:border-neutral-5 hoverable:bg-op-90"
+				:class="option.class"
+				role="menuitem"
 			>
-				edytuj
-			</button>
-			<button
-				id="editorModeOption-1"
-				class="relative flex-1 cursor-pointer select-none bg-red bg-op-60 px-3 py-2 hoverable:bg-op-80"
-				role="option"
-				@click="$emit('delete')"
-				@mouseenter="cursoredOverIndex = 1"
-			>
-				usuń
-			</button>
+				{{ option.text }}
+			</li>
 		</ul>
 	</article>
 </template>

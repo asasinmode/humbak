@@ -134,6 +134,7 @@ const currentModelIndex = ref(0);
 					>
 						{{ email }}
 						<FooterRowActionSelect
+							:id="index"
 							class="top-1/2 translate-x-full !absolute -right-2 -translate-y-1/2"
 							:value="email"
 							@click.prevent=""
