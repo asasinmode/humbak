@@ -35,9 +35,14 @@ function expand() {
 
 function moveCursor(value: number, focusCursoredItemIfExpanding = false) {
 	if (!isExpanded.value) {
+		cursoredOverIndex.value = undefined;
 		isExpanded.value = true;
-		cursoredOverIndex.value = value > 0 ? 0 : options.length - 1;
-		focusCursoredItemIfExpanding && nextTick(() => document.getElementById(`footerRowActionsAction${cursoredOverIndex.value}`)?.focus());
+
+		if (focusCursoredItemIfExpanding) {
+			cursoredOverIndex.value = value > 0 ? 0 : options.length - 1;
+			focusCursoredItemIfExpanding && nextTick(() => document.getElementById(`footerRowActionsAction${cursoredOverIndex.value}`)?.focus());
+		}
+
 		return;
 	}
 
