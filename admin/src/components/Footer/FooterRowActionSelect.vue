@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
 	id: number;
 	title: string;
 }>();
@@ -13,12 +13,12 @@ const options = [
 	{
 		text: 'edytuj',
 		value: () => emit('edit'),
-		class: '!bg-blue',
+		class: 'hoverable:!bg-blue',
 	},
 	{
 		text: 'usuń',
 		value: () => emit('delete'),
-		class: '!bg-red',
+		class: 'hoverable:!bg-red',
 	},
 ];
 
@@ -28,11 +28,6 @@ const toggle = ref<HTMLButtonElement>();
 const isExpanded = ref(false);
 const cursoredOverIndex = ref<number>();
 
-function expand() {
-	isExpanded.value = true;
-	cursoredOverIndex.value = 0;
-}
-
 function moveCursor(value: number, focusCursoredItemIfExpanding = false) {
 	if (!isExpanded.value) {
 		cursoredOverIndex.value = undefined;
@@ -40,7 +35,9 @@ function moveCursor(value: number, focusCursoredItemIfExpanding = false) {
 
 		if (focusCursoredItemIfExpanding) {
 			cursoredOverIndex.value = value > 0 ? 0 : options.length - 1;
-			focusCursoredItemIfExpanding && nextTick(() => document.getElementById(`footerRowActionsAction${cursoredOverIndex.value}`)?.focus());
+			focusCursoredItemIfExpanding && nextTick(() =>
+				document.getElementById(`footerRowActions${props.id}Action${cursoredOverIndex.value}`)?.focus()
+			);
 		}
 
 		return;
@@ -54,8 +51,8 @@ function moveCursor(value: number, focusCursoredItemIfExpanding = false) {
 			cursoredOverIndex.value = options.length + cursoredOverIndex.value;
 		}
 	}
-	console.log('focusing', document.getElementById(`footerRowActionsAction${cursoredOverIndex.value}`));
-	document.getElementById(`footerRowActionsAction${cursoredOverIndex.value}`)?.focus();
+
+	document.getElementById(`footerRowActions${props.id}Action${cursoredOverIndex.value}`)?.focus();
 }
 
 function closeIfFocusedOutside(event: FocusEvent) {
@@ -84,9 +81,10 @@ function selectOption(index?: number) {
 		return;
 	}
 
-	console.log('selecting', options[index]);
 	isExpanded.value = false;
 	cursoredOverIndex.value = undefined;
+
+	// todo call option.value
 }
 </script>
 
@@ -96,6 +94,12 @@ function selectOption(index?: number) {
 		class="relative"
 		:title="`akcje dla ${title}`"
 		@keydown.esc="collapseAndFocusToggle"
+		@keydown.up.prevent="moveCursor(-1, true)"
+		@keydown.left.prevent="moveCursor(-1)"
+		@keydown.down.prevent="moveCursor(1, true)"
+		@keydown.right.prevent="moveCursor(1)"
+		@keydown.space="selectOption(cursoredOverIndex)"
+		@keydown.enter="selectOption(cursoredOverIndex)"
 		@focusout="closeIfFocusedOutside"
 	>
 		<button
@@ -104,13 +108,8 @@ function selectOption(index?: number) {
 			class="relative h-8 w-8 cursor-pointer shadow neon-blue"
 			aria-haspopup="menu"
 			:aria-controls="`footerRowActions${id}`"
+			:aria-expanded="isExpanded"
 			@click="toggleExpanded"
-			@keydown.up.prevent="moveCursor(-1, true)"
-			@keydown.left.prevent="moveCursor(-1)"
-			@keydown.down.prevent="moveCursor(1, true)"
-			@keydown.right.prevent="moveCursor(1)"
-			@keydown.space="selectOption(cursoredOverIndex)"
-			@keydown.enter="selectOption(cursoredOverIndex)"
 		>
 			<span class="visually-hidden">akcje dla {{ title }}</span>
 			<div class="i-mdi-wrench absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
@@ -128,16 +127,16 @@ function selectOption(index?: number) {
 			<li
 				v-for="(option, index) in options"
 				:key="option.text"
-				class="flex-1 select-none bg-neutral-4"
-				:class="[cursoredOverIndex === index ? option.class : '']"
+				class="flex-1 select-none"
+				:class="option.class"
 				role="presentation"
-				@mouseenter="cursoredOverIndex = index"
 				@focusin="cursoredOverIndex = index"
 			>
 				<button
-					:id="`footerRowActionsAction${index}`"
+					:id="`footerRowActions${id}Action${index}`"
 					role="menuitem"
-					class="h-full w-full px-2 py-1"
+					class="h-full w-full bg-neutral-4 px-2 py-1"
+					:class="option.class"
 				>
 					{{ option.text }}
 				</button>
