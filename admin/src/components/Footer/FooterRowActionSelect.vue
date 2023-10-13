@@ -28,6 +28,11 @@ const toggle = ref<HTMLButtonElement>();
 const isExpanded = ref(false);
 const cursoredOverIndex = ref<number>();
 
+function focusCursoredOver() {
+	console.log('focusing', cursoredOverIndex.value);
+	document.getElementById(`footerRowActions${props.id}Action${cursoredOverIndex.value}`)?.focus();
+}
+
 function moveCursor(value: number, focusCursoredItemIfExpanding = false) {
 	if (!isExpanded.value) {
 		cursoredOverIndex.value = undefined;
@@ -36,7 +41,7 @@ function moveCursor(value: number, focusCursoredItemIfExpanding = false) {
 		if (focusCursoredItemIfExpanding) {
 			cursoredOverIndex.value = value > 0 ? 0 : options.length - 1;
 			focusCursoredItemIfExpanding && nextTick(() =>
-				document.getElementById(`footerRowActions${props.id}Action${cursoredOverIndex.value}`)?.focus()
+				focusCursoredOver()
 			);
 		}
 
@@ -52,7 +57,7 @@ function moveCursor(value: number, focusCursoredItemIfExpanding = false) {
 		}
 	}
 
-	document.getElementById(`footerRowActions${props.id}Action${cursoredOverIndex.value}`)?.focus();
+	focusCursoredOver();
 }
 
 function closeIfFocusedOutside(event: FocusEvent) {
@@ -74,6 +79,22 @@ function toggleExpanded() {
 function collapseAndFocusToggle() {
 	isExpanded.value = false;
 	toggle.value?.focus();
+}
+
+function handleHomeEndKeys(e: KeyboardEvent) {
+	if (!isExpanded.value) {
+		return;
+	}
+
+	if (e.key === 'Home') {
+		cursoredOverIndex.value = 0;
+		focusCursoredOver();
+		e.preventDefault();
+	} else if (e.key === 'End') {
+		cursoredOverIndex.value = options.length - 1;
+		focusCursoredOver();
+		e.preventDefault();
+	}
 }
 
 function selectOption(index?: number) {
@@ -123,6 +144,7 @@ function selectOption(index?: number) {
 			aria-orientation="horizontal"
 			:aria-activedescendant="cursoredOverIndex !== undefined ? `footerRowActionsAction${cursoredOverIndex}` : undefined"
 			:aria-labelledby="`footerRowExpandActions${id}`"
+			@keydown="handleHomeEndKeys"
 		>
 			<li
 				v-for="(option, index) in options"
