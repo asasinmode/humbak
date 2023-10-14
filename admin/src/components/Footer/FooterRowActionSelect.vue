@@ -132,13 +132,13 @@ function selectOption(index?: number) {
 			@click.prevent="toggleExpanded"
 		>
 			<span class="visually-hidden">akcje dla {{ title }}</span>
-			<div class="i-mdi-wrench absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
+			<div class="i-mdi-wrench group absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
 		</button>
 
 		<ul
 			v-show="isExpanded"
 			:id="`footerRowActions${id}`"
-			class="absolute left-1/2 z-1 flex translate-y-full of-hidden border-2 border-neutral-7 border-op-80 rounded-md bg-white shadow-md -bottom-1 -translate-x-1/2"
+			class="absolute left-1/2 z-1 flex translate-y-full bg-transparent shadow-md -bottom-1 -translate-x-1/2"
 			role="menu"
 			aria-orientation="horizontal"
 			:aria-activedescendant="cursoredOverIndex !== undefined ? `footerRowActionsAction${cursoredOverIndex}` : undefined"
@@ -148,15 +148,14 @@ function selectOption(index?: number) {
 			<li
 				v-for="(option, index) in options"
 				:key="option.text"
-				class="flex-1 select-none"
-				:class="option.class"
+				class="group flex-1 select-none"
 				role="presentation"
 				@focusin="cursoredOverIndex = index"
 			>
 				<button
 					:id="`footerRowActions${id}Action${index}`"
 					role="menuitem"
-					class="h-full w-full bg-neutral-4 px-2 py-1"
+					class="relative h-full w-full of-hidden border-y-2 border-neutral-7 bg-neutral-4 px-2 py-1 group-first:(border-l-2 rounded-l-md) group-last:(border-r-2 rounded-r-md)"
 					:class="option.class"
 				>
 					{{ option.text }}
