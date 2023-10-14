@@ -111,6 +111,7 @@ function selectOption(index?: number) {
 	<div
 		ref="container"
 		class="relative"
+		:style="`z-index: ${25 - id}`"
 		:title="`akcje dla ${title}`"
 		@keydown.esc="collapseAndFocusToggle"
 		@keydown.up.prevent="moveCursor(-1, true)"
@@ -137,7 +138,7 @@ function selectOption(index?: number) {
 		<ul
 			v-show="isExpanded"
 			:id="`footerRowActions${id}`"
-			class="absolute left-1/2 isolate z-10 flex translate-y-full of-hidden border-2 border-neutral-7 border-op-80 rounded-md bg-white shadow-md -bottom-1 -translate-x-1/2"
+			class="absolute left-1/2 z-1 flex translate-y-full of-hidden border-2 border-neutral-7 border-op-80 rounded-md bg-white shadow-md -bottom-1 -translate-x-1/2"
 			role="menu"
 			aria-orientation="horizontal"
 			:aria-activedescendant="cursoredOverIndex !== undefined ? `footerRowActionsAction${cursoredOverIndex}` : undefined"
