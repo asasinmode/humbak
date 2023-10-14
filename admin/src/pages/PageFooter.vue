@@ -91,6 +91,14 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 	instagram: 'i-logos-instagram',
 	twitter: 'i-logos-twitter',
 };
+
+function editRow(index: number, type: 'email' | 'phone' | 'location') {
+	console.log('editing', { index, type });
+}
+
+function deleteRow(index: number, type: 'email' | 'phone' | 'location') {
+	console.log('deleting', { index, type });
+}
 </script>
 
 <template>
@@ -136,7 +144,8 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 							:id="index"
 							class="top-1/2 translate-x-full !absolute -right-2 -translate-y-1/2"
 							:title="email"
-							@click.prevent=""
+							@edit="editRow(index, 'email')"
+							@delete="deleteRow(index, 'email')"
 						/>
 					</div>
 				</template>

@@ -29,7 +29,6 @@ const isExpanded = ref(false);
 const cursoredOverIndex = ref<number>();
 
 function focusCursoredOver() {
-	console.log('focusing', cursoredOverIndex.value);
 	document.getElementById(`footerRowActions${props.id}Action${cursoredOverIndex.value}`)?.focus();
 }
 
@@ -102,10 +101,9 @@ function selectOption(index?: number) {
 		return;
 	}
 
+	options[index].value();
 	isExpanded.value = false;
 	cursoredOverIndex.value = undefined;
-
-	// todo call option.value
 }
 </script>
 
@@ -130,7 +128,7 @@ function selectOption(index?: number) {
 			aria-haspopup="menu"
 			:aria-controls="`footerRowActions${id}`"
 			:aria-expanded="isExpanded"
-			@click="toggleExpanded"
+			@click.prevent="toggleExpanded"
 		>
 			<span class="visually-hidden">akcje dla {{ title }}</span>
 			<div class="i-mdi-wrench absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
