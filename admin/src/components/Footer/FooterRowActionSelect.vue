@@ -138,7 +138,7 @@ function selectOption(index?: number) {
 		<ul
 			v-show="isExpanded"
 			:id="`footerRowActions${id}`"
-			class="absolute left-1/2 z-1 flex translate-y-full rounded-md bg-transparent shadow-md -bottom-1 -translate-x-1/2"
+			class="absolute left-1/2 z-1 flex translate-y-full rounded-md bg-transparent shadow-lg -bottom-1 -translate-x-1/2"
 			role="menu"
 			aria-orientation="horizontal"
 			:aria-activedescendant="cursoredOverIndex !== undefined ? `footerRowActionsAction${cursoredOverIndex}` : undefined"

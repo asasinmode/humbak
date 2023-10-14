@@ -149,7 +149,10 @@ function deleteRow(index: number, type: 'email' | 'phone' | 'location') {
 						/>
 					</div>
 				</template>
-				<button class="md:footer-row-span col-span-2 mx-auto w-fit self-center px-3 neon-green" :style="`--f-row-start: ${emails.length * emailRowSpan + 1}`">
+				<button
+					class="md:footer-row-span col-span-2 mx-auto h-8 w-fit self-center border-2 border-emerald-5 rounded-full bg-emerald px-3 text-sm shadow -mt-1 hoverable:brightness-110"
+					:style="`--f-row-start: ${emails.length * emailRowSpan + 1};`"
+				>
 					dodaj email
 				</button>
 
@@ -162,7 +165,10 @@ function deleteRow(index: number, type: 'email' | 'phone' | 'location') {
 						{{ phone }}
 					</p>
 				</template>
-				<button class="md:footer-row-span col-span-2 mx-auto w-fit self-center px-3 neon-green" :style="`--f-row-start: ${phoneNumbers.length * phoneNumbersRowSpan + 1};`">
+				<button
+					class="md:footer-row-span col-span-2 mx-auto mr-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)] h-8 w-fit self-center border-2 border-emerald-5 rounded-full bg-emerald px-3 text-sm shadow -mt-1 hoverable:brightness-110"
+					:style="`--f-row-start: ${phoneNumbers.length * phoneNumbersRowSpan + 1};`"
+				>
 					dodaj telefon
 				</button>
 

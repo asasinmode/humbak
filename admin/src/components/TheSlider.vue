@@ -123,7 +123,7 @@ defineExpose({
 
 <style>
 .blaze-pagination button {
-	@apply p-0 w-3 h-3 rounded-[50%] bg-neutral of-hidden transition-transform text-transparent
+	@apply p-0 w-3 h-3 rounded-1/2 bg-neutral of-hidden transition-transform text-transparent
 }
 .blaze-pagination button.active {
 	@apply bg-white scale-[1.2]
