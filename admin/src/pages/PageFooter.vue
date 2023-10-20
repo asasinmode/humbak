@@ -166,7 +166,7 @@ function deleteRow(index: number, type: 'email' | 'phone' | 'location') {
 					</p>
 				</template>
 				<button
-					class="md:footer-row-span col-span-2 mx-auto mr-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)] h-8 w-fit self-center border-2 border-emerald-5 rounded-full bg-emerald px-3 text-sm shadow -mt-1 hoverable:brightness-110"
+					class="md:footer-row-span col-span-2 mx-auto h-8 w-fit self-center border-2 border-emerald-5 rounded-full bg-emerald px-3 text-sm shadow -mt-1 lg:translate-x-0 md:translate-x-6 hoverable:brightness-110"
 					:style="`--f-row-start: ${phoneNumbers.length * phoneNumbersRowSpan + 1};`"
 				>
 					dodaj telefon
