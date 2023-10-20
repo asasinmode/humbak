@@ -121,6 +121,9 @@ export const useMonaco = (
 
 	onBeforeUnmount(() => {
 		editor.value?.dispose();
+		if (!getModels) {
+			return;
+		}
 		for (const model of getModels()) {
 			model.dispose();
 		}
