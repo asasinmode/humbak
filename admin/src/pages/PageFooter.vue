@@ -92,8 +92,13 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 	twitter: 'i-logos-twitter',
 };
 
+const currentlyEditingType = ref<'email' | 'phone' | 'location'>();
+const currentlyEditingIndex = ref<number>();
+
 function editRow(index: number, type: 'email' | 'phone' | 'location') {
 	console.log('editing', { index, type });
+	currentlyEditingIndex.value = index;
+	currentlyEditingType.value = type;
 }
 
 function deleteRow(index: number, type: 'email' | 'phone' | 'location') {
@@ -137,7 +142,12 @@ function deleteRow(index: number, type: 'email' | 'phone' | 'location') {
 						class="md:footer-row-span relative h-fit w-fit"
 						:style="`--f-row-start: ${index + 1}; --f-row-span: ${emailRowSpan}`"
 					>
-						<a :href="`mailto:${email}`" class="hoverable:underline">
+						<VInput
+							v-if="currentlyEditingType === 'email' && currentlyEditingIndex === index"
+							:id="`footerEmail${index}`"
+							v-model="emails[currentlyEditingIndex as number]"
+						/>
+						<a v-else :href="`mailto:${email}`" class="hoverable:underline">
 							{{ email }}
 						</a>
 						<FooterRowActionSelect
