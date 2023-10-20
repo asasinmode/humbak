@@ -91,19 +91,6 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 	instagram: 'i-logos-instagram',
 	twitter: 'i-logos-twitter',
 };
-
-const currentlyEditingType = ref<'email' | 'phone' | 'location'>();
-const currentlyEditingIndex = ref<number>();
-
-function editRow(index: number, type: 'email' | 'phone' | 'location') {
-	console.log('editing', { index, type });
-	currentlyEditingIndex.value = index;
-	currentlyEditingType.value = type;
-}
-
-function deleteRow(index: number, type: 'email' | 'phone' | 'location') {
-	console.log('deleting', { index, type });
-}
 </script>
 
 <template>
@@ -142,21 +129,23 @@ function deleteRow(index: number, type: 'email' | 'phone' | 'location') {
 						class="md:footer-row-span relative h-fit w-fit"
 						:style="`--f-row-start: ${index + 1}; --f-row-span: ${emailRowSpan}`"
 					>
-						<VInput
-							v-if="currentlyEditingType === 'email' && currentlyEditingIndex === index"
-							:id="`footerEmail${index}`"
-							v-model="emails[currentlyEditingIndex as number]"
-						/>
-						<a v-else :href="`mailto:${email}`" class="hoverable:underline">
-							{{ email }}
-						</a>
-						<FooterRowActionSelect
-							:id="index"
-							class="top-1/2 translate-x-full !absolute -right-2 -translate-y-1/2"
-							:title="email"
-							@edit="editRow(index, 'email')"
-							@delete="deleteRow(index, 'email')"
-						/>
+						<FooterRow :id="index" :value="email" type="email" />
+						<!-- <VInput -->
+						<!-- 	v-if="currentlyEditingType === 'email' && currentlyEditingIndex === index" -->
+						<!-- 	:id="`footerEmail${index}`" -->
+						<!-- 	v-model="emails[currentlyEditingIndex as number]" -->
+						<!-- 	:label="currentlyEditingLabel" -->
+						<!-- /> -->
+						<!-- <a v-else :href="`mailto:${email}`" class="hoverable:underline"> -->
+						<!-- 	{{ email }} -->
+						<!-- </a> -->
+						<!-- <FooterRowActionSelect -->
+						<!-- 	:id="index" -->
+						<!-- 	class="top-1/2 translate-x-full !absolute -right-2 -translate-y-1/2" -->
+						<!-- 	:title="email" -->
+						<!-- 	@edit="editRow(index, 'email')" -->
+						<!-- 	@delete="deleteRow(index, 'email')" -->
+						<!-- /> -->
 					</div>
 				</template>
 				<button

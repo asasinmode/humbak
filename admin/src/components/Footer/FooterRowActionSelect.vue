@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
-	id: number;
+	index: number;
 	title: string;
 }>();
 
@@ -29,7 +29,7 @@ const isExpanded = ref(false);
 const cursoredOverIndex = ref<number>();
 
 function focusCursoredOver() {
-	document.getElementById(`footerRowActions${props.id}Action${cursoredOverIndex.value}`)?.focus();
+	document.getElementById(`footerRowActions${props.index}Action${cursoredOverIndex.value}`)?.focus();
 }
 
 function moveCursor(value: number, focusCursoredItemIfExpanding = false) {
@@ -111,7 +111,7 @@ function selectOption(index?: number) {
 	<div
 		ref="container"
 		class="relative"
-		:style="`z-index: ${25 - id}`"
+		:style="`z-index: ${25 - index}`"
 		:title="`akcje dla ${title}`"
 		@keydown.esc="collapseAndFocusToggle"
 		@keydown.up.prevent="moveCursor(-1, true)"
@@ -123,11 +123,11 @@ function selectOption(index?: number) {
 		@focusout="closeIfFocusedOutside"
 	>
 		<button
-			:id="`footerRowExpandActions${id}`"
+			:id="`footerRowExpandActions${index}`"
 			ref="toggle"
 			class="relative h-8 w-8 cursor-pointer border-2 border-blue-5 rounded-1/2 bg-blue shadow hoverable:(brightness-110)"
 			aria-haspopup="menu"
-			:aria-controls="`footerRowActions${id}`"
+			:aria-controls="`footerRowActions${index}`"
 			:aria-expanded="isExpanded"
 			@click.prevent="toggleExpanded"
 		>
@@ -137,12 +137,12 @@ function selectOption(index?: number) {
 
 		<ul
 			v-show="isExpanded"
-			:id="`footerRowActions${id}`"
+			:id="`footerRowActions${index}`"
 			class="absolute left-1/2 z-1 flex translate-y-full rounded-md bg-transparent shadow-lg -bottom-1 -translate-x-1/2"
 			role="menu"
 			aria-orientation="horizontal"
 			:aria-activedescendant="cursoredOverIndex !== undefined ? `footerRowActionsAction${cursoredOverIndex}` : undefined"
-			:aria-labelledby="`footerRowExpandActions${id}`"
+			:aria-labelledby="`footerRowExpandActions${index}`"
 			@keydown="handleHomeEndKeys"
 		>
 			<li
@@ -153,7 +153,7 @@ function selectOption(index?: number) {
 				@focusin="cursoredOverIndex = index"
 			>
 				<button
-					:id="`footerRowActions${id}Action${index}`"
+					:id="`footerRowActions${index}Action${index}`"
 					role="menuitem"
 					class="relative h-full w-full of-hidden border-y-2 border-neutral-7 bg-neutral-4 px-2 py-1 group-first:(border-l-2 rounded-l-md) group-last:(border-r-2 rounded-r-md)"
 					:class="option.class"

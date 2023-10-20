@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    FooterRow: typeof import('./../components/Footer/FooterRow.vue')['default']
     FooterRowActionSelect: typeof import('./../components/Footer/FooterRowActionSelect.vue')['default']
     MenuHiddenLinksWidget: typeof import('./../components/Menu/MenuHiddenLinksWidget.vue')['default']
     MenuLinkButton: typeof import('./../components/Menu/MenuLinkButton.vue')['default']
