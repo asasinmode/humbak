@@ -133,11 +133,12 @@ function deleteRow(type: 'email' | 'phoneNumber', index: number) {
 				zapisz
 			</VButton>
 		</div>
-		<footer class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-4 bg-humbak px-2 pb-4 pt-6 text-black lg:px-8 md:px-[clamp(2rem,_-12.25rem_+_29.6875vw,_6.75rem)]">
+		<div class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-4 bg-humbak px-2 pb-4 pt-6 text-black lg:px-8 md:px-[clamp(2rem,_-12.25rem_+_29.6875vw,_6.75rem)]">
 			<section class="grid grid-cols-[min-content_max-content] max-w-360 gap-x-3 gap-y-4 lg:grid-cols-[repeat(3,_1fr_2fr)] md:grid-cols-[min-content_6fr_4fr_6fr_4fr_max-content] md:w-full">
 				<template v-for="index in emails.length" :key="`emails${index - 1}`">
 					<div
 						class="md:footer-row-span i-fa6-solid-envelope h-6 w-6 justify-self-end"
+						aria-hidden="true"
 						:style="`--f-row-start: ${index}; --f-row-span: ${emailRowSpan}`"
 					/>
 					<FooterRow
@@ -151,8 +152,8 @@ function deleteRow(type: 'email' | 'phoneNumber', index: number) {
 				</template>
 				<button
 					ref="addEmailButtonRef"
-					class="md:footer-row-span col-span-2 mx-auto h-8 w-fit self-center border-2 border-emerald-5 rounded-full bg-emerald px-3 text-sm shadow -mt-1 hoverable:brightness-110"
-					:style="`--f-row-start: ${emails.length * emailRowSpan + 1};`"
+					class="md:footer-row-span col-span-2 mx-auto h-8 w-fit border-2 border-emerald-5 rounded-full bg-emerald px-3 text-sm shadow -mt-1 hoverable:brightness-110"
+					:style="`--f-row-start: ${emails.length * emailRowSpan + 1}; --f-row-span: ${emails.length ? 1 : maxElementsInColumn};`"
 				>
 					dodaj email
 				</button>
@@ -160,6 +161,7 @@ function deleteRow(type: 'email' | 'phoneNumber', index: number) {
 				<template v-for="(phone, index) in phoneNumbers" :key="phone">
 					<div
 						class="md:footer-row-span i-fa6-solid-phone h-6 w-6 justify-self-end -mr-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)]"
+						aria-hidden="true"
 						:style="`--f-row-start: ${index + 1}; --f-row-span: ${phoneNumbersRowSpan}`"
 					/>
 					<p class="md:footer-row-span ml-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)] h-fit w-fit" :style="`--f-row-start: ${index + 1}; --f-row-span: ${phoneNumbersRowSpan}`">
@@ -168,8 +170,8 @@ function deleteRow(type: 'email' | 'phoneNumber', index: number) {
 				</template>
 				<button
 					ref="addPhoneButtonRef"
-					class="md:footer-row-span col-span-2 mx-auto h-8 w-fit self-center border-2 border-emerald-5 rounded-full bg-emerald px-3 text-sm shadow -mt-1 lg:translate-x-0 md:translate-x-6 hoverable:brightness-110"
-					:style="`--f-row-start: ${phoneNumbers.length * phoneNumbersRowSpan + 1};`"
+					class="md:footer-row-span col-span-2 mx-auto h-8 w-fit border-2 border-emerald-5 rounded-full bg-emerald px-3 text-sm shadow -mt-1 lg:translate-x-0 md:translate-x-6 hoverable:brightness-110"
+					:style="`--f-row-start: ${phoneNumbers.length * phoneNumbersRowSpan + 1}; --f-row-span: ${phoneNumbers.length ? 1 : maxElementsInColumn};`"
 				>
 					dodaj telefon
 				</button>
@@ -177,6 +179,7 @@ function deleteRow(type: 'email' | 'phoneNumber', index: number) {
 				<div
 					v-if="location.value"
 					class="md:footer-row-span i-fa6-solid-map-location-dot h-6 w-6 justify-self-end"
+					aria-hidden="true"
 					:style="`--f-row-start: 1; --f-row-span: ${maxElementsInColumn}`"
 				/>
 				<a
@@ -203,7 +206,7 @@ function deleteRow(type: 'email' | 'phoneNumber', index: number) {
 				</a>
 			</section>
 			<VLoading v-show="isLoading" class="absolute inset-0" size="20" />
-		</footer>
+		</div>
 	</main>
 </template>
 
