@@ -12,6 +12,9 @@ const languages = ref<IUniqueLanguage[]>([]);
 const selectedLanguage = ref<string>();
 let previousSelectedLanguage: string | undefined;
 
+const locationTextModelValue = ref('');
+const locationValueModelValue = ref('');
+
 const isLoading = ref(false);
 
 const {
@@ -21,7 +24,22 @@ const {
 } = useForm<Omit<IFooterContents, 'language'>>(
 	{ emails: [], phoneNumbers: [], location: { text: '', value: '' }, socials: [] },
 	async () => {
-		await new Promise(resolve => setTimeout(resolve, 500));
+		if (selectedLanguage.value === undefined) {
+			toastGenericError();
+			throw new Error('calling send form without selected language');
+		}
+
+		const footerData = await api.footer.upsert.mutate({
+			emails: emails.value,
+			phoneNumbers: phoneNumbers.value,
+			location: location.value,
+			socials: socials.value,
+			language: selectedLanguage.value,
+		});
+
+		updateValues(footerData);
+		locationTextModelValue.value = '';
+		locationValueModelValue.value = '';
 	},
 	saveButton.value?.element
 );
@@ -44,9 +62,6 @@ onMounted(async () => {
 		isLoadingLanguages.value = false;
 	}
 });
-
-const locationTextModelValue = ref('');
-const locationValueModelValue = ref('');
 
 async function getFooterContent() {
 	if (!selectedLanguage.value) {
@@ -98,7 +113,6 @@ function deleteRow(type: 'email' | 'phone', index: number) {
 	const target = type === 'email' ? emails.value : phoneNumbers.value;
 	target.splice(index, 1);
 	nextTick(() => {
-		console.log('focusing the thingy');
 		if (target.length === 0) {
 			(type === 'email' ? addEmailButtonRef.value : addPhoneButtonRef.value)?.focus();
 		} else if (index === 0) {
@@ -106,7 +120,6 @@ function deleteRow(type: 'email' | 'phone', index: number) {
 		} else {
 			document.getElementById(`footerRowExpandActions${type}${index - 1}`)?.focus();
 		}
-		console.log('next tick deleted and focused', target);
 	});
 }
 
