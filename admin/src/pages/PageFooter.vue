@@ -152,7 +152,8 @@ function deleteRow(type: 'email' | 'phone', index: number) {
 				</template>
 				<button
 					ref="addEmailButtonRef"
-					class="md:footer-row-span col-span-2 mx-auto h-6 w-fit border-2 border-emerald-5 rounded-full bg-emerald px-2 text-sm shadow hoverable:brightness-110"
+					class="md:footer-row-span col-span-2 mx-auto h-8 w-fit border-2 border-emerald-5 rounded-full bg-emerald px-2 text-sm shadow hoverable:brightness-110"
+					:class="emails.length !== maxElementsInColumn - 1 ? '-my-1' : ''"
 					:style="`--f-row-start: ${emails.length * emailRowSpan + 1}; --f-row-span: ${emails.length ? 1 : maxElementsInColumn};`"
 				>
 					dodaj email
@@ -175,7 +176,8 @@ function deleteRow(type: 'email' | 'phone', index: number) {
 				</template>
 				<button
 					ref="addPhoneButtonRef"
-					class="md:footer-row-span col-span-2 mx-auto h-6 w-fit border-2 border-emerald-5 rounded-full bg-emerald px-2 text-sm shadow lg:translate-x-0 md:translate-x-6 hoverable:brightness-110"
+					class="md:footer-row-span col-span-2 mx-auto h-8 w-fit border-2 border-emerald-5 rounded-full bg-emerald px-2 text-sm shadow lg:translate-x-0 md:translate-x-6 hoverable:brightness-110"
+					:class="phoneNumbers.length !== maxElementsInColumn - 1 ? '-my-1' : ''"
 					:style="`--f-row-start: ${phoneNumbers.length * phoneNumbersRowSpan + 1}; --f-row-span: ${phoneNumbers.length ? 1 : maxElementsInColumn};`"
 				>
 					dodaj telefon
