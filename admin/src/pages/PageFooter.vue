@@ -125,28 +125,13 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 						class="md:footer-row-span i-fa6-solid-envelope h-6 w-6 justify-self-end"
 						:style="`--f-row-start: ${index + 1}; --f-row-span: ${emailRowSpan}`"
 					/>
-					<div
-						class="md:footer-row-span relative h-fit w-fit"
+					<FooterRow
+						:id="index"
+						class="md:footer-row-span h-fit w-fit"
 						:style="`--f-row-start: ${index + 1}; --f-row-span: ${emailRowSpan}`"
-					>
-						<FooterRow :id="index" :value="email" type="email" />
-						<!-- <VInput -->
-						<!-- 	v-if="currentlyEditingType === 'email' && currentlyEditingIndex === index" -->
-						<!-- 	:id="`footerEmail${index}`" -->
-						<!-- 	v-model="emails[currentlyEditingIndex as number]" -->
-						<!-- 	:label="currentlyEditingLabel" -->
-						<!-- /> -->
-						<!-- <a v-else :href="`mailto:${email}`" class="hoverable:underline"> -->
-						<!-- 	{{ email }} -->
-						<!-- </a> -->
-						<!-- <FooterRowActionSelect -->
-						<!-- 	:id="index" -->
-						<!-- 	class="top-1/2 translate-x-full !absolute -right-2 -translate-y-1/2" -->
-						<!-- 	:title="email" -->
-						<!-- 	@edit="editRow(index, 'email')" -->
-						<!-- 	@delete="deleteRow(index, 'email')" -->
-						<!-- /> -->
-					</div>
+						:value="email"
+						type="email"
+					/>
 				</template>
 				<button
 					class="md:footer-row-span col-span-2 mx-auto h-8 w-fit self-center border-2 border-emerald-5 rounded-full bg-emerald px-3 text-sm shadow -mt-1 hoverable:brightness-110"
