@@ -2,6 +2,7 @@
 const props = defineProps<{
 	index: number;
 	title: string;
+	type: 'email' | 'phone' | 'location';
 }>();
 
 const emit = defineEmits<{
@@ -9,18 +10,22 @@ const emit = defineEmits<{
 	delete: [];
 }>();
 
-const options = [
-	{
-		text: 'edytuj',
-		value: () => emit('edit'),
-		class: 'hoverable:!bg-blue',
-	},
-	{
-		text: 'usuń',
-		value: () => emit('delete'),
-		class: 'hoverable:!bg-red',
-	},
-];
+const options = props.type === 'location'
+	? [
+			{ text: 'edytuj', value: () => emit('edit'), class: 'hoverable:!bg-blue' },
+	]
+	: [
+			{
+				text: 'edytuj',
+				value: () => emit('edit'),
+				class: 'hoverable:!bg-blue',
+			},
+			{
+				text: 'usuń',
+				value: () => emit('delete'),
+				class: 'hoverable:!bg-red',
+			},
+		];
 
 const container = ref<HTMLDivElement>();
 const toggle = ref<HTMLButtonElement>();
@@ -123,11 +128,11 @@ function selectOption(index?: number) {
 		@focusout="closeIfFocusedOutside"
 	>
 		<button
-			:id="`footerRowExpandActions${index}`"
+			:id="`footerRowExpandActions${type}${index}`"
 			ref="toggle"
 			class="relative h-8 w-8 cursor-pointer border-2 border-blue-5 rounded-1/2 bg-blue shadow hoverable:(brightness-110)"
 			aria-haspopup="menu"
-			:aria-controls="`footerRowActions${index}`"
+			:aria-controls="`footerRowActions${type}${index}`"
 			:aria-expanded="isExpanded"
 			@click.prevent="toggleExpanded"
 		>
@@ -137,27 +142,26 @@ function selectOption(index?: number) {
 
 		<ul
 			v-show="isExpanded"
-			:id="`footerRowActions${index}`"
+			:id="`footerRowActions${type}${index}`"
 			class="absolute left-1/2 z-1 flex translate-y-full rounded-md bg-transparent shadow-lg -bottom-1 -translate-x-1/2"
 			role="menu"
 			aria-orientation="horizontal"
-			:aria-activedescendant="cursoredOverIndex !== undefined ? `footerRowActionsAction${cursoredOverIndex}` : undefined"
-			:aria-labelledby="`footerRowExpandActions${index}`"
+			:aria-labelledby="`footerRowExpandActions${type}${index}`"
 			@keydown="handleHomeEndKeys"
 		>
 			<li
-				v-for="(option, index) in options"
+				v-for="(option, localIndex) in options"
 				:key="option.text"
 				class="group flex-1 select-none bg-transparent"
 				role="presentation"
-				@focusin="cursoredOverIndex = index"
+				@focusin="cursoredOverIndex = localIndex"
 			>
 				<button
-					:id="`footerRowActions${index}Action${index}`"
+					:id="`footerRowActions${type}${index}-${localIndex}`"
 					role="menuitem"
 					class="relative h-full w-full of-hidden border-y-2 border-neutral-7 bg-neutral-4 px-2 py-1 group-first:(border-l-2 rounded-l-md) group-last:(border-r-2 rounded-r-md)"
 					:class="option.class"
-					@click="selectOption(index)"
+					@click="selectOption(localIndex)"
 				>
 					{{ option.text }}
 				</button>

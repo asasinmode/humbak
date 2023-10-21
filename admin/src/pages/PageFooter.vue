@@ -100,7 +100,7 @@ function deleteRow(type: 'email' | 'phoneNumber', index: number) {
 	if (target.length === 1) {
 		(type === 'email' ? addEmailButtonRef.value : addPhoneButtonRef.value)?.focus();
 	} else if (index === 0) {
-		document.getElementById('footerRowExpandActions1')?.focus();
+		document.getElementById(`footerRowExpandActions${type}1`)?.focus();
 	} else {
 		document.getElementById(`footerRowExpandActions${index - 1}`)?.focus();
 	}
@@ -158,15 +158,20 @@ function deleteRow(type: 'email' | 'phoneNumber', index: number) {
 					dodaj email
 				</button>
 
-				<template v-for="(phone, index) in phoneNumbers" :key="phone">
+				<template v-for="index in phoneNumbers.length" :key="`phones${index}`">
 					<div
 						class="md:footer-row-span i-fa6-solid-phone h-6 w-6 justify-self-end -mr-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)]"
 						aria-hidden="true"
-						:style="`--f-row-start: ${index + 1}; --f-row-span: ${phoneNumbersRowSpan}`"
+						:style="`--f-row-start: ${index}; --f-row-span: ${phoneNumbersRowSpan}`"
 					/>
-					<p class="md:footer-row-span ml-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)] h-fit w-fit" :style="`--f-row-start: ${index + 1}; --f-row-span: ${phoneNumbersRowSpan}`">
-						{{ phone }}
-					</p>
+					<FooterRow
+						:id="index - 1"
+						v-model="phoneNumbers[index - 1]"
+						class="md:footer-row-span ml-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)] h-fit w-fit"
+						:style="`--f-row-start: ${index}; --f-row-span: ${phoneNumbersRowSpan}`"
+						type="phone"
+						@delete="deleteRow('phoneNumber', index - 1)"
+					/>
 				</template>
 				<button
 					ref="addPhoneButtonRef"

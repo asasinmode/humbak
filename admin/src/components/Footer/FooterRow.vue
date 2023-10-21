@@ -2,7 +2,7 @@
 const props = defineProps<{
 	id: number;
 	modelValue: string;
-	type: 'email' | 'phone' | 'location';
+	type: 'email' | 'phone';
 }>();
 
 const emit = defineEmits<{
@@ -14,7 +14,6 @@ const localValue = ref(props.modelValue);
 
 const isEditing = ref(false);
 const inputRef = ref<HTMLInputElement>();
-const linkRef = ref<HTMLAnchorElement>();
 
 function edit() {
 	isEditing.value = true;
@@ -25,8 +24,7 @@ function edit() {
 
 function hideInput(updateValue: boolean) {
 	isEditing.value = false;
-	linkRef.value?.focus();
-
+	document.getElementById(`footerRowExpandActions${props.type}${props.id}`)?.focus();
 	updateValue && emit('update:model-value', localValue.value);
 }
 </script>
@@ -46,7 +44,7 @@ function hideInput(updateValue: boolean) {
 			>
 		</template>
 		<a
-			ref="linkRef"
+			v-if="type === 'email'"
 			:href="`mailto:${modelValue}`"
 			class="hoverable:underline"
 			:class="isEditing ? 'op-0' : ''"
@@ -54,10 +52,14 @@ function hideInput(updateValue: boolean) {
 		>
 			{{ modelValue }}
 		</a>
+		<p v-else>
+			{{ modelValue }}
+		</p>
 		<FooterRowActionSelect
 			v-if="!isEditing"
 			class="top-1/2 translate-x-full !absolute -right-2 -translate-y-1/2"
 			:index="id"
+			:type="type"
 			:title="modelValue"
 			@edit="edit"
 			@delete="$emit('delete')"
