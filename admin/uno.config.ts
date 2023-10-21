@@ -14,7 +14,7 @@ export default defineConfig({
 		presetWebFonts({
 			provider: 'bunny',
 			fonts: {
-				sans: 'Roboto',
+				sans: 'Atkinson Hyperlegible',
 			},
 		}),
 	],
