@@ -91,6 +91,21 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 	instagram: 'i-logos-instagram',
 	twitter: 'i-logos-twitter',
 };
+
+const addPhoneButtonRef = ref<HTMLButtonElement>();
+const addEmailButtonRef = ref<HTMLButtonElement>();
+
+function deleteRow(type: 'email' | 'phoneNumber', index: number) {
+	const target = type === 'email' ? emails.value : phoneNumbers.value;
+	if (target.length === 1) {
+		(type === 'email' ? addEmailButtonRef.value : addPhoneButtonRef.value)?.focus();
+	} else if (index === 0) {
+		document.getElementById('footerRowExpandActions1')?.focus();
+	} else {
+		document.getElementById(`footerRowExpandActions${index - 1}`)?.focus();
+	}
+	target.splice(index, 1);
+}
 </script>
 
 <template>
@@ -126,14 +141,16 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 						:style="`--f-row-start: ${index}; --f-row-span: ${emailRowSpan}`"
 					/>
 					<FooterRow
-						:id="index"
+						:id="index - 1"
 						v-model="emails[index - 1]"
 						class="md:footer-row-span h-fit w-fit"
 						:style="`--f-row-start: ${index}; --f-row-span: ${emailRowSpan}`"
 						type="email"
+						@delete="deleteRow('email', index - 1)"
 					/>
 				</template>
 				<button
+					ref="addEmailButtonRef"
 					class="md:footer-row-span col-span-2 mx-auto h-8 w-fit self-center border-2 border-emerald-5 rounded-full bg-emerald px-3 text-sm shadow -mt-1 hoverable:brightness-110"
 					:style="`--f-row-start: ${emails.length * emailRowSpan + 1};`"
 				>
@@ -150,6 +167,7 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 					</p>
 				</template>
 				<button
+					ref="addPhoneButtonRef"
 					class="md:footer-row-span col-span-2 mx-auto h-8 w-fit self-center border-2 border-emerald-5 rounded-full bg-emerald px-3 text-sm shadow -mt-1 lg:translate-x-0 md:translate-x-6 hoverable:brightness-110"
 					:style="`--f-row-start: ${phoneNumbers.length * phoneNumbersRowSpan + 1};`"
 				>

@@ -7,6 +7,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	'update:model-value': [string];
+	delete: [];
 }>();
 
 const localValue = ref(props.modelValue);
@@ -20,10 +21,6 @@ function edit() {
 	nextTick(() => {
 		inputRef.value?.focus();
 	});
-}
-
-function remove() {
-	console.log('deleting');
 }
 
 function hideInput(updateValue: boolean) {
@@ -62,7 +59,7 @@ function hideInput(updateValue: boolean) {
 			:index="id"
 			:title="modelValue"
 			@edit="edit"
-			@delete="remove"
+			@delete="$emit('delete')"
 		/>
 	</div>
 </template>
