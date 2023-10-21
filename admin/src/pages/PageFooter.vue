@@ -2,14 +2,13 @@
 import VButton from '~/components/V/VButton.vue';
 import type { IFooterContents, IUniqueLanguage } from '~/composables/useApi';
 
-const { toast, toastGenericError } = useToast();
+const { toast } = useToast();
 const api = useApi();
 
 const saveButton = ref<InstanceType<typeof VButton>>();
 
 const isLoadingLanguages = ref(false);
 const languages = ref<IUniqueLanguage[]>([]);
-const selectedLanguage = ref<string>();
 let previousSelectedLanguage: string | undefined;
 
 const locationTextModelValue = ref('');
@@ -18,23 +17,17 @@ const locationValueModelValue = ref('');
 const isLoading = ref(false);
 
 const {
-	clearForm, sendForm, updateValues, isSaving,
-	errors,
-	emails, phoneNumbers, location, socials,
-} = useForm<Omit<IFooterContents, 'language'>>(
-	{ emails: [], phoneNumbers: [], location: { text: '', value: '' }, socials: [] },
+	clearForm, sendForm, updateValues, isSaving, errors,
+	emails, phoneNumbers, location, socials, language,
+} = useForm<IFooterContents>(
+	{ emails: [], phoneNumbers: [], location: { text: '', value: '' }, socials: [], language: '' },
 	async () => {
-		if (selectedLanguage.value === undefined) {
-			toastGenericError();
-			throw new Error('calling send form without selected language');
-		}
-
 		const footerData = await api.footer.upsert.mutate({
 			emails: emails.value,
 			phoneNumbers: phoneNumbers.value,
 			location: location.value,
 			socials: socials.value,
-			language: selectedLanguage.value,
+			language: language.value,
 		});
 
 		updateValues(footerData);
@@ -53,7 +46,7 @@ onMounted(async () => {
 			return;
 		}
 
-		selectedLanguage.value = languages.value[0];
+		language.value = languages.value[0];
 		getFooterContent();
 	} catch (e) {
 		toast('błąd przy ładowaniu języków', 'error');
@@ -64,19 +57,14 @@ onMounted(async () => {
 });
 
 async function getFooterContent() {
-	if (!selectedLanguage.value) {
-		toastGenericError();
-		throw new Error('calling get footer content without selected language');
-	}
-
-	if (previousSelectedLanguage === selectedLanguage.value) {
+	if (previousSelectedLanguage === language.value) {
 		return;
 	}
 
 	isLoading.value = true;
 	try {
-		const data = await api.footer.byLanguage.query(selectedLanguage.value);
-		previousSelectedLanguage = selectedLanguage.value;
+		const data = await api.footer.byLanguage.query(language.value);
+		previousSelectedLanguage = language.value;
 
 		if (!data) {
 			clearForm(undefined, true);
@@ -155,7 +143,7 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 		<div class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 w-full gap-x-3">
 			<VCombobox
 				id="footerLanguage"
-				v-model="selectedLanguage"
+				v-model="language"
 				class="footer-controls-padding-left footer-language-select !min-w-20 !w-20"
 				class-input="!min-w-20 !w-20"
 				label="język"
@@ -293,6 +281,18 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 			</section>
 			<VLoading v-show="isLoading" class="absolute inset-0 z-30" size="25" />
 		</div>
+		<p v-if="errors.emails" class="text-center text-3 text-red-5">
+			Emaile: {{ errors.emails }}
+		</p>
+		<p v-if="errors.phoneNumbers" class="text-center text-3 text-red-5">
+			Telefony: {{ errors.phoneNumbers }}
+		</p>
+		<p v-if="errors.location" class="text-center text-3 text-red-5">
+			Lokacja: {{ errors.location }}
+		</p>
+		<p v-if="errors.socials" class="text-center text-3 text-red-5">
+			Sociale: {{ errors.socials }}
+		</p>
 	</main>
 </template>
 
