@@ -45,6 +45,9 @@ onMounted(async () => {
 	}
 });
 
+const locationTextModelValue = ref('');
+const locationValueModelValue = ref('');
+
 async function getFooterContent() {
 	if (!selectedLanguage.value) {
 		toastGenericError();
@@ -69,6 +72,8 @@ async function getFooterContent() {
 		phoneNumbers.value = data.phoneNumbers;
 		location.value = data.location;
 		socials.value = data.socials;
+		locationTextModelValue.value = '';
+		locationValueModelValue.value = '';
 	} catch (e) {
 		toast('błąd przy ładowaniu stopki', 'error');
 		console.error(e);
@@ -108,8 +113,6 @@ function deleteRow(type: 'email' | 'phone', index: number) {
 }
 
 const isEditingLocation = ref(false);
-const locationTextModelValue = ref('');
-const locationValueModelValue = ref('');
 const locationTextInputRef = ref<HTMLInputElement>();
 const locationValueInputRef = ref<HTMLInputElement>();
 
@@ -125,7 +128,6 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 		isEditingLocation.value = false;
 		nextTick(() => document.getElementById('footerRowExpandActionslocation0')?.focus());
 	}
-
 	if (updateValue) {
 		location.value.text = locationTextModelValue.value;
 		location.value.value = locationValueModelValue.value;
@@ -218,7 +220,7 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 					:style="`--f-row-start: 1; --f-row-span: ${maxElementsInColumn}`"
 				>
 					<template v-if="isEditingLocation">
-						<label class="visually-hidden" for="footerlocation0text">{{ location.text }}</label>
+						<label class="visually-hidden" for="footerlocation0text">{{ location.text || 'lokacja' }}</label>
 						<input
 							id="footerlocation0text"
 							ref="locationTextInputRef"
@@ -228,7 +230,7 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 							@keydown.esc="stopEditingLocation(false)"
 							@keydown.enter.prevent="stopEditingLocation(true)"
 						>
-						<label class="visually-hidden" for="footerlocation0value">{{ location.text }} link</label>
+						<label class="visually-hidden" for="footerlocation0value">{{ location.text || 'lokacja' }} link</label>
 						<input
 							id="footerlocation0value"
 							ref="locationValueInputRef"
@@ -246,14 +248,14 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 						:class="isEditingLocation ? 'op-0' : ''"
 						:aria-hidden="isEditingLocation"
 					>
-						{{ location.text }}
+						{{ location.text || 'lokacja' }}
 					</a>
 					<FooterRowActionSelect
 						v-if="!isEditingLocation"
 						class="top-1/2 translate-x-full !absolute -right-2 -translate-y-1/2"
 						:index="0"
 						type="location"
-						:title="location.text"
+						:title="location.text || 'lokacja'"
 						@edit="editLocation"
 					/>
 				</div>
@@ -272,7 +274,7 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 					<div class="h-8 w-8" :class="socialToIcon[social.type]" />
 				</a>
 			</section>
-			<VLoading v-show="isLoading" class="absolute inset-0" size="20" />
+			<VLoading v-show="isLoading" class="absolute inset-0 z-30" size="20" />
 		</div>
 	</main>
 </template>
