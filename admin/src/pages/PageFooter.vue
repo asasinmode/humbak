@@ -106,6 +106,31 @@ function deleteRow(type: 'email' | 'phone', index: number) {
 	}
 	target.splice(index, 1);
 }
+
+const isEditingLocation = ref(false);
+const locationTextModelValue = ref('');
+const locationValueModelValue = ref('');
+const locationTextInputRef = ref<HTMLInputElement>();
+const locationValueInputRef = ref<HTMLInputElement>();
+
+function editLocation() {
+	isEditingLocation.value = true;
+	locationTextModelValue.value = location.value.text;
+	locationValueModelValue.value = location.value.value;
+	nextTick(() => locationTextInputRef.value?.focus());
+}
+
+function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
+	if (event?.relatedTarget !== locationTextInputRef.value && event?.relatedTarget !== locationValueInputRef.value) {
+		isEditingLocation.value = false;
+		nextTick(() => document.getElementById('footerRowExpandActionslocation0')?.focus());
+	}
+
+	if (updateValue) {
+		location.value.text = locationTextModelValue.value;
+		location.value.value = locationValueModelValue.value;
+	}
+}
 </script>
 
 <template>
@@ -184,19 +209,54 @@ function deleteRow(type: 'email' | 'phone', index: number) {
 				</button>
 
 				<div
-					v-if="location.value"
 					class="md:footer-row-span i-fa6-solid-map-location-dot h-6 w-6 justify-self-end"
 					aria-hidden="true"
 					:style="`--f-row-start: 1; --f-row-span: ${maxElementsInColumn}`"
 				/>
-				<a
-					:href="location.value"
-					class="md:footer-row-span h-fit w-fit hoverable:underline"
-					target="_blank"
+				<div
+					class="md:footer-row-span relative h-fit w-fit"
 					:style="`--f-row-start: 1; --f-row-span: ${maxElementsInColumn}`"
 				>
-					{{ location.text }}
-				</a>
+					<template v-if="isEditingLocation">
+						<label class="visually-hidden" for="footerlocation0text">{{ location.text }}</label>
+						<input
+							id="footerlocation0text"
+							ref="locationTextInputRef"
+							v-model="locationTextModelValue"
+							class="absolute z-10 border-2 border-neutral-5 rounded-full bg-white px-2 py-[0.125rem] -left-[0.625rem] -top-[0.25rem]"
+							@focusout="stopEditingLocation(true, $event)"
+							@keydown.esc="stopEditingLocation(false)"
+							@keydown.enter.prevent="stopEditingLocation(true)"
+						>
+						<label class="visually-hidden" for="footerlocation0value">{{ location.text }} link</label>
+						<input
+							id="footerlocation0value"
+							ref="locationValueInputRef"
+							v-model="locationValueModelValue"
+							class="absolute z-10 translate-y-[calc(100%_+_0.75rem)] border-2 border-neutral-5 rounded-full bg-white px-2 py-[0.125rem] -left-[0.625rem] -top-[0.25rem]"
+							@focusout="stopEditingLocation(true, $event)"
+							@keydown.esc="stopEditingLocation(false)"
+							@keydown.enter.prevent="stopEditingLocation(true)"
+						>
+					</template>
+					<a
+						:href="location.value"
+						class="hoverable:underline"
+						target="_blank"
+						:class="isEditingLocation ? 'op-0' : ''"
+						:aria-hidden="isEditingLocation"
+					>
+						{{ location.text }}
+					</a>
+					<FooterRowActionSelect
+						v-if="!isEditingLocation"
+						class="top-1/2 translate-x-full !absolute -right-2 -translate-y-1/2"
+						:index="0"
+						type="location"
+						:title="location.text"
+						@edit="editLocation"
+					/>
+				</div>
 			</section>
 
 			<section class="col-span-full flex flex-wrap justify-center gap-4">

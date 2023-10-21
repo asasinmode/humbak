@@ -24,8 +24,8 @@ function edit() {
 
 function hideInput(updateValue: boolean) {
 	isEditing.value = false;
-	document.getElementById(`footerRowExpandActions${props.type}${props.id}`)?.focus();
 	updateValue && emit('update:model-value', localValue.value);
+	nextTick(() => document.getElementById(`footerRowExpandActions${props.type}${props.id}`)?.focus());
 }
 </script>
 
@@ -37,7 +37,7 @@ function hideInput(updateValue: boolean) {
 				:id="`footer${type}${id}`"
 				ref="inputRef"
 				v-model="localValue"
-				class="absolute z-10 w-fit border-2 border-neutral-5 rounded-full bg-white px-2 py-[0.125rem] -left-[0.625rem] -top-[0.25rem]"
+				class="absolute z-10 border-2 border-neutral-5 rounded-full bg-white px-2 py-[0.125rem] -left-[0.625rem] -top-[0.25rem]"
 				@focusout="hideInput(true)"
 				@keydown.esc="hideInput(false)"
 				@keydown.enter.prevent="hideInput(true)"
@@ -49,6 +49,7 @@ function hideInput(updateValue: boolean) {
 			class="hoverable:underline"
 			:class="isEditing ? 'op-0' : ''"
 			:aria-hidden="isEditing"
+			:tabindex="isEditing ? -1 : 0"
 		>
 			{{ modelValue }}
 		</a>
