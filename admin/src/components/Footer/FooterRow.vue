@@ -37,7 +37,7 @@ function hideInput(updateValue: boolean) {
 				:id="`footer${type}${id}`"
 				ref="inputRef"
 				v-model="localValue"
-				class="absolute z-10 border-2 border-neutral-5 rounded-full bg-white px-2 py-[0.125rem] -left-[0.625rem] -top-[0.25rem]"
+				class="absolute z-10 min-w-0 w-[calc(100%_+_clamp(2rem,_-2.5714rem_+_9.5238vw,_6rem))] border-2 border-neutral-5 rounded-full bg-white px-2 py-[0.125rem] -left-[0.625rem] -top-[0.25rem]"
 				@focusout="hideInput(true)"
 				@keydown.esc="hideInput(false)"
 				@keydown.enter.prevent="hideInput(true)"
