@@ -83,12 +83,6 @@ async function getFooterContent() {
 }
 
 const maxElementsInColumn = computed(() => Math.max(emails.value.length + 1, phoneNumbers.value.length + 1, 1));
-const emailRowSpan = computed(() =>
-	maxElementsInColumn.value - emails.value.length - (maxElementsInColumn.value === emails.value.length + 1 ? 0 : 1)
-);
-const phoneNumbersRowSpan = computed(() =>
-	maxElementsInColumn.value - phoneNumbers.value.length - (maxElementsInColumn.value === phoneNumbers.value.length + 1 ? 0 : 1)
-);
 
 const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> = {
 	facebook: 'i-logos-facebook',
@@ -102,14 +96,18 @@ const addEmailButtonRef = ref<HTMLButtonElement>();
 
 function deleteRow(type: 'email' | 'phone', index: number) {
 	const target = type === 'email' ? emails.value : phoneNumbers.value;
-	if (target.length === 1) {
-		(type === 'email' ? addEmailButtonRef.value : addPhoneButtonRef.value)?.focus();
-	} else if (index === 0) {
-		document.getElementById(`footerRowExpandActions${type}0`)?.focus();
-	} else {
-		document.getElementById(`footerRowExpandActions${type}${index - 1}`)?.focus();
-	}
 	target.splice(index, 1);
+	nextTick(() => {
+		console.log('focusing the thingy');
+		if (target.length === 0) {
+			(type === 'email' ? addEmailButtonRef.value : addPhoneButtonRef.value)?.focus();
+		} else if (index === 0) {
+			document.getElementById(`footerRowExpandActions${type}0`)?.focus();
+		} else {
+			document.getElementById(`footerRowExpandActions${type}${index - 1}`)?.focus();
+		}
+		console.log('next tick deleted and focused', target);
+	});
 }
 
 function addRow(type: 'email' | 'phone') {
@@ -170,13 +168,13 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 					<div
 						class="md:footer-row-span i-fa6-solid-envelope h-6 w-6 justify-self-end md:col-start-1"
 						aria-hidden="true"
-						:style="`--f-row-start: ${index}; --f-row-span: ${emailRowSpan}`"
+						:style="`--f-row-start: ${index};`"
 					/>
 					<FooterRow
 						:id="index - 1"
 						v-model="emails[index - 1]"
 						class="md:footer-row-span h-fit w-fit md:col-start-2"
-						:style="`--f-row-start: ${index}; --f-row-span: ${emailRowSpan}`"
+						:style="`--f-row-start: ${index};`"
 						type="email"
 						@delete="deleteRow('email', index - 1)"
 					/>
@@ -280,7 +278,7 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 					<div class="h-8 w-8" :class="socialToIcon[social.type]" />
 				</a>
 			</section>
-			<VLoading v-show="isLoading" class="absolute inset-0 z-30" size="20" />
+			<VLoading v-show="isLoading" class="absolute inset-0 z-30" size="25" />
 		</div>
 	</main>
 </template>

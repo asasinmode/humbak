@@ -12,20 +12,18 @@ const emit = defineEmits<{
 
 const options = props.type === 'location'
 	? [
-			{ text: 'edytuj', value: () => emit('edit'), class: 'hoverable:!bg-blue', cursorClass: '!bg-blue' },
+			{ text: 'edytuj', value: () => emit('edit'), class: 'hoverable:!bg-blue' },
 	]
 	: [
 			{
 				text: 'edytuj',
 				value: () => emit('edit'),
 				class: 'hoverable:!bg-blue',
-			cursorClass: '!bg-blue',
 		},
 			{
 				text: 'usuń',
 				value: () => emit('delete'),
 				class: 'hoverable:!bg-red',
-			cursorClass: '!bg-red',
 		},
 		];
 
@@ -36,7 +34,7 @@ const isExpanded = ref(false);
 const cursoredOverIndex = ref<number>();
 
 function focusCursoredOver() {
-	document.getElementById(`footerRowActions${props.index}Action${cursoredOverIndex.value}`)?.focus();
+	document.getElementById(`footerRowActions${props.type}${props.index}-${cursoredOverIndex.value}`)?.focus();
 }
 
 function moveCursor(value: number, focusCursoredItemIfExpanding = false) {
@@ -105,7 +103,8 @@ function handleHomeEndKeys(e: KeyboardEvent) {
 }
 
 function selectOption(index?: number) {
-	if (!isExpanded.value || index === undefined) {
+	if (index === undefined) {
+		toggleExpanded();
 		return;
 	}
 
@@ -126,8 +125,8 @@ function selectOption(index?: number) {
 		@keydown.left.prevent="moveCursor(-1)"
 		@keydown.down.prevent="moveCursor(1, true)"
 		@keydown.right.prevent="moveCursor(1)"
-		@keydown.space="selectOption(cursoredOverIndex)"
-		@keydown.enter="selectOption(cursoredOverIndex)"
+		@keydown.space.prevent="selectOption(cursoredOverIndex)"
+		@keydown.enter.prevent="selectOption(cursoredOverIndex)"
 		@focusout="closeIfFocusedOutside"
 	>
 		<button
@@ -163,7 +162,7 @@ function selectOption(index?: number) {
 					:id="`footerRowActions${type}${index}-${localIndex}`"
 					role="menuitem"
 					class="relative h-full w-full of-hidden border-y-2 border-neutral-7 bg-neutral-4 px-2 py-1 group-first:(border-l-2 rounded-l-md) group-last:(border-r-2 rounded-r-md)"
-					:class="[cursoredOverIndex === localIndex ? option.cursorClass : '', option.class]"
+					:class="option.class"
 					@click="selectOption(localIndex)"
 				>
 					{{ option.text }}
