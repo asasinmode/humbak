@@ -112,6 +112,10 @@ function deleteRow(type: 'email' | 'phone', index: number) {
 	target.splice(index, 1);
 }
 
+function addRow(type: 'email' | 'phone') {
+	(type === 'email' ? emails.value : phoneNumbers.value).push('');
+}
+
 const isEditingLocation = ref(false);
 const locationTextInputRef = ref<HTMLInputElement>();
 const locationValueInputRef = ref<HTMLInputElement>();
@@ -182,6 +186,7 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 					class="md:footer-row-span col-span-2 mx-auto h-8 w-fit border-2 border-emerald-5 rounded-full bg-emerald px-2 text-sm shadow hoverable:brightness-110"
 					:class="emails.length !== maxElementsInColumn - 1 ? '-my-1' : ''"
 					:style="`--f-row-start: ${emails.length * emailRowSpan + 1}; --f-row-span: ${emails.length ? 1 : maxElementsInColumn};`"
+					@click="addRow('email')"
 				>
 					dodaj email
 				</button>
@@ -206,6 +211,7 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 					class="md:footer-row-span col-span-2 mx-auto h-8 w-fit border-2 border-emerald-5 rounded-full bg-emerald px-2 text-sm shadow lg:translate-x-0 md:translate-x-6 hoverable:brightness-110"
 					:class="phoneNumbers.length !== maxElementsInColumn - 1 ? '-my-1' : ''"
 					:style="`--f-row-start: ${phoneNumbers.length * phoneNumbersRowSpan + 1}; --f-row-span: ${phoneNumbers.length ? 1 : maxElementsInColumn};`"
+					@click="addRow('phone')"
 				>
 					dodaj telefon
 				</button>

@@ -14,6 +14,9 @@ const localValue = ref(props.modelValue);
 
 const isEditing = ref(false);
 const inputRef = ref<HTMLInputElement>();
+let deleteIfEmptyOnFocusOut = !props.modelValue;
+
+!props.modelValue && edit();
 
 function edit() {
 	isEditing.value = true;
@@ -23,6 +26,13 @@ function edit() {
 }
 
 function hideInput(updateValue: boolean) {
+	if (deleteIfEmptyOnFocusOut && !localValue.value) {
+		emit('delete');
+		return;
+	} else {
+		deleteIfEmptyOnFocusOut = false;
+	}
+
 	isEditing.value = false;
 	updateValue && emit('update:model-value', localValue.value);
 	nextTick(() => document.getElementById(`footerRowExpandActions${props.type}${props.id}`)?.focus());
@@ -32,7 +42,7 @@ function hideInput(updateValue: boolean) {
 <template>
 	<div class="relative">
 		<template v-if="isEditing">
-			<label class="visually-hidden" :for="`footer${type}${id}`">{{ modelValue }}</label>
+			<label class="visually-hidden" :for="`footer${type}${id}`">{{ modelValue || `nowy ${type === 'phone' ? 'telefon' : 'email'}` }}</label>
 			<input
 				:id="`footer${type}${id}`"
 				ref="inputRef"
