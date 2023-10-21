@@ -95,14 +95,14 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 const addPhoneButtonRef = ref<HTMLButtonElement>();
 const addEmailButtonRef = ref<HTMLButtonElement>();
 
-function deleteRow(type: 'email' | 'phoneNumber', index: number) {
+function deleteRow(type: 'email' | 'phone', index: number) {
 	const target = type === 'email' ? emails.value : phoneNumbers.value;
 	if (target.length === 1) {
 		(type === 'email' ? addEmailButtonRef.value : addPhoneButtonRef.value)?.focus();
 	} else if (index === 0) {
-		document.getElementById(`footerRowExpandActions${type}1`)?.focus();
+		document.getElementById(`footerRowExpandActions${type}0`)?.focus();
 	} else {
-		document.getElementById(`footerRowExpandActions${index - 1}`)?.focus();
+		document.getElementById(`footerRowExpandActions${type}${index - 1}`)?.focus();
 	}
 	target.splice(index, 1);
 }
@@ -170,7 +170,7 @@ function deleteRow(type: 'email' | 'phoneNumber', index: number) {
 						class="md:footer-row-span ml-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)] h-fit w-fit"
 						:style="`--f-row-start: ${index}; --f-row-span: ${phoneNumbersRowSpan}`"
 						type="phone"
-						@delete="deleteRow('phoneNumber', index - 1)"
+						@delete="deleteRow('phone', index - 1)"
 					/>
 				</template>
 				<button
