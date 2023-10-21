@@ -21,7 +21,7 @@ const backTarget: string = history.state.back ?? '/';
 		<h2 class="text-center text-3xl">
 			{{ message }}
 		</h2>
-		<RouterLink :to="backTarget" class="text-xl text-link">
+		<RouterLink :to="backTarget" class="text-xl op-75 hoverable:(underline op-100)">
 			go back
 		</RouterLink>
 	</main>

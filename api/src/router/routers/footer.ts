@@ -19,7 +19,7 @@ export const footerRouter = router({
 			.where(eq(footerContents.language, opts.input));
 
 		if (result) {
-		// @ts-expect-error db returns strings but types are correct
+			// @ts-expect-error db returns strings but types are correct
 			result.emails = JSON.parse(result.emails);
 			// @ts-expect-error db returns strings but types are correct
 			result.phoneNumbers = JSON.parse(result.phoneNumbers);
@@ -54,7 +54,7 @@ export const footerRouter = router({
 			.where(eq(footerContents.language, opts.input.language));
 
 		if (result) {
-		// @ts-expect-error db returns strings but types are correct
+			// @ts-expect-error db returns strings but types are correct
 			result.emails = JSON.parse(result.emails);
 			// @ts-expect-error db returns strings but types are correct
 			result.phoneNumbers = JSON.parse(result.phoneNumbers);

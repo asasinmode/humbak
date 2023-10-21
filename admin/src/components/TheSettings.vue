@@ -6,7 +6,7 @@ const count = ref(0);
 	<RouterLink
 		title="ustawienia"
 		to="/ustawienia"
-		class="rounded-1/2 text-link"
+		class="rounded-1/2 op-75 hoverable:op-100"
 		@click="count++"
 	>
 		<span class="visually-hidden">ustawienia</span>

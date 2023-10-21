@@ -26,7 +26,6 @@ export default defineConfig({
 		{
 			'flex-center': 'flex justify-center items-center',
 			'translate-center': 'translate-x--1/2 translate-y--1/2',
-			'text-link': 'op-75 hoverable:(underline op-100)',
 		},
 		[/^neon[:-](.+)$/, ([, c]) => `border-2 border-${c} border-op-50 rounded-full bg-${c} bg-op-20 hoverable:(bg-op-30 border-op-100) dark:border-op-80 disabled:(border-op-30 bg-op-20 op-90 text-neutral-5) dark:disabled:(border-op-30 bg-op-20 text-neutral-4)`],
 	],
