@@ -165,7 +165,6 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 			</VButton>
 		</div>
 		<div class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-4 bg-humbak px-2 pb-4 pt-6 text-black lg:px-8 md:px-[clamp(2rem,_-12.25rem_+_29.6875vw,_6.75rem)]">
-			{{ maxElementsInColumn }} - emails: {{ emails.length }} - phones: {{ phoneNumbers.length }}
 			<section class="grid grid-cols-[min-content_max-content] max-w-360 gap-x-3 gap-y-4 lg:grid-cols-[repeat(3,_1fr_2fr)] md:grid-cols-[min-content_6fr_4fr_6fr_4fr_max-content] md:w-full">
 				<template v-for="index in emails.length" :key="`emails${index - 1}`">
 					<div

@@ -12,19 +12,21 @@ const emit = defineEmits<{
 
 const options = props.type === 'location'
 	? [
-			{ text: 'edytuj', value: () => emit('edit'), class: 'hoverable:!bg-blue' },
+			{ text: 'edytuj', value: () => emit('edit'), class: 'hoverable:!bg-blue', cursorClass: '!bg-blue' },
 	]
 	: [
 			{
 				text: 'edytuj',
 				value: () => emit('edit'),
 				class: 'hoverable:!bg-blue',
-			},
+			cursorClass: '!bg-blue',
+		},
 			{
 				text: 'usuń',
 				value: () => emit('delete'),
 				class: 'hoverable:!bg-red',
-			},
+			cursorClass: '!bg-red',
+		},
 		];
 
 const container = ref<HTMLDivElement>();
@@ -72,16 +74,17 @@ function closeIfFocusedOutside(event: FocusEvent) {
 }
 
 function toggleExpanded() {
+	cursoredOverIndex.value = undefined;
 	if (isExpanded.value) {
 		isExpanded.value = false;
 	} else {
 		isExpanded.value = true;
-		cursoredOverIndex.value = undefined;
 	}
 }
 
 function collapseAndFocusToggle() {
 	isExpanded.value = false;
+	cursoredOverIndex.value = undefined;
 	toggle.value?.focus();
 }
 
@@ -102,7 +105,7 @@ function handleHomeEndKeys(e: KeyboardEvent) {
 }
 
 function selectOption(index?: number) {
-	if (index === undefined) {
+	if (!isExpanded.value || index === undefined) {
 		return;
 	}
 
@@ -160,7 +163,7 @@ function selectOption(index?: number) {
 					:id="`footerRowActions${type}${index}-${localIndex}`"
 					role="menuitem"
 					class="relative h-full w-full of-hidden border-y-2 border-neutral-7 bg-neutral-4 px-2 py-1 group-first:(border-l-2 rounded-l-md) group-last:(border-r-2 rounded-r-md)"
-					:class="option.class"
+					:class="[cursoredOverIndex === localIndex ? option.cursorClass : '', option.class]"
 					@click="selectOption(localIndex)"
 				>
 					{{ option.text }}
