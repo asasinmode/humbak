@@ -33,17 +33,18 @@ function hideInput(updateValue: boolean) {
 
 <template>
 	<div class="relative">
-		<label class="visually-hidden" :for="`footer${type}${id}`">{{ modelValue }}</label>
-		<input
-			v-if="isEditing"
-			:id="`footer${type}${id}`"
-			ref="inputRef"
-			v-model="localValue"
-			class="absolute z-10 w-fit border-2 border-neutral-5 rounded-full bg-white px-2 py-[0.125rem] -left-[0.625rem] -top-[0.25rem]"
-			@focusout="hideInput(true)"
-			@keydown.esc="hideInput(false)"
-			@keydown.enter.prevent="hideInput(true)"
-		>
+		<template v-if="isEditing">
+			<label class="visually-hidden" :for="`footer${type}${id}`">{{ modelValue }}</label>
+			<input
+				:id="`footer${type}${id}`"
+				ref="inputRef"
+				v-model="localValue"
+				class="absolute z-10 w-fit border-2 border-neutral-5 rounded-full bg-white px-2 py-[0.125rem] -left-[0.625rem] -top-[0.25rem]"
+				@focusout="hideInput(true)"
+				@keydown.esc="hideInput(false)"
+				@keydown.enter.prevent="hideInput(true)"
+			>
+		</template>
 		<a
 			ref="linkRef"
 			:href="`mailto:${modelValue}`"
