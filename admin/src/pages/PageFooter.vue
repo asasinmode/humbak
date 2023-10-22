@@ -2,7 +2,7 @@
 import VButton from '~/components/V/VButton.vue';
 import type { IFooterContents, IUniqueLanguage } from '~/composables/useApi';
 
-const { toast } = useToast();
+const { toast, toastGenericError } = useToast();
 const api = useApi();
 
 const saveButton = ref<InstanceType<typeof VButton>>();
@@ -138,11 +138,12 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 }
 
 const allSocials = Object.keys(socialToIcon) as IFooterContents['socials'][number]['type'][];
-const usedSocials = computed(() => socials.value.map(social => social.type));
-const availableSocials = computed(() => allSocials.filter(social => !usedSocials.value.includes(social)));
 
 function addSocial() {
-	console.log('adding new social');
+	const usedSocials = socials.value.map(social => social.type);
+	const availableSocials = allSocials.filter(social => !usedSocials.includes(social));
+	const type = availableSocials.length ? availableSocials[0] : allSocials[0];
+	socials.value.push({ type, value: '' });
 }
 </script>
 
@@ -293,7 +294,7 @@ function addSocial() {
 				<VDialog
 					class="h-8 w-8 translate-x-[calc(100%_+_1rem)] border-2 border-blue-5 rounded-1/2 bg-blue shadow !absolute hoverable:(brightness-110)"
 					title="edytuj sociale"
-					class-container="grid grid-cols-2 gap-x-2 gap-y-5"
+					class-container="grid grid-cols-[1fr_1fr_min-content] gap-x-3 gap-y-5"
 					class-close-button="col-span-full mx-auto w-fit"
 					close-button-text="zamknij"
 				>
@@ -306,23 +307,29 @@ function addSocial() {
 						sociale
 					</h3>
 
-					<template v-for="(social, index) in socials" :key="social.type">
+					<template v-for="index in socials.length" :key="`social${index}`">
 						<VCombobox
-							:id="`social${index}type`"
-							v-model="socials[index].type"
-							:options="availableSocials"
+							:id="`social${index - 1}type`"
+							v-model="socials[index - 1].type"
+							:options="allSocials"
 							label="typ"
 							transform-options
+							select-only
 						/>
 						<VInput
-							:id="`social${index}value`"
-							v-model="socials[index].value"
+							:id="`social${index - 1}value`"
+							v-model="socials[index - 1].value"
 							label="link"
 						/>
+						<VButton
+							class="h-fit self-end neon-red"
+							@click="socials.splice(index - 1, 1)"
+						>
+							usuń
+						</VButton>
 					</template>
 
 					<button
-						v-if="availableSocials.length"
 						class="col-span-full mx-auto mb-2 w-fit px-3 py-1 neon-green"
 						@click="addSocial"
 					>
