@@ -75,7 +75,7 @@ defineExpose({
 		@focusout="closeIfFocusedOutside"
 		@keydown.up.prevent="moveCursor(-1)"
 		@keydown.down.prevent="moveCursor(1)"
-		@keydown.esc="isExpanded = false"
+		@keydown.esc.stop="isExpanded = false"
 		@keydown.enter="confirmChoice"
 		@click="isExpanded = true"
 		@update:model-value="updateValue"
