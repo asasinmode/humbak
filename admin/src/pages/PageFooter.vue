@@ -138,12 +138,16 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 }
 
 const allSocials = Object.keys(socialToIcon) as IFooterContents['socials'][number]['type'][];
+const usedSocials = computed(() => socials.value.map(social => social.type));
+const availableSocials = computed(() => allSocials.filter(social => !usedSocials.value.includes(social)));
 
 function addSocial() {
-	const usedSocials = socials.value.map(social => social.type);
-	const availableSocials = allSocials.filter(social => !usedSocials.includes(social));
-	const type = availableSocials.length ? availableSocials[0] : allSocials[0];
-	socials.value.push({ type, value: '' });
+	if (!availableSocials.value.length) {
+		toastGenericError();
+		throw new Error('add social called without available socials');
+	}
+
+	socials.value.push({ type: availableSocials.value[0], value: '' });
 }
 </script>
 
@@ -311,7 +315,7 @@ function addSocial() {
 						<VCombobox
 							:id="`social${index - 1}type`"
 							v-model="socials[index - 1].type"
-							:options="allSocials"
+							:options="availableSocials"
 							label="typ"
 							transform-options
 							select-only
@@ -331,6 +335,7 @@ function addSocial() {
 					</template>
 
 					<button
+						v-if="availableSocials.length"
 						class="col-span-full mx-auto mb-2 w-fit px-3 py-1 neon-green"
 						@click="addSocial"
 					>
