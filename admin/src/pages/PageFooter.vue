@@ -90,7 +90,7 @@ const maxElementsInColumn = computed(() => Math.max(emails.value.length + 1, pho
 const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> = {
 	facebook: 'i-logos-facebook',
 	youtube: 'i-logos-youtube-icon',
-	instagram: 'i-logos-instagram',
+	instagram: 'i-logos-instagram-icon scale-90',
 	twitter: 'i-logos-twitter',
 };
 
@@ -293,7 +293,7 @@ function addSocial() {
 				<VDialog
 					class="h-8 w-8 translate-x-[calc(100%_+_1rem)] border-2 border-blue-5 rounded-1/2 bg-blue shadow !absolute hoverable:(brightness-110)"
 					title="edytuj sociale"
-					class-container="grid grid-cols-2 gap-x-2 gap-y-3"
+					class-container="grid grid-cols-2 gap-x-2 gap-y-5"
 					class-close-button="col-span-full mx-auto w-fit"
 					close-button-text="zamknij"
 				>
@@ -306,9 +306,24 @@ function addSocial() {
 						sociale
 					</h3>
 
+					<template v-for="(social, index) in socials" :key="social.type">
+						<VCombobox
+							:id="`social${index}type`"
+							v-model="socials[index].type"
+							:options="availableSocials"
+							label="typ"
+							transform-options
+						/>
+						<VInput
+							:id="`social${index}value`"
+							v-model="socials[index].value"
+							label="link"
+						/>
+					</template>
+
 					<button
 						v-if="availableSocials.length"
-						class="col-span-full mx-auto mb-4 w-fit px-3 py-1 neon-green"
+						class="col-span-full mx-auto mb-2 w-fit px-3 py-1 neon-green"
 						@click="addSocial"
 					>
 						dodaj social
