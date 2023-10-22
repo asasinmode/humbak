@@ -48,11 +48,9 @@ function updateValue(value?: T['value']) {
 	modelValue.value = value;
 }
 
-function getActiveDescendantId() {
-	return cursoredOverIndex.value !== undefined
-		? `${props.id}-option-${cursoredOverIndex.value}`
-		: '';
-}
+const activeDescendantId = computed(() => cursoredOverIndex.value !== undefined
+	? `${props.id}-option-${cursoredOverIndex.value}`
+	: '');
 
 defineExpose({
 	getInputRef: () => inputComponent.value,
@@ -69,7 +67,7 @@ defineExpose({
 		:aria-labelledby="`${id}Label`"
 		:aria-expanded="isExpanded"
 		:aria-controls="`${id}-listbox`"
-		:aria-activedescendant="getActiveDescendantId"
+		:aria-activedescendant="activeDescendantId"
 		:readonly="selectOnly"
 		@focus="isExpanded = true"
 		@focusout="closeIfFocusedOutside"
