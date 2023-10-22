@@ -132,7 +132,7 @@ function selectOption(index?: number) {
 		<button
 			:id="`footerRowExpandActions${type}${index}`"
 			ref="toggle"
-			class="relative h-8 w-8 cursor-pointer border-2 border-blue-5 rounded-1/2 bg-blue shadow hoverable:(brightness-110)"
+			class="relative h-8 w-8 border-2 border-blue-5 rounded-1/2 bg-blue shadow hoverable:(brightness-110)"
 			aria-haspopup="menu"
 			:aria-controls="`footerRowActions${type}${index}`"
 			:aria-expanded="isExpanded"
