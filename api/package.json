@@ -21,21 +21,21 @@
   "dependencies": {
     "@fastify/cors": "^8.4.0",
     "@fastify/static": "^6.11.2",
-    "@trpc/server": "^10.38.4",
+    "@trpc/server": "^10.41.0",
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.28.6",
-    "fastify": "^4.23.2",
+    "fastify": "^4.24.3",
     "fastify-plugin": "^4.5.1",
-    "mysql2": "^3.6.1",
-    "valibot": "^0.17.1"
+    "mysql2": "^3.6.2",
+    "valibot": "^0.19.0"
   },
   "devDependencies": {
     "@clack/prompts": "^0.7.0",
-    "@types/node": "^20.7.0",
+    "@types/node": "^20.8.7",
     "dotenv-cli": "^7.3.0",
     "drizzle-kit": "^0.19.13",
-    "esbuild": "^0.19.3",
-    "tsx": "^3.13.0",
+    "esbuild": "^0.19.5",
+    "tsx": "^3.14.0",
     "typescript": "^5.2.2"
   }
 }

@@ -12,12 +12,12 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@monaco-editor/loader": "^1.3.3",
-    "@trpc/client": "^10.38.4",
+    "@monaco-editor/loader": "^1.4.0",
+    "@trpc/client": "^10.41.0",
     "blaze-slider": "^1.9.3",
-    "pinia": "^2.1.6",
+    "pinia": "^2.1.7",
     "valibot": "^0.17.1",
-    "vue": "^3.3.4",
+    "vue": "^3.3.6",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
@@ -26,15 +26,15 @@
     "@iconify-json/logos": "^1.1.37",
     "@iconify-json/mdi": "^1.1.54",
     "@iconify-json/solar": "^1.1.5",
-    "@unocss/eslint-config": "^0.56.4",
-    "@unocss/reset": "^0.56.4",
-    "@vitejs/plugin-vue": "^4.3.4",
+    "@unocss/eslint-config": "^0.56.5",
+    "@unocss/reset": "^0.56.5",
+    "@vitejs/plugin-vue": "^4.4.0",
     "typescript": "^5.2.2",
-    "unocss": "^0.56.4",
+    "unocss": "^0.56.5",
     "unplugin-auto-import": "^0.16.6",
     "unplugin-vue-components": "^0.25.2",
-    "vite": "^4.4.9",
-    "vue-component-type-helpers": "^1.8.15"
+    "vite": "^4.5.0",
+    "vue-component-type-helpers": "^1.8.19"
   },
   "eslintConfig": {
     "extends": [
