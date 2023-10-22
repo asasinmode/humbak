@@ -326,6 +326,7 @@ function revertAspectRatioIfUnsaved() {
 					class-container="grid grid-cols-2 gap-x-2 gap-y-3"
 					class-close-button="justify-self-end"
 					close-button-text="zamknij"
+					title="konfiguracja slidera"
 					@open="previousAspectRatio = aspectRatio"
 					@close="revertAspectRatioIfUnsaved"
 				>
