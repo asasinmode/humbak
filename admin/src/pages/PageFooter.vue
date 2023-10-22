@@ -91,7 +91,7 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 	facebook: 'i-logos-facebook',
 	youtube: 'i-logos-youtube-icon',
 	instagram: 'i-logos-instagram-icon scale-90',
-	twitter: 'i-logos-twitter',
+	twitter: 'i-logos-twitter brightness-0 hue-0',
 };
 
 const addPhoneButtonRef = ref<HTMLButtonElement>();
@@ -292,7 +292,7 @@ function addSocial() {
 				</p>
 
 				<VDialog
-					class="h-8 w-8 translate-x-[calc(100%_+_1rem)] border-2 border-blue-5 rounded-1/2 bg-blue shadow !absolute hoverable:(brightness-110)"
+					class="right-0 h-8 w-8 translate-x-[calc(100%_+_1rem)] border-2 border-blue-5 rounded-1/2 bg-blue shadow !absolute hoverable:(brightness-110)"
 					title="edytuj sociale"
 					class-container="grid grid-cols-[1fr_1fr_min-content] gap-x-3 gap-y-5"
 					class-close-button="col-span-full mx-auto w-fit"
@@ -323,9 +323,10 @@ function addSocial() {
 						/>
 						<VButton
 							class="h-fit self-end neon-red"
+							:title="`usuń ${socials[index - 1].type}`"
 							@click="socials.splice(index - 1, 1)"
 						>
-							usuń
+							usuń <span class="visually-hidden">{{ socials[index - 1].type }}</span>
 						</VButton>
 					</template>
 
