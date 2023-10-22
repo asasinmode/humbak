@@ -20,7 +20,7 @@ export const useCombobox = <T>(
 
 	const selectedOptionText = computed(() => {
 		const selectedOptionIndex = computedOptions.value.findIndex(option => option.value === modelValue.value);
-		return computedOptions.value[selectedOptionIndex]?.text;
+		return computedOptions.value[selectedOptionIndex]?.text ?? modelValue.value;
 	});
 
 	function moveCursor(value: number) {
