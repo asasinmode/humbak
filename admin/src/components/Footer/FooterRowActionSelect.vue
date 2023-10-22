@@ -10,22 +10,17 @@ const emit = defineEmits<{
 	delete: [];
 }>();
 
-const options = props.type === 'location'
-	? [
-			{ text: 'edytuj', value: () => emit('edit'), class: 'hoverable:!bg-blue' },
-	]
-	: [
-			{
-				text: 'edytuj',
-				value: () => emit('edit'),
-				class: 'hoverable:!bg-blue',
-		},
-			{
-				text: 'usuń',
-				value: () => emit('delete'),
-				class: 'hoverable:!bg-red',
-		},
-		];
+const options = [
+	{ text: 'edytuj', value: () => emit('edit'), class: 'hoverable:!bg-blue' },
+];
+
+if (props.type !== 'location') {
+	options.push({
+		text: 'usuń',
+		value: () => emit('delete'),
+		class: 'hoverable:!bg-red',
+	});
+}
 
 const container = ref<HTMLDivElement>();
 const toggle = ref<HTMLButtonElement>();
