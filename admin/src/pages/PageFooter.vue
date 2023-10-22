@@ -266,7 +266,7 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 				</div>
 			</section>
 
-			<section class="col-span-full flex flex-wrap justify-center gap-4">
+			<section class="relative col-span-full flex flex-wrap justify-center gap-4">
 				<a
 					v-for="social in socials"
 					:key="social.value"
@@ -278,6 +278,23 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 					<span class="visually-hidden">link {{ social.type }}</span>
 					<div class="h-8 w-8" :class="socialToIcon[social.type]" />
 				</a>
+
+				<VDialog
+					class="h-8 w-8 translate-x-[calc(100%_+_1rem)] border-2 border-blue-5 rounded-1/2 bg-blue shadow !absolute hoverable:(brightness-110)"
+					title="edytuj sociale"
+					class-container="grid grid-cols-2 gap-x-2 gap-y-3"
+					class-close-button="col-span-full mx-auto w-fit"
+					close-button-text="zamknij"
+				>
+					<template #button>
+						<span class="visually-hidden">edytuj sociale</span>
+						<div class="i-mdi-wrench group absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
+					</template>
+
+					<h3 class="col-span-full text-center text-5 font-600">
+						sociale
+					</h3>
+				</VDialog>
 			</section>
 			<VLoading v-show="isLoading" class="absolute inset-0 z-30" size="25" />
 		</div>
