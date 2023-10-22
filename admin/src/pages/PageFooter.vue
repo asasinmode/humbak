@@ -136,6 +136,14 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 		location.value.value = locationValueModelValue.value;
 	}
 }
+
+const allSocials = Object.keys(socialToIcon) as IFooterContents['socials'][number]['type'][];
+const usedSocials = computed(() => socials.value.map(social => social.type));
+const availableSocials = computed(() => allSocials.filter(social => !usedSocials.value.includes(social)));
+
+function addSocial() {
+	console.log('adding new social');
+}
 </script>
 
 <template>
@@ -278,6 +286,9 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 					<span class="visually-hidden">link {{ social.type }}</span>
 					<div class="h-8 w-8" :class="socialToIcon[social.type]" />
 				</a>
+				<p v-if="!socials.length" class="h-8 flex items-center">
+					sociale
+				</p>
 
 				<VDialog
 					class="h-8 w-8 translate-x-[calc(100%_+_1rem)] border-2 border-blue-5 rounded-1/2 bg-blue shadow !absolute hoverable:(brightness-110)"
@@ -294,6 +305,14 @@ function stopEditingLocation(updateValue: boolean, event?: FocusEvent) {
 					<h3 class="col-span-full text-center text-5 font-600">
 						sociale
 					</h3>
+
+					<button
+						v-if="availableSocials.length"
+						class="col-span-full mx-auto mb-4 w-fit px-3 py-1 neon-green"
+						@click="addSocial"
+					>
+						dodaj social
+					</button>
 				</VDialog>
 			</section>
 			<VLoading v-show="isLoading" class="absolute inset-0 z-30" size="25" />
