@@ -470,7 +470,7 @@ function getActuallyChanged() {
 				<li
 					v-for="(firstLevelLink, firstLevelIndex) in transformedMenuLinks"
 					:key="firstLevelLink.pageId"
-					class="hoverable-child-menu-visible horizontal relative flex-center flex-1 flex-col list-none focus-within:bg-humbak-5 hover:bg-humbak-5"
+					class="hoverable-child-menu-visible horizontal relative min-w-0 flex-center flex-1 flex-col list-none focus-within:bg-humbak-5 hover:bg-humbak-5"
 				>
 					<MenuLinkButton
 						:item="firstLevelLink"
