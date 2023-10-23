@@ -79,7 +79,7 @@ defineExpose({
 		@update:model-value="updateValue"
 	>
 		<ul
-			v-show="isExpanded"
+			v-show="isExpanded && computedOptions.length"
 			:id="`${id}-listbox`"
 			ref="listbox"
 			class="absolute bottom-0 left-1/2 z-10 min-w-12 w-[calc(100%_-_1.5rem)] translate-y-full of-hidden border-2 border-neutral border-op-80 rounded-md bg-neutral-2/90 shadow-md -translate-x-1/2 dark:border-neutral-5 dark:bg-neutral-8/90"
