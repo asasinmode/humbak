@@ -35,7 +35,7 @@ const value = defineModel<boolean>();
 			v-if="label"
 			:id="`${id}Label`"
 			:for="id"
-			class="v-switch-label relative ml-3 w-fit after:(absolute bottom-[calc(-0.125rem_-_2px)] h-[calc(2.25rem_-_4px)] w-[calc(2.25rem_-_4px)] translate-y-full rounded-1/2 bg-neutral-8 transition-transform content-empty -left-[calc(0.75rem_-_2px)] dark:bg-neutral-2) before:(absolute bottom-[-0.125rem] h-9 w-[calc(4.5rem_-_4px)] translate-y-full rounded-full content-empty -left-3 neon-neutral)"
+			class="v-switch-label relative ml-3 w-fit after:(absolute bottom-[calc(-0.125rem_-_2px)] h-[calc(2.25rem_-_4px)] w-[calc(2.25rem_-_4px)] translate-y-full rounded-1/2 bg-neutral-8 transition-transform content-empty -left-[calc(0.75rem_-_2px)] dark:bg-neutral-2) before:(absolute bottom-[-0.125rem] h-9 w-[calc(4.5rem_-_4px)] translate-y-full neon-neutral rounded-full content-empty -left-3)"
 			:class="labelVisuallyHidden ? 'visually-hidden' : ''"
 		>
 			{{ label }}
