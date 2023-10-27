@@ -23,6 +23,7 @@
   "devDependencies": {
     "@humbak/api": "workspace:^",
     "@iconify-json/fa6-solid": "^1.1.15",
+    "@iconify-json/fluent": "^1.1.39",
     "@iconify-json/logos": "^1.1.37",
     "@iconify-json/mdi": "^1.1.54",
     "@iconify-json/solar": "^1.1.5",
