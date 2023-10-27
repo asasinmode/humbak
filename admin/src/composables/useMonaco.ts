@@ -85,11 +85,13 @@ export const useMonaco = (
 			});
 
 			getModels = monaco.editor.getModels;
+
 			setTheme = monaco.editor.setTheme;
-			setTheme(isDark.value ? 'vs-dark' : 'vs');
 
 			isLoading.value = false;
 		}
+
+		setTheme(isDark.value ? 'vs-dark' : 'vs');
 
 		for (const { value, language } of models.value) {
 			editorModels.value.push(
