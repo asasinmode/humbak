@@ -7,8 +7,8 @@ const isWarning = computed(() => props.variant === 'warning');
 </script>
 
 <template>
-	<section
-		class="relative grid grid-cols-[min-content_1fr] gap-5 border-2 border-op-50 rounded-md bg-op-20 p-3 pl-4 before:(absolute left-[0.45rem] top-1/2 z-100 h-10 w-10 border-2 rounded-1/2 content-empty -translate-y-1/2) dark:border-op-80 !before:bg-op-30"
+	<article
+		class="relative grid grid-cols-[min-content_1fr] gap-5 border-2 border-op-50 rounded-lg bg-op-20 p-3 pl-4 before:(absolute left-[0.48rem] top-1/2 z-100 h-10 w-10 border-2 rounded-1/2 content-empty -translate-y-1/2) dark:border-op-80 !before:bg-op-30"
 		:class="{
 			'bg-yellow border-yellow-6 before:(border-yellow-5 bg-yellow-3) dark:(border-yellow before:border-yellow before:bg-yellow)': isWarning,
 		}"
@@ -22,5 +22,5 @@ const isWarning = computed(() => props.variant === 'warning');
 		<h6 class="text-2xl font-500">
 			<slot />
 		</h6>
-	</section>
+	</article>
 </template>

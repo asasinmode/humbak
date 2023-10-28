@@ -153,11 +153,11 @@ function addSocial() {
 
 <template>
 	<main id="content" class="flex flex-col gap-x-3 gap-y-5 pb-4 pt-[1.125rem]">
-		<div class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 w-full gap-x-3">
+		<div class="px-container grid grid-cols-[1fr_min-content] mx-auto max-w-360 w-full gap-x-3">
 			<VCombobox
 				id="footerLanguage"
 				v-model="language"
-				class="footer-controls-padding-left footer-language-select !min-w-20 !w-20"
+				class="!min-w-20 !w-20"
 				class-input="!min-w-20 !w-20"
 				label="język"
 				:options="languages"
@@ -169,14 +169,14 @@ function addSocial() {
 			/>
 			<VButton
 				ref="saveButton"
-				class="footer-controls-padding-right mr-12 h-fit md:mr-0 neon-green"
+				class="mr-12 h-fit md:mr-0 neon-green"
 				:is-loading="isSaving"
 				@click="sendForm"
 			>
 				zapisz
 			</VButton>
 		</div>
-		<div class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-4 bg-humbak px-2 pb-4 pt-6 text-black lg:px-8 md:px-[clamp(2rem,_-12.25rem_+_29.6875vw,_6.75rem)]">
+		<div class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-4 bg-humbak pb-4 pt-6 text-black lg:px-8 md:px-[clamp(2rem,_-12.25rem_+_29.6875vw,_6.75rem)]">
 			<section class="grid grid-cols-[min-content_max-content] max-w-360 gap-x-3 gap-y-4 lg:grid-cols-[repeat(3,_1fr_2fr)] md:grid-cols-[min-content_6fr_4fr_6fr_4fr_max-content] md:w-full">
 				<template v-for="index in emails.length" :key="`emails${index - 1}`">
 					<div
@@ -361,27 +361,9 @@ function addSocial() {
 </template>
 
 <style>
-.footer-controls-padding-left {
-	left: 1rem;
-}
-
-.footer-controls-padding-right {
-	right: 1rem;
-}
-
 @media (min-width: 768px){
 	.md\:footer-row-span {
 		grid-row: var(--f-row-start, 1) / span var(--f-row-span, 1);
-	}
-}
-
-@media(min-width: 90rem){
-	.footer-controls-padding-left {
-		left: clamp(0rem, 73rem + -80vw, 1rem);
-	}
-
-	.footer-controls-padding-right {
-		right: clamp(0rem, 73rem + -80vw, 1rem);
 	}
 }
 </style>

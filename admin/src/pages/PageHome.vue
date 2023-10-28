@@ -148,7 +148,7 @@ async function clearFormAndLoadedPage() {
 </script>
 
 <template>
-	<main id="content" class="px-2 pb-4 pt-[1.125rem] md:px-0">
+	<main id="content" class="px-container pb-4 pt-[1.125rem] lg:px-0">
 		<VTable
 			id="pages"
 			ref="table"
@@ -166,7 +166,7 @@ async function clearFormAndLoadedPage() {
 			@delete="deletePage"
 		/>
 
-		<section class="grid grid-cols-[5fr_2fr] mx-auto max-w-6xl gap-x-4 gap-y-4 md:grid-cols-12">
+		<section class="lg:px-container grid grid-cols-[5fr_2fr] mx-auto max-w-6xl gap-x-4 gap-y-4 md:grid-cols-12">
 			<VInput
 				id="pageTitle"
 				v-model="title"

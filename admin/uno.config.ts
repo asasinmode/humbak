@@ -59,6 +59,9 @@ export default defineConfig({
 				9: 'hsl(205, 100%, 50%)',
 			},
 		},
+		spacing: {
+			container: 'clamp(0rem, 73rem + -80vw, 1rem)',
+		},
 	},
 	blocklist: ['container'],
 });

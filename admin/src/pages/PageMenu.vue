@@ -437,8 +437,8 @@ function getActuallyChanged() {
 </script>
 
 <template>
-	<main id="content" class="grid grid-cols-[1fr_min-content] mx-auto max-w-360 gap-x-3 gap-y-5 px-2 pb-4 pt-[3.625rem] md:px-0 lg:pt-[1.125rem]">
-		<VAlert class="col-span-full max-w-3xl md:mx-auto lg:hidden" variant="warning">
+	<main id="content" class="px-container grid grid-cols-[1fr_min-content] mx-auto max-w-360 gap-x-3 gap-y-5 pb-4 pt-[3.625rem] lg:px-0 lg:pt-[1.125rem]">
+		<VAlert class="col-span-full mt-4 max-w-3xl md:mx-auto lg:hidden" variant="warning">
 			edytowanie menu nie jest dostępne na małych ekranch
 		</VAlert>
 		<VCombobox
@@ -456,7 +456,7 @@ function getActuallyChanged() {
 		/>
 		<VButton
 			ref="saveButton"
-			class="menu-controls-padding-right hidden h-fit lg:block neon-green"
+			class="lg:mr-container hidden h-fit lg:block neon-green"
 			:is-loading="isSaving"
 			@click="saveChanges"
 		>
@@ -677,17 +677,9 @@ function getActuallyChanged() {
 	left: 1rem;
 }
 
-.menu-controls-padding-right {
-	right: 1rem;
-}
-
 @media(min-width: 90rem){
 	.menu-controls-padding-left {
 		left: clamp((100% - 90rem) / 2, 37rem + -40vw, 1rem);
-	}
-
-	.menu-controls-padding-right {
-		right: clamp(0rem, 81rem + -88.8889vw, 1rem);
 	}
 }
 </style>

@@ -125,7 +125,7 @@ defineExpose({
 </script>
 
 <template>
-	<form class="mb-4 w-[calc(100%-_3.5rem)] flex gap-4 md:mx-auto md:max-w-128" @submit.prevent="callGetItems(true)">
+	<form class="mb-5 flex gap-x-3 md:mx-auto md:max-w-128" @submit.prevent="callGetItems(true)">
 		<VInput
 			:id="`${id}VTableSearch`"
 			v-model="search"
@@ -135,7 +135,7 @@ defineExpose({
 			label-visually-hidden
 			@update:model-value="startSearchTimeout"
 		/>
-		<VButton class="neon-blue">
+		<VButton class="mr-12 neon-blue">
 			szukaj
 		</VButton>
 	</form>
@@ -150,7 +150,7 @@ defineExpose({
 			<VCombobox
 				:id="`${id}VTableLimit`"
 				v-model.number="limit"
-				class="!min-w-14 !w-14"
+				class="!hidden !min-w-14 !w-14 sm:flex"
 				class-input="!min-w-14 !w-14 neon-neutral text-center"
 				label="pokazywana ilość naraz"
 				:options="[5, 10, 15]"
