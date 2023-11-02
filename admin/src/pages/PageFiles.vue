@@ -47,6 +47,9 @@ const files = [
 			</VButton>
 		</div>
 		<div class="mx-auto max-w-360 w-full gap-x-5 gap-y-4 px-container" :class="classContainer">
+			<div :class="classChild">
+				dodaj folder/wgraj pliki
+			</div>
 			<article v-for="(file, index) in files" :key="file.id" class="of-hidden" :class="classChild">
 				<img :src="file.src" :title="file.title" :alt="file.alt" :class="classImage">
 				<VInput
@@ -67,16 +70,13 @@ const files = [
 					label="ścieżka"
 					class="col-span-full mx-3"
 				/>
-				<VButton class="mt-3 w-fit justify-self-end neon-red">
+				<VButton class="mr-2 mt-3 w-fit justify-self-end neon-red">
 					usuń
 				</VButton>
-				<VButton class="mt-3 w-fit neon-green">
-					zapisz
+				<VButton class="mt-3 w-fit -ml-2 neon-blue">
+					przenieś
 				</VButton>
 			</article>
-			<div :class="classChild">
-				dodaj folder/wgraj pliki
-			</div>
 		</div>
 	</main>
 </template>
