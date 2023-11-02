@@ -7,7 +7,7 @@ const isTiles = ref(true);
 const classes = computed(() => {
 	if (isTiles.value) {
 		return {
-			container: 'grid grid-rows-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)_auto_auto_auto_auto] grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-y-3',
+			container: 'grid grid-rows-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)_auto_auto_auto_auto] grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-y-4',
 			child: 'grid grid-cols-2 gap-x-3 grid-rows-subgrid pb-4 gap-y-3 row-span-5 items-center',
 			image: 'w-full h-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)] mb-1 col-span-full',
 			input: 'col-span-full mx-3',
@@ -15,7 +15,7 @@ const classes = computed(() => {
 	}
 
 	return {
-		container: 'flex flex-col gap-y-3',
+		container: 'flex flex-col gap-y-4',
 		child: 'w-full flex flex-row gap-3 pr-4',
 		image: 'h-20 w-20',
 		input: 'mt-2',
