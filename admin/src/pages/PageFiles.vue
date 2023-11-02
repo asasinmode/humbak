@@ -27,6 +27,8 @@ const directories: IDir[] = [];
 const currentDir = ref<number | null>(null);
 const currentDirFiles = ref<IFile[]>([]);
 
+const newDirName = ref('');
+
 onMounted(async () => {
 	currentDirFiles.value = await getDirFiles();
 });
@@ -85,8 +87,23 @@ function randomImageSrc(id: number) {
 			</VButton>
 		</div>
 		<div class="mx-auto max-w-360 w-full gap-x-5 px-container" :class="classes.container">
-			<div class="border-2 border-neutral rounded-lg shadow" :class="isTiles ? ' row-span-5' : 'h-20'">
-				dodaj folder/wgraj pliki
+			<div class="flex border-2 border-neutral rounded-lg shadow" :class="isTiles ? ' row-span-5 flex-col' : 'h-20'">
+				<div class="flex basis-1/2 items-center justify-center gap-3 border-neutral px-3 py-4" :class="isTiles ? 'flex-col border-b' : 'flex-row border-r'">
+					<VInput
+						id="newDirName"
+						v-model="newDirName"
+						label="nazwa folderu"
+					/>
+					<VButton class="h-fit shrink-0 neon-green" :class="isTiles ? '' : 'mt-[1.625rem]'">
+						nowy folder
+					</VButton>
+				</div>
+				<div class="flex basis-1/2 items-center justify-center border-neutral px-3 py-4" :class="isTiles ? 'border-t' : 'border-l'">
+					<VButton class="neon-blue">
+						wgraj pliki
+					</VButton>
+					<input hidden type="file">
+				</div>
 			</div>
 			<article
 				v-for="(file, index) in currentDirFiles"
