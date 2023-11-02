@@ -30,7 +30,7 @@ const directoriesToFiles = computed(() => {
 
 		for (let i = 0; i < filesNumber; i++) {
 			const text = `file${fileId}`;
-			files.push({ id: fileId, parentId: dir.id, title: text, alt: text, src: randomImageSrc(), mimetype: 'image/png' });
+			files.push({ id: fileId, parentId: dir.id, title: text, alt: text, src: randomImageSrc(fileId), mimetype: 'image/png' });
 			fileId += 1;
 		}
 	}
@@ -59,11 +59,13 @@ function randomInt(min: number, max: number) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function randomImageSrc() {
+function randomImageSrc(id: number) {
 	const random = Math.random();
 	return random <= 0.33
-		? `https://picsum.photos/${randomInt(300, 1000)}`
-		: `https://picsum.photos/${randomInt(300, 1000)}/${randomInt(300, 1000)}`;
+		? `https://picsum.photos/${500 + id}`
+		: random <= 0.66
+			? `https://picsum.photos/${400 + id}/${600 - id}`
+			: `https://picsum.photos/${600 + id}/${400 - id}`;
 }
 </script>
 
