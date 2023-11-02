@@ -1,34 +1,70 @@
 <script setup lang="ts">
+type IDir = { id: number; name: string; };
+type IFile = { id: number; parentId: null | number; title: string; alt: string; src: string; mimetype: string; };
+
 const isTiles = ref(true);
 
-const classContainer = computed(() => isTiles.value
-	? 'grid grid-rows-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)_auto_auto_auto] grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-y-4'
-	: 'flex flex-col gap-y-3'
+const classes = computed(() => isTiles.value
+	? {
+			container: 'grid grid-rows-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)_auto_auto_auto_auto] grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-y-3',
+			child: 'grid grid-cols-2 gap-x-3 grid-rows-subgrid pb-4 gap-y-3 row-span-5 items-center',
+			image: 'w-full h-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)] mb-1 col-span-full',
+			input: 'col-span-full mx-3',
+		}
+	: {
+			container: 'flex flex-col gap-y-3',
+			child: 'w-full flex flex-row gap-3 pr-4',
+			image: 'h-20 w-20',
+			input: 'mt-2',
+		}
 );
 
-const classChild = computed(() => isTiles.value
-	? 'grid grid-cols-2 gap-x-3 grid-rows-subgrid pb-4 gap-y-3 row-span-4 items-center'
-	: 'w-full flex flex-row gap-3 pr-4'
-);
+const directories: IDir[] = [];
 
-const classImage = computed(() => isTiles.value
-	? 'w-full h-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)] mb-1 col-span-full'
-	: 'h-20 w-28'
-);
+const directoriesToFiles = computed(() => {
+	let fileId = 1;
+	const files: IFile[] = [];
 
-const inputClass = computed(() => isTiles.value
-	? 'col-span-full mx-3'
-	: 'mt-2'
-);
+	for (const dir of [{ id: null, name: 'root' }, ...directories]) {
+		const filesNumber = randomInt(0, 8);
 
-const files = [
-	{ id: 0, title: 'file1', alt: 'file1', src: 'https://picsum.photos/500', mimetype: 'image/jpeg' },
-	{ id: 1, title: 'file2', alt: 'file2', src: 'https://picsum.photos/501', mimetype: 'image/jpeg' },
-	{ id: 2, title: 'file3', alt: 'file3', src: 'https://picsum.photos/500/300', mimetype: 'image/jpeg' },
-	{ id: 3, title: 'file4', alt: 'file4', src: 'https://picsum.photos/503', mimetype: 'image/jpeg' },
-	{ id: 4, title: 'file5', alt: 'file5', src: 'https://picsum.photos/300/500', mimetype: 'image/jpeg' },
-	{ id: 5, title: 'file6', alt: 'file6', src: 'https://picsum.photos/400', mimetype: 'image/jpeg' },
-];
+		for (let i = 0; i < filesNumber; i++) {
+			const text = `file${fileId}`;
+			files.push({ id: fileId, parentId: dir.id, title: text, alt: text, src: randomImageSrc(), mimetype: 'image/png' });
+			fileId += 1;
+		}
+	}
+
+	return files;
+});
+
+const isLoading = ref(false);
+const currentDir = ref<number | null>(null);
+const currentDirFiles = ref<IFile[]>([]);
+
+onMounted(async () => {
+	currentDirFiles.value = await getDirFiles(currentDir.value);
+});
+
+async function getDirFiles(id: number | null) {
+	isLoading.value = true;
+	await new Promise(resolve => setTimeout(resolve, randomInt(0, 300)));
+	isLoading.value = false;
+	return directoriesToFiles.value.filter(file => file.parentId === id);
+}
+
+function randomInt(min: number, max: number) {
+	min = Math.ceil(min);
+	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomImageSrc() {
+	const random = Math.random();
+	return random <= 0.33
+		? `https://picsum.photos/${randomInt(300, 1000)}`
+		: `https://picsum.photos/${randomInt(300, 1000)}/${randomInt(300, 1000)}`;
+}
 </script>
 
 <template>
@@ -51,34 +87,34 @@ const files = [
 				zapisz
 			</VButton>
 		</div>
-		<div class="mx-auto max-w-360 w-full gap-x-5 px-container" :class="classContainer">
-			<div class="border-2 border-neutral rounded-lg shadow" :class="classChild">
+		<div class="mx-auto max-w-360 w-full gap-x-5 px-container" :class="classes.container">
+			<div class="border-2 border-neutral rounded-lg shadow" :class="isTiles ? ' row-span-5' : 'h-20'">
 				dodaj folder/wgraj pliki
 			</div>
 			<article
-				v-for="(file, index) in files"
+				v-for="(file, index) in currentDirFiles"
 				:key="file.id"
 				class="of-hidden border-2 border-neutral rounded-lg shadow"
-				:class="classChild"
+				:class="classes.child"
 			>
-				<img :src="file.src" :title="file.title" :alt="file.alt" class="object-cover" :class="classImage">
+				<img :src="file.src" :title="file.title" :alt="file.alt" class="object-cover" :class="classes.image">
 				<VInput
 					:id="`file${file.id}title`"
-					v-model="files[index].title"
+					v-model="currentDirFiles[index].title"
 					label="tytuł"
-					:class="inputClass"
+					:class="classes.input"
 				/>
 				<VInput
 					:id="`file${file.id}alt`"
-					v-model="files[index].alt"
+					v-model="currentDirFiles[index].alt"
 					label="alt"
-					:class="inputClass"
+					:class="classes.input"
 				/>
 				<VInput
 					:id="`file${file.id}path`"
-					v-model="files[index].src"
+					v-model="currentDirFiles[index].src"
 					label="ścieżka"
-					:class="inputClass"
+					:class="classes.input"
 				/>
 				<VButton class="h-fit w-fit neon-red" :class="isTiles ? 'mt-3 mr-2 justify-self-end' : 'ml-3 mt-auto mb-[0.625rem]'">
 					usuń
