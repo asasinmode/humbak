@@ -1,19 +1,24 @@
 <script setup lang="ts">
-const isTiles = ref(true);
+const isTiles = ref(false);
 
 const classContainer = computed(() => isTiles.value
-	? 'grid grid-rows-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)_auto_auto_auto] grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] sm:grid-cols-[repeat(auto-fit,minmax(min(100%,17rem),1fr))]'
-	: ''
+	? 'grid grid-rows-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)_auto_auto_auto] grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] sm:grid-cols-[repeat(auto-fit,minmax(min(100%,17rem),1fr))] gap-y-4'
+	: 'flex flex-col gap-y-3'
 );
 
 const classChild = computed(() => isTiles.value
-	? 'grid grid-cols-2 gap-x-3 grid-rows-subgrid pb-4 gap-y-3 row-span-4 items-center shadow border-2 rounded-lg border-neutral'
-	: ''
+	? 'grid grid-cols-2 gap-x-3 grid-rows-subgrid pb-4 gap-y-3 row-span-4 items-center'
+	: 'w-full flex flex-row gap-3 pr-4'
 );
 
 const classImage = computed(() => isTiles.value
-	? 'w-full h-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)] object-cover mb-1 col-span-full'
-	: ''
+	? 'w-full h-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)] mb-1 col-span-full'
+	: 'h-20 w-28'
+);
+
+const inputClass = computed(() => isTiles.value
+	? 'col-span-full mx-3'
+	: 'mt-2'
 );
 
 const files = [
@@ -46,34 +51,39 @@ const files = [
 				zapisz
 			</VButton>
 		</div>
-		<div class="mx-auto max-w-360 w-full gap-x-5 gap-y-4 px-container" :class="classContainer">
-			<div :class="classChild">
+		<div class="mx-auto max-w-360 w-full gap-x-5 px-container" :class="classContainer">
+			<div class="border-2 border-neutral rounded-lg shadow" :class="classChild">
 				dodaj folder/wgraj pliki
 			</div>
-			<article v-for="(file, index) in files" :key="file.id" class="of-hidden" :class="classChild">
-				<img :src="file.src" :title="file.title" :alt="file.alt" :class="classImage">
+			<article
+				v-for="(file, index) in files"
+				:key="file.id"
+				class="of-hidden border-2 border-neutral rounded-lg shadow"
+				:class="classChild"
+			>
+				<img :src="file.src" :title="file.title" :alt="file.alt" class="object-cover" :class="classImage">
 				<VInput
 					:id="`file${file.id}title`"
 					v-model="files[index].title"
 					label="tytuł"
-					class="col-span-full mx-3"
+					:class="inputClass"
 				/>
 				<VInput
 					:id="`file${file.id}alt`"
 					v-model="files[index].alt"
 					label="alt"
-					class="col-span-full mx-3"
+					:class="inputClass"
 				/>
 				<VInput
 					:id="`file${file.id}path`"
 					v-model="files[index].src"
 					label="ścieżka"
-					class="col-span-full mx-3"
+					:class="inputClass"
 				/>
-				<VButton class="mr-2 mt-3 w-fit justify-self-end neon-red">
+				<VButton class="h-fit w-fit neon-red" :class="isTiles ? 'mt-3 mr-2 justify-self-end' : 'ml-3 mt-auto mb-[0.625rem]'">
 					usuń
 				</VButton>
-				<VButton class="mt-3 w-fit -ml-2 neon-blue">
+				<VButton class="h-fit w-fit neon-blue" :class="isTiles ? 'mt-3 -ml-2' : 'mt-auto mb-[0.625rem]'">
 					przenieś
 				</VButton>
 			</article>
