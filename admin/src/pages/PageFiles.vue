@@ -4,53 +4,48 @@ type IFile = { id: number; parentId: null | number; title: string; alt: string; 
 
 const isTiles = ref(true);
 
-const classes = computed(() => isTiles.value
-	? {
+const classes = computed(() => {
+	if (isTiles.value) {
+		return {
 			container: 'grid grid-rows-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)_auto_auto_auto_auto] grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-y-3',
 			child: 'grid grid-cols-2 gap-x-3 grid-rows-subgrid pb-4 gap-y-3 row-span-5 items-center',
 			image: 'w-full h-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)] mb-1 col-span-full',
 			input: 'col-span-full mx-3',
-		}
-	: {
-			container: 'flex flex-col gap-y-3',
-			child: 'w-full flex flex-row gap-3 pr-4',
-			image: 'h-20 w-20',
-			input: 'mt-2',
-		}
-);
-
-const directories: IDir[] = [];
-
-const directoriesToFiles = computed(() => {
-	let fileId = 1;
-	const files: IFile[] = [];
-
-	for (const dir of [{ id: null, name: 'root' }, ...directories]) {
-		const filesNumber = randomInt(0, 8);
-
-		for (let i = 0; i < filesNumber; i++) {
-			const text = `file${fileId}`;
-			files.push({ id: fileId, parentId: dir.id, title: text, alt: text, src: randomImageSrc(fileId), mimetype: 'image/png' });
-			fileId += 1;
-		}
+		};
 	}
 
-	return files;
+	return {
+		container: 'flex flex-col gap-y-3',
+		child: 'w-full flex flex-row gap-3 pr-4',
+		image: 'h-20 w-20',
+		input: 'mt-2',
+	};
 });
 
 const isLoading = ref(false);
+const directories: IDir[] = [];
 const currentDir = ref<number | null>(null);
 const currentDirFiles = ref<IFile[]>([]);
 
 onMounted(async () => {
-	currentDirFiles.value = await getDirFiles(currentDir.value);
+	currentDirFiles.value = await getDirFiles();
 });
 
-async function getDirFiles(id: number | null) {
+async function getDirFiles() {
 	isLoading.value = true;
 	await new Promise(resolve => setTimeout(resolve, randomInt(0, 300)));
+
+	let fileId = 1;
+	const files: IFile[] = [];
+
+	for (let i = 0; i < 8; i++) {
+		const text = `file${fileId}`;
+		files.push({ id: fileId, parentId: null, title: text, alt: text, src: randomImageSrc(fileId), mimetype: 'image/png' });
+		fileId += 1;
+	}
+
 	isLoading.value = false;
-	return directoriesToFiles.value.filter(file => file.parentId === id);
+	return files;
 }
 
 function randomInt(min: number, max: number) {
