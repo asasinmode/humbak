@@ -12,8 +12,9 @@ defineEmits<{
 }>();
 
 const dir = defineModel<IDir>({ required: true });
-
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
+
+const isBeingDeleted = computed(() => props.dirsToDelete.includes(dir.value.id));
 </script>
 
 <template>
@@ -31,7 +32,10 @@ const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 			label="nazwa"
 			:class="classes.input"
 		/>
-		<template v-if="!dirsToDelete.includes(dir.id)">
+		<VButton v-if="isBeingDeleted" class="neon-yellow" :class="classes.restoreButton" @click="$emit('restore', dir.id)">
+			przywróć
+		</VButton>
+		<template v-else>
 			<VButton
 				class="justify-self-end neon-red"
 				:class="classes.deleteButton"
@@ -43,8 +47,5 @@ const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 				przenieś
 			</VButton>
 		</template>
-		<VButton v-else class="neon-yellow" :class="classes.restoreButton" @click="$emit('restore', dir.id)">
-			przywróć
-		</VButton>
 	</div>
 </template>
