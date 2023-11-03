@@ -2,13 +2,13 @@
 const props = defineProps<{
 	id: string;
 	label?: string;
-	placeholder?: string;
 	suffixIcon?: string;
 	error?: string;
 	class?: string;
 	classInput?: string;
 	labelVisuallyHidden?: boolean;
 	readonly?: boolean;
+	disabled?: boolean;
 }>();
 
 defineEmits(['focusout']);
@@ -42,7 +42,7 @@ defineExpose({ element });
 			:id="`${id}Label`"
 			:for="id"
 			class="v-input-label ml-[0.875rem] w-fit"
-			:class="labelVisuallyHidden ? 'visually-hidden' : ''"
+			:class="[labelVisuallyHidden ? 'visually-hidden' : '', disabled ? 'op-60' : '']"
 			@click="manageReadonlyFocus"
 		>
 			{{ label }}
@@ -52,17 +52,17 @@ defineExpose({ element });
 			:id="id"
 			ref="element"
 			v-model="value"
-			class="min-w-24 w-full py-1 pl-3 shadow placeholder:text-neutral"
+			class="min-w-24 w-full py-1 pl-3 shadow"
 			:title="label"
 			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-neutral', classInput]"
-			:placeholder="placeholder"
+			:disabled="disabled"
 			v-bind="$attrs"
 		>
 		<div
 			v-else
 			:id="id"
 			ref="element"
-			class="v-input-readonly h-9 min-w-24 w-full cursor-pointer py-1 pl-3 shadow placeholder:text-neutral focus:outline-auto"
+			class="v-input-readonly h-9 min-w-24 w-full cursor-pointer py-1 pl-3 shadow focus:outline-auto"
 			tabindex="0"
 			:title="label"
 			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-neutral', classInput]"
