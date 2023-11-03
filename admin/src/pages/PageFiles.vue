@@ -44,7 +44,7 @@ function createDir() {
 
 async function getDirFiles() {
 	isLoading.value = true;
-	await new Promise(resolve => setTimeout(resolve, randomInt(0, 300)));
+	await new Promise(resolve => setTimeout(resolve, 500));
 
 	let fileId = 1;
 	const files: IFile[] = [];
@@ -57,12 +57,6 @@ async function getDirFiles() {
 
 	isLoading.value = false;
 	return files;
-}
-
-function randomInt(min: number, max: number) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function randomImageSrc(id: number) {
