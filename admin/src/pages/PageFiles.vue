@@ -180,38 +180,15 @@ function randomImageSrc(id: number) {
 				</div>
 				<VLoading v-if="isLoading" class="absolute inset-0 bg-black/10 dark:bg-white/10" size="40" />
 			</div>
-			<div
-				v-for="(directory, index) in currentDirDirs"
-				:key="directory.id"
-				class="of-hidden border-2 border-neutral rounded-lg shadow"
-				:class="classes.child"
-			>
-				<div class="flex-center self-start" :class="classes.image">
-					<div class="i-solar-folder-with-files-bold h-4/5 w-4/5" />
-				</div>
-				<VInput
-					:id="`dir${directory.id}name`"
-					v-model="currentDirDirs[index].name"
-					class="row-span-3"
-					label="nazwa"
-					:class="classes.input"
-				/>
-				<template v-if="!dirsToDelete.includes(directory.id)">
-					<VButton
-						class="justify-self-end neon-red"
-						:class="classes.deleteButton"
-						@click="deleteDir(directory.id)"
-					>
-						usuń
-					</VButton>
-					<VButton class="w-fit neon-blue" :class="classes.moveButton">
-						przenieś
-					</VButton>
-				</template>
-				<VButton v-else class="neon-yellow" :class="classes.restoreButton" @click="restoreDir(directory.id)">
-					przywróć
-				</VButton>
-			</div>
+			<FilesDirItem
+				v-for="(dir, index) in currentDirDirs"
+				:key="dir.id"
+				v-model="currentDirDirs[index]"
+				:is-tiles="isTiles"
+				:dirs-to-delete="dirsToDelete"
+				@delete="deleteDir"
+				@restore="restoreDir"
+			/>
 			<FilesFileItem
 				v-for="(file, index) in currentDirFiles"
 				:key="file.id"

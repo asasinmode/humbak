@@ -58,6 +58,7 @@ declare global {
   const useConfirm: typeof import('../composables/useConfirm')['useConfirm']
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
+  const useFilesLayoutClasses: typeof import('../composables/useFilesLayoutClasses')['useFilesLayoutClasses']
   const useForm: typeof import('../composables/useForm')['useForm']
   const useGlobalPagesStylesheet: typeof import('../composables/useGlobalPagesStylesheet')['useGlobalPagesStylesheet']
   const useLink: typeof import('vue-router')['useLink']
@@ -136,6 +137,7 @@ declare module 'vue' {
     readonly useConfirm: UnwrapRef<typeof import('../composables/useConfirm')['useConfirm']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useFilesLayoutClasses: UnwrapRef<typeof import('../composables/useFilesLayoutClasses')['useFilesLayoutClasses']>
     readonly useForm: UnwrapRef<typeof import('../composables/useForm')['useForm']>
     readonly useGlobalPagesStylesheet: UnwrapRef<typeof import('../composables/useGlobalPagesStylesheet')['useGlobalPagesStylesheet']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
@@ -208,6 +210,7 @@ declare module '@vue/runtime-core' {
     readonly useConfirm: UnwrapRef<typeof import('../composables/useConfirm')['useConfirm']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useFilesLayoutClasses: UnwrapRef<typeof import('../composables/useFilesLayoutClasses')['useFilesLayoutClasses']>
     readonly useForm: UnwrapRef<typeof import('../composables/useForm')['useForm']>
     readonly useGlobalPagesStylesheet: UnwrapRef<typeof import('../composables/useGlobalPagesStylesheet')['useGlobalPagesStylesheet']>
     readonly useLink: UnwrapRef<typeof import('vue-router')['useLink']>
