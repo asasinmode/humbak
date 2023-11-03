@@ -9,9 +9,10 @@ const classes = computed(() => {
 	let child = 'grid grid-cols-2 gap-x-3 grid-rows-[subgrid] pb-4 gap-y-3 row-span-5 items-center';
 	let image = 'w-full h-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)] mb-1 col-span-full';
 	let input = 'col-span-full self-start mx-3';
-	const baseButton = 'mt-3 h-fit';
+	const baseButton = 'mt-3 h-fit w-fit';
 	let deleteButton = baseButton;
 	let moveButton = baseButton;
+	let restoreButton = baseButton;
 
 	if (!isTiles.value) {
 		container += ' md:flex md:flex-col';
@@ -20,9 +21,14 @@ const classes = computed(() => {
 		input += ' md:self-auto md:mx-0';
 		deleteButton += ' md:ml-3 md:mt-auto md:mb-[0.625rem]';
 		moveButton += ' md:mt-auto md:mb-[0.625rem]';
+		restoreButton += ' md:ml-3 md:mt-auto md:mb-[0.625rem]';
+	} else {
+		deleteButton += ' mr-2';
+		moveButton += ' -ml-2';
+		restoreButton += ' mx-auto col-span-full';
 	}
 
-	return { container, child, image, input, deleteButton, moveButton };
+	return { container, child, image, input, deleteButton, moveButton, restoreButton };
 });
 
 const isLoading = ref(false);
@@ -48,20 +54,30 @@ function createDir() {
 const dirsToDelete = ref<number[]>([]);
 const filesToDelete = ref<number[]>([]);
 
-function deleteOrRestoreDir(id: number) {
+function deleteDir(id: number) {
 	const index = dirsToDelete.value.indexOf(id);
 	if (index === -1) {
 		dirsToDelete.value.push(id);
-	} else {
+	}
+}
+
+function restoreDir(id: number) {
+	const index = dirsToDelete.value.indexOf(id);
+	if (index !== -1) {
 		dirsToDelete.value.splice(index, 1);
 	}
 }
 
-function deleteOrRestoreFile(id: number) {
+function deleteFile(id: number) {
 	const index = filesToDelete.value.indexOf(id);
 	if (index === -1) {
 		filesToDelete.value.push(id);
-	} else {
+	}
+}
+
+function restoreFile(id: number) {
+	const index = filesToDelete.value.indexOf(id);
+	if (index !== -1) {
 		filesToDelete.value.splice(index, 1);
 	}
 }
@@ -161,15 +177,20 @@ function randomImageSrc(id: number) {
 					label="nazwa"
 					:class="classes.input"
 				/>
-				<VButton
-					class="min-w-[5.625rem] justify-self-end neon-red"
-					:class="classes.deleteButton"
-					@click="deleteOrRestoreDir(directory.id)"
-				>
-					{{ dirsToDelete.includes(directory.id) ? 'przywróć' : 'usuń' }}
-				</VButton>
-				<VButton class="w-fit neon-blue" :class="classes.moveButton">
-					przenieś
+				<template v-if="!dirsToDelete.includes(directory.id)">
+					<VButton
+						class="justify-self-end neon-red"
+						:class="classes.deleteButton"
+						@click="deleteDir(directory.id)"
+					>
+						usuń
+					</VButton>
+					<VButton class="w-fit neon-blue" :class="classes.moveButton">
+						przenieś
+					</VButton>
+				</template>
+				<VButton v-else class="neon-yellow" :class="classes.restoreButton" @click="restoreDir(directory.id)">
+					przywróć
 				</VButton>
 			</div>
 			<article
@@ -197,15 +218,20 @@ function randomImageSrc(id: number) {
 					label="nazwa"
 					:class="classes.input"
 				/>
-				<VButton
-					class="min-w-[5.625rem] justify-self-end neon-red"
-					:class="classes.deleteButton"
-					@click="deleteOrRestoreFile(file.id)"
-				>
-					{{ filesToDelete.includes(file.id) ? 'przywróć' : 'usuń' }}
-				</VButton>
-				<VButton class="w-fit neon-blue" :class="classes.moveButton">
-					przenieś
+				<template v-if="!filesToDelete.includes(file.id)">
+					<VButton
+						class="justify-self-end neon-red"
+						:class="classes.deleteButton"
+						@click="deleteFile(file.id)"
+					>
+						usuń
+					</VButton>
+					<VButton class="w-fit neon-blue" :class="classes.moveButton">
+						przenieś
+					</VButton>
+				</template>
+				<VButton v-else class="neon-yellow" :class="classes.restoreButton" @click="restoreFile(file.id)">
+					przywróć
 				</VButton>
 			</article>
 		</div>
