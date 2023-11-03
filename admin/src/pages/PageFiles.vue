@@ -9,17 +9,20 @@ const classes = computed(() => {
 	let child = 'grid grid-cols-2 gap-x-3 grid-rows-[subgrid] pb-4 gap-y-3 row-span-5 items-center';
 	let image = 'w-full h-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)] mb-1 col-span-full';
 	let input = 'col-span-full self-start mx-3';
-	let saveDeleteButton = 'mt-3 h-fit w-fit';
+	const baseButton = 'mt-3 h-fit';
+	let deleteButton = baseButton;
+	let moveButton = baseButton;
 
 	if (!isTiles.value) {
-		container += ' flex flex-col';
-		child += ' sm:flex sm:gap-3 sm:pr-4 sm:pb-0';
-		image += ' sm:h-20 sm:w-20 sm:mb-0';
-		input += ' sm:self-auto sm:mx-0';
-		saveDeleteButton += ' sm:ml-3 sm:mt-auto sm:mr-0 sm:mb-[0.625rem]';
+		container += ' md:flex md:flex-col';
+		child += ' md:flex md:gap-3 md:pr-4 md:pb-0';
+		image += ' md:h-20 md:w-20 md:mb-0';
+		input += ' md:self-auto md:mx-0';
+		deleteButton += ' md:ml-3 md:mt-auto md:mb-[0.625rem]';
+		moveButton += ' md:mt-auto md:mb-[0.625rem]';
 	}
 
-	return { container, child, image, input, saveDeleteButton };
+	return { container, child, image, input, deleteButton, moveButton };
 });
 
 const isLoading = ref(false);
@@ -40,6 +43,27 @@ function createDir() {
 	}
 	directories.value.push({ id: directories.value.length + 1, parentId: currentDir.value, name: newDirName.value });
 	newDirName.value = '';
+}
+
+const dirsToDelete = ref<number[]>([]);
+const filesToDelete = ref<number[]>([]);
+
+function deleteOrRestoreDir(id: number) {
+	const index = dirsToDelete.value.indexOf(id);
+	if (index === -1) {
+		dirsToDelete.value.push(id);
+	} else {
+		dirsToDelete.value.splice(index, 1);
+	}
+}
+
+function deleteOrRestoreFile(id: number) {
+	const index = filesToDelete.value.indexOf(id);
+	if (index === -1) {
+		filesToDelete.value.push(id);
+	} else {
+		filesToDelete.value.splice(index, 1);
+	}
 }
 
 async function getDirFiles() {
@@ -72,12 +96,12 @@ function randomImageSrc(id: number) {
 <template>
 	<main id="content" class="flex flex-col gap-x-3 gap-y-5 pb-4 pt-[1.125rem]">
 		<div class="mx-auto max-w-360 w-full flex justify-end gap-x-3 px-container md:px-0">
-			<VButton class="hidden h-9 w-9 shrink-0 sm:flex neon-blue" title="widok plików: kafelki" @click="isTiles = true">
+			<VButton class="hidden h-9 w-9 shrink-0 md:flex neon-blue" title="widok plików: kafelki" @click="isTiles = true">
 				<span class="visually-hidden">widok plików: kafelki</span>
 				<div class="i-fluent-grid-20-regular absolute left-1/2 top-1/2 h-[1.125rem] w-[1.125rem] translate-center" />
 			</VButton>
 
-			<VButton class="hidden h-9 w-9 shrink-0 -ml-1 sm:flex neon-blue" title="widok plików: lista" @click="isTiles = false">
+			<VButton class="hidden h-9 w-9 shrink-0 -ml-1 md:flex neon-blue" title="widok plików: lista" @click="isTiles = false">
 				<span class="visually-hidden">widok plików: lista</span>
 				<div class="i-fluent-text-bullet-list-20-filled absolute left-1/2 top-1/2 h-[1.375rem] w-[1.375rem] translate-center" />
 			</VButton>
@@ -96,8 +120,8 @@ function randomImageSrc(id: number) {
 			aria-live="polite"
 			:aria-busy="isLoading"
 		>
-			<div class="relative flex flex-col border-2 border-neutral rounded-lg shadow" :class="isTiles ? 'row-span-5' : 'sm:flex-row'">
-				<div class="flex basis-1/2 flex-col items-center justify-center gap-3 border-b border-neutral px-3 py-4" :class="isTiles ? '' : 'sm:flex-row sm:border-b-0 sm:border-r'">
+			<div class="relative row-span-5 flex flex-col border-2 border-neutral rounded-lg shadow" :class="isTiles ? '' : 'md:flex-row'">
+				<div class="flex basis-1/2 flex-col items-center justify-center gap-3 border-b border-neutral px-3 py-4" :class="isTiles ? '' : 'md:flex-row md:border-b-0 md:border-r'">
 					<VInput
 						id="newDirName"
 						v-model="newDirName"
@@ -106,14 +130,14 @@ function randomImageSrc(id: number) {
 					/>
 					<VButton
 						class="h-fit shrink-0 neon-green"
-						:class="isTiles ? '' : 'sm:mt-[1.625rem]'"
+						:class="isTiles ? '' : 'md:mt-[1.625rem]'"
 						:disabled="isLoading"
 						@click="createDir"
 					>
 						dodaj folder
 					</VButton>
 				</div>
-				<div class="flex basis-1/2 items-center justify-center border-t border-neutral px-3 py-4" :class="isTiles ? '' : 'sm:border-t-0 sm:border-l'">
+				<div class="flex basis-1/2 items-center justify-center border-t border-neutral px-3 py-4" :class="isTiles ? '' : 'md:border-t-0 md:border-l'">
 					<input hidden type="file">
 					<VButton class="neon-blue" :disabled="isLoading">
 						wgraj pliki
@@ -137,10 +161,14 @@ function randomImageSrc(id: number) {
 					label="nazwa"
 					:class="classes.input"
 				/>
-				<VButton class="mr-2 justify-self-end neon-red" :class="classes.saveDeleteButton">
-					usuń
+				<VButton
+					class="min-w-[5.625rem] justify-self-end neon-red"
+					:class="classes.deleteButton"
+					@click="deleteOrRestoreDir(directory.id)"
+				>
+					{{ dirsToDelete.includes(directory.id) ? 'przywróć' : 'usuń' }}
 				</VButton>
-				<VButton class="-ml-2 neon-blue" :class="classes.saveDeleteButton">
+				<VButton class="w-fit neon-blue" :class="classes.moveButton">
 					przenieś
 				</VButton>
 			</div>
@@ -169,10 +197,14 @@ function randomImageSrc(id: number) {
 					label="nazwa"
 					:class="classes.input"
 				/>
-				<VButton class="mr-2 justify-self-end neon-red" :class="classes.saveDeleteButton">
-					usuń
+				<VButton
+					class="min-w-[5.625rem] justify-self-end neon-red"
+					:class="classes.deleteButton"
+					@click="deleteOrRestoreFile(file.id)"
+				>
+					{{ filesToDelete.includes(file.id) ? 'przywróć' : 'usuń' }}
 				</VButton>
-				<VButton class="-ml-2 neon-blue" :class="classes.saveDeleteButton">
+				<VButton class="w-fit neon-blue" :class="classes.moveButton">
 					przenieś
 				</VButton>
 			</article>
