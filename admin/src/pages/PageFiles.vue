@@ -32,22 +32,28 @@ const classes = computed(() => {
 });
 
 const isLoading = ref(false);
-const directories = ref<IDir[]>([]);
+const allDirectories = ref<IDir[]>([]);
+let originalCurrentDirFiles: IFile[] = [];
+
 const currentDir = ref<number | null>(null);
+const currentDirDirs = ref<IDir[]>([]);
 const currentDirFiles = ref<IFile[]>([]);
-const currentDirDirs = computed(() => directories.value.filter(dir => dir.parentId === currentDir.value));
 
 const newDirName = ref('');
 
 onMounted(async () => {
-	currentDirFiles.value = await getDirFiles();
+	allDirectories.value = [];
+	currentDirDirs.value = allDirectories.value.map(dir => structuredClone(dir));
+
+	originalCurrentDirFiles = await getDirFiles();
+	currentDirFiles.value = structuredClone(originalCurrentDirFiles);
 });
 
 function createDir() {
 	if (!newDirName.value) {
 		return;
 	}
-	directories.value.push({ id: directories.value.length + 1, parentId: currentDir.value, name: newDirName.value });
+	currentDirDirs.value.unshift({ id: allDirectories.value.length + 1, parentId: currentDir.value, name: newDirName.value });
 	newDirName.value = '';
 }
 
@@ -56,7 +62,14 @@ const filesToDelete = ref<number[]>([]);
 
 function deleteDir(id: number) {
 	const index = dirsToDelete.value.indexOf(id);
-	if (index === -1) {
+	if (index !== -1) {
+		return;
+	}
+	const allDirsIndex = allDirectories.value.findIndex(dir => dir.id === id);
+	if (allDirsIndex === -1) {
+		const currentDirDirsIndex = currentDirDirs.value.findIndex(dir => dir.id === id);
+		currentDirDirs.value.splice(currentDirDirsIndex, 1);
+	} else {
 		dirsToDelete.value.push(id);
 	}
 }
@@ -70,7 +83,14 @@ function restoreDir(id: number) {
 
 function deleteFile(id: number) {
 	const index = filesToDelete.value.indexOf(id);
-	if (index === -1) {
+	if (index !== -1) {
+		return;
+	}
+	const originalFileIndex = originalCurrentDirFiles.findIndex(dir => dir.id === id);
+	if (originalFileIndex === -1) {
+		const currentDirFilesIndex = currentDirFiles.value.findIndex(dir => dir.id === id);
+		currentDirFiles.value.splice(currentDirFilesIndex, 1);
+	} else {
 		filesToDelete.value.push(id);
 	}
 }
