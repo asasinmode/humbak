@@ -22,24 +22,36 @@ const isBeingDeleted = computed(() => props.filesToDelete.includes(file.value.id
 		class="of-hidden border-2 border-neutral rounded-lg shadow"
 		:class="classes.child"
 	>
-		<img :src="file.name" :title="file.title" :alt="file.alt" class="object-cover" :class="classes.image">
+		<div class="relative" :class="classes.image">
+			<img
+				:src="file.name"
+				:title="file.title"
+				:alt="file.alt"
+				class="h-full w-full object-cover"
+				:class="isBeingDeleted ? 'grayscale-100 brightness-60' : ''"
+			>
+			<div v-if="isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow" />
+		</div>
 		<VInput
 			:id="`file${file.id}title`"
 			v-model="file.title"
 			label="tytuł"
 			:class="classes.input"
+			:disabled="isBeingDeleted"
 		/>
 		<VInput
 			:id="`file${file.id}alt`"
 			v-model="file.alt"
 			label="alt"
 			:class="classes.input"
+			:disabled="isBeingDeleted"
 		/>
 		<VInput
 			:id="`file${file.id}name`"
 			v-model="file.name"
 			label="nazwa"
 			:class="classes.input"
+			:disabled="isBeingDeleted"
 		/>
 		<VButton v-if="isBeingDeleted" class="neon-yellow" :class="classes.restoreButton" @click="$emit('restore', file.id)">
 			przywróć

@@ -47,7 +47,8 @@ function deleteDir(id: number) {
 		return;
 	}
 	const allDirsIndex = allDirectories.value.findIndex(dir => dir.id === id);
-	if (allDirsIndex === -1) {
+	const butFalse = false;
+	if (allDirsIndex === -1 && butFalse) {
 		const currentDirDirsIndex = currentDirDirs.value.findIndex(dir => dir.id === id);
 		currentDirDirs.value.splice(currentDirDirsIndex, 1);
 	} else {
