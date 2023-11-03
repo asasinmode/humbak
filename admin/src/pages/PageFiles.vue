@@ -92,21 +92,19 @@ async function getDirFiles() {
 
 	for (let i = 0; i < 8; i++) {
 		const text = `file${fileId}`;
-		files.push({ id: fileId, parentId: null, title: text, alt: text, name: randomImageSrc(fileId), mimetype: 'image/png' });
+		const random = Math.random();
+		const name = random <= 0.33
+			? `https://picsum.photos/${500 + fileId}`
+			: random <= 0.66
+				? `https://picsum.photos/${400 + fileId}/${600 - fileId}`
+				: `https://picsum.photos/${600 + fileId}/${400 - fileId}`;
+
+		files.push({ id: fileId, parentId: null, title: text, alt: text, name, mimetype: 'image/png' });
 		fileId += 1;
 	}
 
 	isLoading.value = false;
 	return files;
-}
-
-function randomImageSrc(id: number) {
-	const random = Math.random();
-	return random <= 0.33
-		? `https://picsum.photos/${500 + id}`
-		: random <= 0.66
-			? `https://picsum.photos/${400 + id}/${600 - id}`
-			: `https://picsum.photos/${600 + id}/${400 - id}`;
 }
 </script>
 
