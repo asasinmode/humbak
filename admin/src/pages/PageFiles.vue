@@ -91,28 +91,41 @@ function randomImageSrc(id: number) {
 			<VButton
 				ref="saveButton"
 				class="mr-12 h-fit md:mr-container neon-green"
+				@click="isLoading = !isLoading"
 			>
 				zapisz
 			</VButton>
 		</div>
-		<div class="mx-auto max-w-360 w-full gap-x-5 px-container" :class="classes.container">
-			<div class="flex flex-col border-2 border-neutral rounded-lg shadow" :class="isTiles ? 'row-span-5' : 'sm:flex-row'">
+		<div
+			class="mx-auto max-w-360 w-full gap-x-5 px-container"
+			:class="classes.container"
+			aria-live="polite"
+			:aria-busy="isLoading"
+		>
+			<div class="relative flex flex-col border-2 border-neutral rounded-lg shadow" :class="isTiles ? 'row-span-5' : 'sm:flex-row'">
 				<div class="flex basis-1/2 flex-col items-center justify-center gap-3 border-b border-neutral px-3 py-4" :class="isTiles ? '' : 'sm:flex-row sm:border-b-0 sm:border-r'">
 					<VInput
 						id="newDirName"
 						v-model="newDirName"
 						label="nazwa folderu"
+						:disabled="isLoading"
 					/>
-					<VButton class="h-fit shrink-0 neon-green" :class="isTiles ? '' : 'sm:mt-[1.625rem]'" @click="createDir">
+					<VButton
+						class="h-fit shrink-0 neon-green"
+						:class="isTiles ? '' : 'sm:mt-[1.625rem]'"
+						:disabled="isLoading"
+						@click="createDir"
+					>
 						dodaj folder
 					</VButton>
 				</div>
 				<div class="flex basis-1/2 items-center justify-center border-t border-neutral px-3 py-4" :class="isTiles ? '' : 'sm:border-t-0 sm:border-l'">
-					<VButton class="neon-blue">
+					<input hidden type="file">
+					<VButton class="neon-blue" :disabled="isLoading">
 						wgraj pliki
 					</VButton>
-					<input hidden type="file">
 				</div>
+				<VLoading v-if="isLoading" class="absolute inset-0 bg-black/10 dark:bg-white/10" size="40" />
 			</div>
 			<div
 				v-for="(directory, index) in currentDirDirs"
