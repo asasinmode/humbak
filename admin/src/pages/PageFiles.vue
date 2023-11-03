@@ -6,7 +6,7 @@ const isTiles = ref(true);
 
 const classes = computed(() => {
 	let container = 'grid grid-rows-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)_auto_auto_auto_auto] grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-y-4';
-	let child = 'grid grid-cols-2 gap-x-3 grid-rows-subgrid pb-4 gap-y-3 row-span-5 items-center';
+	let child = 'grid grid-cols-2 gap-x-3 grid-rows-[subgrid] pb-4 gap-y-3 row-span-5 items-center';
 	let image = 'w-full h-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)] mb-1 col-span-full';
 	let input = 'col-span-full mx-3';
 
@@ -77,12 +77,12 @@ function randomImageSrc(id: number) {
 <template>
 	<main id="content" class="flex flex-col gap-x-3 gap-y-5 pb-4 pt-[1.125rem]">
 		<div class="mx-auto max-w-360 w-full flex justify-end gap-x-3 px-container md:px-0">
-			<VButton class="h-9 w-9 shrink-0 sm:flex neon-blue" title="widok plików: kafelki" @click="isTiles = true">
+			<VButton class="hidden h-9 w-9 shrink-0 sm:flex neon-blue" title="widok plików: kafelki" @click="isTiles = true">
 				<span class="visually-hidden">widok plików: kafelki</span>
 				<div class="i-fluent-grid-20-regular absolute left-1/2 top-1/2 h-[1.125rem] w-[1.125rem] translate-center" />
 			</VButton>
 
-			<VButton class="h-9 w-9 shrink-0 -ml-1 sm:flex neon-blue" title="widok plików: lista" @click="isTiles = false">
+			<VButton class="hidden h-9 w-9 shrink-0 -ml-1 sm:flex neon-blue" title="widok plików: lista" @click="isTiles = false">
 				<span class="visually-hidden">widok plików: lista</span>
 				<div class="i-fluent-text-bullet-list-20-filled absolute left-1/2 top-1/2 h-[1.375rem] w-[1.375rem] translate-center" />
 			</VButton>
@@ -114,12 +114,27 @@ function randomImageSrc(id: number) {
 				</div>
 			</div>
 			<div
-				v-for="directory in currentDirDirs"
+				v-for="(directory, index) in currentDirDirs"
 				:key="directory.id"
-				class="flex flex-col border-2 border-neutral rounded-lg shadow"
-				:class="isTiles ? 'row-span-5' : 'sm:flex-row'"
+				class="of-hidden border-2 border-neutral rounded-lg shadow"
+				:class="classes.child"
 			>
-				{{ directory.name }}
+				<div class="flex-center self-start" :class="classes.image">
+					<div class="i-solar-folder-with-files-bold h-4/5 w-4/5" />
+				</div>
+				<VInput
+					:id="`dir${directory.id}name`"
+					v-model="currentDirDirs[index].name"
+					class="row-span-3"
+					label="nazwa"
+					:class="[classes.input, isTiles ? 'self-start' : '']"
+				/>
+				<VButton class="mr-2 mt-3 h-fit w-fit justify-self-end neon-red" :class="isTiles ? '' : 'sm:ml-3 sm:mt-auto sm:mr-0 sm:mb-[0.625rem]'">
+					usuń
+				</VButton>
+				<VButton class="mt-3 h-fit w-fit -ml-2 neon-blue" :class="isTiles ? '' : 'sm:ml-0 sm:mt-auto sm:mb-[0.625rem]'">
+					przenieś
+				</VButton>
 			</div>
 			<article
 				v-for="(file, index) in currentDirFiles"
@@ -141,9 +156,9 @@ function randomImageSrc(id: number) {
 					:class="classes.input"
 				/>
 				<VInput
-					:id="`file${file.id}path`"
+					:id="`file${file.id}name`"
 					v-model="currentDirFiles[index].name"
-					label="ścieżka"
+					label="nazwa"
 					:class="classes.input"
 				/>
 				<VButton class="mr-2 mt-3 h-fit w-fit justify-self-end neon-red" :class="isTiles ? '' : 'sm:ml-3 sm:mt-auto sm:mr-0 sm:mb-[0.625rem]'">
