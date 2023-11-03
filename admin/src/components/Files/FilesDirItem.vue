@@ -22,8 +22,9 @@ const isBeingDeleted = computed(() => props.dirsToDelete.includes(dir.value.id))
 		class="of-hidden border-2 border-neutral rounded-lg shadow"
 		:class="classes.child"
 	>
-		<div class="flex-center self-start" :class="classes.image">
-			<div class="i-solar-folder-with-files-bold h-4/5 w-4/5" />
+		<div class="relative flex-center self-start bg-black/15 dark:bg-white/15" :class="classes.image">
+			<div class="i-solar-folder-with-files-bold h-4/5 w-4/5" :class="isBeingDeleted ? 'text-neutral' : ''" />
+			<div v-if="isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow" />
 		</div>
 		<VInput
 			:id="`dir${dir.id}name`"
