@@ -8,16 +8,18 @@ const classes = computed(() => {
 	let container = 'grid grid-rows-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)_auto_auto_auto_auto] grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-y-4';
 	let child = 'grid grid-cols-2 gap-x-3 grid-rows-[subgrid] pb-4 gap-y-3 row-span-5 items-center';
 	let image = 'w-full h-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)] mb-1 col-span-full';
-	let input = 'col-span-full mx-3';
+	let input = 'col-span-full self-start mx-3';
+	let saveDeleteButton = 'mt-3 h-fit w-fit';
 
 	if (!isTiles.value) {
 		container += ' flex flex-col';
 		child += ' sm:flex sm:gap-3 sm:pr-4 sm:pb-0';
 		image += ' sm:h-20 sm:w-20 sm:mb-0';
-		input += ' sm:mx-0';
+		input += ' sm:self-auto sm:mx-0';
+		saveDeleteButton += ' sm:ml-3 sm:mt-auto sm:mr-0 sm:mb-[0.625rem]';
 	}
 
-	return { container, child, image, input };
+	return { container, child, image, input, saveDeleteButton };
 });
 
 const isLoading = ref(false);
@@ -38,7 +40,6 @@ function createDir() {
 	}
 	directories.value.push({ id: directories.value.length + 1, parentId: currentDir.value, name: newDirName.value });
 	newDirName.value = '';
-	console.log('directories', directories.value, currentDirDirs.value, currentDir.value);
 }
 
 async function getDirFiles() {
@@ -127,12 +128,12 @@ function randomImageSrc(id: number) {
 					v-model="currentDirDirs[index].name"
 					class="row-span-3"
 					label="nazwa"
-					:class="[classes.input, isTiles ? 'self-start' : '']"
+					:class="classes.input"
 				/>
-				<VButton class="mr-2 mt-3 h-fit w-fit justify-self-end neon-red" :class="isTiles ? '' : 'sm:ml-3 sm:mt-auto sm:mr-0 sm:mb-[0.625rem]'">
+				<VButton class="mr-2 justify-self-end neon-red" :class="classes.saveDeleteButton">
 					usuń
 				</VButton>
-				<VButton class="mt-3 h-fit w-fit -ml-2 neon-blue" :class="isTiles ? '' : 'sm:ml-0 sm:mt-auto sm:mb-[0.625rem]'">
+				<VButton class="-ml-2 neon-blue" :class="classes.saveDeleteButton">
 					przenieś
 				</VButton>
 			</div>
@@ -161,10 +162,10 @@ function randomImageSrc(id: number) {
 					label="nazwa"
 					:class="classes.input"
 				/>
-				<VButton class="mr-2 mt-3 h-fit w-fit justify-self-end neon-red" :class="isTiles ? '' : 'sm:ml-3 sm:mt-auto sm:mr-0 sm:mb-[0.625rem]'">
+				<VButton class="mr-2 justify-self-end neon-red" :class="classes.saveDeleteButton">
 					usuń
 				</VButton>
-				<VButton class="mt-3 h-fit w-fit -ml-2 neon-blue" :class="isTiles ? '' : 'sm:mt-auto sm:ml-0 sm:mb-[0.625rem]'">
+				<VButton class="-ml-2 neon-blue" :class="classes.saveDeleteButton">
 					przenieś
 				</VButton>
 			</article>
