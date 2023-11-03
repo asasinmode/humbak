@@ -13,7 +13,7 @@ defineEmits<{
 
 const file = defineModel<IFile>({ required: true });
 
-const classes = useFilesLayoutClasses(props.isTiles);
+const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 </script>
 
 <template>

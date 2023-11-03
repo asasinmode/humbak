@@ -6,8 +6,8 @@ const isTiles = ref(true);
 const classContainer = computed(() => {
 	let rv = 'grid grid-rows-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)_auto_auto_auto_auto] grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-y-4';
 
-	if (isTiles.value) {
-		rv += 'md:flex md:flex-col';
+	if (!isTiles.value) {
+		rv += ' md:flex md:flex-col';
 	}
 	return rv;
 });

@@ -13,7 +13,7 @@ defineEmits<{
 
 const dir = defineModel<IDir>({ required: true });
 
-const classes = useFilesLayoutClasses(props.isTiles);
+const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 </script>
 
 <template>

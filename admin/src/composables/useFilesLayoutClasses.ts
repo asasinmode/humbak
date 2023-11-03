@@ -1,7 +1,6 @@
 import type { MaybeRef } from 'vue';
 
 export const useFilesLayoutClasses = (isTiles: MaybeRef<boolean>) => computed(() => {
-	let container = 'grid grid-rows-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)_auto_auto_auto_auto] grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-y-4';
 	let child = 'grid grid-cols-2 gap-x-3 grid-rows-[subgrid] pb-4 gap-y-3 row-span-5 items-center';
 	let image = 'w-full h-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)] mb-1 col-span-full';
 	let input = 'col-span-full self-start mx-3';
@@ -11,7 +10,6 @@ export const useFilesLayoutClasses = (isTiles: MaybeRef<boolean>) => computed(()
 	let restoreButton = baseButton;
 
 	if (!toValue(isTiles)) {
-		container += ' md:flex md:flex-col';
 		child += ' md:flex md:gap-3 md:pr-4 md:pb-0';
 		image += ' md:h-20 md:w-20 md:mb-0';
 		input += ' md:self-auto md:mx-0';
@@ -24,5 +22,5 @@ export const useFilesLayoutClasses = (isTiles: MaybeRef<boolean>) => computed(()
 		restoreButton += ' mx-auto col-span-full';
 	}
 
-	return { container, child, image, input, deleteButton, moveButton, restoreButton };
+	return { child, image, input, deleteButton, moveButton, restoreButton };
 });
