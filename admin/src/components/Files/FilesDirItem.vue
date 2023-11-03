@@ -32,6 +32,7 @@ const isBeingDeleted = computed(() => props.dirsToDelete.includes(dir.value.id))
 			class="row-span-3"
 			label="nazwa"
 			:class="classes.input"
+			:disabled="isBeingDeleted"
 		/>
 		<VButton v-if="isBeingDeleted" class="neon-yellow" :class="classes.restoreButton" @click="$emit('restore', dir.id)">
 			przywróć
