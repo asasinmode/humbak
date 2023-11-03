@@ -20,3 +20,6 @@ export type ISlide = Awaited<ReturnType<typeof client['slides']['byId']['query']
 export type IListedSlide = Awaited<ReturnType<typeof client['slides']['list']['query']>>[number];
 export type IPublicListedSlide = Awaited<ReturnType<typeof client['slides']['listPublic']['query']>>[number];
 export type IFooterContents = Awaited<ReturnType<typeof client['footer']['byLanguage']['query']>>;
+
+export type IDir = { id: number; parentId: null | number; name: string; };
+export type IFile = { id: number; parentId: null | number; title: string; alt: string; name: string; mimetype: string; };

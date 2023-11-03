@@ -1,6 +1,5 @@
 <script setup lang="ts">
-type IDir = { id: number; parentId: null | number; name: string; };
-type IFile = { id: number; parentId: null | number; title: string; alt: string; name: string; mimetype: string; };
+import type { IDir, IFile } from '~/composables/useApi';
 
 const isTiles = ref(true);
 
@@ -213,47 +212,15 @@ function randomImageSrc(id: number) {
 					przywróć
 				</VButton>
 			</div>
-			<article
+			<FilesFileItem
 				v-for="(file, index) in currentDirFiles"
 				:key="file.id"
-				class="of-hidden border-2 border-neutral rounded-lg shadow"
-				:class="classes.child"
-			>
-				<img :src="file.name" :title="file.title" :alt="file.alt" class="object-cover" :class="classes.image">
-				<VInput
-					:id="`file${file.id}title`"
-					v-model="currentDirFiles[index].title"
-					label="tytuł"
-					:class="classes.input"
-				/>
-				<VInput
-					:id="`file${file.id}alt`"
-					v-model="currentDirFiles[index].alt"
-					label="alt"
-					:class="classes.input"
-				/>
-				<VInput
-					:id="`file${file.id}name`"
-					v-model="currentDirFiles[index].name"
-					label="nazwa"
-					:class="classes.input"
-				/>
-				<template v-if="!filesToDelete.includes(file.id)">
-					<VButton
-						class="justify-self-end neon-red"
-						:class="classes.deleteButton"
-						@click="deleteFile(file.id)"
-					>
-						usuń
-					</VButton>
-					<VButton class="w-fit neon-blue" :class="classes.moveButton">
-						przenieś
-					</VButton>
-				</template>
-				<VButton v-else class="neon-yellow" :class="classes.restoreButton" @click="restoreFile(file.id)">
-					przywróć
-				</VButton>
-			</article>
+				v-model="currentDirFiles[index]"
+				:is-tiles="isTiles"
+				:files-to-delete="filesToDelete"
+				@delete="deleteFile"
+				@restore="restoreFile"
+			/>
 		</div>
 	</main>
 </template>
