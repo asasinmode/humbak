@@ -1,6 +1,6 @@
 <script setup lang="ts">
-type IDir = { id: number; name: string; };
-type IFile = { id: number; parentId: null | number; title: string; alt: string; src: string; mimetype: string; };
+type IDir = { id: number; parentId: null | number; name: string; };
+type IFile = { id: number; parentId: null | number; title: string; alt: string; name: string; mimetype: string; };
 
 const isTiles = ref(true);
 
@@ -21,15 +21,25 @@ const classes = computed(() => {
 });
 
 const isLoading = ref(false);
-const directories: IDir[] = [];
+const directories = ref<IDir[]>([]);
 const currentDir = ref<number | null>(null);
 const currentDirFiles = ref<IFile[]>([]);
+const currentDirDirs = computed(() => directories.value.filter(dir => dir.parentId === currentDir.value));
 
 const newDirName = ref('');
 
 onMounted(async () => {
 	currentDirFiles.value = await getDirFiles();
 });
+
+function createDir() {
+	if (!newDirName.value) {
+		return;
+	}
+	directories.value.push({ id: directories.value.length + 1, parentId: currentDir.value, name: newDirName.value });
+	newDirName.value = '';
+	console.log('directories', directories.value, currentDirDirs.value, currentDir.value);
+}
 
 async function getDirFiles() {
 	isLoading.value = true;
@@ -40,7 +50,7 @@ async function getDirFiles() {
 
 	for (let i = 0; i < 8; i++) {
 		const text = `file${fileId}`;
-		files.push({ id: fileId, parentId: null, title: text, alt: text, src: randomImageSrc(fileId), mimetype: 'image/png' });
+		files.push({ id: fileId, parentId: null, title: text, alt: text, name: randomImageSrc(fileId), mimetype: 'image/png' });
 		fileId += 1;
 	}
 
@@ -92,8 +102,8 @@ function randomImageSrc(id: number) {
 						v-model="newDirName"
 						label="nazwa folderu"
 					/>
-					<VButton class="h-fit shrink-0 neon-green" :class="isTiles ? '' : 'sm:mt-[1.625rem]'">
-						nowy folder
+					<VButton class="h-fit shrink-0 neon-green" :class="isTiles ? '' : 'sm:mt-[1.625rem]'" @click="createDir">
+						dodaj folder
 					</VButton>
 				</div>
 				<div class="flex basis-1/2 items-center justify-center border-t border-neutral px-3 py-4" :class="isTiles ? '' : 'sm:border-t-0 sm:border-l'">
@@ -103,13 +113,21 @@ function randomImageSrc(id: number) {
 					<input hidden type="file">
 				</div>
 			</div>
+			<div
+				v-for="directory in currentDirDirs"
+				:key="directory.id"
+				class="flex flex-col border-2 border-neutral rounded-lg shadow"
+				:class="isTiles ? 'row-span-5' : 'sm:flex-row'"
+			>
+				{{ directory.name }}
+			</div>
 			<article
 				v-for="(file, index) in currentDirFiles"
 				:key="file.id"
 				class="of-hidden border-2 border-neutral rounded-lg shadow"
 				:class="classes.child"
 			>
-				<img :src="file.src" :title="file.title" :alt="file.alt" class="object-cover" :class="classes.image">
+				<img :src="file.name" :title="file.title" :alt="file.alt" class="object-cover" :class="classes.image">
 				<VInput
 					:id="`file${file.id}title`"
 					v-model="currentDirFiles[index].title"
@@ -124,7 +142,7 @@ function randomImageSrc(id: number) {
 				/>
 				<VInput
 					:id="`file${file.id}path`"
-					v-model="currentDirFiles[index].src"
+					v-model="currentDirFiles[index].name"
 					label="ścieżka"
 					:class="classes.input"
 				/>
