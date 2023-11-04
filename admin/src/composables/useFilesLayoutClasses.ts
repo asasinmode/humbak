@@ -1,7 +1,8 @@
+// @unocss-include
 import type { MaybeRef } from 'vue';
 
 export const useFilesLayoutClasses = (isTiles: MaybeRef<boolean>) => computed(() => {
-	let child = 'grid grid-cols-2 gap-x-3 grid-rows-[subgrid] pb-4 gap-y-3 row-span-5 items-center';
+	let child = 'grid grid-cols-2 gap-x-3 grid-rows-subgrid pb-4 gap-y-3 row-span-5 items-center';
 	let image = 'w-full h-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)] mb-1 col-span-full';
 	let input = 'col-span-full self-start mx-3';
 	const baseButton = 'mt-3 h-fit w-fit';
