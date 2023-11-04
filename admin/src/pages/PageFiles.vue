@@ -229,6 +229,7 @@ async function getDirFiles() {
 				v-model="currentDirFiles[index]"
 				:index="index"
 				:is-tiles="isTiles"
+				:original-file="originalCurrentDirFiles[index]"
 				@delete="deleteFile"
 				@restore="restoreFile"
 			/>

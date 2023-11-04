@@ -4,6 +4,7 @@ import type { IFile, INewFile } from '~/composables/useApi';
 const props = defineProps<{
 	index: number;
 	isTiles: boolean;
+	originalFile?: IFile;
 }>();
 
 defineEmits<{
@@ -15,6 +16,13 @@ const file = defineModel<IFile | INewFile>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 
 const isNew = computed(() => (!('id' in file.value) && 'file' in file.value));
+const hasChanged = computed(() =>
+	!props.originalFile
+	|| props.originalFile.title !== file.value.title
+	|| props.originalFile.alt !== file.value.alt
+	|| props.originalFile.name !== file.value.name
+
+);
 </script>
 
 <template>
