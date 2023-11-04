@@ -85,6 +85,7 @@ function restoreFile(id: number) {
 	}
 }
 
+const isDraggingOverFiles = ref(false);
 const fileInput = ref<HTMLInputElement>();
 
 function openFileInput() {
@@ -93,6 +94,11 @@ function openFileInput() {
 		throw new Error('file input ref not found');
 	}
 	fileInput.value.click();
+}
+
+function handleFileDrop(event: DragEvent) {
+	console.log('dropped', event);
+	isDraggingOverFiles.value = false;
 }
 
 async function getDirFiles() {
@@ -147,7 +153,7 @@ async function getDirFiles() {
 			aria-live="polite"
 			:aria-busy="isLoading"
 		>
-			<div class="relative row-span-5 flex flex-col border-2 border-neutral rounded-lg shadow" :class="isTiles ? '' : 'md:flex-row'">
+			<div class="relative row-span-5 flex flex-col of-hidden border-2 border-neutral rounded-lg shadow" :class="isTiles ? '' : 'md:flex-row'">
 				<div class="flex basis-1/2 flex-col items-center justify-center gap-3 border-b border-neutral px-3 py-4" :class="isTiles ? '' : 'md:flex-row md:border-b-0 md:border-r'">
 					<VInput
 						id="newDirName"
@@ -164,9 +170,16 @@ async function getDirFiles() {
 						dodaj folder
 					</VButton>
 				</div>
-				<div class="flex basis-1/2 items-center justify-center border-t border-neutral px-3 py-4" :class="isTiles ? '' : 'md:border-t-0 md:border-l'">
+				<div
+					class="flex basis-1/2 items-center justify-center border-t border-neutral px-3 py-4"
+					:class="[isTiles ? '' : 'md:border-t-0 md:border-l', isDraggingOverFiles ? 'bg-pink' : '']"
+					@drop.prevent="handleFileDrop"
+					@dragenter.prevent="isDraggingOverFiles = true"
+					@dragleave="isDraggingOverFiles = false"
+					@dragover.prevent=""
+				>
 					<input ref="fileInput" type="file" hidden>
-					<VButton class="neon-blue" :disabled="isLoading" @click="openFileInput">
+					<VButton v-show="!isDraggingOverFiles" class="neon-blue" :disabled="isLoading" @click="openFileInput">
 						wgraj pliki
 					</VButton>
 				</div>
