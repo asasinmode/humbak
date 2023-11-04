@@ -11,7 +11,7 @@ import { insertMenuLinkSchema, menuLinks } from '~/db/schema/menuLinks';
 
 const upsertPageInputSchema = merge([
 	insertPageSchema,
-	object({ menuText: insertMenuLinkSchema.object.text, css: optional(string()) }),
+	object({ menuText: insertMenuLinkSchema.entries.text, css: optional(string()) }),
 	pick(insertContentSchema, ['html', 'meta']),
 ]);
 
@@ -35,7 +35,7 @@ export const pagesRouter = router({
 			.limit(limit)
 			.offset(offset * limit);
 	}),
-	count: publicProcedure.input(wrap(optional(paginationQueryInput.object.query, ''))).query(async (opts) => {
+	count: publicProcedure.input(wrap(optional(paginationQueryInput.entries.query, ''))).query(async (opts) => {
 		const result = await db
 			.select({ count: sql<number>`COUNT(*)` })
 			.from(pages)

@@ -11,7 +11,7 @@
   "devDependencies": {
     "@asasinmode/eslint-config": "^0.4.8",
     "@humbak/api": "workspace:^",
-    "eslint": "^8.52.0",
+    "eslint": "^8.53.0",
     "typescript": "^5.2.2"
   },
   "eslintConfig": {
