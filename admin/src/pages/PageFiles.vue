@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { IDir, IFile } from '~/composables/useApi';
 
+const { toastGenericError } = useToast();
+
 const isTiles = ref(true);
 
 const classContainer = computed(() => {
@@ -47,8 +49,7 @@ function deleteDir(id: number) {
 		return;
 	}
 	const allDirsIndex = allDirectories.value.findIndex(dir => dir.id === id);
-	const butFalse = false;
-	if (allDirsIndex === -1 && butFalse) {
+	if (allDirsIndex === -1) {
 		const currentDirDirsIndex = currentDirDirs.value.findIndex(dir => dir.id === id);
 		currentDirDirs.value.splice(currentDirDirsIndex, 1);
 	} else {
@@ -82,6 +83,16 @@ function restoreFile(id: number) {
 	if (index !== -1) {
 		filesToDelete.value.splice(index, 1);
 	}
+}
+
+const fileInput = ref<HTMLInputElement>();
+
+function openFileInput() {
+	if (!fileInput.value) {
+		toastGenericError();
+		throw new Error('file input ref not found');
+	}
+	fileInput.value.click();
 }
 
 async function getDirFiles() {
@@ -154,8 +165,8 @@ async function getDirFiles() {
 					</VButton>
 				</div>
 				<div class="flex basis-1/2 items-center justify-center border-t border-neutral px-3 py-4" :class="isTiles ? '' : 'md:border-t-0 md:border-l'">
-					<input hidden type="file">
-					<VButton class="neon-blue" :disabled="isLoading">
+					<input ref="fileInput" type="file" hidden>
+					<VButton class="neon-blue" :disabled="isLoading" @click="openFileInput">
 						wgraj pliki
 					</VButton>
 				</div>
