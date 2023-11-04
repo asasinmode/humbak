@@ -101,6 +101,23 @@ function handleFileDrop(event: DragEvent) {
 	}
 }
 
+function handleFileInput(event: Event) {
+	const target = event.target as HTMLInputElement | null;
+	if (!target?.files) {
+		return;
+	}
+	for (const file of target.files) {
+		newFiles.value.unshift({
+			title: '',
+			alt: '',
+			name: '',
+			src: URL.createObjectURL(file),
+			mimetype: file.type,
+			file,
+		});
+	}
+}
+
 async function getDirFiles() {
 	isLoading.value = true;
 	await new Promise(resolve => setTimeout(resolve, 500));
@@ -181,7 +198,7 @@ async function getDirFiles() {
 					@dragleave="isDraggingOverFiles = false"
 					@dragover.prevent=""
 				>
-					<input ref="fileInput" type="file" hidden>
+					<input ref="fileInput" type="file" multiple hidden @input="handleFileInput">
 					<VButton v-show="!isDraggingOverFiles" class="neon-blue" :disabled="isLoading" @click="openFileInput">
 						wgraj pliki
 					</VButton>
