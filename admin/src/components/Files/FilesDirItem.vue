@@ -3,7 +3,7 @@ import type { IDir } from '~/composables/useApi';
 
 const props = defineProps<{
 	isTiles: boolean;
-	dirsToDelete: number[];
+	index: number;
 }>();
 
 defineEmits<{
@@ -13,8 +13,6 @@ defineEmits<{
 
 const dir = defineModel<IDir>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
-
-const isBeingDeleted = computed(() => props.dirsToDelete.includes(dir.value.id));
 </script>
 
 <template>
@@ -23,8 +21,8 @@ const isBeingDeleted = computed(() => props.dirsToDelete.includes(dir.value.id))
 		:class="classes.child"
 	>
 		<div class="relative flex-center self-start bg-black/15 dark:bg-white/15" :class="classes.image">
-			<div class="i-solar-folder-with-files-bold h-4/5 w-4/5" :class="isBeingDeleted ? 'text-neutral' : ''" />
-			<div v-if="isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow" />
+			<div class="i-solar-folder-with-files-bold h-4/5 w-4/5" :class="dir.isBeingDeleted ? 'text-neutral' : ''" />
+			<div v-if="dir.isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow" />
 		</div>
 		<VInput
 			:id="`dir${dir.id}name`"
@@ -32,16 +30,16 @@ const isBeingDeleted = computed(() => props.dirsToDelete.includes(dir.value.id))
 			class="row-span-3"
 			label="nazwa"
 			:class="classes.input"
-			:disabled="isBeingDeleted"
+			:disabled="dir.isBeingDeleted"
 		/>
-		<VButton v-if="isBeingDeleted" class="neon-yellow" :class="classes.restoreButton" @click="$emit('restore', dir.id)">
+		<VButton v-if="dir.isBeingDeleted" class="neon-yellow" :class="classes.restoreButton" @click="$emit('restore', index)">
 			przywróć
 		</VButton>
 		<template v-else>
 			<VButton
 				class="justify-self-end neon-red"
 				:class="classes.deleteButton"
-				@click="$emit('delete', dir.id)"
+				@click="$emit('delete', index)"
 			>
 				usuń
 			</VButton>

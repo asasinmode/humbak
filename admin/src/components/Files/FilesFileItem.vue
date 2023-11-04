@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import type { IFile } from '~/composables/useApi';
+import type { IFile, INewFile } from '~/composables/useApi';
 
 const props = defineProps<{
+	index: number;
 	isTiles: boolean;
-	filesToDelete: number[];
 }>();
 
 defineEmits<{
-	delete: [number];
+	delete: [number, boolean];
 	restore: [number];
 }>();
 
-const file = defineModel<IFile>({ required: true });
+const file = defineModel<IFile | INewFile>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 
-const isBeingDeleted = computed(() => props.filesToDelete.includes(file.value.id));
+const isNew = computed(() => (!('id' in file.value) && 'file' in file.value));
 </script>
 
 <template>
@@ -24,43 +24,43 @@ const isBeingDeleted = computed(() => props.filesToDelete.includes(file.value.id
 	>
 		<div class="relative" :class="classes.image">
 			<img
-				:src="file.name"
+				:src="file.src"
 				:title="file.title"
 				:alt="file.alt"
 				class="h-full w-full object-cover"
-				:class="isBeingDeleted ? 'grayscale-100 brightness-60' : ''"
+				:class="file.isBeingDeleted ? 'grayscale-100 brightness-60' : ''"
 			>
-			<div v-if="isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow" />
+			<div v-if="file.isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow" />
 		</div>
 		<VInput
-			:id="`file${file.id}title`"
+			:id="`file${index}title`"
 			v-model="file.title"
 			label="tytuł"
 			:class="classes.input"
-			:disabled="isBeingDeleted"
+			:disabled="file.isBeingDeleted"
 		/>
 		<VInput
-			:id="`file${file.id}alt`"
+			:id="`file${index}alt`"
 			v-model="file.alt"
 			label="alt"
 			:class="classes.input"
-			:disabled="isBeingDeleted"
+			:disabled="file.isBeingDeleted"
 		/>
 		<VInput
-			:id="`file${file.id}name`"
+			:id="`file${index}name`"
 			v-model="file.name"
 			label="nazwa"
 			:class="classes.input"
-			:disabled="isBeingDeleted"
+			:disabled="file.isBeingDeleted"
 		/>
-		<VButton v-if="isBeingDeleted" class="neon-yellow" :class="classes.restoreButton" @click="$emit('restore', file.id)">
+		<VButton v-if="file.isBeingDeleted" class="neon-yellow" :class="classes.restoreButton" @click="$emit('restore', index)">
 			przywróć
 		</VButton>
 		<template v-else>
 			<VButton
 				class="justify-self-end neon-red"
 				:class="classes.deleteButton"
-				@click="$emit('delete', file.id)"
+				@click="$emit('delete', index, isNew)"
 			>
 				usuń
 			</VButton>

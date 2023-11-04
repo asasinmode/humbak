@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IDir, IFile } from '~/composables/useApi';
+import type { IDir, IFile, INewFile } from '~/composables/useApi';
 
 const { toastGenericError } = useToast();
 
@@ -21,6 +21,7 @@ let originalCurrentDirFiles: IFile[] = [];
 const currentDir = ref<number | null>(null);
 const currentDirDirs = ref<IDir[]>([]);
 const currentDirFiles = ref<IFile[]>([]);
+const newFiles = ref<INewFile[]>([]);
 
 const newDirName = ref('');
 
@@ -40,49 +41,28 @@ function createDir() {
 	newDirName.value = '';
 }
 
-const dirsToDelete = ref<number[]>([]);
-const filesToDelete = ref<number[]>([]);
-
-function deleteDir(id: number) {
-	const index = dirsToDelete.value.indexOf(id);
-	if (index !== -1) {
-		return;
-	}
-	const allDirsIndex = allDirectories.value.findIndex(dir => dir.id === id);
-	if (allDirsIndex === -1) {
-		const currentDirDirsIndex = currentDirDirs.value.findIndex(dir => dir.id === id);
-		currentDirDirs.value.splice(currentDirDirsIndex, 1);
+function deleteDir(index: number) {
+	if (allDirectories.value.find(dir => dir.id === currentDirDirs.value[index].id)) {
+		currentDirDirs.value[index].isBeingDeleted = true;
 	} else {
-		dirsToDelete.value.push(id);
+		currentDirDirs.value.splice(index, 1);
 	}
 }
 
-function restoreDir(id: number) {
-	const index = dirsToDelete.value.indexOf(id);
-	if (index !== -1) {
-		dirsToDelete.value.splice(index, 1);
-	}
+function restoreDir(index: number) {
+	currentDirDirs.value[index].isBeingDeleted = false;
 }
 
-function deleteFile(id: number) {
-	const index = filesToDelete.value.indexOf(id);
-	if (index !== -1) {
-		return;
-	}
-	const originalFileIndex = originalCurrentDirFiles.findIndex(dir => dir.id === id);
-	if (originalFileIndex === -1) {
-		const currentDirFilesIndex = currentDirFiles.value.findIndex(dir => dir.id === id);
-		currentDirFiles.value.splice(currentDirFilesIndex, 1);
+function deleteFile(index: number, isNew: boolean) {
+	if (isNew) {
+		newFiles.value.splice(index, 1);
 	} else {
-		filesToDelete.value.push(id);
+		currentDirFiles.value[index].isBeingDeleted = true;
 	}
 }
 
-function restoreFile(id: number) {
-	const index = filesToDelete.value.indexOf(id);
-	if (index !== -1) {
-		filesToDelete.value.splice(index, 1);
-	}
+function restoreFile(index: number) {
+	currentDirFiles.value[index].isBeingDeleted = false;
 }
 
 const isDraggingOverFiles = ref(false);
@@ -98,7 +78,27 @@ function openFileInput() {
 
 function handleFileDrop(event: DragEvent) {
 	isDraggingOverFiles.value = false;
-	console.log('dropped', event.dataTransfer);
+	if (!event.dataTransfer?.items) {
+		return;
+	}
+
+	for (const item of event.dataTransfer.items) {
+		if (item.kind !== 'file') {
+			continue;
+		}
+		const file = item.getAsFile();
+		if (!file) {
+			continue;
+		}
+		newFiles.value.unshift({
+			title: '',
+			alt: '',
+			name: '',
+			src: URL.createObjectURL(file),
+			mimetype: file.type,
+			file,
+		});
+	}
 }
 
 async function getDirFiles() {
@@ -111,13 +111,13 @@ async function getDirFiles() {
 	for (let i = 0; i < 8; i++) {
 		const text = `file${fileId}`;
 		const random = Math.random();
-		const name = random <= 0.33
+		const src = random <= 0.33
 			? `https://picsum.photos/${500 + fileId}`
 			: random <= 0.66
 				? `https://picsum.photos/${400 + fileId}/${600 - fileId}`
 				: `https://picsum.photos/${600 + fileId}/${400 - fileId}`;
 
-		files.push({ id: fileId, parentId: null, title: text, alt: text, name, mimetype: 'image/png' });
+		files.push({ id: fileId, parentId: null, title: text, alt: text, name: text, src, mimetype: 'image/png' });
 		fileId += 1;
 	}
 
@@ -172,7 +172,10 @@ async function getDirFiles() {
 				</div>
 				<div
 					class="relative flex basis-1/2 items-center justify-center border-t border-neutral px-3 py-4 after:(absolute font-semibold text-neutral) before:(absolute inset-0 border-neutral border-dashed content-empty)"
-					:class="[isTiles ? '' : 'md:border-t-0 md:border-l', isDraggingOverFiles ? `after:content-['upuść_pliki'] before:border-3` : '']"
+					:class="[
+						isTiles ? '' : 'md:border-t-0 md:border-l',
+						isDraggingOverFiles ? `after:content-['upuść_pliki'] before:border-3` : '']
+					"
 					@drop.prevent="handleFileDrop"
 					@dragenter.prevent="isDraggingOverFiles = true"
 					@dragleave="isDraggingOverFiles = false"
@@ -189,17 +192,26 @@ async function getDirFiles() {
 				v-for="(dir, index) in currentDirDirs"
 				:key="dir.id"
 				v-model="currentDirDirs[index]"
+				:index="index"
 				:is-tiles="isTiles"
-				:dirs-to-delete="dirsToDelete"
 				@delete="deleteDir"
 				@restore="restoreDir"
+			/>
+			<FilesFileItem
+				v-for="(file, index) in newFiles"
+				:key="file.src"
+				v-model="newFiles[index]"
+				:index="index"
+				:is-tiles="isTiles"
+				@delete="deleteFile"
+				@restore="restoreFile"
 			/>
 			<FilesFileItem
 				v-for="(file, index) in currentDirFiles"
 				:key="file.id"
 				v-model="currentDirFiles[index]"
+				:index="index"
 				:is-tiles="isTiles"
-				:files-to-delete="filesToDelete"
 				@delete="deleteFile"
 				@restore="restoreFile"
 			/>
