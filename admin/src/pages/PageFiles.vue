@@ -97,8 +97,8 @@ function openFileInput() {
 }
 
 function handleFileDrop(event: DragEvent) {
-	console.log('dropped', event);
 	isDraggingOverFiles.value = false;
+	console.log('dropped', event.dataTransfer);
 }
 
 async function getDirFiles() {
@@ -171,8 +171,8 @@ async function getDirFiles() {
 					</VButton>
 				</div>
 				<div
-					class="flex basis-1/2 items-center justify-center border-t border-neutral px-3 py-4"
-					:class="[isTiles ? '' : 'md:border-t-0 md:border-l', isDraggingOverFiles ? 'bg-pink' : '']"
+					class="relative flex basis-1/2 items-center justify-center border-t border-neutral px-3 py-4 after:(absolute font-semibold text-neutral) before:(absolute inset-0 border-neutral border-dashed content-empty)"
+					:class="[isTiles ? '' : 'md:border-t-0 md:border-l', isDraggingOverFiles ? `after:content-['upuść_pliki'] before:border-3` : '']"
 					@drop.prevent="handleFileDrop"
 					@dragenter.prevent="isDraggingOverFiles = true"
 					@dragleave="isDraggingOverFiles = false"
