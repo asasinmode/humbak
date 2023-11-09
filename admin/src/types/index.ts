@@ -5,3 +5,11 @@ export type IMenuTreeItem = {
 	position: number;
 	children: IMenuTreeItem[];
 };
+
+export type IFilesGrabbedItem = {
+	index: number;
+	isNew: boolean;
+	isDir: boolean;
+	buttonElement: HTMLButtonElement;
+	preview?: HTMLElement;
+};

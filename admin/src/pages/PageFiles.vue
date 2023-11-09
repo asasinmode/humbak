@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { IFilesGrabbedItem } from '~/types';
 import type { IDir, IFile, INewFile } from '~/composables/useApi';
 
 const { toastGenericError } = useToast();
@@ -146,13 +147,7 @@ async function getDirFiles() {
 }
 
 const container = ref<HTMLElement>();
-const grabbedItem = ref<{
-	index: number;
-	isNew: boolean;
-	isDir: boolean;
-	buttonElement: HTMLButtonElement;
-	preview?: HTMLElement;
-}>();
+const grabbedItem = ref<IFilesGrabbedItem>();
 let	mouseDownTimestamp: number | undefined;
 let createPreviewTimeout: NodeJS.Timeout | undefined;
 
@@ -331,6 +326,7 @@ function createPreviewElement(x: number, y: number, src?: string) {
 				v-model="newFiles[index]"
 				:index="index"
 				:is-tiles="isTiles"
+				:grabbed-item="grabbedItem"
 				@delete="deleteFile"
 				@restore="restoreFile"
 				@move="grabFile"
@@ -342,6 +338,7 @@ function createPreviewElement(x: number, y: number, src?: string) {
 				:index="index"
 				:is-tiles="isTiles"
 				:original-file="originalCurrentDirFiles[index]"
+				:grabbed-item="grabbedItem"
 				@delete="deleteFile"
 				@restore="restoreFile"
 				@move="grabFile"
