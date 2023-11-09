@@ -15,7 +15,7 @@ const classContainer = computed(() => {
 });
 
 const isLoading = ref(false);
-const allDirectories = ref<IDir[]>([]);
+const allDirectories = shallowRef<IDir[]>([]);
 let originalCurrentDirFiles: IFile[] = [];
 
 const currentDir = ref<number | null>(null);
@@ -26,8 +26,11 @@ const newFiles = ref<INewFile[]>([]);
 const newDirName = ref('');
 
 onMounted(async () => {
-	allDirectories.value = [];
-	currentDirDirs.value = allDirectories.value.map(dir => structuredClone(dir));
+	allDirectories.value = [{ id: 1, parentId: null, name: 'temp' }];
+	currentDirDirs.value = allDirectories.value.map((dir) => {
+		const value = toValue(dir);
+		return structuredClone(value);
+	});
 
 	originalCurrentDirFiles = await getDirFiles();
 	currentDirFiles.value = structuredClone(originalCurrentDirFiles);
@@ -141,6 +144,98 @@ async function getDirFiles() {
 	isLoading.value = false;
 	return files;
 }
+
+const container = ref<HTMLElement>();
+let	mouseDownTimestamp: number | undefined;
+let createPreviewTimeout: Timeout | undefined;
+let grabbedItemData: {
+	buttonElement: HTMLButtonElement;
+	index: number;
+	preview?: HTMLElement;
+	isDir: boolean;
+} | undefined;
+
+function grabFile(index: number, event: MouseEvent, src?: string) {
+	console.log('grabbing', { index, src, target: event.target });
+	if (!event.target) {
+		throw new Error('grab file event has no target');
+	}
+
+	mouseDownTimestamp = Date.now();
+	grabbedItemData = {
+		index,
+		buttonElement: event.target as HTMLButtonElement,
+		isDir: false,
+	};
+
+	document.addEventListener('mouseup', moveFileOrOpenFiles);
+	createPreviewTimeout = setTimeout(() => {
+		console.log('timeout happening');
+		if (!grabbedItemData) {
+			return;
+		}
+		grabbedItemData.preview = createPreviewElement(false, event.clientX, event.clientY);
+		document.addEventListener('mousemove', movePreview);
+	}, 250);
+}
+
+function moveFileOrOpenFiles() {
+	document.removeEventListener('mouseup', moveFileOrOpenFiles);
+	document.removeEventListener('mousemove', movePreview);
+	createPreviewTimeout && clearTimeout(createPreviewTimeout);
+
+	if (!mouseDownTimestamp) {
+		toastGenericError();
+		throw new Error('move file or open files called without mousedown timestamp');
+	}
+
+	if (!grabbedItemData) {
+		toastGenericError();
+		throw new Error('move file or open files called without grabbed item data');
+	}
+	grabbedItemData.preview?.remove();
+
+	if (mouseDownTimestamp && mouseDownTimestamp + 250 >= Date.now()) {
+		console.log('clicked will open dialog from', grabbedItemData.buttonElement);
+		mouseDownTimestamp = undefined;
+		grabbedItemData = undefined;
+		return;
+	}
+
+	mouseDownTimestamp = undefined;
+	grabbedItemData = undefined;
+
+	console.log('dragged');
+}
+
+function movePreview(event: MouseEvent) {
+	if (!grabbedItemData?.preview) {
+		toastGenericError();
+		throw new Error('move preview called without preview element');
+	}
+	event.preventDefault();
+	grabbedItemData.preview.style.left = `${event.clientX}px`;
+	grabbedItemData.preview.style.top = `${event.clientY}px`;
+}
+
+function createPreviewElement(isDir: boolean, x: number, y: number) {
+	console.log('creating preview');
+	if (!container.value) {
+		throw new Error('create preview element called without container');
+	}
+
+	const element = document.createElement('div');
+	element.style.position = 'absolute';
+	element.style.width = '10px';
+	element.style.height = '10px';
+	element.style.background = isDir ? 'lightblue' : 'hotpink';
+	element.style.left = `${x}px`;
+	element.style.top = `${y}px`;
+	element.style.zIndex = '25';
+	container.value.appendChild(element);
+
+	return element;
+}
 </script>
 
 <template>
@@ -165,12 +260,16 @@ async function getDirFiles() {
 			</VButton>
 		</div>
 		<div
-			class="mx-auto max-w-360 w-full gap-x-5 px-container"
+			ref="container"
+			class="relative mx-auto max-w-360 w-full gap-x-5 px-container"
 			:class="classContainer"
 			aria-live="polite"
 			:aria-busy="isLoading"
 		>
-			<div class="relative row-span-5 flex flex-col of-hidden border-2 border-neutral rounded-lg shadow" :class="isTiles ? '' : 'md:flex-row'">
+			<div
+				class="relative row-span-5 flex flex-col of-hidden border-2 border-neutral rounded-lg shadow"
+				:class="isTiles ? '' : 'md:flex-row'"
+			>
 				<div class="flex basis-1/2 flex-col items-center justify-center gap-3 border-b border-neutral px-3 py-4" :class="isTiles ? '' : 'md:flex-row md:border-b-0 md:border-r'">
 					<VInput
 						id="newDirName"
@@ -222,6 +321,7 @@ async function getDirFiles() {
 				:is-tiles="isTiles"
 				@delete="deleteFile"
 				@restore="restoreFile"
+				@mousedown="grabFile(index, $event)"
 			/>
 			<FilesFileItem
 				v-for="(file, index) in currentDirFiles"
@@ -232,6 +332,7 @@ async function getDirFiles() {
 				:original-file="originalCurrentDirFiles[index]"
 				@delete="deleteFile"
 				@restore="restoreFile"
+				@mousedown="grabFile(index, $event, file.src)"
 			/>
 		</div>
 	</main>
