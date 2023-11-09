@@ -26,7 +26,7 @@ const newFiles = ref<INewFile[]>([]);
 const newDirName = ref('');
 
 onMounted(async () => {
-	allDirectories.value = [{ id: 1, parentId: null, name: 'temp' }];
+	allDirectories.value = [{ id: 1, parentId: null, name: 'temp' }, { id: 2, parentId: null, name: 'other temp' }];
 	currentDirDirs.value = allDirectories.value.map((dir) => {
 		const value = toValue(dir);
 		return structuredClone(value);
@@ -197,7 +197,7 @@ function moveFileOrOpenFiles() {
 	grabbedItem.value.preview?.remove();
 
 	if (mouseDownTimestamp && mouseDownTimestamp + 250 >= Date.now()) {
-		console.log('clicked will open dialog from', grabbedItem.buttonElement);
+		console.log('clicked will open dialog from', grabbedItem.value.buttonElement);
 		mouseDownTimestamp = undefined;
 		grabbedItem.value = undefined;
 		return;
@@ -312,6 +312,7 @@ function createPreviewElement(x: number, y: number, src?: string) {
 				:grabbed-item="grabbedItem"
 				@delete="deleteDir"
 				@restore="restoreDir"
+				@move="grabFile"
 			/>
 			<FilesFileItem
 				v-for="(file, index) in newFiles"

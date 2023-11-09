@@ -15,6 +15,7 @@ const props = defineProps<{
 defineEmits<{
 	delete: [number];
 	restore: [number];
+	move: [number, MouseEvent, boolean];
 }>();
 
 const dir = defineModel<IDir>({ required: true });
@@ -55,7 +56,11 @@ const applyHoverClasses = computed(() =>
 			>
 				usuń
 			</VButton>
-			<VButton class="w-fit neon-blue" :class="classes.moveButton">
+			<VButton
+				class="w-fit neon-blue"
+				:class="classes.moveButton"
+				@mousedown.left="$emit('move', index, $event, false)"
+			>
 				przenieś
 			</VButton>
 		</template>
