@@ -19,9 +19,8 @@ defineEmits<{
 
 const dir = defineModel<IDir>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
-const applyHoverClasses = computed(() => {
-	return 	props.grabbedItem?.preview && !props.grabbedItem.isDir && props.grabbedItem.index === props.index;
-}
+const applyHoverClasses = computed(() =>
+	props.grabbedItem?.preview && (!props.grabbedItem.isDir || props.grabbedItem.index !== props.index)
 );
 </script>
 
