@@ -225,14 +225,25 @@ function createPreviewElement(x: number, y: number, src?: string) {
 	element.style.position = 'fixed';
 	element.style.width = '100px';
 	element.style.height = '100px';
-	element.style.background = src ? 'lightblue' : 'hotpink';
 	element.style.left = `${x}px`;
 	element.style.top = `${y}px`;
 	element.style.zIndex = '25';
 	element.style.pointerEvents = 'none';
 	element.ariaHidden = 'true';
-	document.body.appendChild(element);
 
+	const child = document.createElement(src ? 'img' : 'div');
+	child.style.width = '100%';
+	child.style.height = '100%';
+
+	if (src) {
+		(child as HTMLImageElement).src = src;
+		child.style.objectFit = 'cover';
+	} else {
+		child.className = 'i-solar-folder-with-files-bold ';
+	}
+
+	element.appendChild(child);
+	document.body.appendChild(element);
 	return element;
 }
 </script>
