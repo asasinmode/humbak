@@ -147,7 +147,9 @@ async function getDirFiles() {
 
 const container = ref<HTMLElement>();
 let	mouseDownTimestamp: number | undefined;
-let createPreviewTimeout: Timeout | undefined;
+let createPreviewTimeout: NodeJS.Timeout | undefined;
+const offsetX = 0;
+const offsetY = 0;
 let grabbedItemData: {
 	buttonElement: HTMLButtonElement;
 	index: number;
@@ -156,7 +158,6 @@ let grabbedItemData: {
 } | undefined;
 
 function grabFile(index: number, event: MouseEvent, src?: string) {
-	console.log('grabbing', { index, src, target: event.target });
 	if (!event.target) {
 		throw new Error('grab file event has no target');
 	}
@@ -167,16 +168,15 @@ function grabFile(index: number, event: MouseEvent, src?: string) {
 		buttonElement: event.target as HTMLButtonElement,
 		isDir: false,
 	};
-
 	document.addEventListener('mouseup', moveFileOrOpenFiles);
+
 	createPreviewTimeout = setTimeout(() => {
-		console.log('timeout happening');
 		if (!grabbedItemData) {
 			return;
 		}
-		grabbedItemData.preview = createPreviewElement(false, event.clientX, event.clientY);
+		grabbedItemData.preview = createPreviewElement(event.clientX, event.clientY, src);
 		document.addEventListener('mousemove', movePreview);
-	}, 250);
+	}, 150);
 }
 
 function moveFileOrOpenFiles() {
@@ -204,8 +204,6 @@ function moveFileOrOpenFiles() {
 
 	mouseDownTimestamp = undefined;
 	grabbedItemData = undefined;
-
-	console.log('dragged');
 }
 
 function movePreview(event: MouseEvent) {
@@ -213,26 +211,25 @@ function movePreview(event: MouseEvent) {
 		toastGenericError();
 		throw new Error('move preview called without preview element');
 	}
-	event.preventDefault();
 	grabbedItemData.preview.style.left = `${event.clientX}px`;
 	grabbedItemData.preview.style.top = `${event.clientY}px`;
 }
 
-function createPreviewElement(isDir: boolean, x: number, y: number) {
-	console.log('creating preview');
+function createPreviewElement(x: number, y: number, src?: string) {
 	if (!container.value) {
 		throw new Error('create preview element called without container');
 	}
 
 	const element = document.createElement('div');
-	element.style.position = 'absolute';
-	element.style.width = '10px';
-	element.style.height = '10px';
-	element.style.background = isDir ? 'lightblue' : 'hotpink';
+	element.style.position = 'fixed';
+	element.style.width = '100px';
+	element.style.height = '100px';
+	element.style.background = src ? 'lightblue' : 'hotpink';
 	element.style.left = `${x}px`;
 	element.style.top = `${y}px`;
 	element.style.zIndex = '25';
-	container.value.appendChild(element);
+	element.ariaHidden = 'true';
+	document.body.appendChild(element);
 
 	return element;
 }
@@ -321,7 +318,7 @@ function createPreviewElement(isDir: boolean, x: number, y: number) {
 				:is-tiles="isTiles"
 				@delete="deleteFile"
 				@restore="restoreFile"
-				@mousedown="grabFile(index, $event)"
+				@move="grabFile"
 			/>
 			<FilesFileItem
 				v-for="(file, index) in currentDirFiles"
@@ -332,7 +329,7 @@ function createPreviewElement(isDir: boolean, x: number, y: number) {
 				:original-file="originalCurrentDirFiles[index]"
 				@delete="deleteFile"
 				@restore="restoreFile"
-				@mousedown="grabFile(index, $event, file.src)"
+				@move="grabFile"
 			/>
 		</div>
 	</main>
