@@ -27,7 +27,7 @@ const hasChanged = computed(() =>
 
 <template>
 	<article
-		class="of-hidden border-2 rounded-lg shadow"
+		class="relative of-hidden border-2 rounded-lg shadow"
 		:class="[classes.child, hasChanged ? 'border-blue' : 'border-neutral']"
 	>
 		<div class="relative" :class="classes.image">

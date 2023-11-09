@@ -146,10 +146,9 @@ async function getDirFiles() {
 }
 
 const container = ref<HTMLElement>();
+const isGrabbingItem = ref(false);
 let	mouseDownTimestamp: number | undefined;
 let createPreviewTimeout: NodeJS.Timeout | undefined;
-const offsetX = 0;
-const offsetY = 0;
 let grabbedItemData: {
 	buttonElement: HTMLButtonElement;
 	index: number;
@@ -174,6 +173,7 @@ function grabFile(index: number, event: MouseEvent, src?: string) {
 		if (!grabbedItemData) {
 			return;
 		}
+		isGrabbingItem.value = true;
 		grabbedItemData.preview = createPreviewElement(event.clientX, event.clientY, src);
 		document.addEventListener('mousemove', movePreview);
 	}, 150);
@@ -183,6 +183,7 @@ function moveFileOrOpenFiles() {
 	document.removeEventListener('mouseup', moveFileOrOpenFiles);
 	document.removeEventListener('mousemove', movePreview);
 	createPreviewTimeout && clearTimeout(createPreviewTimeout);
+	isGrabbingItem.value = false;
 
 	if (!mouseDownTimestamp) {
 		toastGenericError();
@@ -228,6 +229,7 @@ function createPreviewElement(x: number, y: number, src?: string) {
 	element.style.left = `${x}px`;
 	element.style.top = `${y}px`;
 	element.style.zIndex = '25';
+	element.style.pointerEvents = 'none';
 	element.ariaHidden = 'true';
 	document.body.appendChild(element);
 
@@ -284,7 +286,7 @@ function createPreviewElement(x: number, y: number, src?: string) {
 					</VButton>
 				</div>
 				<div
-					class="relative flex basis-1/2 items-center justify-center border-t border-neutral px-3 py-4 after:(absolute font-semibold text-neutral) before:(absolute inset-0 border-neutral border-dashed content-empty)"
+					class="relative flex basis-1/2 items-center justify-center border-t border-neutral px-3 py-4 after:(absolute font-semibold text-neutral-5 dark:text-neutral-3) before:(absolute inset-0 border-neutral border-dashed content-empty)"
 					:class="[
 						isTiles ? '' : 'md:border-t-0 md:border-l',
 						isDraggingOverFiles ? `after:content-['upuść_pliki'] before:border-3` : '']
@@ -307,6 +309,7 @@ function createPreviewElement(x: number, y: number, src?: string) {
 				v-model="currentDirDirs[index]"
 				:index="index"
 				:is-tiles="isTiles"
+				:is-grabbing-item="isGrabbingItem"
 				@delete="deleteDir"
 				@restore="restoreDir"
 			/>

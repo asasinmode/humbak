@@ -4,6 +4,7 @@ import type { IDir } from '~/composables/useApi';
 const props = defineProps<{
 	isTiles: boolean;
 	index: number;
+	isGrabbingItem: boolean;
 }>();
 
 defineEmits<{
@@ -17,8 +18,11 @@ const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 
 <template>
 	<div
-		class="of-hidden border-2 border-neutral rounded-lg shadow"
-		:class="classes.child"
+		class="relative of-hidden border-2 border-neutral rounded-lg shadow before:(pointer-events-none absolute inset-0 z-10 border-neutral border-dashed content-empty) after:(absolute left-1/2 top-1/2 font-semibold text-neutral-5 -translate-x-1/2 dark:text-neutral-3)"
+		:class="[
+			classes.child,
+			isGrabbingItem ? `hover:after:content-['przenieś_plik'] hover:before:border-3 hover:before:bg-black/10 dark:hover:before:bg-white/10` : '',
+		]"
 	>
 		<div class="relative flex-center self-start bg-black/15 dark:bg-white/15" :class="classes.image">
 			<div class="i-solar-folder-with-files-bold h-4/5 w-4/5" :class="dir.isBeingDeleted ? 'text-neutral' : ''" />
