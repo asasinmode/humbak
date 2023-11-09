@@ -10,7 +10,7 @@ const props = defineProps<{
 defineEmits<{
 	delete: [number, boolean];
 	restore: [number];
-	move: [number, MouseEvent, string];
+	move: [number, MouseEvent, boolean, string];
 }>();
 
 const file = defineModel<IFile | INewFile>({ required: true });
@@ -75,7 +75,7 @@ const hasChanged = computed(() =>
 			<VButton
 				class="w-fit neon-blue"
 				:class="classes.moveButton"
-				@mousedown.left="$emit('move', index, $event, file.src)"
+				@mousedown.left="$emit('move', index, $event, isNew, file.src)"
 			>
 				przenieś
 			</VButton>

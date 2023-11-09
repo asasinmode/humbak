@@ -146,35 +146,35 @@ async function getDirFiles() {
 }
 
 const container = ref<HTMLElement>();
-const isGrabbingItem = ref(false);
+const grabbedItem = ref<{
+	index: number;
+	isNew: boolean;
+	isDir: boolean;
+	buttonElement: HTMLButtonElement;
+	preview?: HTMLElement;
+}>();
 let	mouseDownTimestamp: number | undefined;
 let createPreviewTimeout: NodeJS.Timeout | undefined;
-let grabbedItemData: {
-	buttonElement: HTMLButtonElement;
-	index: number;
-	preview?: HTMLElement;
-	isDir: boolean;
-} | undefined;
 
-function grabFile(index: number, event: MouseEvent, src?: string) {
+function grabFile(index: number, event: MouseEvent, isNew: boolean, src?: string) {
 	if (!event.target) {
 		throw new Error('grab file event has no target');
 	}
 
 	mouseDownTimestamp = Date.now();
-	grabbedItemData = {
+	grabbedItem.value = {
 		index,
+		isNew,
+		isDir: !src,
 		buttonElement: event.target as HTMLButtonElement,
-		isDir: false,
 	};
 	document.addEventListener('mouseup', moveFileOrOpenFiles);
 
 	createPreviewTimeout = setTimeout(() => {
-		if (!grabbedItemData) {
+		if (!grabbedItem.value) {
 			return;
 		}
-		isGrabbingItem.value = true;
-		grabbedItemData.preview = createPreviewElement(event.clientX, event.clientY, src);
+		grabbedItem.value.preview = createPreviewElement(event.clientX, event.clientY, src);
 		document.addEventListener('mousemove', movePreview);
 	}, 150);
 }
@@ -183,37 +183,37 @@ function moveFileOrOpenFiles() {
 	document.removeEventListener('mouseup', moveFileOrOpenFiles);
 	document.removeEventListener('mousemove', movePreview);
 	createPreviewTimeout && clearTimeout(createPreviewTimeout);
-	isGrabbingItem.value = false;
 
 	if (!mouseDownTimestamp) {
 		toastGenericError();
 		throw new Error('move file or open files called without mousedown timestamp');
 	}
 
-	if (!grabbedItemData) {
+	if (!grabbedItem.value) {
 		toastGenericError();
 		throw new Error('move file or open files called without grabbed item data');
 	}
-	grabbedItemData.preview?.remove();
+
+	grabbedItem.value.preview?.remove();
 
 	if (mouseDownTimestamp && mouseDownTimestamp + 250 >= Date.now()) {
-		console.log('clicked will open dialog from', grabbedItemData.buttonElement);
+		console.log('clicked will open dialog from', grabbedItem.buttonElement);
 		mouseDownTimestamp = undefined;
-		grabbedItemData = undefined;
+		grabbedItem.value = undefined;
 		return;
 	}
 
 	mouseDownTimestamp = undefined;
-	grabbedItemData = undefined;
+	grabbedItem.value = undefined;
 }
 
 function movePreview(event: MouseEvent) {
-	if (!grabbedItemData?.preview) {
+	if (!grabbedItem.value?.preview) {
 		toastGenericError();
 		throw new Error('move preview called without preview element');
 	}
-	grabbedItemData.preview.style.left = `${event.clientX}px`;
-	grabbedItemData.preview.style.top = `${event.clientY}px`;
+	grabbedItem.value.preview.style.left = `${event.clientX}px`;
+	grabbedItem.value.preview.style.top = `${event.clientY}px`;
 }
 
 function createPreviewElement(x: number, y: number, src?: string) {
@@ -309,7 +309,7 @@ function createPreviewElement(x: number, y: number, src?: string) {
 				v-model="currentDirDirs[index]"
 				:index="index"
 				:is-tiles="isTiles"
-				:is-grabbing-item="isGrabbingItem"
+				:grabbed-item="grabbedItem"
 				@delete="deleteDir"
 				@restore="restoreDir"
 			/>

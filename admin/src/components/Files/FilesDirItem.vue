@@ -4,7 +4,12 @@ import type { IDir } from '~/composables/useApi';
 const props = defineProps<{
 	isTiles: boolean;
 	index: number;
-	isGrabbingItem: boolean;
+	grabbedItem?: {
+		index: number;
+		isDir: boolean;
+		isNew: boolean;
+		preview?: HTMLElement;
+	};
 }>();
 
 defineEmits<{
@@ -14,6 +19,10 @@ defineEmits<{
 
 const dir = defineModel<IDir>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
+const applyHoverClasses = computed(() => {
+	return 	props.grabbedItem?.preview && !props.grabbedItem.isDir && props.grabbedItem.index === props.index;
+}
+);
 </script>
 
 <template>
@@ -21,7 +30,7 @@ const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 		class="relative of-hidden border-2 border-neutral rounded-lg shadow before:(pointer-events-none absolute inset-0 z-10 border-neutral border-dashed content-empty) after:(absolute left-1/2 top-1/2 font-semibold text-neutral-5 -translate-x-1/2 dark:text-neutral-3)"
 		:class="[
 			classes.child,
-			isGrabbingItem ? `hover:after:content-['przenieś_plik'] hover:before:border-3 hover:before:bg-black/10 dark:hover:before:bg-white/10` : '',
+			applyHoverClasses ? `hover:after:content-['przenieś_plik'] hover:before:border-3 hover:before:bg-black/10 dark:hover:before:bg-white/10` : '',
 		]"
 	>
 		<div class="relative flex-center self-start bg-black/15 dark:bg-white/15" :class="classes.image">
