@@ -18,12 +18,8 @@ defineEmits<{
 const dir = defineModel<IDir>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 
-const isBeingMoved = computed(() =>
-	props.grabbedItem?.preview && props.grabbedItem.isDir && props.grabbedItem.index === props.index
-);
 const hasMoved = computed(() => dir.value.movedTo !== undefined);
 const disableInteractions = computed(() => dir.value.isBeingDeleted || hasMoved.value);
-const modifyHeader = computed(() => isBeingMoved.value || disableInteractions.value);
 const applyHoverClasses = computed(() =>
 	!disableInteractions.value && props.grabbedItem?.preview && (!props.grabbedItem.isDir || props.grabbedItem.index !== props.index)
 );
@@ -46,14 +42,14 @@ const hasChanged = computed(() =>
 	>
 		<div
 			class="relative flex-center self-start"
-			:class="[classes.image, modifyHeader ? 'bg-black/20 dark:bg-white/10' : 'bg-black/15 dark:bg-white/15']"
+			:class="[classes.image, disableInteractions ? 'bg-black/20 dark:bg-white/10' : 'bg-black/15 dark:bg-white/15']"
 		>
 			<div
 				class="i-solar-folder-with-files-bold h-4/5 w-4/5"
-				:class="modifyHeader ? 'text-neutral' : ''"
+				:class="disableInteractions ? 'text-neutral' : ''"
 			/>
 			<div v-if="dir.isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow" />
-			<div v-if="isBeingMoved || hasMoved" class="i-solar-move-to-folder-bold absolute left-1/2 top-1/2 h-full w-full translate-center text-blue drop-shadow" />
+			<div v-if="hasMoved" class="i-solar-move-to-folder-bold absolute left-1/2 top-1/2 h-full w-full translate-center text-blue drop-shadow" />
 		</div>
 		<VInput
 			:id="`dir${dir.id}name`"

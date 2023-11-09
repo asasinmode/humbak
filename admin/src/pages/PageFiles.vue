@@ -17,9 +17,9 @@ const classContainer = computed(() => {
 
 const isLoading = ref(false);
 const allDirectories = shallowRef<IDir[]>([]);
-let originalCurrentDirFiles: IFile[] = [];
-
 const currentDir = ref<number | null>(null);
+
+const originalCurrentDirFiles = shallowRef<IFile[]>([]);
 const currentDirDirs = ref<IDir[]>([]);
 const currentDirFiles = ref<IFile[]>([]);
 const newFiles = ref<INewFile[]>([]);
@@ -28,13 +28,10 @@ const newDirName = ref('');
 
 onMounted(async () => {
 	allDirectories.value = [{ id: 1, parentId: null, name: 'temp' }, { id: 2, parentId: null, name: 'other temp' }];
-	currentDirDirs.value = allDirectories.value.map((dir) => {
-		const value = toValue(dir);
-		return structuredClone(value);
-	});
+	currentDirDirs.value = allDirectories.value.map(dir => structuredClone(toValue(dir)));
 
-	originalCurrentDirFiles = await getDirFiles();
-	currentDirFiles.value = structuredClone(originalCurrentDirFiles);
+	originalCurrentDirFiles.value = await getDirFiles();
+	currentDirFiles.value = originalCurrentDirFiles.value.map(file => structuredClone(toValue(file)));
 });
 
 function createDir() {
