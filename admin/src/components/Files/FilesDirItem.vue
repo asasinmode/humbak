@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { IFilesGrabbedItem } from '~/types';
-import type { IDir } from '~/composables/useApi';
+import type { IDir, IFilesGrabbedItem, ILocalDir } from '~/types';
 
 const props = defineProps<{
 	isTiles: boolean;
@@ -15,19 +14,18 @@ defineEmits<{
 	move: [number, MouseEvent, boolean];
 }>();
 
-const dir = defineModel<IDir>({ required: true });
+const dir = defineModel<ILocalDir>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 
-const hasMoved = computed(() => dir.value.movedTo !== undefined);
+const hasMoved = computed(() => dir.value.movedToId !== undefined);
 const disableInteractions = computed(() => dir.value.isBeingDeleted || hasMoved.value);
 const applyHoverClasses = computed(() =>
 	!disableInteractions.value && props.grabbedItem?.preview && (!props.grabbedItem.isDir || props.grabbedItem.index !== props.index)
 );
 
 const hasChanged = computed(() =>
-	hasMoved.value
-	|| !props.originalDir
-	|| dir.value.name !== props.originalDir.name
+	hasMoved.value || (props.originalDir
+		&& (dir.value.name !== props.originalDir.name))
 );
 </script>
 

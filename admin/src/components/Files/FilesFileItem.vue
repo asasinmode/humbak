@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { IFilesGrabbedItem } from '~/types';
-import type { IFile, INewFile } from '~/composables/useApi';
+import type { IFile, IFilesGrabbedItem, ILocalFile, INewFile } from '~/types';
 
 const props = defineProps<{
 	index: number;
@@ -15,12 +14,12 @@ defineEmits<{
 	move: [number, MouseEvent, boolean, string];
 }>();
 
-const file = defineModel<IFile | INewFile>({ required: true });
+const file = defineModel<ILocalFile | INewFile>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 
 const isNew = computed(() => (!('id' in file.value) && 'file' in file.value));
-const hasMoved = computed(() => file.value.movedTo !== undefined);
-const disableInteractions = computed(() => file.value.isBeingDeleted || hasMoved.value);
+const hasMoved = computed(() => (file.value as ILocalFile).movedToId !== undefined);
+const disableInteractions = computed(() => (file.value as ILocalFile).isBeingDeleted || hasMoved.value);
 const hasChanged = computed(() =>
 	!props.originalFile
 	|| hasMoved.value

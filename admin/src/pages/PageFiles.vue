@@ -26,11 +26,13 @@ const originalCurrentDirFiles = shallowRef<IFile[]>([]);
 const newFiles = ref<INewFile[]>([]);
 
 onMounted(async () => {
-	allDirectories.value = [
+	const dirs = [
 		{ id: 1, parentId: null, name: 'temp', path: 'temp' },
 		{ id: 2, parentId: null, name: 'other temp', path: 'other temp' },
 	];
-	currentDirDirs.value = allDirectories.value.map(dir => structuredClone(toValue(dir)));
+	allDirectories.value = dirs.map(dir => structuredClone(dir));
+	currentDirDirs.value = dirs.map(dir => structuredClone(dir));
+	originalCurrentDirDirs.value = dirs.map(dir => structuredClone(dir));
 
 	originalCurrentDirFiles.value = await getDirFiles();
 	currentDirFiles.value = originalCurrentDirFiles.value.map(file => structuredClone(toValue(file)));
@@ -308,6 +310,7 @@ function createPreviewElement(x: number, y: number, src?: string) {
 						class="h-fit shrink-0 neon-green"
 						:class="isTiles ? '' : 'md:mt-[1.625rem]'"
 						:disabled="isLoading"
+						:is-loading="isSavingDir"
 						@click="createDir"
 					>
 						dodaj folder
@@ -337,6 +340,7 @@ function createPreviewElement(x: number, y: number, src?: string) {
 				v-model="currentDirDirs[index]"
 				:index="index"
 				:is-tiles="isTiles"
+				:original-dir="originalCurrentDirDirs[index]"
 				:grabbed-item="grabbedItem"
 				@delete="deleteDir"
 				@restore="restoreDir"
