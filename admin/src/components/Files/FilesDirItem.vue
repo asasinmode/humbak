@@ -61,6 +61,9 @@ const hasChanged = computed(() =>
 		<VButton v-if="dir.isBeingDeleted" class="neon-yellow" :class="classes.restoreButton" @click="$emit('restore', index)">
 			przywróć
 		</VButton>
+		<VButton v-else-if="hasMoved" class="neon-yellow" :class="classes.restoreButton" @click="dir.movedToId = undefined">
+			anuluj
+		</VButton>
 		<template v-else>
 			<VButton
 				class="justify-self-end neon-red"

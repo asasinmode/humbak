@@ -29,6 +29,7 @@ onMounted(async () => {
 	const dirs = [
 		{ id: 1, parentId: null, name: 'temp', path: 'temp' },
 		{ id: 2, parentId: null, name: 'other temp', path: 'other temp' },
+		{ id: 3, parentId: null, name: 'different temp', path: 'different temp' },
 	];
 	allDirectories.value = dirs.map(dir => structuredClone(dir));
 	currentDirDirs.value = dirs.map(dir => structuredClone(dir));
@@ -117,7 +118,6 @@ function handleFileDrop(event: DragEvent) {
 			continue;
 		}
 		newFiles.value.unshift({
-			parentId: currentDir.value,
 			title: '',
 			alt: '',
 			name: '',
@@ -135,7 +135,6 @@ function handleFileInput(event: Event) {
 	}
 	for (const file of target.files) {
 		newFiles.value.unshift({
-			parentId: currentDir.value,
 			title: '',
 			alt: '',
 			name: '',
@@ -235,10 +234,23 @@ function moveFileOrOpenFiles(event: MouseEvent) {
 	}
 
 	if (grabbedItem.value.isDir && currentDirDirs.value[grabbedItem.value.index].id === targetId) {
+		grabbedItem.value = undefined;
 		return;
 	}
 
-	console.log('will move to', targetId);
+	if (grabbedItem.value.isDir) {
+		const target = currentDirDirs.value.find(dir => dir.id === targetId);
+		if (target && target.movedToId === currentDirDirs.value[grabbedItem.value.index].id) {
+			toast('folder nie może być przeniesiony do swojego podfolderu', 'error');
+			grabbedItem.value = undefined;
+			return;
+		}
+		currentDirDirs.value[grabbedItem.value.index].movedToId = targetId;
+	} else if (grabbedItem.value.isNew) {
+		newFiles.value[grabbedItem.value.index].movedToId = targetId;
+	} else {
+		currentDirFiles.value[grabbedItem.value.index].movedToId = targetId;
+	}
 	grabbedItem.value = undefined;
 }
 

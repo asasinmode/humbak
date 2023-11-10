@@ -36,4 +36,4 @@ export type IFile = {
 };
 export type ILocalDir = ILocalItem<IDir>;
 export type ILocalFile = ILocalItem<IFile>;
-export type INewFile = Omit<IFile, 'id'> & { file: File; };
+export type INewFile = Omit<IFile, 'id' | 'parentId'> & { file: File; movedToId?: number | null; };

@@ -52,7 +52,7 @@ defineExpose({ element });
 			:id="id"
 			ref="element"
 			v-model="value"
-			class="min-w-24 w-full py-1 pl-3 shadow"
+			class="min-w-24 w-full py-1 pl-3 shadow disabled:pointer-events-none"
 			:title="label"
 			:class="[suffixIcon ? 'pr-9' : 'pr-3', error ? 'neon-red' : 'neon-neutral', classInput]"
 			:disabled="disabled"

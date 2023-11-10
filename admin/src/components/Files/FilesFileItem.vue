@@ -42,7 +42,7 @@ const hasChanged = computed(() =>
 				class="h-full w-full object-cover"
 				:class="disableInteractions ? 'grayscale-100 brightness-60' : ''"
 			>
-			<div v-if="file.isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow" />
+			<div v-if="(file as ILocalFile).isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow" />
 			<div v-if="hasMoved" class="i-solar-move-to-folder-bold absolute left-1/2 top-1/2 h-full w-full translate-center text-blue drop-shadow" />
 		</div>
 		<VInput
@@ -67,12 +67,15 @@ const hasChanged = computed(() =>
 			:disabled="disableInteractions"
 		/>
 		<VButton
-			v-if="file.isBeingDeleted"
+			v-if="(file as ILocalFile).isBeingDeleted"
 			class="neon-yellow"
 			:class="classes.restoreButton"
 			@click="$emit('restore', index)"
 		>
 			przywróć
+		</VButton>
+		<VButton v-else-if="hasMoved" class="neon-yellow" :class="classes.restoreButton" @click="file.movedToId = undefined">
+			anuluj
 		</VButton>
 		<template v-else>
 			<VButton
