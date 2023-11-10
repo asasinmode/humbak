@@ -2,7 +2,7 @@
 import VEditor from '~/components/V/VEditor.vue';
 
 const api = useApi();
-const { toast, toastGenericError } = useToast();
+const { toast } = useToast();
 const editor = ref<InstanceType<typeof VEditor>>();
 const { value, isLoading, initValue, updateValue } = useGlobalPagesStylesheet(
 	(value: string) => editor.value?.updateModelValue(0, value)
@@ -18,7 +18,7 @@ async function saveChanges() {
 		}
 		toast('zapisano zmiany');
 	} catch (e) {
-		toastGenericError();
+		toast('błąd przy zapisywaniu stylów', 'error');
 		console.error(e);
 	} finally {
 		isSaving.value = false;
@@ -32,7 +32,7 @@ function updateModelValue(newValue: string) {
 </script>
 
 <template>
-	<main id="content" class="px-container grid grid-cols-[1fr_max-content] grid-rows-[min-content_1fr] mx-auto max-w-256 min-h-inherit w-full gap-x-3 gap-y-5 pb-4 pt-[1.125rem]">
+	<main id="content" class="grid grid-cols-[1fr_max-content] grid-rows-[min-content_1fr] mx-auto max-w-256 min-h-inherit w-full gap-x-3 gap-y-5 px-container pb-4 pt-[1.125rem]">
 		<VButton class="h-9 w-9 justify-self-end p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
 			<span class="visually-hidden">formatuj</span>
 			<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
