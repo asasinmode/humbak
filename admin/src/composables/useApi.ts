@@ -20,8 +20,3 @@ export type ISlide = Awaited<ReturnType<typeof client['slides']['byId']['query']
 export type IListedSlide = Awaited<ReturnType<typeof client['slides']['list']['query']>>[number];
 export type IPublicListedSlide = Awaited<ReturnType<typeof client['slides']['listPublic']['query']>>[number];
 export type IFooterContents = Awaited<ReturnType<typeof client['footer']['byLanguage']['query']>>;
-
-export type IDir = { id: number; parentId: null | number; name: string; isBeingDeleted?: boolean; movedTo?: number; };
-export type INewDir = Omit<IDir, 'id' | 'parentId'>;
-export type IFile = { id: number; parentId: null | number; title: string; alt: string; name: string; src: string; mimetype: string; isBeingDeleted?: boolean; movedTo?: number; };
-export type INewFile = Omit<IFile, 'id' | 'parentId'> & { file: File; };

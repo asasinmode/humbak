@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import type { IFilesGrabbedItem } from '~/types';
-import type { IDir, IFile, INewFile } from '~/composables/useApi';
+import type { IDir, IFile, IFilesGrabbedItem, ILocalDir, ILocalFile, INewFile } from '~/types';
 
-const { toastGenericError } = useToast();
+const { toast, toastGenericError } = useToast();
 
 const isTiles = ref(true);
 
@@ -16,29 +15,53 @@ const classContainer = computed(() => {
 });
 
 const isLoading = ref(false);
-const allDirectories = shallowRef<IDir[]>([]);
 const currentDir = ref<number | null>(null);
+const allDirectories = ref<IDir[]>([]);
 
+const currentDirDirs = ref<ILocalDir[]>([]);
+const currentDirFiles = ref<ILocalFile[]>([]);
+const originalCurrentDirDirs = shallowRef<IDir[]>([]);
 const originalCurrentDirFiles = shallowRef<IFile[]>([]);
-const currentDirDirs = ref<IDir[]>([]);
-const currentDirFiles = ref<IFile[]>([]);
+
 const newFiles = ref<INewFile[]>([]);
 
-const newDirName = ref('');
-
 onMounted(async () => {
-	allDirectories.value = [{ id: 1, parentId: null, name: 'temp' }, { id: 2, parentId: null, name: 'other temp' }];
+	allDirectories.value = [
+		{ id: 1, parentId: null, name: 'temp', path: 'temp' },
+		{ id: 2, parentId: null, name: 'other temp', path: 'other temp' },
+	];
 	currentDirDirs.value = allDirectories.value.map(dir => structuredClone(toValue(dir)));
 
 	originalCurrentDirFiles.value = await getDirFiles();
 	currentDirFiles.value = originalCurrentDirFiles.value.map(file => structuredClone(toValue(file)));
 });
 
-function createDir() {
+const isSavingDir = ref(false);
+const newDirName = ref('');
+
+async function createDir() {
 	if (!newDirName.value) {
 		return;
 	}
-	currentDirDirs.value.unshift({ id: allDirectories.value.length + 1, parentId: currentDir.value, name: newDirName.value });
+
+	isSavingDir.value = true;
+	try {
+		await new Promise(resolve => setTimeout(resolve, 250));
+		const newFile = {
+			id: allDirectories.value.length + 1,
+			parentId: currentDir.value,
+			name: newDirName.value,
+			path: newDirName.value,
+		};
+		currentDirDirs.value.push(newFile);
+		allDirectories.value.push(structuredClone(newFile));
+		originalCurrentDirDirs.value.push(structuredClone(newFile));
+	} catch (error) {
+		toast('błąd przy tworzeniu folderu', 'error');
+		console.error(error);
+	} finally {
+		isSavingDir.value = false;
+	}
 	newDirName.value = '';
 }
 
@@ -92,6 +115,7 @@ function handleFileDrop(event: DragEvent) {
 			continue;
 		}
 		newFiles.value.unshift({
+			parentId: currentDir.value,
 			title: '',
 			alt: '',
 			name: '',
@@ -109,6 +133,7 @@ function handleFileInput(event: Event) {
 	}
 	for (const file of target.files) {
 		newFiles.value.unshift({
+			parentId: currentDir.value,
 			title: '',
 			alt: '',
 			name: '',
