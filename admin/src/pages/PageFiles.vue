@@ -198,7 +198,7 @@ function grabFile(index: number, event: MouseEvent, isNew: boolean, src?: string
 	}, 150);
 }
 
-function moveFileOrOpenFiles() {
+function moveFileOrOpenFiles(event: MouseEvent) {
 	document.removeEventListener('mouseup', moveFileOrOpenFiles);
 	document.removeEventListener('mousemove', movePreview);
 	createPreviewTimeout && clearTimeout(createPreviewTimeout);
@@ -221,8 +221,24 @@ function moveFileOrOpenFiles() {
 		grabbedItem.value = undefined;
 		return;
 	}
-
 	mouseDownTimestamp = undefined;
+
+	const droppedOntoDir = (event.target as HTMLElement | null)?.closest('[data-dir-id]');
+	if (!droppedOntoDir) {
+		return;
+	}
+
+	const targetId = parseInt((droppedOntoDir as HTMLElement).dataset.dirId as string);
+	if (Number.isNaN(targetId)) {
+		toastGenericError();
+		throw new Error('found target id isn\'t a number');
+	}
+
+	if (grabbedItem.value.isDir && currentDirDirs.value[grabbedItem.value.index].id === targetId) {
+		return;
+	}
+
+	console.log('will move to', targetId);
 	grabbedItem.value = undefined;
 }
 

@@ -37,6 +37,7 @@ const hasChanged = computed(() =>
 			applyHoverClasses ? `hover:after:content-['przenieś_plik'] hover:before:border-3 hover:before:bg-black/10 dark:hover:before:bg-white/10` : '',
 			hasChanged ? 'border-blue' : 'border-neutral',
 		]"
+		:data-dir-id="dir.id"
 	>
 		<div
 			class="relative flex-center self-start"
