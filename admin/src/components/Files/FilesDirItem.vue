@@ -22,7 +22,7 @@ const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 const hasMoved = computed(() => dir.value.movedToId !== undefined);
 const disableInteractions = computed(() => dir.value.isBeingDeleted || hasMoved.value);
 const applyHoverClasses = computed(() =>
-	!disableInteractions.value
+	!dir.value.isBeingDeleted
 	&& props.isGrabbing
 	&& props.grabbedItem
 	&& (!props.grabbedItem.isDir || props.grabbedItem.index !== props.index)
@@ -52,8 +52,14 @@ const hasChanged = computed(() =>
 				class="i-solar-folder-with-files-bold h-4/5 w-4/5"
 				:class="disableInteractions ? 'text-neutral' : ''"
 			/>
-			<div v-if="dir.isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow" />
-			<div v-if="hasMoved" class="i-solar-move-to-folder-bold absolute left-1/2 top-1/2 h-full w-full translate-center text-blue drop-shadow" />
+			<div
+				v-if="dir.isBeingDeleted"
+				class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow"
+			/>
+			<div
+				v-if="hasMoved"
+				class="i-solar-move-to-folder-bold absolute left-1/2 top-1/2 h-full w-full translate-center text-blue drop-shadow"
+			/>
 		</div>
 		<VInput
 			:id="`dir${dir.id}name`"
