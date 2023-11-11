@@ -331,6 +331,11 @@ function moveGrabbedElement(targetId?: number | null, closeDialog = false) {
 	closeDialog && dialog.value?.close();
 }
 
+function cleanupDrag() {
+	grabbedItem.value = undefined;
+	dialogTargetId.value = undefined;
+}
+
 const isSaving = ref(false);
 
 async function saveChanges() {
@@ -464,9 +469,22 @@ async function saveChanges() {
 		class-container="grid grid-cols-2 gap-x-2 gap-y-3"
 		class-close-button="justify-self-end"
 		close-button-text="anuluj"
-		@close="grabbedItem = undefined"
+		@close="cleanupDrag"
 	>
-		will move {{ grabbedItem }}
+		<h3 class="col-span-full text-center text-5 font-600">
+			przenieś do
+		</h3>
+		<label
+			v-for="dir in allDirectories"
+			:key="dir.id"
+			:for="`dirCheckbox${dir.id}`"
+			class="col-span-full flex justify-between border-2 border-neutral rounded-lg px-2 py-2 focus-within:border-black hover:border-black dark:focus-within:border-white dark:hover:border-white"
+			:class="dialogTargetId === dir.id ? '!border-black dark:!border-white bg-blue/30' : ''"
+		>
+			{{ dir.name }}
+			<input :id="`dirCheckbox${dir.id}`" type="radio" name="dialogTargetId" @input="dialogTargetId = dir.id">
+		</label>
+
 		<template #post>
 			<VButton class="justify-self-start neon-green" @click="moveGrabbedElement(dialogTargetId, true)">
 				zapisz
