@@ -181,21 +181,26 @@ const dialogActivator = ref<HTMLButtonElement>();
 const dialogTargetId = ref<number | null>();
 const dialogSearch = ref('');
 const dialogAllDirs = computed<IDir[]>(() => {
-	if (!grabbedItem.value || !grabbedItem.value.isDir) {
-		return allDirectories.value;
+	if (!grabbedItem.value) {
+		return [];
+	}
+
+	const matchingSearch: IDir[] = [];
+	for (const dir of allDirectories.value) {
+		if (!dialogSearch.value || dir.name.includes(dialogSearch.value)) {
+			matchingSearch.push(dir);
+		}
+	}
+	if (!grabbedItem.value.isDir) {
+		return matchingSearch;
 	}
 
 	const grabbedDirId = currentDirDirs.value[grabbedItem.value.index].id;
 	const rv = [];
-	for (const dir of allDirectories.value) {
-		const isItself = dir.id === grabbedDirId;
-		if (isItself) {
-			continue;
+	for (const dir of matchingSearch) {
+		if (dir.id !== grabbedDirId) {
+			rv.push(dir);
 		}
-		// if(dialogSearch.value && !dir.name.includes(dialogSearch.value)){
-		// 	continue
-		// }
-		rv.push(dir);
 	}
 	return rv;
 });
@@ -355,6 +360,7 @@ function moveGrabbedElement(targetId?: number | null, closeDialog = false) {
 function cleanupDrag() {
 	grabbedItem.value = undefined;
 	dialogTargetId.value = undefined;
+	dialogSearch.value = '';
 }
 
 const isSaving = ref(false);
@@ -495,6 +501,14 @@ async function saveChanges() {
 		<h3 class="col-span-full text-center text-5 font-600">
 			przenieś do
 		</h3>
+		<VInput
+			id="dirDialogSearch"
+			v-model="dialogSearch"
+			label="szukaj"
+			class="col-span-full mb-3"
+			suffix-icon="i-solar-magnifer-linear"
+			label-visually-hidden
+		/>
 		<label
 			v-for="dir in dialogAllDirs"
 			:key="dir.id"
