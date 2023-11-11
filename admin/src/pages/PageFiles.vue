@@ -172,6 +172,7 @@ async function getDirFiles() {
 
 const container = ref<HTMLElement>();
 const grabbedItem = ref<IFilesGrabbedItem>();
+const grabPreviewElement = ref<HTMLElement>();
 let	mouseDownTimestamp: number | undefined;
 let createPreviewTimeout: NodeJS.Timeout | undefined;
 
@@ -197,7 +198,7 @@ function grabFile(index: number, event: MouseEvent, isNew?: boolean, src?: strin
 		if (!grabbedItem.value) {
 			return;
 		}
-		grabbedItem.value.preview = createPreviewElement(event.clientX, event.clientY, src);
+		grabPreviewElement.value = createPreviewElement(event.clientX, event.clientY, src);
 		document.addEventListener('mousemove', movePreview);
 	}, 150);
 }
@@ -231,7 +232,8 @@ function moveFileOrOpenFiles(event: MouseEvent) {
 		throw new Error('move file or open files called without grabbed item data');
 	}
 
-	grabbedItem.value.preview?.remove();
+	grabPreviewElement.value?.remove();
+	grabPreviewElement.value = undefined;
 
 	if (mouseDownTimestamp && mouseDownTimestamp + 250 >= Date.now()) {
 		mouseDownTimestamp = undefined;
@@ -255,12 +257,12 @@ function moveFileOrOpenFiles(event: MouseEvent) {
 }
 
 function movePreview(event: MouseEvent) {
-	if (!grabbedItem.value?.preview) {
+	if (!grabPreviewElement.value) {
 		toastGenericError();
 		throw new Error('move preview called without preview element');
 	}
-	grabbedItem.value.preview.style.left = `${event.clientX}px`;
-	grabbedItem.value.preview.style.top = `${event.clientY}px`;
+	grabPreviewElement.value.style.left = `${event.clientX}px`;
+	grabPreviewElement.value.style.top = `${event.clientY}px`;
 }
 
 function createPreviewElement(x: number, y: number, src?: string) {
@@ -422,6 +424,7 @@ async function saveChanges() {
 				:is-tiles="isTiles"
 				:original-dir="originalCurrentDirDirs[index]"
 				:grabbed-item="grabbedItem"
+				:is-grabbing="!!grabPreviewElement"
 				@delete="deleteDir"
 				@restore="restoreDir"
 				@move="grabFile"

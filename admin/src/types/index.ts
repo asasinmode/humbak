@@ -10,7 +10,6 @@ export type IFilesGrabbedItem = {
 	index: number;
 	isDir: boolean;
 	isNew?: boolean;
-	preview?: HTMLElement;
 };
 
 export type ILocalItem<T> = T & {

@@ -4,6 +4,7 @@ import type { IDir, IFilesGrabbedItem, ILocalDir } from '~/types';
 const props = defineProps<{
 	isTiles: boolean;
 	index: number;
+	isGrabbing: boolean;
 	grabbedItem?: IFilesGrabbedItem;
 	originalDir?: IDir;
 }>();
@@ -21,7 +22,10 @@ const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 const hasMoved = computed(() => dir.value.movedToId !== undefined);
 const disableInteractions = computed(() => dir.value.isBeingDeleted || hasMoved.value);
 const applyHoverClasses = computed(() =>
-	!disableInteractions.value && props.grabbedItem?.preview && (!props.grabbedItem.isDir || props.grabbedItem.index !== props.index)
+	!disableInteractions.value
+	&& props.isGrabbing
+	&& props.grabbedItem
+	&& (!props.grabbedItem.isDir || props.grabbedItem.index !== props.index)
 );
 
 const hasChanged = computed(() =>
