@@ -177,6 +177,7 @@ let createPreviewTimeout: NodeJS.Timeout | undefined;
 
 const dialog = ref<InstanceType<typeof VDialog>>();
 const dialogActivator = ref<HTMLButtonElement>();
+const dialogTargetId = ref<number | null>();
 
 function grabFile(index: number, event: MouseEvent, isNew?: boolean, src?: string) {
 	if (!event.target) {
@@ -234,7 +235,6 @@ function moveFileOrOpenFiles(event: MouseEvent) {
 
 	if (mouseDownTimestamp && mouseDownTimestamp + 250 >= Date.now()) {
 		mouseDownTimestamp = undefined;
-		grabbedItem.value = undefined;
 		dialog.value?.open();
 		return;
 	}
@@ -251,25 +251,7 @@ function moveFileOrOpenFiles(event: MouseEvent) {
 		throw new Error('found target id isn\'t a number');
 	}
 
-	if (grabbedItem.value.isDir && currentDirDirs.value[grabbedItem.value.index].id === targetId) {
-		grabbedItem.value = undefined;
-		return;
-	}
-
-	if (grabbedItem.value.isDir) {
-		const target = currentDirDirs.value.find(dir => dir.id === targetId);
-		if (target && target.movedToId === currentDirDirs.value[grabbedItem.value.index].id) {
-			toast('folder nie może być przeniesiony do swojego podfolderu', 'error');
-			grabbedItem.value = undefined;
-			return;
-		}
-		currentDirDirs.value[grabbedItem.value.index].movedToId = targetId;
-	} else if (grabbedItem.value.isNew) {
-		newFiles.value[grabbedItem.value.index].movedToId = targetId;
-	} else {
-		currentDirFiles.value[grabbedItem.value.index].movedToId = targetId;
-	}
-	grabbedItem.value = undefined;
+	moveGrabbedElement(targetId);
 }
 
 function movePreview(event: MouseEvent) {
@@ -310,6 +292,41 @@ function createPreviewElement(x: number, y: number, src?: string) {
 	element.appendChild(child);
 	document.body.appendChild(element);
 	return element;
+}
+
+function moveGrabbedElement(targetId?: number | null, closeDialog = false) {
+	if (targetId === undefined) {
+		closeDialog && dialog.value?.close();
+		return;
+	}
+	if (!grabbedItem.value) {
+		toastGenericError();
+		throw new Error('move grabbed element called without grabbed element set');
+	}
+
+	if (grabbedItem.value.isDir && currentDirDirs.value[grabbedItem.value.index].id === targetId) {
+		grabbedItem.value = undefined;
+		closeDialog && dialog.value?.close();
+		return;
+	}
+
+	if (grabbedItem.value.isDir) {
+		const target = currentDirDirs.value.find(dir => dir.id === targetId);
+		if (target && target.movedToId === currentDirDirs.value[grabbedItem.value.index].id) {
+			toast('folder nie może być przeniesiony do swojego podfolderu', 'error');
+			grabbedItem.value = undefined;
+			closeDialog && dialog.value?.close();
+			return;
+		}
+		currentDirDirs.value[grabbedItem.value.index].movedToId = targetId;
+	} else if (grabbedItem.value.isNew) {
+		newFiles.value[grabbedItem.value.index].movedToId = targetId;
+	} else {
+		currentDirFiles.value[grabbedItem.value.index].movedToId = targetId;
+	}
+
+	grabbedItem.value = undefined;
+	closeDialog && dialog.value?.close();
 }
 
 const isSaving = ref(false);
@@ -443,7 +460,14 @@ async function saveChanges() {
 		no-open-button
 		class-container="grid grid-cols-2 gap-x-2 gap-y-3"
 		class-close-button="justify-self-end"
+		close-button-text="anuluj"
+		@close="grabbedItem = undefined"
 	>
 		will move {{ grabbedItem }}
+		<template #post>
+			<VButton class="justify-self-start neon-green" @click="moveGrabbedElement(dialogTargetId, true)">
+				zapisz
+			</VButton>
+		</template>
 	</VDialog>
 </template>
