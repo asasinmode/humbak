@@ -12,6 +12,7 @@ defineEmits<{
 	delete: [number];
 	restore: [number];
 	move: [number, MouseEvent, boolean];
+	openDialog: [number, KeyboardEvent, boolean];
 }>();
 
 const dir = defineModel<ILocalDir>({ required: true });
@@ -76,6 +77,8 @@ const hasChanged = computed(() =>
 				class="w-fit neon-blue"
 				:class="classes.moveButton"
 				@mousedown.left="$emit('move', index, $event, false)"
+				@keydown.enter.prevent="$emit('openDialog', index, $event, true)"
+				@keydown.space.prevent="$emit('openDialog', index, $event, true)"
 			>
 				przenieś
 			</VButton>

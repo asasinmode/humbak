@@ -12,6 +12,7 @@ defineEmits<{
 	delete: [number, boolean];
 	restore: [number];
 	move: [number, MouseEvent, boolean, string];
+	openDialog: [number, KeyboardEvent, boolean, boolean];
 }>();
 
 const file = defineModel<ILocalFile | INewFile>({ required: true });
@@ -89,6 +90,8 @@ const hasChanged = computed(() =>
 				class="w-fit neon-blue"
 				:class="classes.moveButton"
 				@mousedown.left="$emit('move', index, $event, isNew, file.src)"
+				@keydown.enter.prevent="$emit('openDialog', index, $event, false, isNew)"
+				@keydown.space.prevent="$emit('openDialog', index, $event, false, isNew)"
 			>
 				przenieś
 			</VButton>

@@ -8,9 +8,8 @@ export type IMenuTreeItem = {
 
 export type IFilesGrabbedItem = {
 	index: number;
-	isNew: boolean;
 	isDir: boolean;
-	buttonElement: HTMLButtonElement;
+	isNew?: boolean;
 	preview?: HTMLElement;
 };
 

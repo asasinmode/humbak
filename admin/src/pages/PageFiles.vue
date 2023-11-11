@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VDialog from '~/components/V/VDialog.vue';
 import type { IDir, IFile, IFilesGrabbedItem, ILocalDir, ILocalFile, INewFile } from '~/types';
 
 const { toast, toastGenericError } = useToast();
@@ -59,9 +60,9 @@ async function createDir() {
 		currentDirDirs.value.push(newFile);
 		allDirectories.value.push(structuredClone(newFile));
 		originalCurrentDirDirs.value.push(structuredClone(newFile));
-	} catch (error) {
+	} catch (e) {
 		toast('błąd przy tworzeniu folderu', 'error');
-		console.error(error);
+		console.error(e);
 	} finally {
 		isSavingDir.value = false;
 	}
@@ -174,7 +175,10 @@ const grabbedItem = ref<IFilesGrabbedItem>();
 let	mouseDownTimestamp: number | undefined;
 let createPreviewTimeout: NodeJS.Timeout | undefined;
 
-function grabFile(index: number, event: MouseEvent, isNew: boolean, src?: string) {
+const dialog = ref<InstanceType<typeof VDialog>>();
+const dialogActivator = ref<HTMLButtonElement>();
+
+function grabFile(index: number, event: MouseEvent, isNew?: boolean, src?: string) {
 	if (!event.target) {
 		throw new Error('grab file event has no target');
 	}
@@ -184,8 +188,8 @@ function grabFile(index: number, event: MouseEvent, isNew: boolean, src?: string
 		index,
 		isNew,
 		isDir: !src,
-		buttonElement: event.target as HTMLButtonElement,
 	};
+	dialogActivator.value = event.target as HTMLButtonElement;
 	document.addEventListener('mouseup', moveFileOrOpenFiles);
 
 	createPreviewTimeout = setTimeout(() => {
@@ -195,6 +199,20 @@ function grabFile(index: number, event: MouseEvent, isNew: boolean, src?: string
 		grabbedItem.value.preview = createPreviewElement(event.clientX, event.clientY, src);
 		document.addEventListener('mousemove', movePreview);
 	}, 150);
+}
+
+function openFilesDialog(index: number, event: KeyboardEvent, isDir: boolean, isNew?: boolean) {
+	if (!event.target) {
+		throw new Error('open files dialog event has no target');
+	}
+	mouseDownTimestamp = undefined;
+	grabbedItem.value = {
+		index,
+		isNew,
+		isDir,
+	};
+	dialogActivator.value = event.target as HTMLButtonElement;
+	dialog.value?.open();
 }
 
 function moveFileOrOpenFiles(event: MouseEvent) {
@@ -215,9 +233,9 @@ function moveFileOrOpenFiles(event: MouseEvent) {
 	grabbedItem.value.preview?.remove();
 
 	if (mouseDownTimestamp && mouseDownTimestamp + 250 >= Date.now()) {
-		console.log('clicked will open dialog from', grabbedItem.value.buttonElement);
 		mouseDownTimestamp = undefined;
 		grabbedItem.value = undefined;
+		dialog.value?.open();
 		return;
 	}
 	mouseDownTimestamp = undefined;
@@ -293,6 +311,22 @@ function createPreviewElement(x: number, y: number, src?: string) {
 	document.body.appendChild(element);
 	return element;
 }
+
+const isSaving = ref(false);
+
+async function saveChanges() {
+	isSaving.value = true;
+
+	try {
+		await new Promise(resolve => setTimeout(resolve, 200));
+		toast('zapisano zmiany');
+	} catch (e) {
+		toast('błąd przy zapisywaniu zmian', 'error');
+		console.error(e);
+	} finally {
+		isSaving.value = false;
+	}
+}
 </script>
 
 <template>
@@ -311,7 +345,8 @@ function createPreviewElement(x: number, y: number, src?: string) {
 			<VButton
 				ref="saveButton"
 				class="mr-12 h-fit md:mr-container neon-green"
-				@click="isLoading = !isLoading"
+				:is-loading="isSaving"
+				@click="saveChanges"
 			>
 				zapisz
 			</VButton>
@@ -321,7 +356,7 @@ function createPreviewElement(x: number, y: number, src?: string) {
 			class="relative mx-auto max-w-360 w-full gap-x-5 px-container"
 			:class="classContainer"
 			aria-live="polite"
-			:aria-busy="isLoading"
+			:aria-busy="isLoading || isSaving"
 		>
 			<div
 				class="relative row-span-5 flex flex-col of-hidden border-2 border-neutral rounded-lg shadow"
@@ -373,6 +408,7 @@ function createPreviewElement(x: number, y: number, src?: string) {
 				@delete="deleteDir"
 				@restore="restoreDir"
 				@move="grabFile"
+				@open-dialog="openFilesDialog"
 			/>
 			<FilesFileItem
 				v-for="(file, index) in newFiles"
@@ -384,6 +420,7 @@ function createPreviewElement(x: number, y: number, src?: string) {
 				@delete="deleteFile"
 				@restore="restoreFile"
 				@move="grabFile"
+				@open-dialog="openFilesDialog"
 			/>
 			<FilesFileItem
 				v-for="(file, index) in currentDirFiles"
@@ -396,7 +433,17 @@ function createPreviewElement(x: number, y: number, src?: string) {
 				@delete="deleteFile"
 				@restore="restoreFile"
 				@move="grabFile"
+				@open-dialog="openFilesDialog"
 			/>
 		</div>
 	</main>
+	<VDialog
+		ref="dialog"
+		:activator="dialogActivator"
+		no-open-button
+		class-container="grid grid-cols-2 gap-x-2 gap-y-3"
+		class-close-button="justify-self-end"
+	>
+		will move {{ grabbedItem }}
+	</VDialog>
 </template>
