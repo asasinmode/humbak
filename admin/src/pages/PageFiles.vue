@@ -517,7 +517,13 @@ async function saveChanges() {
 			:class="dialogTargetId === dir.id ? '!border-black dark:!border-white bg-blue/30' : ''"
 		>
 			{{ dir.name }}
-			<input :id="`dirCheckbox${dir.id}`" type="radio" name="dialogTargetId" @input="dialogTargetId = dir.id">
+			<input
+				:id="`dirCheckbox${dir.id}`"
+				type="radio"
+				name="dialogTargetId"
+				:checked="dialogTargetId === dir.id"
+				@input="dialogTargetId = dir.id"
+			>
 		</label>
 
 		<template #post>
