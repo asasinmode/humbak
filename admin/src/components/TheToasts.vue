@@ -19,7 +19,7 @@ const containerProgress: ClassRecord = {
 	<TransitionGroup
 		name="toast"
 		tag="section"
-		class="pointer-events-none fixed bottom-0 right-0 top-2 z-102 box-content max-w-[calc(100%_-_4rem)] w-64 of-hidden pl-6 pr-2"
+		class="pointer-events-none fixed bottom-0 right-0 top-2 z-300 box-content max-w-[calc(100%_-_4rem)] w-64 of-hidden pl-6 pr-2"
 		aria-live="polite"
 	>
 		<div
