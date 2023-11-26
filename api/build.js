@@ -1,6 +1,6 @@
-import { writeFileSync } from 'fs';
+import { writeFileSync } from 'node:fs';
 import esbuild from 'esbuild';
-import packageDocument from './package.json' assert { type: 'json' };
+import packageDocument from './package.json';
 
 const internalDependenciesPatterns = [/~\/.*/, /@humbak\/.*/];
 

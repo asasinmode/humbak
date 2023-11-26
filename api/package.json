@@ -1,41 +1,42 @@
 {
-  "name": "@humbak/api",
-  "type": "module",
-  "main": "./src/index.ts",
-  "scripts": {
-    "dev": "set NODE_ENV=development&& tsx watch ./src/index.ts",
-    "start": "node dist/index.js",
-    "start:dev": "set NODE_ENV=development&& node dist/index.js",
-    "build": "node build.js",
-    "preview": "pnpm run build && pnpm run start",
-    "db:generate": "drizzle-kit generate:mysql --schema ./src/db/schema --out ./src/db/migrations",
-    "db:drop-migration": "drizzle-kit drop --out ./src/db/migrations",
-    "db:migrate": "tsx ./src/db/scripts/migrate.ts",
-    "db:migrate:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/migrate.ts",
-    "db:seed": "tsx ./src/db/scripts/seed.ts",
-    "db:drop": "tsx ./src/db/scripts/drop.ts",
-    "db:drop:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/drop.ts",
-    "db:truncate": "tsx ./src/db/scripts/truncate.ts",
-    "db:truncate:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/truncate.ts"
-  },
-  "dependencies": {
-    "@fastify/cors": "^8.4.1",
-    "@fastify/static": "^6.12.0",
-    "@trpc/server": "^10.43.1",
-    "dotenv": "^16.3.1",
-    "drizzle-orm": "^0.28.6",
-    "fastify": "^4.24.3",
-    "fastify-plugin": "^4.5.1",
-    "mysql2": "^3.6.3",
-    "valibot": "^0.20.1"
-  },
-  "devDependencies": {
-    "@clack/prompts": "^0.7.0",
-    "@types/node": "^20.8.10",
-    "dotenv-cli": "^7.3.0",
-    "drizzle-kit": "^0.19.13",
-    "esbuild": "^0.19.5",
-    "tsx": "^3.14.0",
-    "typescript": "^5.2.2"
-  }
+	"name": "@humbak/api",
+	"type": "module",
+	"main": "./src/index.ts",
+	"scripts": {
+		"dev": "set NODE_ENV=development&& tsx watch ./src/index.ts",
+		"start": "node dist/index.js",
+		"start:dev": "set NODE_ENV=development&& node dist/index.js",
+		"build": "node build.js",
+		"preview": "pnpm run build && pnpm run start",
+		"db:generate": "drizzle-kit generate:mysql --schema ./src/db/schema --out ./src/db/migrations",
+		"db:drop-migration": "drizzle-kit drop --out ./src/db/migrations",
+		"db:migrate": "tsx ./src/db/scripts/migrate.ts",
+		"db:migrate:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/migrate.ts",
+		"db:seed": "tsx ./src/db/scripts/seed.ts",
+		"db:drop": "tsx ./src/db/scripts/drop.ts",
+		"db:drop:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/drop.ts",
+		"db:truncate": "tsx ./src/db/scripts/truncate.ts",
+		"db:truncate:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/truncate.ts",
+		"type-check": "tsc -p tsconfig.json"
+	},
+	"dependencies": {
+		"@fastify/cors": "^8.4.1",
+		"@fastify/static": "^6.12.0",
+		"@trpc/server": "^10.44.1",
+		"dotenv": "^16.3.1",
+		"drizzle-orm": "^0.29.0",
+		"fastify": "^4.24.3",
+		"fastify-plugin": "^4.5.1",
+		"mysql2": "^3.6.5",
+		"valibot": "^0.21.0"
+	},
+	"devDependencies": {
+		"@clack/prompts": "^0.7.0",
+		"@types/node": "^20.10.0",
+		"dotenv-cli": "^7.3.0",
+		"drizzle-kit": "^0.20.4",
+		"esbuild": "^0.19.7",
+		"tsx": "^4.5.0",
+		"typescript": "^5.3.2"
+	}
 }

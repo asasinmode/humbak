@@ -1,13 +1,21 @@
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "rootDir": "src",
-    "baseUrl": ".",
-    "moduleResolution": "node",
-    "paths": {
-      "~/*": [
-        "src/*"
-      ]
-    }
-  }
+	"compilerOptions": {
+		"target": "ESNext",
+		"moduleDetection": "force",
+		"baseUrl": ".",
+		"rootDir": "src",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"paths": {
+			"~/*": [
+				"src/*"
+			]
+		},
+		"resolveJsonModule": true,
+		"strict": true,
+		"noEmit": true,
+		"esModuleInterop": true,
+		"isolatedModules": true,
+		"skipLibCheck": true
+	}
 }

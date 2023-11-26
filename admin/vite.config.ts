@@ -1,4 +1,4 @@
-import path from 'path';
+import { URL, fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import Vue from '@vitejs/plugin-vue';
 import Components from 'unplugin-vue-components/vite';
@@ -8,7 +8,7 @@ import Unocss from 'unocss/vite';
 export default defineConfig({
 	resolve: {
 		alias: {
-			'~/': `${path.resolve(__dirname, 'src')}/`,
+			'~': fileURLToPath(new URL('./src', import.meta.url)),
 		},
 	},
 	plugins: [

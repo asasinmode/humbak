@@ -1,21 +1,18 @@
 {
-  "name": "humbak",
-  "private": "true",
-  "packageManager": "pnpm@8.9.2",
-  "description": "Humbak monorepo",
-  "author": "asasinmode <skin9470@gmail.com> (https://github.com/asasinmode/)",
-  "license": "MIT",
-  "scripts": {
-    "lint": "eslint ."
-  },
-  "devDependencies": {
-    "@asasinmode/eslint-config": "^0.4.8",
-    "@humbak/api": "workspace:^",
-    "eslint": "^8.53.0",
-    "typescript": "^5.2.2"
-  },
-  "eslintConfig": {
-    "extends": "@asasinmode",
-    "root": true
-  }
+	"name": "humbak",
+	"type": "module",
+	"private": true,
+	"packageManager": "pnpm@8.11.0",
+	"description": "Humbak monorepo",
+	"author": "asasinmode <skin9470@gmail.com> (https://github.com/asasinmode/)",
+	"license": "MIT",
+	"scripts": {
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix"
+	},
+	"devDependencies": {
+		"@antfu/eslint-config": "^2.1.0",
+		"@humbak/api": "workspace:^",
+		"eslint": "^8.54.0"
+	}
 }
