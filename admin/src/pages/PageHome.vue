@@ -25,9 +25,15 @@ const languages = ref<IUniqueLanguage[]>([]);
 onMounted(() => getLanguages());
 
 const {
-	clearForm, sendForm, updateValues,
-	errors, isSaving,
-	title, language, slug, menuText,
+	clearForm,
+	sendForm,
+	updateValues,
+	errors,
+	isSaving,
+	title,
+	language,
+	slug,
+	menuText,
 } = useForm(
 	{
 		title: '',
@@ -98,7 +104,8 @@ async function editPage(id: number, button: HTMLButtonElement) {
 
 	try {
 		const [page] = await Promise.all([
-			api.pages.byId.query(id), getLanguages(),
+			api.pages.byId.query(id),
+			getLanguages(),
 		]);
 		loadedPageId.value = page.id;
 		updateValues(page);

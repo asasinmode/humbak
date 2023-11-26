@@ -53,7 +53,7 @@ const component = defineComponent(() => {
 	);
 });
 
-export const useConfirm = () => {
+export function useConfirm() {
 	function confirm(
 		activatorElement?: HTMLElement,
 		props: {
@@ -84,4 +84,4 @@ export const useConfirm = () => {
 		confirm,
 		TheConfirm: component,
 	};
-};
+}

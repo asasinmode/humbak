@@ -1,3 +1,4 @@
+import type { Ref } from 'vue';
 import loader from '@monaco-editor/loader';
 
 const { isDark } = useTheme();
@@ -14,12 +15,12 @@ let getModels: IMonaco['editor']['getModels'];
 let setTheme: IMonaco['editor']['setTheme'];
 let metaUri: ReturnType<IMonaco['Uri']['parse']>;
 
-export const useMonaco = (
+export function useMonaco(
 	containerRef: Ref<HTMLElement | undefined>,
 	models: Ref<IModel[]>,
 	currentModel: Ref<number>,
 	emitUpdate: (value: string) => void
-) => {
+) {
 	const isLoading = ref(false);
 	const editor = shallowRef<IMonacoStandalone>();
 	const editorModels = shallowRef<IMonacoTextModel[]>([]);

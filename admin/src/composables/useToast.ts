@@ -8,7 +8,7 @@ type Toast = {
 const toasts = ref<Toast[]>([]);
 const timeouts: Record<string, NodeJS.Timeout> = {};
 
-export const useToast = () => {
+export function useToast() {
 	function toast(text: string, variant: ToastVariant = 'success') {
 		const id = Math.random().toString(36).substring(2, 9);
 
@@ -35,4 +35,4 @@ export const useToast = () => {
 			clearTimeout(timeouts[id]);
 		},
 	};
-};
+}

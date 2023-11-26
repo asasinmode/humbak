@@ -1,6 +1,6 @@
 import type { MaybeRef } from 'vue';
 
-export const useShake = async (element?: MaybeRef<HTMLElement | undefined>) => {
+export async function useShake(element?: MaybeRef<HTMLElement | undefined>) {
 	const target = toValue(element);
 
 	if (!element || !target) {
@@ -10,4 +10,4 @@ export const useShake = async (element?: MaybeRef<HTMLElement | undefined>) => {
 	target.classList.toggle('shake', true);
 	await new Promise(resolve => setTimeout(resolve, 300));
 	target.classList.toggle('shake', false);
-};
+}

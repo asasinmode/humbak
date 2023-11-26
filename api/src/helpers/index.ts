@@ -43,8 +43,7 @@ export function wrap<T extends BaseSchema>(schema: T) {
 	return (input: unknown): Output<T> => {
 		try {
 			const parseResults = parse(schema, input);
-			// eslint-disable-next-line
-				return parseResults;
+			return parseResults;
 		} catch (e) {
 			if (!(e instanceof ValiError)) {
 				throw e;

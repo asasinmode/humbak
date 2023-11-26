@@ -17,7 +17,7 @@
 		"db:drop:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/drop.ts",
 		"db:truncate": "tsx ./src/db/scripts/truncate.ts",
 		"db:truncate:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/truncate.ts",
-		"type-check": "tsc -p tsconfig.json"
+		"type-check": "tsc"
 	},
 	"dependencies": {
 		"@fastify/cors": "^8.4.1",

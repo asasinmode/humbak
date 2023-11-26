@@ -12,7 +12,7 @@ document.head.appendChild(globalPagesStylesheet);
 
 let updateTimeout: NodeJS.Timeout | undefined;
 
-export const useGlobalPagesStylesheet = (valueFetchedCallback?: (value: string) => void) => {
+export function useGlobalPagesStylesheet(valueFetchedCallback?: (value: string) => void) {
 	onMounted(async () => {
 		isLoading.value = true;
 		try {
@@ -45,4 +45,4 @@ export const useGlobalPagesStylesheet = (valueFetchedCallback?: (value: string) 
 			}, 500);
 		},
 	};
-};
+}

@@ -5,6 +5,7 @@ import fastifyStatic from '@fastify/static';
 import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
 import { createContext } from '~/router/context';
 import { appRouter } from '~/router';
+
 import { env } from '~/env';
 
 const server = fastify();

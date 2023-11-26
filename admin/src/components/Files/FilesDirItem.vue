@@ -29,8 +29,9 @@ const applyHoverClasses = computed(() =>
 );
 
 const hasChanged = computed(() =>
-	hasMoved.value || (props.originalDir
-		&& (dir.value.name !== props.originalDir.name))
+	hasMoved.value
+	|| (props.originalDir
+	&& (dir.value.name !== props.originalDir.name))
 );
 </script>
 

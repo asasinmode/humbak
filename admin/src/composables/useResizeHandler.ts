@@ -1,4 +1,6 @@
-export const useResizeHandler = (container: Ref<HTMLElement | undefined>) => {
+import type { Ref } from 'vue';
+
+export function useResizeHandler(container: Ref<HTMLElement | undefined>) {
 	let initY = 0;
 	let initHeight = 0;
 
@@ -12,7 +14,7 @@ export const useResizeHandler = (container: Ref<HTMLElement | undefined>) => {
 		}
 
 		initY = event.clientY;
-		initHeight = parseInt(document.defaultView.getComputedStyle(container.value).height);
+		initHeight = Number.parseInt(document.defaultView.getComputedStyle(container.value).height);
 		document.addEventListener('mousemove', handleResizeDrag);
 		document.addEventListener('mouseup', cleanupResizeDrag);
 	}

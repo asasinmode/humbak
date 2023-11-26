@@ -1,12 +1,13 @@
+import process from 'node:process';
 import { config } from 'dotenv';
-import { coerce, enumType, integer, number, object, parse, string } from 'valibot';
+import { coerce, integer, number, object, parse, picklist, string } from 'valibot';
 
 config({
 	path: process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development',
 });
 
 const schema = object({
-	NODE_ENV: enumType(['production', 'development']),
+	NODE_ENV: picklist(['production', 'development']),
 	PORT: coerce(number([integer()]), Number),
 	DATABASE_HOST: string(),
 	DATABASE_USER: string(),

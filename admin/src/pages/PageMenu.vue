@@ -147,7 +147,7 @@ function initLinkElementDrag(event: MouseEvent, item: IMenuTreeItem, path: numbe
 	element.classList.toggle('flex-1', true);
 
 	const button = target.cloneNode() as HTMLButtonElement;
-	button.innerText = target.innerText;
+	button.textContent = target.textContent;
 	element.appendChild(button);
 
 	nav.value.appendChild(element);

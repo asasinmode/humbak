@@ -1,10 +1,12 @@
-export const useCombobox = <T>(
+import type { ComputedRef, Ref } from 'vue';
+
+export function useCombobox<T>(
 	modelValue: Ref<T | undefined>,
 	computedOptions: ComputedRef<{ text: string; value: T | undefined; }[]>,
 	listboxRef: Ref<HTMLElement | undefined>,
 	selectOnly?: Ref<boolean>,
 	emitCallback?: (value?: T) => void
-) => {
+) {
 	const isExpanded = ref(false);
 	const cursoredOverIndex = ref<number>();
 
@@ -54,7 +56,6 @@ export const useCombobox = <T>(
 			isExpanded.value = false;
 		}
 
-		// eslint-disable-next-line
 		nextTick(() => {
 			!skipEmit && emitCallback && emitCallback(modelValue.value);
 		});

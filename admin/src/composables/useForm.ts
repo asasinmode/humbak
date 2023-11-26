@@ -4,12 +4,12 @@ import { TRPCClientError } from '@trpc/client';
 const { confirm } = useConfirm();
 const { toast, toastGenericError } = useToast();
 
-export const useForm = <T extends Record<string, unknown>>(
+export function useForm<T extends Record<string, unknown>>(
 	form: T,
 	saveCallback: () => Promise<unknown>,
 	elementToShake?: Parameters<typeof useShake>[0],
 	checkForExternalHasChanged = () => false
-) => {
+) {
 	const isSaving = ref(false);
 	const initValue = structuredClone(form);
 

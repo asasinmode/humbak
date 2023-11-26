@@ -272,7 +272,7 @@ function moveFileOrOpenFiles(event: MouseEvent) {
 		return;
 	}
 
-	const targetId = parseInt((droppedOntoDir as HTMLElement).dataset.dirId as string);
+	const targetId = Number.parseInt((droppedOntoDir as HTMLElement).dataset.dirId as string);
 	if (Number.isNaN(targetId)) {
 		toastGenericError();
 		throw new Error('found target id isn\'t a number');
@@ -394,7 +394,6 @@ async function saveChanges() {
 			</VButton>
 
 			<VButton
-				ref="saveButton"
 				class="mr-12 h-fit md:mr-container neon-green"
 				:is-loading="isSaving"
 				@click="saveChanges"

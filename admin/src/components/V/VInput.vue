@@ -1,4 +1,8 @@
 <script setup lang="ts">
+defineOptions({
+	inheritAttrs: false,
+});
+
 const props = defineProps<{
 	id: string;
 	label?: string;
@@ -12,10 +16,6 @@ const props = defineProps<{
 }>();
 
 defineEmits(['focusout']);
-
-defineOptions({
-	inheritAttrs: false,
-});
 
 const value = defineModel<string | number>();
 

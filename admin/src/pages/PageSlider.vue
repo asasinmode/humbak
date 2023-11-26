@@ -36,9 +36,16 @@ const selectedLanguage = ref<string>();
 let previousSelectedLanguage: string | undefined;
 
 const {
-	clearForm, sendForm, updateValues, isSaving,
-	errors, hasChanged,
-	name, content, isHidden, language,
+	clearForm,
+	updateValues,
+	sendForm,
+	isSaving,
+	errors,
+	hasChanged,
+	name,
+	content,
+	isHidden,
+	language,
 } = useForm(
 	{ name: '', content: '', language: '', isHidden: false },
 	async () => {
@@ -50,7 +57,7 @@ const {
 			language: language.value,
 		});
 
-		const slideIndex = availableSlides.value.findIndex(element => element.id === slide.id);
+		const slideIndex = availableSlides.value.findIndex(item => item.id === slide.id);
 
 		if (slide.language !== selectedLanguage.value) {
 			selectedLanguage.value = slide.language;

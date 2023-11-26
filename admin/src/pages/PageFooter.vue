@@ -17,8 +17,16 @@ const locationValueModelValue = ref('');
 const isLoading = ref(false);
 
 const {
-	clearForm, sendForm, updateValues, isSaving, errors,
-	emails, phoneNumbers, location, socials, language,
+	clearForm,
+	sendForm,
+	updateValues,
+	isSaving,
+	errors,
+	emails,
+	phoneNumbers,
+	location,
+	socials,
+	language,
 } = useForm<IFooterContents>(
 	{ emails: [], phoneNumbers: [], location: { text: '', value: '' }, socials: [], language: '' },
 	async () => {

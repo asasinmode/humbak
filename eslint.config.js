@@ -7,6 +7,7 @@ export default await antfu({
 	},
 	rules: {
 		'curly': ['error', 'all'],
+		'ts/consistent-type-definitions': ['error', 'type'],
 		'style/brace-style': ['error', '1tbs'],
 		'style/member-delimiter-style': ['error', {
 			multiline: {
@@ -27,8 +28,17 @@ export default await antfu({
 		}],
 	},
 	files: [
-		'api/**/*.ts',
-		'admin/**/*.ts',
+		'api/**/*',
+		'admin/**/*',
 		'admin/**/*.vue',
 	],
+	vue: true,
+	typescript: true,
+}, {
+	files: ['api/**/*'],
+	rules: {
+		'no-console': 'off',
+	},
+}, {
+	ignores: ['api/src/db/migrations/**/*'],
 });
