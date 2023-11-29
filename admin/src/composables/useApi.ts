@@ -1,14 +1,8 @@
-import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
-import type { AppRouter } from '@humbak/api/src/router';
+import { hc } from 'hono/client';
+import type { AppType } from '@humbak/api/src/index';
 import { env } from '~/env';
 
-const client = createTRPCProxyClient<AppRouter>({
-	links: [
-		httpBatchLink({
-			url: env.VITE_API_URL,
-		}),
-	],
-});
+const client = hc<AppType>(env.VITE_API_URL);
 
 export const useApi = () => client;
 
