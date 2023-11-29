@@ -1,33 +1,24 @@
-import { fileURLToPath } from 'node:url';
-import fastify from 'fastify';
-import cors from '@fastify/cors';
-import fastifyStatic from '@fastify/static';
-import { fastifyTRPCPlugin } from '@trpc/server/adapters/fastify';
-import { createContext } from '~/router/context';
-import { appRouter } from '~/router';
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+import { serve } from '@hono/node-server';
+import { serveStatic } from '@hono/node-server/serve-static';
 
 import { env } from '~/env';
 
-const server = fastify();
+const app = new Hono();
 
-await server.register(cors, {
+app.use('/*', cors({
 	origin: env.ADMIN_URL,
+}));
+
+app.get('/', (c) => {
+	return c.text('hi');
 });
 
-server.get('/', (_, res) => {
-	return res.send('hi');
+app.use('/public/*', serveStatic({
+	root: '.',
+}));
+
+serve({ port: env.PORT, fetch: app.fetch }, (info) => {
+	console.log(`server listening on\x1B[36m http://localhost:${info.port}/ \x1B[0m`);
 });
-
-await server.register(fastifyStatic, {
-	root: fileURLToPath(new URL('../public', import.meta.url)),
-	prefix: '/public/',
-});
-
-await server.register(fastifyTRPCPlugin, {
-	prefix: '/',
-	trpcOptions: { router: appRouter, createContext },
-});
-
-await server.listen({ port: env.PORT });
-
-console.log(`server listening on\x1B[36m http://localhost:${env.PORT}/ \x1B[0m`);
