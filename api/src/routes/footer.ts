@@ -1,29 +1,28 @@
 import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
-import { minLength, string } from 'valibot';
 import { db } from '~/db';
-import { wrap } from '~/helpers';
+import { languageParamValidation, wrap } from '~/helpers';
 import { footerContents, insertFooterContentSchema } from '~/db/schema/footerContents';
 
-export const app = new Hono();
+export const app = new Hono()
+	.get('/:language', wrap(languageParamValidation, 'param'), async (c) => {
+		const { language } = c.req.valid('param');
 
-const validation = wrap(string([minLength(1)]));
+		const [result] = await db
+			.select({
+				language: footerContents.language,
+				emails: footerContents.emails,
+				phoneNumbers: footerContents.phoneNumbers,
+				location: footerContents.location,
+				socials: footerContents.socials,
+			})
+			.from(footerContents)
+			.where(eq(footerContents.language, language));
 
-app.get('/:language', async (c) => {
-	const language = c.req.param('language');
+		if (!result) {
+			return c.notFound();
+		}
 
-	const [result] = await db
-		.select({
-			language: footerContents.language,
-			emails: footerContents.emails,
-			phoneNumbers: footerContents.phoneNumbers,
-			location: footerContents.location,
-			socials: footerContents.socials,
-		})
-		.from(footerContents)
-		.where(eq(footerContents.language, language));
-
-	if (result) {
 		// @ts-expect-error db returns strings but types are correct
 		result.emails = JSON.parse(result.emails);
 		// @ts-expect-error db returns strings but types are correct
@@ -32,45 +31,43 @@ app.get('/:language', async (c) => {
 		result.location = JSON.parse(result.location);
 		// @ts-expect-error db returns strings but types are correct
 		result.socials = JSON.parse(result.socials);
-	}
 
-	return c.jsonT(result);
-});
+		return c.jsonT(result);
+	})
+	.post('/', wrap(insertFooterContentSchema, 'json'), async (c) => {
+		const input = c.req.valid('json');
 
-const postValidation = wrap(insertFooterContentSchema);
+		await db
+			.insert(footerContents)
+			.values(input)
+			.onDuplicateKeyUpdate({
+				set: {
+					...input,
+					updatedAt: new Date(),
+				},
+			});
 
-app.post('/', async (c) => {
-	await db
-		.insert(footerContents)
-		.values(opts.input)
-		.onDuplicateKeyUpdate({
-			set: {
-				...opts.input,
-				updatedAt: new Date(),
-			},
-		});
+		const [result] = await db
+			.select({
+				language: footerContents.language,
+				emails: footerContents.emails,
+				phoneNumbers: footerContents.phoneNumbers,
+				location: footerContents.location,
+				socials: footerContents.socials,
+			})
+			.from(footerContents)
+			.where(eq(footerContents.language, input.language));
 
-	const [result] = await db
-		.select({
-			language: footerContents.language,
-			emails: footerContents.emails,
-			phoneNumbers: footerContents.phoneNumbers,
-			location: footerContents.location,
-			socials: footerContents.socials,
-		})
-		.from(footerContents)
-		.where(eq(footerContents.language, opts.input.language));
+		if (result) {
+			// @ts-expect-error db returns strings but types are correct
+			result.emails = JSON.parse(result.emails);
+			// @ts-expect-error db returns strings but types are correct
+			result.phoneNumbers = JSON.parse(result.phoneNumbers);
+			// @ts-expect-error db returns strings but types are correct
+			result.location = JSON.parse(result.location);
+			// @ts-expect-error db returns strings but types are correct
+			result.socials = JSON.parse(result.socials);
+		}
 
-	if (result) {
-		// @ts-expect-error db returns strings but types are correct
-		result.emails = JSON.parse(result.emails);
-		// @ts-expect-error db returns strings but types are correct
-		result.phoneNumbers = JSON.parse(result.phoneNumbers);
-		// @ts-expect-error db returns strings but types are correct
-		result.location = JSON.parse(result.location);
-		// @ts-expect-error db returns strings but types are correct
-		result.socials = JSON.parse(result.socials);
-	}
-
-	return c.jsonT(result);
-});
+		return c.jsonT(result);
+	});

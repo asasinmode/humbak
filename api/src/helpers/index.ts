@@ -1,6 +1,7 @@
 import { exit } from 'node:process';
 import { confirm } from '@clack/prompts';
-import { type BaseSchema, type Output, ValiError, maxLength, minLength, number, object, optional, parse, string, transform } from 'valibot';
+import { type BaseSchema, maxLength, minLength, number, object, optional, safeParse, string, transform } from 'valibot';
+import { validator } from 'hono/validator';
 import { env } from '~/env';
 import { pool } from '~/db';
 
@@ -39,22 +40,23 @@ export function nonEmptyMaxLengthString(length = 256) {
 	return string([minLength(1, 'nie może być puste'), maxLength(length, `maksymalna długość: ${32}`)]);
 }
 
-export function wrap<T extends BaseSchema>(schema: T) {
-	return (input: unknown): Output<T> => {
-		try {
-			const parseResults = parse(schema, input);
-			return parseResults;
-		} catch (e) {
-			if (!(e instanceof ValiError)) {
-				throw e;
-			}
-			throw JSON.stringify(e.issues.reduce((rv, issue) => {
-				const key = issue.path ? issue.path.map(path => path.key as string).join('.') : 'unknown';
-				return {
-					...rv,
-					[key]: issue.message,
-				};
-			}, {}));
+export const languageParamValidation = object({ language: string([minLength(1)]) });
+
+export function wrap<
+	T extends BaseSchema,
+	U extends Parameters<typeof validator>[0]
+>(schema: T, type: U) {
+	return validator(type, (value, c) => {
+		console.log('validating', value);
+		const parseResults = safeParse(schema, value);
+
+		if (!parseResults.success) {
+			console.log('issues', parseResults.issues);
+			return c.json({ error: 'oopsie' }, 400);
 		}
-	};
+
+		console.log('parsed into', parseResults.output);
+
+		return parseResults.output;
+	});
 }
