@@ -1,10 +1,9 @@
 import { eq, sql } from 'drizzle-orm';
 import { array, omit, string } from 'valibot';
-import { db } from '~/db';
-import { wrap } from '~/helpers';
-import { publicProcedure, router } from '~/router/trpc';
-import { pages } from '~/db/schema/pages';
-import { insertMenuLinkSchema, menuLinks } from '~/db/schema/menuLinks';
+import { db } from '../db';
+import { wrap } from '../helpers';
+import { pages } from '../db/schema/pages';
+import { insertMenuLinkSchema, menuLinks } from '../db/schema/menuLinks';
 
 export const menuLinksRouter = router({
 	list: publicProcedure.input(wrap(string())).query(async (opts) => {

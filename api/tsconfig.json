@@ -6,11 +6,6 @@
 		"rootDir": "src",
 		"module": "ESNext",
 		"moduleResolution": "Bundler",
-		"paths": {
-			"~/*": [
-				"src/*"
-			]
-		},
 		"resolveJsonModule": true,
 		"strict": true,
 		"noEmit": true,

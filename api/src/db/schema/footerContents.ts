@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { datetime, json, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
 import { array, object, optional, picklist, string } from 'valibot';
-import { nonEmptyMaxLengthString } from '~/helpers';
+import { nonEmptyMaxLengthString } from '../../helpers';
 
 const knownSocials = ['facebook', 'youtube', 'instagram', 'twitter'] as const;
 

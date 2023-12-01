@@ -1,8 +1,8 @@
 import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
-import { db } from '~/db';
-import { languageParamValidation, wrap } from '~/helpers';
-import { footerContents, insertFooterContentSchema } from '~/db/schema/footerContents';
+import { db } from '../db';
+import { languageParamValidation, wrap } from '../helpers';
+import { footerContents, insertFooterContentSchema } from '../db/schema/footerContents';
 
 export const app = new Hono()
 	.get('/:language', wrap(languageParamValidation, 'param'), async (c) => {

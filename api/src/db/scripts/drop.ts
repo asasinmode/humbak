@@ -1,5 +1,5 @@
 import { pool } from '..';
-import { getTableNames, promptProdContinue } from '~/helpers';
+import { getTableNames, promptProdContinue } from '../../helpers';
 
 await promptProdContinue();
 

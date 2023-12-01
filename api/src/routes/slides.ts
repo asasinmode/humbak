@@ -1,10 +1,9 @@
 import { and, eq } from 'drizzle-orm';
 import { integer, number, string } from 'valibot';
-import { db } from '~/db';
-import { nonEmptyMaxLengthString, wrap } from '~/helpers';
-import { publicProcedure, router } from '~/router/trpc';
-import { insertSlideSchema, slides } from '~/db/schema/slides';
-import { slideAspectRatio } from '~/db/schema/slideAspectRatio';
+import { db } from '../db';
+import { nonEmptyMaxLengthString, wrap } from '../helpers';
+import { insertSlideSchema, slides } from '../db/schema/slides';
+import { slideAspectRatio } from '../db/schema/slideAspectRatio';
 
 export const slidesRouter = router({
 	list: publicProcedure.input(wrap(string())).query(async (opts) => {

@@ -1,8 +1,8 @@
 import { sql } from 'drizzle-orm';
 import { datetime, int, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
 import { integer, nullable, number, object, optional } from 'valibot';
+import { nonEmptyMaxLengthString } from '../../helpers';
 import { pages } from './pages';
-import { nonEmptyMaxLengthString } from '~/helpers';
 
 export const menuLinks = mysqlTable('menuLinks', {
 	pageId: int('pageId').primaryKey().references(() => pages.id, { onDelete: 'cascade' }),

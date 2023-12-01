@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
-import { db, pool } from '~/db';
-import { promptProdContinue } from '~/helpers';
+import { db, pool } from '..';
+import { promptProdContinue } from '../../helpers';
 
 await promptProdContinue();
 

@@ -1,13 +1,13 @@
 import { writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { db, pool } from '..';
 import { slides } from '../schema/slides';
+import { promptProdContinue } from '../../helpers';
+import { pages } from '../schema/pages';
+import { contents } from '../schema/contents';
+import { menuLinks } from '../schema/menuLinks';
 import { slideAspectRatio } from '../schema/slideAspectRatio';
 import { footerContents } from '../schema/footerContents';
-import { db, pool } from '~/db';
-import { promptProdContinue } from '~/helpers';
-import { pages } from '~/db/schema/pages';
-import { contents } from '~/db/schema/contents';
-import { menuLinks } from '~/db/schema/menuLinks';
 
 await promptProdContinue();
 

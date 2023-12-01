@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { integer, number, object, optional } from 'valibot';
 import { datetime, index, int, mysqlTable, uniqueIndex, varchar } from 'drizzle-orm/mysql-core';
-import { nonEmptyMaxLengthString } from '~/helpers';
+import { nonEmptyMaxLengthString } from '../../helpers';
 
 export const pages = mysqlTable('pages', {
 	id: int('id').primaryKey().autoincrement(),

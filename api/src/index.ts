@@ -3,7 +3,7 @@ import { cors } from 'hono/cors';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { app as footerApp } from './routes/footer';
-import { env } from '~/env';
+import { env } from './env';
 
 const app = new Hono();
 

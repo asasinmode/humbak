@@ -2,8 +2,8 @@ import { exit } from 'node:process';
 import { confirm } from '@clack/prompts';
 import { type BaseSchema, maxLength, minLength, number, object, optional, safeParse, string, transform } from 'valibot';
 import { validator } from 'hono/validator';
-import { env } from '~/env';
-import { pool } from '~/db';
+import { env } from '../env';
+import { pool } from '../db';
 
 export async function promptProdContinue() {
 	let shouldContinue = true;
