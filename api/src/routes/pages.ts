@@ -130,11 +130,6 @@ export const pagesRouter = router({
 	delete: publicProcedure.input(wrap(number([integer()]))).mutation(async (opts) => {
 		await db.delete(pages).where(eq(pages.id, opts.input));
 	}),
-	uniqueLanguages: publicProcedure.query(async () => {
-		const result = await db.selectDistinct({ language: pages.language }).from(pages).orderBy(pages.createdAt);
-
-		return result.map(row => row.language);
-	}),
 	updateGlobalCss: publicProcedure.input(wrap(string())).mutation(async (opts) => {
 		await writeFile(fileURLToPath(new URL('../../../public/stylesheets/global.css', import.meta.url)), opts.input);
 	}),

@@ -3,8 +3,9 @@ import { cors } from 'hono/cors';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { env } from './env';
-import { app as footerApp } from './routes/footer';
+import { app as footerContentsApp } from './routes/footerContents';
 import { app as menuLinksApp } from './routes/menuLinks';
+import { app as languagesApp } from './routes/languages';
 
 const app = new Hono();
 
@@ -21,8 +22,9 @@ app.use('/public/*', serveStatic({
 }));
 
 const typedApp = app
-	.route('/footer', footerApp)
-	.route('/menuLinks', menuLinksApp);
+	.route('/footerContents', footerContentsApp)
+	.route('/menuLinks', menuLinksApp)
+	.route('/languages', languagesApp);
 
 serve({ port: env.PORT, fetch: app.fetch }, (info) => {
 	console.log(`server listening on\x1B[36m http://localhost:${info.port}/ \x1B[0m`);
