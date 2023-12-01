@@ -33,5 +33,7 @@ export const app = new Hono()
 			.where(eq(menuLinks.pageId, pageId))
 		));
 
-		return c.text('OK');
+		return c.text('', 201);
 	});
+
+export type AppType = typeof app;

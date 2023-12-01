@@ -1,6 +1,7 @@
 import { exit } from 'node:process';
 import { confirm } from '@clack/prompts';
-import { type BaseSchema, maxLength, minLength, number, object, optional, safeParse, string, transform } from 'valibot';
+import { maxLength, minLength, object, optional, safeParse, string, transform } from 'valibot';
+import type { BaseSchema, Input, Output, SchemaWithTransform } from 'valibot';
 import { validator } from 'hono/validator';
 import { env } from '../env';
 import { pool } from '../db';
@@ -12,9 +13,7 @@ export async function promptProdContinue() {
 		shouldContinue = await confirm({ message: 'Are you sure?', initialValue: false }) as boolean;
 	}
 
-	if (!shouldContinue) {
-		exit(0);
-	}
+	!shouldContinue && exit(0);
 }
 
 export async function getTableNames() {
@@ -26,27 +25,38 @@ export async function getTableNames() {
 	return queryResult[0] as { table_name: string; }[];
 }
 
-export const paginationQueryInput = transform(object({
-	query: optional(string()),
-	limit: optional(number()),
-	offset: optional(number()),
+export const paginationQueryValidation = transform(object({
+	query: optional(string(), ''),
+	limit: optional(string(), '5'),
+	offset: optional(string(), '0'),
 }), ({ query, limit, offset }) => ({
-	query: query === undefined ? '' : query,
-	limit: limit === undefined ? 5 : limit,
-	offset: offset === undefined ? 0 : offset,
+	query,
+	limit: Number.parseInt(limit),
+	offset: Number.parseInt(offset),
+}));
+
+export const languageQueryValidation = object({
+	language: string([minLength(1)]),
+});
+
+export const idParamValidation = transform(object({
+	id: string(),
+}), ({ id }) => ({
+	id: Number.parseInt(id),
 }));
 
 export function nonEmptyMaxLengthString(length = 256) {
 	return string([minLength(1, 'nie może być puste'), maxLength(length, `maksymalna długość: ${32}`)]);
 }
 
-export const languageQueryValidation = object({ language: string([minLength(1)]) });
-
 export function wrap<
-	T extends BaseSchema,
+	T extends BaseSchema | SchemaWithTransform<BaseSchema, any>,
 	U extends Parameters<typeof validator>[0]
 >(schema: T, type: U) {
-	return validator(type, (value, c) => {
+	return validator<unknown, string, string, U, Output<T>, string, {
+		in: { [K_2 in U]: Input<T>; };
+		out: { [K_3 in U]: Output<T>; };
+	}, any>(type, (value, c) => {
 		console.log('validating', value);
 		const parseResults = safeParse(schema, value);
 

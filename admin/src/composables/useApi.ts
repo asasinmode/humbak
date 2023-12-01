@@ -7,7 +7,6 @@ const client = hc<AppType>(env.VITE_API_URL);
 
 export const useApi = () => client;
 
-export type IListedPage = Awaited<ReturnType<typeof client['pages']['list']['query']>>[number];
 export type IUpsertPageInput = Parameters<typeof client['pages']['upsert']['mutate']>[0];
 export type ISlide = Awaited<ReturnType<typeof client['slides']['byId']['query']>>;
 export type IListedSlide = Awaited<ReturnType<typeof client['slides']['list']['query']>>[number];
@@ -16,3 +15,4 @@ export type IPublicListedSlide = Awaited<ReturnType<typeof client['slides']['lis
 export type IFooterContents = InferResponseType<typeof client['footerContents']['$get']>;
 export type IMenuLink = InferResponseType<typeof client['menuLinks']['$get']>;
 export type IUniqueLanguage = InferResponseType<typeof client['languages']['$get']>;
+export type IListedPage = InferResponseType<typeof client['pages']['$get']>;

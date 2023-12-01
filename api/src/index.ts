@@ -4,8 +4,10 @@ import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { env } from './env';
 import { app as footerContentsApp } from './routes/footerContents';
-import { app as menuLinksApp } from './routes/menuLinks';
+import { app as globalCssApp } from './routes/globalCss';
 import { app as languagesApp } from './routes/languages';
+import { app as menuLinksApp } from './routes/menuLinks';
+import { app as pagesApp } from './routes/pages';
 
 const app = new Hono();
 
@@ -21,13 +23,12 @@ app.use('/public/*', serveStatic({
 	root: '.',
 }));
 
-const typedApp = app
-	.route('/footerContents', footerContentsApp)
-	.route('/menuLinks', menuLinksApp)
-	.route('/languages', languagesApp);
+app.route('/footerContents', footerContentsApp);
+app.route('/globalCss', globalCssApp);
+app.route('/languages', languagesApp);
+app.route('/menuLinks', menuLinksApp);
+app.route('/pages', pagesApp);
 
 serve({ port: env.PORT, fetch: app.fetch }, (info) => {
 	console.log(`server listening on\x1B[36m http://localhost:${info.port}/ \x1B[0m`);
 });
-
-export type AppType = typeof typedApp;

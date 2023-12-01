@@ -1,9 +1,10 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { Hono } from 'hono';
 import { eq, isNull, like, or, sql } from 'drizzle-orm';
-import { integer, merge, number, object, optional, pick, string } from 'valibot';
+import { merge, object, optional, pick, string } from 'valibot';
 import { db } from '../db';
-import { paginationQueryInput, wrap } from '../helpers';
+import { idParamValidation, paginationQueryValidation, wrap } from '../helpers';
 import { insertPageSchema, pages } from '../db/schema/pages';
 import { contents, insertContentSchema } from '../db/schema/contents';
 import { insertMenuLinkSchema, menuLinks } from '../db/schema/menuLinks';
@@ -14,13 +15,13 @@ const upsertPageInputSchema = merge([
 	pick(insertContentSchema, ['html', 'meta']),
 ]);
 
-export const pagesRouter = router({
-	list: publicProcedure.input(wrap(paginationQueryInput)).query(async (opts) => {
-		const { query, limit: rawLimit, offset } = opts.input;
+export const app = new Hono()
+	.get('/', wrap(paginationQueryValidation, 'query'), async (c) => {
+		const { query, limit: rawLimit, offset } = c.req.valid('query');
 		const limit = Math.min(rawLimit, 100);
 		const select = { id: pages.id, language: pages.language, title: pages.title, menuText: menuLinks.text };
 
-		return db
+		const result = await db
 			.select(select)
 			.from(pages)
 			.leftJoin(menuLinks, eq(menuLinks.pageId, pages.id))
@@ -33,22 +34,28 @@ export const pagesRouter = router({
 			.orderBy(pages.id)
 			.limit(limit)
 			.offset(offset * limit);
-	}),
-	count: publicProcedure.input(wrap(optional(paginationQueryInput.entries.query, ''))).query(async (opts) => {
+
+		return c.jsonT(result);
+	})
+	.get('/count', wrap(pick(paginationQueryValidation, ['query']), 'query'), async (c) => {
+		const { query } = c.req.valid('query');
+
 		const result = await db
 			.select({ count: sql<number>`COUNT(*)` })
 			.from(pages)
 			.leftJoin(menuLinks, eq(menuLinks.pageId, pages.id))
-			.where(opts.input
+			.where(query
 				? or(
-					like(pages.title, `%${opts.input}%`),
-					like(menuLinks.text, `%${opts.input}%`)
+					like(pages.title, `%${query}%`),
+					like(menuLinks.text, `%${query}%`)
 				)
 				: sql`1 = 1`);
 
-		return result[0].count;
-	}),
-	byId: publicProcedure.input(wrap(number([integer()]))).query(async (opts) => {
+		return c.jsonT({ count: result[0].count });
+	})
+	.get('/:id', wrap(idParamValidation, 'param'), async (c) => {
+		const { id } = c.req.valid('param');
+
 		const [[result], stylesheetFileData] = await Promise.all([
 			db
 				.select({
@@ -61,16 +68,16 @@ export const pagesRouter = router({
 					meta: sql<string>`${contents.meta}`,
 				})
 				.from(pages)
-				.leftJoin(menuLinks, eq(menuLinks.pageId, opts.input))
-				.leftJoin(contents, eq(contents.pageId, opts.input))
-				.where(eq(pages.id, opts.input)),
-			readFile(fileURLToPath(new URL(`../../../public/stylesheets/${opts.input}.css`, import.meta.url))),
+				.leftJoin(menuLinks, eq(menuLinks.pageId, id))
+				.leftJoin(contents, eq(contents.pageId, id))
+				.where(eq(pages.id, id)),
+			readFile(fileURLToPath(new URL(`../../public/stylesheets/${id}.css`, import.meta.url))),
 		]);
 
-		return { ...result, css: stylesheetFileData.toString() };
-	}),
-	upsert: publicProcedure.input(wrap(upsertPageInputSchema)).mutation(async (opts) => {
-		const { menuText, html, meta, css, ...pageFields } = opts.input;
+		return c.jsonT({ ...result, css: stylesheetFileData.toString() });
+	})
+	.post('/', wrap(upsertPageInputSchema, 'json'), async (c) => {
+		const { menuText, html, meta, css, ...pageFields } = c.req.valid('json');
 
 		const [{ insertId: pageId }] = await db
 			.insert(pages)
@@ -102,8 +109,8 @@ export const pagesRouter = router({
 					updatedAt: new Date(),
 				},
 			}),
-			css !== undefined || opts.input.id === undefined
-				? writeFile(fileURLToPath(new URL(`../../../public/stylesheets/${pageId}.css`, import.meta.url)), css || '')
+			css !== undefined || pageFields.id === undefined
+				? writeFile(fileURLToPath(new URL(`../../public/stylesheets/${pageId}.css`, import.meta.url)), css || '')
 				: () => {},
 		]);
 
@@ -122,15 +129,18 @@ export const pagesRouter = router({
 				.leftJoin(menuLinks, eq(menuLinks.pageId, pageId))
 				.leftJoin(contents, eq(contents.pageId, pageId))
 				.where(eq(pages.id, pageId)),
-			readFile(fileURLToPath(new URL(`../../../public/stylesheets/${pageId}.css`, import.meta.url))),
+			readFile(fileURLToPath(new URL(`../../public/stylesheets/${pageId}.css`, import.meta.url))),
 		]);
 
-		return { ...result, css: stylesheetFileData.toString() };
-	}),
-	delete: publicProcedure.input(wrap(number([integer()]))).mutation(async (opts) => {
-		await db.delete(pages).where(eq(pages.id, opts.input));
-	}),
-	updateGlobalCss: publicProcedure.input(wrap(string())).mutation(async (opts) => {
-		await writeFile(fileURLToPath(new URL('../../../public/stylesheets/global.css', import.meta.url)), opts.input);
-	}),
-});
+		return c.jsonT({ ...result, css: stylesheetFileData.toString() });
+	})
+	.delete('/:id', wrap(idParamValidation, 'param'), async (c) => {
+		const { id } = c.req.valid('param');
+
+		await db.delete(pages).where(eq(pages.id, id));
+		console.log('TODO maybe delete old css');
+
+		return c.text('', 201);
+	});
+
+export type AppType = typeof app;
