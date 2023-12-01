@@ -1,6 +1,6 @@
 import { hc } from 'hono/client';
 import type { InferResponseType } from 'hono/client';
-import type { AppType } from '@humbak/api/src/index';
+import type { AppType } from '@humbak/api/src';
 import { env } from '~/env';
 
 const client = hc<AppType>(env.VITE_API_URL);

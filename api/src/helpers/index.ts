@@ -1,6 +1,7 @@
 import { exit } from 'node:process';
 import { confirm } from '@clack/prompts';
 import { maxLength, minLength, object, optional, safeParse, string, transform } from 'valibot';
+import type { Env, MiddlewareHandler, ValidationTargets } from 'hono';
 import type { BaseSchema, Input, Output, SchemaWithTransform } from 'valibot';
 import { validator } from 'hono/validator';
 import { env } from '../env';
@@ -50,13 +51,22 @@ export function nonEmptyMaxLengthString(length = 256) {
 }
 
 export function wrap<
-	T extends BaseSchema | SchemaWithTransform<BaseSchema, any>,
-	U extends Parameters<typeof validator>[0]
->(schema: T, type: U) {
-	return validator<unknown, string, string, U, Output<T>, string, {
-		in: { [K_2 in U]: Input<T>; };
-		out: { [K_3 in U]: Output<T>; };
-	}, any>(type, (value, c) => {
+	S extends BaseSchema,
+	T extends S | SchemaWithTransform<S, any>,
+	Target extends keyof ValidationTargets,
+	E extends Env,
+	P extends string,
+	I = Input<T>,
+	O = Output<T>,
+	V extends {
+		in: { [K in Target]: I };
+		out: { [K in Target]: O };
+	} = {
+		in: { [K in Target]: I };
+		out: { [K in Target]: O };
+	}
+>(target: Target, schema: T): MiddlewareHandler<E, P, V> {
+	return validator(target, (value, c) => {
 		console.log('validating', value);
 		const parseResults = safeParse(schema, value);
 
