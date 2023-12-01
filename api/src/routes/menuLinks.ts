@@ -1,13 +1,16 @@
 import { eq, sql } from 'drizzle-orm';
-import { array, omit, string } from 'valibot';
+import { array, omit } from 'valibot';
+import { Hono } from 'hono';
 import { db } from '../db';
-import { wrap } from '../helpers';
+import { languageQueryValidation, wrap } from '../helpers';
 import { pages } from '../db/schema/pages';
 import { insertMenuLinkSchema, menuLinks } from '../db/schema/menuLinks';
 
-export const menuLinksRouter = router({
-	list: publicProcedure.input(wrap(string())).query(async (opts) => {
-		return db
+export const app = new Hono()
+	.get('/', wrap(languageQueryValidation, 'query'), async (c) => {
+		const { language } = c.req.valid('query');
+
+		const result = await db
 			.select({
 				pageId: menuLinks.pageId,
 				text: menuLinks.text,
@@ -17,13 +20,18 @@ export const menuLinksRouter = router({
 			})
 			.from(menuLinks)
 			.leftJoin(pages, eq(menuLinks.pageId, pages.id))
-			.where(eq(pages.language, opts.input));
-	}),
-	update: publicProcedure.input(wrap(array(omit(insertMenuLinkSchema, ['text'])))).mutation(async (opts) => {
-		await Promise.all(opts.input.map(({ pageId, position, parentId }) => db
+			.where(language ? eq(pages.language, language) : undefined);
+
+		return c.jsonT(result);
+	})
+	.put('/', wrap(array(omit(insertMenuLinkSchema, ['text'])), 'json'), async (c) => {
+		const input = c.req.valid('json');
+
+		await Promise.all(input.map(({ pageId, position, parentId }) => db
 			.update(menuLinks)
 			.set({ position, parentId, updatedAt: new Date() })
 			.where(eq(menuLinks.pageId, pageId))
 		));
-	}),
-});
+
+		return c.text('OK');
+	});

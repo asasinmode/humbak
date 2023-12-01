@@ -1,12 +1,12 @@
 import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { db } from '../db';
-import { languageParamValidation, wrap } from '../helpers';
+import { languageQueryValidation, wrap } from '../helpers';
 import { footerContents, insertFooterContentSchema } from '../db/schema/footerContents';
 
 export const app = new Hono()
-	.get('/:language', wrap(languageParamValidation, 'param'), async (c) => {
-		const { language } = c.req.valid('param');
+	.get('/', wrap(languageQueryValidation, 'query'), async (c) => {
+		const { language } = c.req.valid('query');
 
 		const [result] = await db
 			.select({
@@ -17,7 +17,7 @@ export const app = new Hono()
 				socials: footerContents.socials,
 			})
 			.from(footerContents)
-			.where(eq(footerContents.language, language));
+			.where(language ? eq(footerContents.language, language) : undefined);
 
 		if (!result) {
 			return c.notFound();

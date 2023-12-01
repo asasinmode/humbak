@@ -40,7 +40,7 @@ export function nonEmptyMaxLengthString(length = 256) {
 	return string([minLength(1, 'nie może być puste'), maxLength(length, `maksymalna długość: ${32}`)]);
 }
 
-export const languageParamValidation = object({ language: string([minLength(1)]) });
+export const languageQueryValidation = object({ language: string([minLength(1)]) });
 
 export function wrap<
 	T extends BaseSchema,
