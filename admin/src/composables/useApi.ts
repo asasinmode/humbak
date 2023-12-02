@@ -10,9 +10,9 @@ export const useApi = () => client;
 export type IUpsertPageInput = Parameters<typeof client['pages']['upsert']['mutate']>[0];
 export type ISlide = Awaited<ReturnType<typeof client['slides']['byId']['query']>>;
 export type IListedSlide = Awaited<ReturnType<typeof client['slides']['list']['query']>>[number];
-export type IPublicListedSlide = Awaited<ReturnType<typeof client['slides']['listPublic']['query']>>[number];
 
 export type IFooterContents = InferResponseType<typeof client['footerContents']['$get']>;
-export type IMenuLink = InferResponseType<typeof client['menuLinks']['$get']>;
-export type IUniqueLanguage = InferResponseType<typeof client['languages']['$get']>;
-export type IListedPage = InferResponseType<typeof client['pages']['$get']>;
+export type IMenuLink = InferResponseType<typeof client['menuLinks']['$get']>[number];
+export type IUniqueLanguage = InferResponseType<typeof client['languages']['$get']>[number];
+export type IListedPage = InferResponseType<typeof client['pages']['$get']>[number];
+export type IPublicListedSlide = InferResponseType<typeof client['slides']['public']['$get']>[number];
