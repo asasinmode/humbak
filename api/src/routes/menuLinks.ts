@@ -7,7 +7,7 @@ import { pages } from '../db/schema/pages';
 import { insertMenuLinkSchema, menuLinks } from '../db/schema/menuLinks';
 
 export const app = new Hono()
-	.get('/', wrap(languageQueryValidation, 'query'), async (c) => {
+	.get('/', wrap('query', languageQueryValidation), async (c) => {
 		const { language } = c.req.valid('query');
 
 		const result = await db
@@ -24,7 +24,7 @@ export const app = new Hono()
 
 		return c.jsonT(result);
 	})
-	.put('/', wrap(array(omit(insertMenuLinkSchema, ['text'])), 'json'), async (c) => {
+	.put('/', wrap('json', array(omit(insertMenuLinkSchema, ['text']))), async (c) => {
 		const input = c.req.valid('json');
 
 		await Promise.all(input.map(({ pageId, position, parentId }) => db

@@ -5,7 +5,7 @@ import { languageQueryValidation, wrap } from '../helpers';
 import { footerContents, insertFooterContentSchema } from '../db/schema/footerContents';
 
 export const app = new Hono()
-	.get('/', wrap(languageQueryValidation, 'query'), async (c) => {
+	.get('/', wrap('query', languageQueryValidation), async (c) => {
 		const { language } = c.req.valid('query');
 
 		const [result] = await db
@@ -34,7 +34,7 @@ export const app = new Hono()
 
 		return c.jsonT(result);
 	})
-	.post('/', wrap(insertFooterContentSchema, 'json'), async (c) => {
+	.post('/', wrap('json', insertFooterContentSchema), async (c) => {
 		const input = c.req.valid('json');
 
 		await db

@@ -7,7 +7,7 @@ import { insertSlideSchema, slides } from '../db/schema/slides';
 import { slideAspectRatio } from '../db/schema/slideAspectRatio';
 
 export const app = new Hono()
-	.get('/', wrap(languageQueryValidation, 'query'), async (c) => {
+	.get('/', wrap('query', languageQueryValidation), async (c) => {
 		const { language } = c.req.valid('query');
 
 		const result = await db
@@ -22,7 +22,7 @@ export const app = new Hono()
 
 		return c.jsonT(result);
 	})
-	.get('/public', wrap(languageQueryValidation, 'query'), async (c) => {
+	.get('/public', wrap('query', languageQueryValidation), async (c) => {
 		const { language } = c.req.valid('query');
 
 		const result = await db
@@ -39,7 +39,7 @@ export const app = new Hono()
 
 		return c.jsonT(result);
 	})
-	.get('/:id', wrap(idParamValidation, 'param'), async (c) => {
+	.get('/:id', wrap('param', idParamValidation), async (c) => {
 		const { id } = c.req.valid('param');
 
 		const [result] = await db
@@ -55,7 +55,7 @@ export const app = new Hono()
 
 		return c.jsonT(result);
 	})
-	.post('/', wrap(insertSlideSchema, 'json'), async (c) => {
+	.post('/', wrap('json', insertSlideSchema), async (c) => {
 		const input = c.req.valid('json');
 
 		const [{ insertId: slideId }] = await db
@@ -82,7 +82,7 @@ export const app = new Hono()
 
 		return c.jsonT(result);
 	})
-	.delete('/:id', wrap(idParamValidation, 'query'), async (c) => {
+	.delete('/:id', wrap('query', idParamValidation), async (c) => {
 		const { id } = c.req.valid('query');
 
 		await db.delete(slides).where(eq(slides.id, id));
@@ -98,7 +98,7 @@ export const app = new Hono()
 
 		return c.jsonT(result.value);
 	})
-	.put('aspectRatio', wrap(object({ value: nonEmptyMaxLengthString() }), 'json'), async (c) => {
+	.put('aspectRatio', wrap('json', object({ value: nonEmptyMaxLengthString() })), async (c) => {
 		const { value } = c.req.valid('json');
 		await db.update(slideAspectRatio).set({ value, updatedAt: new Date() });
 

@@ -16,7 +16,7 @@ const upsertPageInputSchema = merge([
 ]);
 
 export const app = new Hono()
-	.get('/', wrap(paginationQueryValidation, 'query'), async (c) => {
+	.get('/', wrap('query', paginationQueryValidation), async (c) => {
 		const { query, limit: rawLimit, offset } = c.req.valid('query');
 		const limit = Math.min(rawLimit, 100);
 		const select = { id: pages.id, language: pages.language, title: pages.title, menuText: menuLinks.text };
@@ -37,7 +37,7 @@ export const app = new Hono()
 
 		return c.jsonT(result);
 	})
-	.get('/count', wrap(pick(paginationQueryValidation, ['query']), 'query'), async (c) => {
+	.get('/count', wrap('query', pick(paginationQueryValidation, ['query'])), async (c) => {
 		const { query } = c.req.valid('query');
 
 		const result = await db
@@ -53,7 +53,7 @@ export const app = new Hono()
 
 		return c.jsonT({ count: result[0].count });
 	})
-	.get('/:id', wrap(idParamValidation, 'param'), async (c) => {
+	.get('/:id', wrap('param', idParamValidation), async (c) => {
 		const { id } = c.req.valid('param');
 
 		const [[result], stylesheetFileData] = await Promise.all([
@@ -76,7 +76,7 @@ export const app = new Hono()
 
 		return c.jsonT({ ...result, css: stylesheetFileData.toString() });
 	})
-	.post('/', wrap(upsertPageInputSchema, 'json'), async (c) => {
+	.post('/', wrap('json', upsertPageInputSchema), async (c) => {
 		const { menuText, html, meta, css, ...pageFields } = c.req.valid('json');
 
 		const [{ insertId: pageId }] = await db
@@ -134,7 +134,7 @@ export const app = new Hono()
 
 		return c.jsonT({ ...result, css: stylesheetFileData.toString() });
 	})
-	.delete('/:id', wrap(idParamValidation, 'param'), async (c) => {
+	.delete('/:id', wrap('param', idParamValidation), async (c) => {
 		const { id } = c.req.valid('param');
 
 		await db.delete(pages).where(eq(pages.id, id));
