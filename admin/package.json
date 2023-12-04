@@ -11,7 +11,7 @@
 		"build-only": "vite build",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
-		"type-check": "vue-tsc --noEmit"
+		"type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
 	},
 	"dependencies": {
 		"@monaco-editor/loader": "^1.4.0",
