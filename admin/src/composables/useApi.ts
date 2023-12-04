@@ -1,5 +1,5 @@
 import { hc } from 'hono/client';
-import type { InferResponseType } from 'hono/client';
+import type { InferRequestType, InferResponseType } from 'hono/client';
 import type { AppType } from '@humbak/api/src';
 import { env } from '~/env';
 
@@ -7,12 +7,13 @@ const client = hc<AppType>(env.VITE_API_URL);
 
 export const useApi = () => client;
 
-export type IUpsertPageInput = Parameters<typeof client['pages']['upsert']['mutate']>[0];
-export type ISlide = Awaited<ReturnType<typeof client['slides']['byId']['query']>>;
-export type IListedSlide = Awaited<ReturnType<typeof client['slides']['list']['query']>>[number];
+type Client = typeof client;
 
-export type IFooterContents = InferResponseType<typeof client['footerContents']['$get']>;
-export type IMenuLink = InferResponseType<typeof client['menuLinks']['$get']>[number];
-export type IUniqueLanguage = InferResponseType<typeof client['languages']['$get']>[number];
-export type IListedPage = InferResponseType<typeof client['pages']['$get']>[number];
-export type IPublicListedSlide = InferResponseType<typeof client['slides']['public']['$get']>[number];
+export type IFooterContents = InferResponseType<Client['footerContents']['$get']>;
+export type IMenuLink = InferResponseType<Client['menuLinks']['$get']>[number];
+export type IUniqueLanguage = InferResponseType<Client['languages']['$get']>[number];
+export type IListedPage = InferResponseType<Client['pages']['$get']>[number];
+export type IPublicListedSlide = InferResponseType<Client['slides']['public']['$get']>[number];
+export type IListedSlide = InferResponseType<Client['slides']['$get']>[number];
+export type ISlide = InferResponseType<Client['slides'][':id']['$get']>;
+export type IUpsertPageInput = InferRequestType<Client['pages']['$post']>['json'];
