@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { TRPCClientError } from '@trpc/client';
 import type { ComponentExposed } from 'vue-component-type-helpers';
 
 import VButton from '~/components/V/VButton.vue';
@@ -49,13 +48,15 @@ const {
 } = useForm(
 	{ name: '', content: '', language: '', isHidden: false },
 	async () => {
-		const slide = await api.slides.upsert.mutate({
-			id: selectedSlideId.value,
-			name: name.value,
-			content: content.value,
-			isHidden: isHidden.value,
-			language: language.value,
-		});
+		const slide = await api.slides.$post({
+			json: {
+				id: selectedSlideId.value,
+				name: name.value,
+				content: content.value,
+				isHidden: isHidden.value,
+				language: language.value,
+			},
+		}).then(r => r.json());
 
 		const slideIndex = availableSlides.value.findIndex(item => item.id === slide.id);
 
@@ -97,8 +98,9 @@ onMounted(async () => {
 	isLoadingLanguages.value = true;
 	try {
 		const [uniqueLanguages, savedAspectRatio] = await Promise.all([
-			api.pages.uniqueLanguages.query(),
-			api.slides.aspectRatio.query(),
+			api.languages.$get().then(r => r.json()),
+			// @ts-expect-error idk why type is wrong
+			api.slides.aspectRatio.$get().then(r => r.json()),
 		]);
 		languages.value = uniqueLanguages;
 		aspectRatio.value = savedAspectRatio;
@@ -134,7 +136,7 @@ async function getSlides() {
 	previousSelectedSlideId.value = undefined;
 
 	try {
-		availableSlides.value = await api.slides.list.query(selectedLanguage.value);
+		availableSlides.value = await api.slides.$get({ query: { language: selectedLanguage.value } }).then(r => r.json());
 	} catch (e) {
 		toast('błąd przy ładowaniu slideów', 'error');
 		console.error(e);
@@ -202,7 +204,9 @@ async function selectSlide() {
 
 	isLoadingSlide.value = true;
 	try {
-		const slide = await api.slides.byId.query(selectedSlideId.value);
+		const slide = await api.slides[':id'].$get({
+			param: { id: selectedSlideId.value.toString() },
+		}).then(r => r.json());
 		updateValues(slide);
 		editor.value?.updateModelValue(0, content.value);
 		previousSelectedSlideId.value = selectedSlideId.value;
@@ -231,7 +235,7 @@ async function deleteSlide() {
 	isLoadingSlide.value = true;
 	isLoadingSlides.value = true;
 	try {
-		await api.slides.delete.mutate(selectedSlideId.value);
+		await api.slides[':id'].$delete({ param: { id: selectedSlideId.value.toString() } });
 		selectedLanguage.value && theSlider.value?.handleSlide({ id: selectedSlideId.value, isHidden: true, content: '', name: '', language: selectedLanguage.value });
 
 		const slideIndex = availableSlides.value.findIndex(slide => slide.id === selectedSlideId.value);
@@ -257,12 +261,15 @@ const configurationDialog = ref<InstanceType<typeof VDialog>>();
 async function saveAspectRatio() {
 	isSavingAspectRatio.value = true;
 
+	console.log('todo check error handling');
+
 	try {
-		await api.slides.updateAspectRatio.mutate(aspectRatio.value);
+		// @ts-expect-error idk why type is wrong
+		await api.slides.aspectRatio.$put({ json: { value: aspectRatio.value } });
 		previousAspectRatio.value = aspectRatio.value;
 		configurationDialog.value?.close();
-	} catch (error) {
-		if (!(error instanceof TRPCClientError) || error.data.httpStatus !== 400) {
+	} catch (error: any) {
+		if (error.data && error.data.status !== 400) {
 			toast('błąd przy zapisywaniu aspect ratio', 'error');
 			console.error(error);
 			return;

@@ -82,8 +82,8 @@ export const app = new Hono()
 
 		return c.jsonT(result);
 	})
-	.delete('/:id', wrap('query', idParamValidation), async (c) => {
-		const { id } = c.req.valid('query');
+	.delete('/:id', wrap('param', idParamValidation), async (c) => {
+		const { id } = c.req.valid('param');
 
 		await db.delete(slides).where(eq(slides.id, id));
 

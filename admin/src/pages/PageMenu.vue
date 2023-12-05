@@ -23,7 +23,7 @@ let changedLinks: Pick<IMenuLink, 'pageId' | 'position' | 'parentId'>[] = [];
 onMounted(async () => {
 	isLoadingLanguages.value = true;
 	try {
-		languages.value = await api.pages.uniqueLanguages.query();
+		languages.value = await api.languages.$get().then(r => r.json());
 
 		if (!languages.value.length) {
 			return;
@@ -58,7 +58,7 @@ async function getMenuLinks() {
 
 	isLoading.value = true;
 	try {
-		const menuLinks = await api.menuLinks.list.query(selectedLanguage.value);
+		const menuLinks = await api.menuLinks.$get({ query: { language: selectedLanguage.value } }).then(r => r.json());
 		originalMenuLinks = [...menuLinks];
 		changedLinks = [];
 		previousSelectedLanguage = selectedLanguage.value;
@@ -413,7 +413,7 @@ async function saveChanges() {
 
 	isSaving.value = true;
 	try {
-		await api.menuLinks.update.mutate(actuallyChanged);
+		await api.menuLinks.$put({ json: actuallyChanged });
 		changedLinks = [];
 		toast('zapisano zmiany');
 	} catch (e) {

@@ -30,13 +30,15 @@ const {
 } = useForm<IFooterContents>(
 	{ emails: [], phoneNumbers: [], location: { text: '', value: '' }, socials: [], language: '' },
 	async () => {
-		const footerData = await api.footer.upsert.mutate({
-			emails: emails.value,
-			phoneNumbers: phoneNumbers.value,
-			location: location.value,
-			socials: socials.value,
-			language: language.value,
-		});
+		const footerData = await api.footerContents.$post({
+			json: {
+				emails: emails.value,
+				phoneNumbers: phoneNumbers.value,
+				location: location.value,
+				socials: socials.value,
+				language: language.value,
+			},
+		}).then(r => r.json());
 
 		updateValues(footerData);
 		locationTextModelValue.value = '';
@@ -48,7 +50,7 @@ const {
 onMounted(async () => {
 	isLoadingLanguages.value = true;
 	try {
-		languages.value = await api.pages.uniqueLanguages.query();
+		languages.value = await api.languages.$get().then(r => r.json());
 
 		if (!languages.value.length) {
 			return;
@@ -71,7 +73,7 @@ async function getFooterContent() {
 
 	isLoading.value = true;
 	try {
-		const data = await api.footer.byLanguage.query(language.value);
+		const data = await api.footerContents.$get({ query: { language: language.value } }).then(r => r.json());
 		previousSelectedLanguage = language.value;
 
 		if (!data) {

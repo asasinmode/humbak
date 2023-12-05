@@ -13,7 +13,7 @@ async function saveChanges() {
 	isSaving.value = true;
 	try {
 		if (value.value !== initValue.value) {
-			await api.pages.updateGlobalCss.mutate(value.value);
+			await api.globalCss.$post({ json: { value: value.value } });
 			initValue.value = value.value;
 		}
 		toast('zapisano zmiany');

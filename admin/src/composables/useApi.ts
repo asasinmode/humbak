@@ -9,7 +9,6 @@ export const useApi = () => client;
 
 type Client = typeof client;
 
-export type IFooterContents = InferResponseType<Client['footerContents']['$get']>;
 export type IMenuLink = InferResponseType<Client['menuLinks']['$get']>[number];
 export type IUniqueLanguage = InferResponseType<Client['languages']['$get']>[number];
 export type IListedPage = InferResponseType<Client['pages']['$get']>[number];
@@ -17,3 +16,6 @@ export type IPublicListedSlide = InferResponseType<Client['slides']['public']['$
 export type IListedSlide = InferResponseType<Client['slides']['$get']>[number];
 export type ISlide = InferResponseType<Client['slides'][':id']['$get']>;
 export type IUpsertPageInput = InferRequestType<Client['pages']['$post']>['json'];
+
+type IRawFooterContents = InferResponseType<Client['footerContents']['$get']>;
+export type IFooterContents = Extract<IRawFooterContents, { language: string; }>;

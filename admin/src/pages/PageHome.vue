@@ -51,14 +51,16 @@ const {
 			return;
 		}
 
-		const page = await api.pages.upsert.mutate({
-			id: loadedPageId.value,
-			language: language.value,
-			title: title.value,
-			slug: slug.value,
-			menuText: menuText.value,
-			...contentFields,
-		});
+		const page = await api.pages.$post({
+			json: {
+				id: loadedPageId.value,
+				language: language.value,
+				title: title.value,
+				slug: slug.value,
+				menuText: menuText.value,
+				...contentFields,
+			},
+		}).then(r => r.json());
 
 		updateValues(page);
 		contentEditor.value?.updateValues(page);
@@ -76,7 +78,7 @@ async function getLanguages() {
 	isLoading.value = true;
 
 	try {
-		languages.value = await api.pages.uniqueLanguages.query();
+		languages.value = await api.languages.$get().then(r => r.json());
 	} catch (e) {
 		toast('błąd przy ładowaniu języków', 'error');
 		console.error(e);
@@ -87,8 +89,10 @@ async function getLanguages() {
 
 async function getPages(offset: number, limit: number, query: string) {
 	return Promise.all([
-		useApi().pages.list.query({ offset, limit, query }),
-		useApi().pages.count.query(query),
+		api.pages.$get({
+			query: { offset: offset.toString(), limit: limit.toString(), query },
+		}).then(r => r.json()),
+		api.pages.count.$get({ query: { query } }).then(r => r.json()).then(r => r.count),
 	]);
 }
 
@@ -104,7 +108,7 @@ async function editPage(id: number, button: HTMLButtonElement) {
 
 	try {
 		const [page] = await Promise.all([
-			api.pages.byId.query(id),
+			api.pages[':id'].$get({ param: { id: id.toString() } }).then(r => r.json()),
 			getLanguages(),
 		]);
 		loadedPageId.value = page.id;
@@ -127,7 +131,7 @@ async function deletePage(id: number, button: HTMLButtonElement) {
 	loadingPageId.value = id;
 
 	try {
-		await api.pages.delete.mutate(id);
+		await api.pages[':id'].$delete({ param: { id: id.toString() } });
 
 		if (loadedPageId.value === id) {
 			loadedPageId.value = undefined;
