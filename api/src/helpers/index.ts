@@ -88,12 +88,15 @@ export function wrap<
 				}
 
 				let pointer = errors as any;
-				for (let i = 0; i < issue.path.length; i++) {
+				for (let i = 0; i < issue.path.length - 1; i++) {
 					const key = issue.path[i].key as string | number;
+
 					pointer[key] ||= {};
 					pointer = pointer[key];
 				}
-				pointer[issue.path[0].key as string] = message;
+
+				const lastIssue = issue.path[issue.path.length - 1];
+				pointer[lastIssue.key as string | number] = message;
 			}
 
 			return c.json(errors, 400);
