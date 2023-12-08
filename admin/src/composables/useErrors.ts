@@ -31,6 +31,7 @@ export function useErrors<T extends Record<string, unknown>>(form: T) {
 		}
 
 		clearErrors();
+		let toastInvisibleError = true;
 
 		for (const key in error.data) {
 			// @ts-expect-error key is valid
@@ -41,8 +42,11 @@ export function useErrors<T extends Record<string, unknown>>(form: T) {
 			} else {
 				// @ts-expect-error key is valid
 				errors.value[key] = value;
+				toastInvisibleError = false;
 			}
 		}
+
+		toastInvisibleError && toastGenericError();
 	}
 
 	return {
