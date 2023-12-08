@@ -67,15 +67,36 @@ export function wrap<
 	}
 >(target: Target, schema: T): MiddlewareHandler<E, P, V> {
 	return validator(target, (value, c) => {
-		console.log('validating', value);
 		const parseResults = safeParse(schema, value);
 
 		if (!parseResults.success) {
-			console.log('issues', parseResults.issues);
-			return c.json({ error: 'oopsie' }, 400);
-		}
+			const errors: Record<string, unknown> = {};
 
-		console.log('parsed into', parseResults.output);
+			for (const key in parseResults.issues) {
+				const issue = parseResults.issues[key];
+				const message = issue.message;
+
+				if (!issue.path) {
+					errors.unknown = message;
+					continue;
+				}
+
+				if (issue.path.length === 1) {
+					errors[issue.path[0].key as string || 'unknown'] = message;
+					continue;
+				}
+
+				let pointer = errors as any;
+				for (let i = issue.path.length - 1; i > 0; i--) {
+					const key = issue.path[i].key as string | number;
+					pointer[key] ||= {};
+					pointer = pointer[key];
+				}
+				pointer[issue.path[0].key as string] = message;
+			}
+
+			return c.json(errors, 400);
+		}
 
 		return parseResults.output;
 	});
