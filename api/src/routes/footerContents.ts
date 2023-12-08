@@ -32,7 +32,7 @@ export const app = new Hono()
 		// @ts-expect-error db returns strings but types are correct
 		result.socials = JSON.parse(result.socials);
 
-		return c.jsonT(result);
+		return c.json(result);
 	})
 	.post('/', wrap('json', insertFooterContentSchema), async (c) => {
 		const input = c.req.valid('json');
@@ -69,7 +69,7 @@ export const app = new Hono()
 			result.socials = JSON.parse(result.socials);
 		}
 
-		return c.jsonT(result);
+		return c.json(result);
 	});
 
 export type AppType = typeof app;

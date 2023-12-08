@@ -6,7 +6,7 @@ export const app = new Hono()
 	.get('/', async (c) => {
 		const result = await db.selectDistinct({ language: pages.language }).from(pages).orderBy(pages.createdAt);
 
-		return c.jsonT(result.map(item => item.language));
+		return c.json(result.map(item => item.language));
 	});
 
 export type AppType = typeof app;

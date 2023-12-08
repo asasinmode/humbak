@@ -20,7 +20,7 @@ export const app = new Hono()
 			.orderBy(slides.createdAt)
 			.where(eq(slides.language, language));
 
-		return c.jsonT(result);
+		return c.json(result);
 	})
 	.get('/public', wrap('query', languageQueryValidation), async (c) => {
 		const { language } = c.req.valid('query');
@@ -37,7 +37,7 @@ export const app = new Hono()
 				eq(slides.isHidden, false)
 			));
 
-		return c.jsonT(result);
+		return c.json(result);
 	})
 	.get('/:id', wrap('param', idParamValidation), async (c) => {
 		const { id } = c.req.valid('param');
@@ -53,7 +53,7 @@ export const app = new Hono()
 			.from(slides)
 			.where(eq(slides.id, id));
 
-		return c.jsonT(result);
+		return c.json(result);
 	})
 	.post('/', wrap('json', insertSlideSchema), async (c) => {
 		const input = c.req.valid('json');
@@ -80,7 +80,7 @@ export const app = new Hono()
 			.from(slides)
 			.where(eq(slides.id, slideId));
 
-		return c.jsonT(result);
+		return c.json(result);
 	})
 	.delete('/:id', wrap('param', idParamValidation), async (c) => {
 		const { id } = c.req.valid('param');
@@ -96,7 +96,7 @@ export const app = new Hono()
 			})
 			.from(slideAspectRatio);
 
-		return c.jsonT(result.value);
+		return c.json(result.value);
 	})
 	.put('aspectRatio', wrap('json', object({ value: nonEmptyMaxLengthString() })), async (c) => {
 		const { value } = c.req.valid('json');

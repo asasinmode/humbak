@@ -22,7 +22,7 @@ export const app = new Hono()
 			.leftJoin(pages, eq(menuLinks.pageId, pages.id))
 			.where(language ? eq(pages.language, language) : undefined);
 
-		return c.jsonT(result);
+		return c.json(result);
 	})
 	.put('/', wrap('json', array(omit(insertMenuLinkSchema, ['text']))), async (c) => {
 		const input = c.req.valid('json');

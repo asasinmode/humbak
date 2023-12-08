@@ -35,7 +35,7 @@ export const app = new Hono()
 			.limit(limit)
 			.offset(offset * limit);
 
-		return c.jsonT(result);
+		return c.json(result);
 	})
 	.get('/count', wrap('query', pick(paginationQueryValidation, ['query'])), async (c) => {
 		const { query } = c.req.valid('query');
@@ -51,7 +51,7 @@ export const app = new Hono()
 				)
 				: sql`1 = 1`);
 
-		return c.jsonT({ count: result[0].count });
+		return c.json({ count: result[0].count });
 	})
 	.get('/:id', wrap('param', idParamValidation), async (c) => {
 		const { id } = c.req.valid('param');
@@ -74,7 +74,7 @@ export const app = new Hono()
 			readFile(fileURLToPath(new URL(`../../public/stylesheets/${id}.css`, import.meta.url))),
 		]);
 
-		return c.jsonT({ ...result, css: stylesheetFileData.toString() });
+		return c.json({ ...result, css: stylesheetFileData.toString() });
 	})
 	.post('/', wrap('json', upsertPageInputSchema), async (c) => {
 		const { menuText, html, meta, css, ...pageFields } = c.req.valid('json');
@@ -132,7 +132,7 @@ export const app = new Hono()
 			readFile(fileURLToPath(new URL(`../../public/stylesheets/${pageId}.css`, import.meta.url))),
 		]);
 
-		return c.jsonT({ ...result, css: stylesheetFileData.toString() });
+		return c.json({ ...result, css: stylesheetFileData.toString() });
 	})
 	.delete('/:id', wrap('param', idParamValidation), async (c) => {
 		const { id } = c.req.valid('param');

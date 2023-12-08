@@ -1,5 +1,4 @@
 import { ref } from 'vue';
-import { TRPCClientError } from '@trpc/client';
 
 const { confirm } = useConfirm();
 const { toast, toastGenericError } = useToast();
@@ -53,7 +52,8 @@ export function useForm<T extends Record<string, unknown>>(
 	}
 
 	function handleError(error: unknown) {
-		if (!(error instanceof TRPCClientError) || error.data.httpStatus !== 400) {
+		console.log('TODO check if error is from api', error);
+		if (error.data.httpStatus !== 400) {
 			toastGenericError();
 			throw error;
 		}
