@@ -37,6 +37,4 @@ export type IPublicListedSlide = InferResponseType<Client['slides']['public']['$
 export type IListedSlide = InferResponseType<Client['slides']['$get']>[number];
 export type ISlide = InferResponseType<Client['slides'][':id']['$get']>;
 export type IUpsertPageInput = InferRequestType<Client['pages']['$post']>['json'];
-
-type IRawFooterContents = InferResponseType<Client['footerContents']['$get']>;
-export type IFooterContents = Extract<IRawFooterContents, { language: string; }>;
+export type IFooterContents = InferResponseType<Client['footerContents']['$get']>;

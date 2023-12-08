@@ -19,10 +19,6 @@ export const app = new Hono()
 			.from(footerContents)
 			.where(language ? eq(footerContents.language, language) : undefined);
 
-		if (!result) {
-			return c.notFound();
-		}
-
 		// @ts-expect-error db returns strings but types are correct
 		result.emails = JSON.parse(result.emails);
 		// @ts-expect-error db returns strings but types are correct
