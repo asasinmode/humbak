@@ -50,6 +50,7 @@ export function nonEmptyMaxLengthString(length = 256) {
 	return string([minLength(1, 'nie może być puste'), maxLength(length, `maksymalna długość: ${32}`)]);
 }
 
+// copied and adapted to valibot from https://github.com/honojs/hono/blob/main/src/validator/validator.ts#L22
 export function wrap<
 	S extends BaseSchema,
 	T extends S | SchemaWithTransform<S, any>,
@@ -87,7 +88,7 @@ export function wrap<
 				}
 
 				let pointer = errors as any;
-				for (let i = issue.path.length - 1; i > 0; i--) {
+				for (let i = 0; i < issue.path.length; i++) {
 					const key = issue.path[i].key as string | number;
 					pointer[key] ||= {};
 					pointer = pointer[key];
