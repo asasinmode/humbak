@@ -419,7 +419,7 @@ async function saveChanges() {
 
 	isSaving.value = true;
 	try {
-		await api.menuLinks.$put({ json: { menuLinks: actuallyChanged.map(i => ({...i, position: 'wrong'})) } });
+		await api.menuLinks.$put({ json: { menuLinks: actuallyChanged } });
 		changedLinks = [];
 		toast('zapisano zmiany');
 	} catch (e) {
