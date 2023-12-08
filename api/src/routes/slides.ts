@@ -67,7 +67,6 @@ export const app = new Hono()
 		return c.json(result);
 	})
 	.get('/aspectRatio', async (c) => {
-		console.log('thing');
 		const [result] = await db
 			.select({
 				value: slideAspectRatio.value,

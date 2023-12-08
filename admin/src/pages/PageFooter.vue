@@ -15,6 +15,7 @@ const locationTextModelValue = ref('');
 const locationValueModelValue = ref('');
 
 const isLoading = ref(false);
+const saveKey = ref(0);
 
 const {
 	clearForm,
@@ -43,6 +44,7 @@ const {
 		updateValues(footerData);
 		locationTextModelValue.value = '';
 		locationValueModelValue.value = '';
+		saveKey.value += 1;
 	},
 	saveButton.value?.element
 );
@@ -188,7 +190,7 @@ function addSocial() {
 		</div>
 		<div class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-4 bg-humbak pb-4 pt-6 text-black lg:px-8 md:px-[clamp(2rem,_-12.25rem_+_29.6875vw,_6.75rem)]">
 			<section class="grid grid-cols-[min-content_max-content] max-w-360 gap-x-3 gap-y-4 lg:grid-cols-[repeat(3,_1fr_2fr)] md:grid-cols-[min-content_6fr_4fr_6fr_4fr_max-content] md:w-full">
-				<template v-for="index in emails.length" :key="`emails${index - 1}`">
+				<template v-for="index in emails.length" :key="`emails${index}`">
 					<div
 						class="md:footer-row-span i-fa6-solid-envelope h-6 w-6 justify-self-end md:col-start-1"
 						aria-hidden="true"
@@ -198,8 +200,9 @@ function addSocial() {
 						:id="index - 1"
 						v-model="emails[index - 1]"
 						class="md:footer-row-span h-fit w-fit md:col-start-2"
-						:style="`--f-row-start: ${index};`"
 						type="email"
+						:style="`--f-row-start: ${index};`"
+						:save-key="saveKey"
 						@delete="deleteRow('email', index - 1)"
 					/>
 				</template>
@@ -223,8 +226,9 @@ function addSocial() {
 						:id="index - 1"
 						v-model="phoneNumbers[index - 1]"
 						class="md:footer-row-span ml-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)] h-fit w-fit md:col-start-4"
-						:style="`--f-row-start: ${index};`"
 						type="phone"
+						:save-key="saveKey"
+						:style="`--f-row-start: ${index};`"
 						@delete="deleteRow('phone', index - 1)"
 					/>
 				</template>

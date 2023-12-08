@@ -3,6 +3,7 @@ const props = defineProps<{
 	id: number;
 	modelValue: string;
 	type: 'email' | 'phone';
+	saveKey?: number;
 }>();
 
 const emit = defineEmits<{
@@ -25,12 +26,18 @@ function edit() {
 	});
 }
 
+watch(() => props.saveKey, () => {
+	deleteIfEmptyOnFocusOut = false;
+});
+
 function hideInput(updateValue: boolean) {
-	if (deleteIfEmptyOnFocusOut && !localValue.value) {
-		emit('delete');
-		return;
-	} else {
+	if (!localValue.value) {
+		if (deleteIfEmptyOnFocusOut) {
+			emit('delete');
+			return;
+		}
 		deleteIfEmptyOnFocusOut = false;
+		localValue.value = props.modelValue;
 	}
 
 	isEditing.value = false;
