@@ -22,39 +22,6 @@ export const app = new Hono()
 
 		return c.json(result);
 	})
-	.get('/public', wrap('query', languageQueryValidation), async (c) => {
-		const { language } = c.req.valid('query');
-
-		const result = await db
-			.select({
-				id: slides.id,
-				content: slides.content,
-			})
-			.from(slides)
-			.orderBy(slides.createdAt)
-			.where(and(
-				eq(slides.language, language),
-				eq(slides.isHidden, false)
-			));
-
-		return c.json(result);
-	})
-	.get('/:id', wrap('param', idParamValidation), async (c) => {
-		const { id } = c.req.valid('param');
-
-		const [result] = await db
-			.select({
-				id: slides.id,
-				name: slides.name,
-				content: slides.content,
-				isHidden: slides.isHidden,
-				language: slides.language,
-			})
-			.from(slides)
-			.where(eq(slides.id, id));
-
-		return c.json(result);
-	})
 	.post('/', wrap('json', insertSlideSchema), async (c) => {
 		const input = c.req.valid('json');
 
@@ -82,14 +49,25 @@ export const app = new Hono()
 
 		return c.json(result);
 	})
-	.delete('/:id', wrap('param', idParamValidation), async (c) => {
-		const { id } = c.req.valid('param');
+	.get('/public', wrap('query', languageQueryValidation), async (c) => {
+		const { language } = c.req.valid('query');
 
-		await db.delete(slides).where(eq(slides.id, id));
+		const result = await db
+			.select({
+				id: slides.id,
+				content: slides.content,
+			})
+			.from(slides)
+			.orderBy(slides.createdAt)
+			.where(and(
+				eq(slides.language, language),
+				eq(slides.isHidden, false)
+			));
 
-		return c.text('', 201);
+		return c.json(result);
 	})
 	.get('/aspectRatio', async (c) => {
+		console.log('thing');
 		const [result] = await db
 			.select({
 				value: slideAspectRatio.value,
@@ -101,6 +79,29 @@ export const app = new Hono()
 	.put('aspectRatio', wrap('json', object({ value: nonEmptyMaxLengthString() })), async (c) => {
 		const { value } = c.req.valid('json');
 		await db.update(slideAspectRatio).set({ value, updatedAt: new Date() });
+
+		return c.text('', 201);
+	})
+	.get('/:id', wrap('param', idParamValidation), async (c) => {
+		const { id } = c.req.valid('param');
+
+		const [result] = await db
+			.select({
+				id: slides.id,
+				name: slides.name,
+				content: slides.content,
+				isHidden: slides.isHidden,
+				language: slides.language,
+			})
+			.from(slides)
+			.where(eq(slides.id, id));
+
+		return c.json(result);
+	})
+	.delete('/:id', wrap('param', idParamValidation), async (c) => {
+		const { id } = c.req.valid('param');
+
+		await db.delete(slides).where(eq(slides.id, id));
 
 		return c.text('', 201);
 	});
