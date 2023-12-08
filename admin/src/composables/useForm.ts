@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 
 const { confirm } = useConfirm();
-const { toast, toastGenericError } = useToast();
+const { toast } = useToast();
 
 export function useForm<T extends Record<string, unknown>>(
 	form: T,
@@ -18,16 +18,8 @@ export function useForm<T extends Record<string, unknown>>(
 		fields[key] = ref(form[key]);
 	}
 
-	const errors = ref(
-		Object.keys(form).reduce((p, c) => ({ ...p, [c]: '' }), {}) as Record<keyof T, string>
-	);
+	const { errors, clearErrors, handleError } = useErrors(form);
 
-	function clearErrors() {
-		for (const key in errors.value) {
-			// @ts-expect-error it's a valid key
-			errors.value[key] = '';
-		}
-	}
 	function clearFields() {
 		for (const key in form) {
 			fields[key].value = form[key];
@@ -49,23 +41,6 @@ export function useForm<T extends Record<string, unknown>>(
 		clearFields();
 		updateValues(form);
 		return true;
-	}
-
-	function handleError(error: unknown) {
-		console.log('TODO check if error is from api', error);
-		if (error.data.httpStatus !== 400) {
-			toastGenericError();
-			throw error;
-		}
-
-		clearErrors();
-
-		try {
-			errors.value = JSON.parse(error.message);
-		} catch (e) {
-			toastGenericError();
-			throw new Error(`Parsing error message failed. ${error.message}`);
-		}
 	}
 
 	async function sendForm(toastSuccess = true) {

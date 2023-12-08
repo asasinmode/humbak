@@ -6,7 +6,7 @@ withDefaults(
 	}>(),
 	{
 		status: 500,
-		message: 'something went wrong 😟',
+		message: 'coś poszło nie tak 😟',
 	}
 );
 
@@ -22,7 +22,7 @@ const backTarget: string = history.state.back ?? '/';
 			{{ message }}
 		</h2>
 		<RouterLink :to="backTarget" class="text-xl op-75 hoverable:(underline op-100)">
-			go back
+			wróć
 		</RouterLink>
 	</main>
 </template>

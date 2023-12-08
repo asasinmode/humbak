@@ -6,6 +6,7 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue')['EffectScope']
+  const FetchError: typeof import('../composables/useErrors')['FetchError']
   const computed: typeof import('vue')['computed']
   const createApp: typeof import('vue')['createApp']
   const customRef: typeof import('vue')['customRef']
@@ -58,6 +59,7 @@ declare global {
   const useConfirm: typeof import('../composables/useConfirm')['useConfirm']
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
+  const useErrors: typeof import('../composables/useErrors')['useErrors']
   const useFilesLayoutClasses: typeof import('../composables/useFilesLayoutClasses')['useFilesLayoutClasses']
   const useForm: typeof import('../composables/useForm')['useForm']
   const useGlobalPagesStylesheet: typeof import('../composables/useGlobalPagesStylesheet')['useGlobalPagesStylesheet']
@@ -86,6 +88,7 @@ import { UnwrapRef } from 'vue'
 declare module 'vue' {
   interface ComponentCustomProperties {
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly FetchError: UnwrapRef<typeof import('../composables/useErrors')['FetchError']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
@@ -138,6 +141,7 @@ declare module 'vue' {
     readonly useConfirm: UnwrapRef<typeof import('../composables/useConfirm')['useConfirm']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useErrors: UnwrapRef<typeof import('../composables/useErrors')['useErrors']>
     readonly useFilesLayoutClasses: UnwrapRef<typeof import('../composables/useFilesLayoutClasses')['useFilesLayoutClasses']>
     readonly useForm: UnwrapRef<typeof import('../composables/useForm')['useForm']>
     readonly useGlobalPagesStylesheet: UnwrapRef<typeof import('../composables/useGlobalPagesStylesheet')['useGlobalPagesStylesheet']>
@@ -159,6 +163,7 @@ declare module 'vue' {
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     readonly EffectScope: UnwrapRef<typeof import('vue')['EffectScope']>
+    readonly FetchError: UnwrapRef<typeof import('../composables/useErrors')['FetchError']>
     readonly computed: UnwrapRef<typeof import('vue')['computed']>
     readonly createApp: UnwrapRef<typeof import('vue')['createApp']>
     readonly customRef: UnwrapRef<typeof import('vue')['customRef']>
@@ -211,6 +216,7 @@ declare module '@vue/runtime-core' {
     readonly useConfirm: UnwrapRef<typeof import('../composables/useConfirm')['useConfirm']>
     readonly useCssModule: UnwrapRef<typeof import('vue')['useCssModule']>
     readonly useCssVars: UnwrapRef<typeof import('vue')['useCssVars']>
+    readonly useErrors: UnwrapRef<typeof import('../composables/useErrors')['useErrors']>
     readonly useFilesLayoutClasses: UnwrapRef<typeof import('../composables/useFilesLayoutClasses')['useFilesLayoutClasses']>
     readonly useForm: UnwrapRef<typeof import('../composables/useForm')['useForm']>
     readonly useGlobalPagesStylesheet: UnwrapRef<typeof import('../composables/useGlobalPagesStylesheet')['useGlobalPagesStylesheet']>

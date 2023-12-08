@@ -3,7 +3,28 @@ import type { InferRequestType, InferResponseType } from 'hono/client';
 import type { AppType } from '@humbak/api/src';
 import { env } from '~/env';
 
-const client = hc<AppType>(env.VITE_API_URL);
+const client = hc<AppType>(env.VITE_API_URL, {
+	// @ts-expect-error args type doesn't matter
+	fetch(...args) {
+		// @ts-expect-error args type doesn't matter
+		return fetch(...args).then(async (r) => {
+			if (!r.ok) {
+				const contentType = r.headers.get('content-type');
+				if (contentType && contentType.slice(0, 16) === 'application/json') {
+					return r.json().then((v) => {
+						throw new FetchError(v, r.status);
+					});
+				}
+
+				return r.text().then((v) => {
+					throw new Error(v);
+				});
+			}
+
+			return r;
+		});
+	},
+});
 
 export const useApi = () => client;
 
