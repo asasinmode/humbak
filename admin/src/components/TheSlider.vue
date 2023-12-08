@@ -56,7 +56,7 @@ function handleSlide({ id, content, isHidden, language }: ISlide) {
 async function loadSlides(language: string) {
 	isLoading.value = true;
 	try {
-		slides.value = await api.slides.listPublic.query(language);
+		slides.value = await api.slides.public.$get({ query: { language } }).then(r => r.json());
 
 		await nextTick();
 		resetSlider();
