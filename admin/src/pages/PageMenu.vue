@@ -402,8 +402,14 @@ function hideLink(link: IMenuTreeItem) {
 }
 
 const isSaving = ref(false);
+const {
+	errors,
+	handleError,
+	clearErrors,
+} = useErrors({ menuLinks: {} as Record<number, string> });
 
 async function saveChanges() {
+	clearErrors();
 	const actuallyChanged = getActuallyChanged();
 
 	if (actuallyChanged.length === 0) {
@@ -413,12 +419,11 @@ async function saveChanges() {
 
 	isSaving.value = true;
 	try {
-		await api.menuLinks.$put({ json: actuallyChanged });
+		await api.menuLinks.$put({ json: { menuLinks: actuallyChanged.map(i => ({...i, position: 'wrong'})) } });
 		changedLinks = [];
 		toast('zapisano zmiany');
 	} catch (e) {
-		toast('błąd przy zapisywaniu zmian');
-		console.error(e);
+		handleError(e);
 	} finally {
 		isSaving.value = false;
 	}
@@ -585,6 +590,9 @@ function getActuallyChanged() {
 				<VLoading v-show="isLoading" class="absolute inset-0" size="20" />
 			</menu>
 		</nav>
+		<p class="text-red-5">
+			{{ errors.menuLinks }}
+		</p>
 	</main>
 	<MenuHiddenLinksWidget
 		ref="hiddenLinksWidget"

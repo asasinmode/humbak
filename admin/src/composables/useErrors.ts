@@ -11,7 +11,9 @@ export class FetchError {
 
 export function useErrors<T extends Record<string, unknown>>(form: T) {
 	const errors = ref(
-		Object.keys(form).reduce((p, c) => ({ ...p, [c]: '' }), {}) as Record<keyof T, string>
+		Object.keys(form).reduce((p, c) => ({ ...p, [c]: '' }), {}) as {
+			[K in keyof T]: T[K] extends object ? Record<string | number, string> : string
+		}
 	);
 
 	function clearErrors() {

@@ -1,5 +1,5 @@
 import { eq, sql } from 'drizzle-orm';
-import { array, omit } from 'valibot';
+import { array, object, omit } from 'valibot';
 import { Hono } from 'hono';
 import { db } from '../db';
 import { languageQueryValidation, wrap } from '../helpers';
@@ -24,10 +24,10 @@ export const app = new Hono()
 
 		return c.json(result);
 	})
-	.put('/', wrap('json', array(omit(insertMenuLinkSchema, ['text']))), async (c) => {
+	.put('/', wrap('json', object({ menuLinks: array(omit(insertMenuLinkSchema, ['text'])) })), async (c) => {
 		const input = c.req.valid('json');
 
-		await Promise.all(input.map(({ pageId, position, parentId }) => db
+		await Promise.all(input.menuLinks.map(({ pageId, position, parentId }) => db
 			.update(menuLinks)
 			.set({ position, parentId, updatedAt: new Date() })
 			.where(eq(menuLinks.pageId, pageId))
