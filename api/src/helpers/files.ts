@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { env } from '../env';
@@ -14,3 +14,4 @@ export const adminStylesheetsPath = `${adminPublicPath}/stylesheets`;
 
 !existsSync(adminFilesPath) && await mkdir(adminFilesPath, { recursive: true });
 !existsSync(adminStylesheetsPath) && await mkdir(adminStylesheetsPath);
+!existsSync(`${adminStylesheetsPath}/global.css`) && await writeFile(`${adminStylesheetsPath}/global.css`, '');
