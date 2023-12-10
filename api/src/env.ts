@@ -14,6 +14,7 @@ const schema = object({
 	DATABASE_PASSWORD: string(),
 	DATABASE_DATABASE: string(),
 	ADMIN_URL: string(),
+	ADMIN_PUBLIC_PATH: string(),
 	FOOTER_EMAIL: string(),
 	FOOTER_PHONE: string(),
 	FOOTER_LOCATION: string(),
