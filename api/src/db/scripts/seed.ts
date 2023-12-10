@@ -1,13 +1,13 @@
 import { writeFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import { db, pool } from '..';
-import { slides } from '../schema/slides';
 import { promptProdContinue } from '../../helpers';
+import { adminStylesheetsPath } from '../../helpers/files';
 import { pages } from '../schema/pages';
+import { slides } from '../schema/slides';
 import { contents } from '../schema/contents';
 import { menuLinks } from '../schema/menuLinks';
-import { slideAspectRatio } from '../schema/slideAspectRatio';
 import { footerContents } from '../schema/footerContents';
+import { slideAspectRatio } from '../schema/slideAspectRatio';
 
 await promptProdContinue();
 
@@ -237,7 +237,7 @@ for (const { pageData, text, parentId, position } of [
 	await Promise.all([
 		db.insert(menuLinks).values({ text, pageId, position, parentId }),
 		db.insert(contents).values({ pageId }),
-		writeFile(fileURLToPath(new URL(`../../../public/stylesheets/${pageId}.css`, import.meta.url)), ''),
+		writeFile(`${adminStylesheetsPath}/${pageId}.css`, ''),
 	]);
 }
 
