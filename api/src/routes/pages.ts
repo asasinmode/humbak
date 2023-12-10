@@ -1,10 +1,10 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import { Hono } from 'hono';
 import { eq, isNull, like, or, sql } from 'drizzle-orm';
 import { merge, object, optional, pick, string } from 'valibot';
-import { db } from '../db';
+import { adminStylesheetsPath } from '../helpers/files';
 import { idParamValidation, paginationQueryValidation, wrap } from '../helpers';
+import { db } from '../db';
 import { insertPageSchema, pages } from '../db/schema/pages';
 import { contents, insertContentSchema } from '../db/schema/contents';
 import { insertMenuLinkSchema, menuLinks } from '../db/schema/menuLinks';
@@ -71,7 +71,7 @@ export const app = new Hono()
 				.leftJoin(menuLinks, eq(menuLinks.pageId, id))
 				.leftJoin(contents, eq(contents.pageId, id))
 				.where(eq(pages.id, id)),
-			readFile(fileURLToPath(new URL(`../../public/stylesheets/${id}.css`, import.meta.url))),
+			readFile(`${adminStylesheetsPath}/${id}.css`),
 		]);
 
 		return c.json({ ...result, css: stylesheetFileData.toString() });
@@ -110,7 +110,7 @@ export const app = new Hono()
 				},
 			}),
 			css !== undefined || pageFields.id === undefined
-				? writeFile(fileURLToPath(new URL(`../../public/stylesheets/${pageId}.css`, import.meta.url)), css || '')
+				? writeFile(`${adminStylesheetsPath}/${pageId}.css`, css || '')
 				: () => {},
 		]);
 
@@ -129,7 +129,7 @@ export const app = new Hono()
 				.leftJoin(menuLinks, eq(menuLinks.pageId, pageId))
 				.leftJoin(contents, eq(contents.pageId, pageId))
 				.where(eq(pages.id, pageId)),
-			readFile(fileURLToPath(new URL(`../../public/stylesheets/${pageId}.css`, import.meta.url))),
+			readFile(`${adminStylesheetsPath}/${pageId}.css`),
 		]);
 
 		return c.json({ ...result, css: stylesheetFileData.toString() });
