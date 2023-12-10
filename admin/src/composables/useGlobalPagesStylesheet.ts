@@ -1,5 +1,4 @@
 import { ref } from 'vue';
-import { env } from '~/env';
 
 const { toast } = useToast();
 
@@ -16,7 +15,7 @@ export function useGlobalPagesStylesheet(valueFetchedCallback?: (value: string) 
 	onMounted(async () => {
 		isLoading.value = true;
 		try {
-			value.value = await fetch(`${env.VITE_API_URL}/public/stylesheets/global.css`).then(data => data.text());
+			value.value = await fetch('stylesheets/global.css').then(data => data.text());
 			initValue.value = value.value;
 			globalPagesStylesheet.innerHTML = value.value;
 			valueFetchedCallback && valueFetchedCallback(value.value);
