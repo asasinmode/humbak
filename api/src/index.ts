@@ -1,14 +1,21 @@
+import { existsSync } from 'node:fs';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { env } from './env';
-import { app as footerContentsApp } from './routes/footerContents';
+import { adminFilesPath, adminStylesheetsPath } from './helpers/files';
+import { app as pagesApp } from './routes/pages';
+import { app as slidesApp } from './routes/slides';
 import { app as globalCssApp } from './routes/globalCss';
 import { app as languagesApp } from './routes/languages';
 import { app as menuLinksApp } from './routes/menuLinks';
-import { app as pagesApp } from './routes/pages';
-import { app as slidesApp } from './routes/slides';
+import { app as footerContentsApp } from './routes/footerContents';
+
+!existsSync(adminFilesPath) && await mkdir(adminFilesPath, { recursive: true });
+!existsSync(adminStylesheetsPath) && await mkdir(adminStylesheetsPath);
+!existsSync(`${adminStylesheetsPath}/global.css`) && await writeFile(`${adminStylesheetsPath}/global.css`, '');
 
 const app = new Hono();
 
