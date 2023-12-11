@@ -4,7 +4,7 @@ import { integer, number, object, optional, string } from 'valibot';
 import { directories } from './directories';
 
 export const files = mysqlTable('files', {
-	id: int('id').primaryKey(),
+	id: int('id').primaryKey().autoincrement(),
 	parentId: int('directoryId').references((): AnyMySqlColumn => directories.id),
 	path: text('path').notNull().default(''),
 	name: text('name').notNull(),

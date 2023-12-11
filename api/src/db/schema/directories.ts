@@ -3,7 +3,7 @@ import { type AnyMySqlColumn, datetime, int, mysqlTable, text } from 'drizzle-or
 import { integer, number, object, optional, string } from 'valibot';
 
 export const directories = mysqlTable('directories', {
-	id: int('id').primaryKey(),
+	id: int('id').primaryKey().autoincrement(),
 	parentId: int('parentId').references((): AnyMySqlColumn => directories.id),
 	path: text('path').notNull().default(''),
 	name: text('name').notNull(),
