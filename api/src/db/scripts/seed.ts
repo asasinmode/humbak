@@ -1,11 +1,12 @@
-import { writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { db, pool } from '..';
 import { promptProdContinue } from '../../helpers';
-import { adminStylesheetsPath } from '../../helpers/files';
+import { adminFilesPath, adminStylesheetsPath } from '../../helpers/files';
 import { pages } from '../schema/pages';
 import { slides } from '../schema/slides';
 import { contents } from '../schema/contents';
 import { menuLinks } from '../schema/menuLinks';
+import { directories } from '../schema/directories';
 import { footerContents } from '../schema/footerContents';
 import { slideAspectRatio } from '../schema/slideAspectRatio';
 
@@ -284,5 +285,27 @@ await db.insert(footerContents).values({
 	location: { text: 'Gdzie nas znaleźć', value: 'https://goo.gl/maps/eRCtgre1uTpySr3L6' },
 	socials: [{ type: 'facebook', value: 'https://www.facebook.com/filip.perek.77' }],
 });
+
+for (let dirId = 1; dirId <= 3; dirId++) {
+	const name = `folder{dirId}`;
+	const path = `d${dirId}path`;
+	await mkdir(`${adminFilesPath}/${path}`);
+	await db.insert(directories).values({
+		name,
+		path,
+	});
+}
+
+for (let childDirId = 4; childDirId <= 6; childDirId++) {
+	const parentId = childDirId - 3;
+	const name = `zagnieżdżony-folder${childDirId}`;
+	const path = `d${parentId}path/dc${childDirId}`;
+	await mkdir(`${adminFilesPath}/${path}`);
+	await db.insert(directories).values({
+		name,
+		parentId,
+		path,
+	});
+}
 
 await pool.end();
