@@ -1,4 +1,5 @@
 import { mkdir, writeFile } from 'node:fs/promises';
+import { Buffer } from 'node:buffer';
 import { db, pool } from '..';
 import { promptProdContinue } from '../../helpers';
 import { adminFilesPath, adminStylesheetsPath } from '../../helpers/files';
@@ -9,6 +10,7 @@ import { menuLinks } from '../schema/menuLinks';
 import { directories } from '../schema/directories';
 import { footerContents } from '../schema/footerContents';
 import { slideAspectRatio } from '../schema/slideAspectRatio';
+import { files } from '../schema/files';
 
 await promptProdContinue();
 
@@ -306,6 +308,56 @@ for (let childDirId = 4; childDirId <= 6; childDirId++) {
 		parentId,
 		path,
 	});
+}
+
+const pdfBuffer = await fetch('https://www.africau.edu/images/default/sample.pdf').then(r => r.arrayBuffer()).then(v => Buffer.from(v));
+const { data: rawGifData } = await fetch('https://api.giphy.com/v1/gifs/random?api_key=7IfGSmZdSFRLfxQaPcLtpQamsqj1ySOa').then(r => r.json());
+const gifBuffer = await fetch(rawGifData.images.original.url).then(r => r.arrayBuffer()).then(v => Buffer.from(v));
+
+for (let dirId = 0; dirId <= 6; dirId++) {
+	let dirPath = '';
+
+	if (dirId > 0 && dirId <= 3) {
+		dirPath = `d${dirId}path`;
+	} else if (dirId > 3) {
+		dirPath = `d${dirId - 3}path/dc${dirId}`;
+	}
+
+	const mimetypes: [string, string, () => any][] = [
+		['image/jpeg', 'jpeg', () => {
+			const x = Math.random() < 0.5 ? 300 : 800;
+			const y = Math.random() < 0.5 ? 300 : 800;
+			return fetch(`https://picsum.photos/${x}/${y}`).then(r => r.arrayBuffer()).then(v => Buffer.from(v));
+		}],
+		['image/jpeg', 'jpeg', () => {
+			const x = Math.random() < 0.5 ? 300 : 800;
+			const y = Math.random() < 0.5 ? 300 : 800;
+			return fetch(`https://picsum.photos/${x}/${y}`).then(r => r.arrayBuffer()).then(v => Buffer.from(v));
+		}],
+		['image/gif', 'gif', () => gifBuffer],
+		['application/pdf', 'pdf', () => pdfBuffer],
+		['text/plain', 'txt', () => Math.random().toString(36)],
+	];
+
+	for (let i = 0; i < mimetypes.length; i++) {
+		const [mimetype, extension, getFile] = mimetypes[i];
+
+		const path = `${dirPath}${dirPath ? '/' : ''}plik${i}${dirId}.${extension}`;
+		const name = `nazwa ${mimetype}${i}`;
+		const title = `tytuł dla ${i}${dirId}`;
+		const alt = `alt dla ${i}${dirId}`;
+
+		await db.insert(files).values({
+			directoryId: dirId === 0 ? null : dirId,
+			path,
+			name,
+			title,
+			alt,
+			mimetype,
+		});
+
+		await writeFile(`${adminFilesPath}/${path}`, await getFile());
+	}
 }
 
 await pool.end();
