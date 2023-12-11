@@ -11,8 +11,8 @@ export const files = mysqlTable('files', {
 	title: text('title').notNull(),
 	alt: text('alt').notNull(),
 	mimetype: text('mimetype').notNull(),
-	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 	createdAt: datetime('createdAt').notNull().default(sql`NOW()`),
+	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
 export const insertDirectorySchema = object({

@@ -7,8 +7,8 @@ export const directories = mysqlTable('directories', {
 	parentId: int('parentId').references((): AnyMySqlColumn => directories.id),
 	path: text('path').notNull().default(''),
 	name: text('name').notNull(),
-	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 	createdAt: datetime('createdAt').notNull().default(sql`NOW()`),
+	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
 export const insertDirectorySchema = object({
