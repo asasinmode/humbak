@@ -12,12 +12,12 @@ export function useFilesLayoutClasses(isTiles: MaybeRef<boolean>) {
 		let restoreButton = baseButton;
 
 		if (!toValue(isTiles)) {
-			child += ' md:flex md:gap-3 md:pr-4 md:pb-0';
+			child += ' md:flex md:gap-3 md:pr-4 md:pb-0 after:-translate-y-1/2';
 			image += ' md:h-20 md:w-20';
 			input += ' md:self-auto md:mx-0';
 			deleteButton += ' md:ml-3 md:mt-auto md:mb-[0.625rem]';
 			moveButton += ' md:mt-auto md:mb-[0.625rem]';
-			restoreButton += ' md:ml-3 md:mt-auto md:mb-[0.625rem]';
+			restoreButton += ' mx-auto col-span-full md:ml-3 md:mt-auto md:mb-[0.625rem]';
 		} else {
 			deleteButton += ' mr-2';
 			moveButton += ' -ml-2';

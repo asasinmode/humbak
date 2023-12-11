@@ -37,7 +37,7 @@ const hasChanged = computed(() =>
 
 <template>
 	<div
-		class="relative of-hidden border-2 rounded-lg shadow before:(pointer-events-none absolute inset-0 z-10 border-neutral border-dashed content-empty) after:(absolute left-1/2 top-1/2 font-semibold text-neutral-5 -translate-x-1/2 dark:text-neutral-3)"
+		class="relative of-hidden border-2 rounded-lg shadow before:(pointer-events-none absolute inset-0 z-10 border-neutral border-dashed content-empty) after:(absolute left-1/2 top-1/2 font-semibold text-neutral-7 -translate-x-1/2 dark:text-neutral-3)"
 		:class="[
 			classes.child,
 			applyHoverClasses ? `hover:after:content-['przenieś_plik'] hover:before:border-3 hover:before:bg-black/10 dark:hover:before:bg-white/10` : '',
