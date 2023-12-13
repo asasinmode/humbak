@@ -107,10 +107,7 @@ async function editPage(id: number, button: HTMLButtonElement) {
 	contentEditor.value?.clear();
 
 	try {
-		const [page] = await Promise.all([
-			api.pages[':id'].$get({ param: { id: id.toString() } }).then(r => r.json()),
-			getLanguages(),
-		]);
+		const page = await api.pages[':id'].$get({ param: { id: id.toString() } }).then(r => r.json());
 		loadedPageId.value = page.id;
 		updateValues(page);
 		contentEditor.value?.updateValues(page);
