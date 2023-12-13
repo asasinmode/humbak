@@ -4,7 +4,8 @@ const props = defineProps<{
 	title: string;
 	pluralTitle: string;
 	labels: Record<keyof T, string>;
-	getItems: (offset: number, limit: number, search: string) => [T[], number] | Promise<[T[], number]>;
+	getItems: (offset: number, limit: number, search: string) =>
+		{ count: number; items: T[]; } | Promise<{ count: number; items: T[]; }>;
 	loadingItemId?: number;
 }>();
 

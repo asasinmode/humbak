@@ -2,7 +2,7 @@
 import type { ComponentExposed } from 'vue-component-type-helpers';
 
 import PagesContentEditor from '~/components/Pages/PagesContentEditor.vue';
-import VTable from '~/components/V/VTable.vue';
+import PagesTable from '~/components/Pages/PagesTable.vue';
 import VButton from '~/components/V/VButton.vue';
 import type { IUniqueLanguage } from '~/composables/useApi';
 
@@ -11,7 +11,7 @@ const { confirm } = useConfirm();
 const { toast } = useToast();
 useGlobalPagesStylesheet();
 
-const table = ref<ComponentExposed<typeof VTable>>();
+const table = ref<ComponentExposed<typeof PagesTable>>();
 const resetButton = ref<InstanceType<typeof VButton>>();
 const saveButton = ref<InstanceType<typeof VButton>>();
 const contentEditor = ref<InstanceType<typeof PagesContentEditor>>();
@@ -88,12 +88,9 @@ async function getLanguages() {
 }
 
 async function getPages(offset: number, limit: number, query: string) {
-	return Promise.all([
-		api.pages.$get({
-			query: { offset: offset.toString(), limit: limit.toString(), query },
-		}).then(r => r.json()),
-		api.pages.count.$get({ query: { query } }).then(r => r.json()).then(r => r.count),
-	]);
+	return api.pages.$get({
+		query: { offset: offset.toString(), limit: limit.toString(), query },
+	}).then(r => r.json());
 }
 
 async function editPage(id: number, button: HTMLButtonElement) {
@@ -157,7 +154,7 @@ async function clearFormAndLoadedPage() {
 
 <template>
 	<main id="content" class="px-container pb-4 pt-[1.125rem] lg:px-0">
-		<VTable
+		<PagesTable
 			id="pages"
 			ref="table"
 			title="strona"
