@@ -21,37 +21,31 @@ export const app = new Hono()
 		const limit = Math.min(rawLimit, 100);
 		const select = { id: pages.id, language: pages.language, title: pages.title, menuText: menuLinks.text };
 
-		const result = await db
-			.select(select)
-			.from(pages)
-			.leftJoin(menuLinks, eq(menuLinks.pageId, pages.id))
-			.where(query
-				? or(
-					like(pages.title, `%${query}%`),
-					like(menuLinks.text, `%${query}%`)
-				)
-				: sql`1 = 1`)
-			.orderBy(pages.id)
-			.limit(limit)
-			.offset(offset * limit);
+		const [items, [{ count }]] = await Promise.all([
+			db.select(select)
+				.from(pages)
+				.leftJoin(menuLinks, eq(menuLinks.pageId, pages.id))
+				.where(query
+					? or(
+						like(pages.title, `%${query}%`),
+						like(menuLinks.text, `%${query}%`)
+					)
+					: sql`1 = 1`)
+				.orderBy(pages.id)
+				.limit(limit)
+				.offset(offset * limit),
+			db.select({ count: sql<number>`COUNT(*)` })
+				.from(pages)
+				.leftJoin(menuLinks, eq(menuLinks.pageId, pages.id))
+				.where(query
+					? or(
+						like(pages.title, `%${query}%`),
+						like(menuLinks.text, `%${query}%`)
+					)
+					: sql`1 = 1`),
+		]);
 
-		return c.json(result);
-	})
-	.get('/count', wrap('query', pick(paginationQueryValidation, ['query'])), async (c) => {
-		const { query } = c.req.valid('query');
-
-		const result = await db
-			.select({ count: sql<number>`COUNT(*)` })
-			.from(pages)
-			.leftJoin(menuLinks, eq(menuLinks.pageId, pages.id))
-			.where(query
-				? or(
-					like(pages.title, `%${query}%`),
-					like(menuLinks.text, `%${query}%`)
-				)
-				: sql`1 = 1`);
-
-		return c.json({ count: result[0].count });
+		return c.json({ items, count });
 	})
 	.get('/:id', wrap('param', idParamValidation), async (c) => {
 		const { id } = c.req.valid('param');

@@ -56,7 +56,7 @@ async function callGetItems(resetOffset = false) {
 	previousOffset = offset.value;
 	previousLimit = limit.value;
 	try {
-		const [loadedItems, count] = await props.getItems(offset.value - 1, limit.value, search.value);
+		const { items: loadedItems, count } = await props.getItems(offset.value - 1, limit.value, search.value);
 		items.value = loadedItems;
 		total.value = count;
 	} catch (e) {
