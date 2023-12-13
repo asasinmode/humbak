@@ -6,12 +6,12 @@ import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { env } from './env';
 import { adminFilesPath, adminStylesheetsPath } from './helpers/files';
-import { app as filesApp } from './routes/files';
 import { app as pagesApp } from './routes/pages';
 import { app as slidesApp } from './routes/slides';
 import { app as globalCssApp } from './routes/globalCss';
 import { app as languagesApp } from './routes/languages';
 import { app as menuLinksApp } from './routes/menuLinks';
+import { app as directoriesApp } from './routes/directories';
 import { app as footerContentsApp } from './routes/footerContents';
 
 !existsSync(adminFilesPath) && await mkdir(adminFilesPath, { recursive: true });
@@ -39,7 +39,7 @@ const typedApp = app
 	.route('/menuLinks', menuLinksApp)
 	.route('/pages', pagesApp)
 	.route('/slides', slidesApp)
-	.route('/files', filesApp);
+	.route('/directories', directoriesApp);
 
 serve({ port: env.PORT, fetch: app.fetch }, (info) => {
 	console.log(`server listening on\x1B[36m http://localhost:${info.port}/ \x1B[0m`);
