@@ -289,7 +289,7 @@ await db.insert(footerContents).values({
 });
 
 for (let dirId = 1; dirId <= 3; dirId++) {
-	const name = `folder{dirId}`;
+	const name = `folder${dirId}`;
 	const path = `d${dirId}path`;
 	await mkdir(`${adminFilesPath}/${path}`);
 	await db.insert(directories).values({
