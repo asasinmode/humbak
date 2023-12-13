@@ -151,7 +151,7 @@ defineExpose({
 			<VCombobox
 				:id="`${id}VTableLimit`"
 				v-model.number="limit"
-				class="!hidden !min-w-14 !w-14 sm:flex"
+				class="!hidden !min-w-14 !w-14 sm:!flex"
 				class-input="!min-w-14 !w-14 neon-neutral text-center"
 				label="pokazywana ilość naraz"
 				:options="[5, 10, 15]"
