@@ -52,7 +52,7 @@ const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype]
 			<span
 				v-else
 				class="w-full h-full grid place-items-center text-center bg-black/15 hyphens-auto dark:bg-white/15 font-bold"
-				:class="isTiles ? 'text-6 p-2 tracking-wide' : 'text-3 px-1'"
+				:class="[isTiles ? 'text-6 p-2 tracking-wide' : 'text-3 px-1', disableInteractions ? 'text-neutral' : '']"
 				:title="file.title"
 				:alt="file.alt"
 			>
