@@ -38,3 +38,5 @@ export type IListedSlide = InferResponseType<Client['slides']['$get']>[number];
 export type ISlide = InferResponseType<Client['slides'][':id']['$get']>;
 export type IUpsertPageInput = InferRequestType<Client['pages']['$post']>['json'];
 export type IFooterContents = InferResponseType<Client['footerContents']['$get']>;
+export type IDirectory = InferResponseType<Client['directories']['$get']>[number];
+export type IFile = InferResponseType<Client['directories'][':id']['$get']>['files'][number];

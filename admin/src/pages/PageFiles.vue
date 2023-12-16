@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import VDialog from '~/components/V/VDialog.vue';
-import type { IDir, IFile, IFilesGrabbedItem, ILocalDir, ILocalFile, INewFile } from '~/types';
+import type { IDirectory, IFile } from '~/composables/useApi';
+import type { IFilesGrabbedItem, ILocalDirectory, ILocalFile, INewFile } from '~/types';
 
+const api = useApi();
 const { toast, toastGenericError } = useToast();
 
 const isTiles = ref(true);
@@ -17,31 +19,21 @@ const classContainer = computed(() => {
 
 const isLoading = ref(false);
 const currentDir = ref<number | null>(null);
-const allDirectories = ref<IDir[]>([]);
+const allDirectories = ref<IDirectory[]>([]);
 
-const currentDirDirs = ref<ILocalDir[]>([]);
+const currentDirDirs = ref<ILocalDirectory[]>([]);
 const currentDirFiles = ref<ILocalFile[]>([]);
-const originalCurrentDirDirs = shallowRef<IDir[]>([]);
+const originalCurrentDirDirs = shallowRef<IDirectory[]>([]);
 const originalCurrentDirFiles = shallowRef<IFile[]>([]);
 
 const newFiles = ref<INewFile[]>([]);
 
-onMounted(async () => {
-	const dirs = [
-		{ id: 1, parentId: null, name: 'temp', path: 'temp' },
-		{ id: 2, parentId: null, name: 'other temp', path: 'other temp' },
-		{ id: 3, parentId: null, name: 'different temp', path: 'different temp' },
-	];
-	allDirectories.value = dirs.map(dir => structuredClone(dir));
-	currentDirDirs.value = dirs.map(dir => structuredClone(dir));
-	originalCurrentDirDirs.value = dirs.map(dir => structuredClone(dir));
-
-	originalCurrentDirFiles.value = await getDirFiles();
-	currentDirFiles.value = originalCurrentDirFiles.value.map(file => structuredClone(toValue(file)));
-});
-
 const isSavingDir = ref(false);
 const newDirName = ref('');
+
+onMounted(async () => {
+	console.log('mounted have to load');
+});
 
 async function createDir() {
 	if (!newDirName.value) {
@@ -55,18 +47,20 @@ async function createDir() {
 			id: allDirectories.value.length + 1,
 			parentId: currentDir.value,
 			name: newDirName.value,
-			path: newDirName.value,
 		};
-		currentDirDirs.value.push(newFile);
-		allDirectories.value.push(structuredClone(newFile));
-		originalCurrentDirDirs.value.push(structuredClone(newFile));
+		console.log('will create dir', newDirName.value, newFile);
+
+		// currentDirDirs.value.push(newFile);
+		// allDirectories.value.push(structuredClone(newFile));
+		// originalCurrentDirDirs.value.push(structuredClone(newFile));
+
+		newDirName.value = '';
 	} catch (e) {
 		toast('błąd przy tworzeniu folderu', 'error');
 		console.error(e);
 	} finally {
 		isSavingDir.value = false;
 	}
-	newDirName.value = '';
 }
 
 function deleteDir(index: number) {
@@ -122,7 +116,7 @@ function handleFileDrop(event: DragEvent) {
 			title: '',
 			alt: '',
 			name: '',
-			src: URL.createObjectURL(file),
+			path: URL.createObjectURL(file),
 			mimetype: file.type,
 			file,
 		});
@@ -139,35 +133,42 @@ function handleFileInput(event: Event) {
 			title: '',
 			alt: '',
 			name: '',
-			src: URL.createObjectURL(file),
+			path: URL.createObjectURL(file),
 			mimetype: file.type,
 			file,
 		});
 	}
 }
 
-async function getDirFiles() {
+async function getDirectories() {
+	isLoading.value = true;
+
+	try {
+		const directories = await api.directories.$get().then(r => r.json());
+		allDirectories.value = directories;
+	} catch (e) {
+		console.error(e);
+		toast('błąd przy ładowaniu folderów', 'error');
+	} finally {
+		isLoading.value = false;
+	}
+}
+
+async function getDir(id: number | null) {
 	isLoading.value = true;
 	await new Promise(resolve => setTimeout(resolve, 500));
 
-	let fileId = 1;
-	const files: IFile[] = [];
+	isLoading.value = true;
 
-	for (let i = 0; i < 8; i++) {
-		const text = `file${fileId}`;
-		const random = Math.random();
-		const src = random <= 0.33
-			? `https://picsum.photos/${500 + fileId}`
-			: random <= 0.66
-				? `https://picsum.photos/${400 + fileId}/${600 - fileId}`
-				: `https://picsum.photos/${600 + fileId}/${400 - fileId}`;
-
-		files.push({ id: fileId, parentId: null, title: text, alt: text, name: text, src, mimetype: 'image/png' });
-		fileId += 1;
+	try {
+		const { files, directories } = await api.directories[':id'].$get({ param: { id: `${id}` } }).then(r => r.json());
+		console.log('loaded', files, directories);
+	} catch (e) {
+		console.error(e);
+		toast('błąd przy ładowaniu plików', 'error');
+	} finally {
+		isLoading.value = false;
 	}
-
-	isLoading.value = false;
-	return files;
 }
 
 const container = ref<HTMLElement>();
@@ -180,12 +181,12 @@ const dialog = ref<InstanceType<typeof VDialog>>();
 const dialogActivator = ref<HTMLButtonElement>();
 const dialogTargetId = ref<number | null>();
 const dialogSearch = ref('');
-const dialogAllDirs = computed<IDir[]>(() => {
+const dialogAllDirs = computed<IDirectory[]>(() => {
 	if (!grabbedItem.value) {
 		return [];
 	}
 
-	const matchingSearch: IDir[] = [];
+	const matchingSearch: IDirectory[] = [];
 	for (const dir of allDirectories.value) {
 		if (!dialogSearch.value || dir.name.includes(dialogSearch.value)) {
 			matchingSearch.push(dir);
@@ -463,7 +464,7 @@ async function saveChanges() {
 			/>
 			<FilesFileItem
 				v-for="(file, index) in newFiles"
-				:key="file.src"
+				:key="file.path"
 				v-model="newFiles[index]"
 				:index="index"
 				:is-tiles="isTiles"
