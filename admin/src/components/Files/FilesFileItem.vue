@@ -17,7 +17,7 @@ defineEmits<{
 }>();
 
 const knownMimetypeExtensions: Record<string, string> = {
-	// 'application/pdf': 'pdf',
+	'application/pdf': 'pdf',
 	'text/plain': 'txt',
 };
 
@@ -53,7 +53,13 @@ const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype]
 				class="h-full w-full object-cover"
 				:class="disableInteractions ? 'grayscale-100 brightness-60' : ''"
 			>
-			<span class="w-full h-full grid place-items-center" :title="file.title" :alt="file.alt">
+			<span
+				v-else
+				class="w-full h-full grid place-items-center text-center bg-black/15 hyphens-auto dark:bg-white/15 font-bold"
+				:class="isTiles ? 'text-6 p-2 tracking-wide' : 'text-3 px-1'"
+				:title="file.title"
+				:alt="file.alt"
+			>
 				{{ nonImageText }}
 			</span>
 			<div v-if="(file as ILocalFile).isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow" />
