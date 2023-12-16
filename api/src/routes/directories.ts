@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { eq, isNull } from 'drizzle-orm';
 import { custom, object, string, transform } from 'valibot';
 import { directories } from '../db/schema/directories';
+import { files } from '../db/schema/files';
 import { wrap } from '../helpers';
 import { db } from '../db';
 
@@ -37,16 +38,33 @@ export const app = new Hono()
 		async (c) => {
 			const { id } = c.req.valid('param');
 
-			const result = await db
-				.select({
-					id: directories.id,
-					parentId: directories.parentId,
-					name: directories.name,
-				})
-				.from(directories)
-				.where(id === null ? isNull(directories.parentId) : eq(directories.parentId, id));
+			const [foundDirectories, foundFiles] = await Promise.all([
+				db
+					.select({
+						id: directories.id,
+						parentId: directories.parentId,
+						name: directories.name,
+					})
+					.from(directories)
+					.where(id === null ? isNull(directories.parentId) : eq(directories.parentId, id)),
+				db
+					.select({
+						id: files.id,
+						directoryId: files.directoryId,
+						path: files.path,
+						name: files.name,
+						title: files.title,
+						alt: files.alt,
+						mimetype: files.mimetype,
+					})
+					.from(files)
+					.where(id === null ? isNull(files.directoryId) : eq(files.directoryId, id)),
+			]);
 
-			return c.json(result);
+			return c.json({
+				directories: foundDirectories,
+				files: foundFiles,
+			});
 		}
 	);
 
