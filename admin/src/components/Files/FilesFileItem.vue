@@ -16,6 +16,11 @@ defineEmits<{
 	openDialog: [number, KeyboardEvent, boolean, boolean];
 }>();
 
+const knownMimetypeExtensions: Record<string, string> = {
+	// 'application/pdf': 'pdf',
+	'text/plain': 'txt',
+};
+
 const file = defineModel<ILocalFile | INewFile>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 
@@ -29,7 +34,9 @@ const hasChanged = computed(() =>
 	|| props.originalFile.alt !== file.value.alt
 	|| props.originalFile.name !== file.value.name
 );
+const isImage = computed(() => file.value.mimetype.slice(0, 5) === 'image');
 const path = computed(() => isNew.value ? file.value.path : `public/files/${file.value.path}`);
+const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype] || file.value.mimetype);
 </script>
 
 <template>
@@ -39,12 +46,16 @@ const path = computed(() => isNew.value ? file.value.path : `public/files/${file
 	>
 		<div class="relative" :class="classes.image">
 			<img
+				v-if="isImage"
 				:src="path"
 				:title="file.title"
 				:alt="file.alt"
 				class="h-full w-full object-cover"
 				:class="disableInteractions ? 'grayscale-100 brightness-60' : ''"
 			>
+			<span class="w-full h-full grid place-items-center" :title="file.title" :alt="file.alt">
+				{{ nonImageText }}
+			</span>
 			<div v-if="(file as ILocalFile).isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow" />
 			<div v-if="hasMoved" class="i-solar-move-to-folder-bold absolute left-1/2 top-1/2 h-full w-full translate-center text-blue drop-shadow" />
 		</div>
