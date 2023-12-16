@@ -32,7 +32,9 @@ const isSavingDir = ref(false);
 const newDirName = ref('');
 
 onMounted(async () => {
-	console.log('mounted have to load');
+	isLoading.value = true;
+	await Promise.all([getDirectories(), getDir(null, true)]);
+	isLoading.value = false;
 });
 
 async function createDir() {
@@ -141,24 +143,19 @@ function handleFileInput(event: Event) {
 }
 
 async function getDirectories() {
-	isLoading.value = true;
-
 	try {
 		const directories = await api.directories.$get().then(r => r.json());
 		allDirectories.value = directories;
 	} catch (e) {
 		console.error(e);
 		toast('błąd przy ładowaniu folderów', 'error');
-	} finally {
-		isLoading.value = false;
 	}
 }
 
-async function getDir(id: number | null) {
-	isLoading.value = true;
-	await new Promise(resolve => setTimeout(resolve, 500));
-
-	isLoading.value = true;
+async function getDir(id: number | null, skipLoadingIndicator = false) {
+	if (!skipLoadingIndicator) {
+		isLoading.value = true;
+	}
 
 	try {
 		const { files, directories } = await api.directories[':id'].$get({ param: { id: `${id}` } }).then(r => r.json());
@@ -167,7 +164,9 @@ async function getDir(id: number | null) {
 		console.error(e);
 		toast('błąd przy ładowaniu plików', 'error');
 	} finally {
-		isLoading.value = false;
+		if (!skipLoadingIndicator) {
+			isLoading.value = false;
+		}
 	}
 }
 
@@ -397,6 +396,7 @@ async function saveChanges() {
 			<VButton
 				class="mr-12 h-fit md:mr-container neon-green"
 				:is-loading="isSaving"
+				:disabled="isLoading"
 				@click="saveChanges"
 			>
 				zapisz
