@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { IFile, IFilesGrabbedItem, ILocalFile, INewFile } from '~/types';
+import type { IFile } from '~/composables/useApi';
+import type { IFilesGrabbedItem, ILocalFile, INewFile } from '~/types';
 
 const props = defineProps<{
 	index: number;
@@ -28,6 +29,7 @@ const hasChanged = computed(() =>
 	|| props.originalFile.alt !== file.value.alt
 	|| props.originalFile.name !== file.value.name
 );
+const path = computed(() => isNew.value ? file.value.path : `public/files/${file.value.path}`);
 </script>
 
 <template>
@@ -37,7 +39,7 @@ const hasChanged = computed(() =>
 	>
 		<div class="relative" :class="classes.image">
 			<img
-				:src="file.src"
+				:src="path"
 				:title="file.title"
 				:alt="file.alt"
 				class="h-full w-full object-cover"
@@ -89,7 +91,7 @@ const hasChanged = computed(() =>
 			<VButton
 				class="w-fit neon-blue"
 				:class="classes.moveButton"
-				@mousedown.left="$emit('move', index, $event, isNew, file.src)"
+				@mousedown.left="$emit('move', index, $event, isNew, path)"
 				@keydown.enter.prevent="$emit('openDialog', index, $event, false, isNew)"
 				@keydown.space.prevent="$emit('openDialog', index, $event, false, isNew)"
 			>
