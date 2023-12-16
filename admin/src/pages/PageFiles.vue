@@ -159,7 +159,12 @@ async function getDir(id: number | null, skipLoadingIndicator = false) {
 
 	try {
 		const { files, directories } = await api.directories[':id'].$get({ param: { id: `${id}` } }).then(r => r.json());
-		console.log('loaded', files, directories);
+
+		originalCurrentDirDirs.value = directories.map(dir => structuredClone(dir));
+		currentDirDirs.value = directories.map(dir => structuredClone(dir));
+
+		originalCurrentDirFiles.value = files.map(file => structuredClone(file));
+		currentDirFiles.value = files.map(file => structuredClone(file));
 	} catch (e) {
 		console.error(e);
 		toast('błąd przy ładowaniu plików', 'error');
