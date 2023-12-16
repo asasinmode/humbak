@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { knownMimetypeExtensions } from '~/helpers';
 import type { IFile } from '~/composables/useApi';
 import type { IFilesGrabbedItem, ILocalFile, INewFile } from '~/types';
 
@@ -15,11 +16,6 @@ defineEmits<{
 	move: [number, MouseEvent, boolean, string];
 	openDialog: [number, KeyboardEvent, boolean, boolean];
 }>();
-
-const knownMimetypeExtensions: Record<string, string> = {
-	'application/pdf': 'pdf',
-	'text/plain': 'txt',
-};
 
 const file = defineModel<ILocalFile | INewFile>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
