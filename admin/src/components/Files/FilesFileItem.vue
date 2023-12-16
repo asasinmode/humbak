@@ -13,7 +13,7 @@ const props = defineProps<{
 defineEmits<{
 	delete: [number, boolean];
 	restore: [number];
-	move: [number, MouseEvent, boolean, string];
+	move: [number, MouseEvent, string, boolean, string, string];
 	openDialog: [number, KeyboardEvent, boolean, boolean];
 }>();
 
@@ -104,7 +104,7 @@ const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype]
 			<VButton
 				class="w-fit neon-blue"
 				:class="classes.moveButton"
-				@mousedown.left="$emit('move', index, $event, isNew, path)"
+				@mousedown.left="$emit('move', index, $event, file.mimetype, isNew, path, file.name)"
 				@keydown.enter.prevent="$emit('openDialog', index, $event, false, isNew)"
 				@keydown.space.prevent="$emit('openDialog', index, $event, false, isNew)"
 			>

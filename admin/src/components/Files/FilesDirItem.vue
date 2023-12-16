@@ -13,7 +13,7 @@ const props = defineProps<{
 defineEmits<{
 	delete: [number];
 	restore: [number];
-	move: [number, MouseEvent, boolean];
+	move: [number, MouseEvent, string, boolean];
 	openDialog: [number, KeyboardEvent, boolean];
 }>();
 
@@ -88,7 +88,7 @@ const hasChanged = computed(() =>
 			<VButton
 				class="w-fit neon-blue"
 				:class="classes.moveButton"
-				@mousedown.left="$emit('move', index, $event, false)"
+				@mousedown.left="$emit('move', index, $event, 'directory', false)"
 				@keydown.enter.prevent="$emit('openDialog', index, $event, true)"
 				@keydown.space.prevent="$emit('openDialog', index, $event, true)"
 			>

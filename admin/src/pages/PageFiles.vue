@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { knownMimetypeExtensions } from '~/helpers';
 import VDialog from '~/components/V/VDialog.vue';
 import type { IDirectory, IFile } from '~/composables/useApi';
 import type { IFilesGrabbedItem, ILocalDirectory, ILocalFile, INewFile } from '~/types';
@@ -210,7 +211,7 @@ const dialogAllDirs = computed<IDirectory[]>(() => {
 	return rv;
 });
 
-function grabFile(index: number, event: MouseEvent, isNew?: boolean, src?: string) {
+function grabFile(index: number, event: MouseEvent, mimetype: string, isNew?: boolean, src?: string, name?: string) {
 	if (!event.target) {
 		throw new Error('grab file event has no target');
 	}
@@ -219,7 +220,7 @@ function grabFile(index: number, event: MouseEvent, isNew?: boolean, src?: strin
 	grabbedItem.value = {
 		index,
 		isNew,
-		isDir: !src,
+		isDir: mimetype === 'directory',
 	};
 	dialogActivator.value = event.target as HTMLButtonElement;
 	document.addEventListener('mouseup', moveFileOrOpenFiles);
@@ -228,7 +229,7 @@ function grabFile(index: number, event: MouseEvent, isNew?: boolean, src?: strin
 		if (!grabbedItem.value) {
 			return;
 		}
-		grabPreviewElement.value = createPreviewElement(event.clientX, event.clientY, src);
+		grabPreviewElement.value = createPreviewElement(event.clientX, event.clientY, mimetype, src, name);
 		document.addEventListener('mousemove', movePreview);
 	}, 150);
 }
@@ -295,7 +296,7 @@ function movePreview(event: MouseEvent) {
 	grabPreviewElement.value.style.top = `${event.clientY}px`;
 }
 
-function createPreviewElement(x: number, y: number, src?: string) {
+function createPreviewElement(x: number, y: number, mimetype: string, src?: string, name?: string) {
 	if (!container.value) {
 		throw new Error('create preview element called without container');
 	}
@@ -310,15 +311,19 @@ function createPreviewElement(x: number, y: number, src?: string) {
 	element.style.pointerEvents = 'none';
 	element.ariaHidden = 'true';
 
-	const child = document.createElement(src ? 'img' : 'div');
+	const nodeType = src && mimetype.slice(0, 5) === 'image' ? 'img' : 'div';
+	const child = document.createElement(nodeType);
 	child.style.width = '100%';
 	child.style.height = '100%';
 
-	if (src) {
-		(child as HTMLImageElement).src = src;
+	if (nodeType === 'img') {
+		(child as HTMLImageElement).src = src as string;
 		child.style.objectFit = 'cover';
+	} else if (mimetype === 'directory') {
+		child.className = 'i-solar-folder-with-files-bold';
 	} else {
-		child.className = 'i-solar-folder-with-files-bold ';
+		child.className = 'grid place-items-center text-center bg-black/15 hyphens-auto dark:bg-white/15 tracking-wide text-3 p-1';
+		child.textContent = name || knownMimetypeExtensions[mimetype] || mimetype;
 	}
 
 	element.appendChild(child);
