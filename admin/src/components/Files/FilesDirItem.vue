@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import type { IDir, IFilesGrabbedItem, ILocalDir } from '~/types';
+import type { IDirectory } from '~/composables/useApi';
+import type { IFilesGrabbedItem, ILocalDirectory } from '~/types';
 
 const props = defineProps<{
 	isTiles: boolean;
 	index: number;
 	isGrabbing: boolean;
 	grabbedItem?: IFilesGrabbedItem;
-	originalDir?: IDir;
+	originalDir?: IDirectory;
 }>();
 
 defineEmits<{
@@ -16,7 +17,7 @@ defineEmits<{
 	openDialog: [number, KeyboardEvent, boolean];
 }>();
 
-const dir = defineModel<ILocalDir>({ required: true });
+const dir = defineModel<ILocalDirectory>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 
 const hasMoved = computed(() => dir.value.movedToId !== undefined);
