@@ -15,6 +15,7 @@ defineEmits<{
 	restore: [number];
 	move: [number, MouseEvent, string, boolean];
 	openDialog: [number, KeyboardEvent, boolean];
+	goTo: [number];
 }>();
 
 const dir = defineModel<ILocalDirectory>({ required: true });
@@ -70,7 +71,7 @@ const hasChanged = computed(() =>
 			:class="classes.input"
 			:disabled="disableInteractions"
 		/>
-		<VButton class="neon-green" :class="classes.goToDirButton" :disabled="disableInteractions">
+		<VButton class="neon-green" :class="classes.goToDirButton" :disabled="disableInteractions" @click="$emit('goTo', dir.id)">
 			przejdź do
 		</VButton>
 		<VButton v-if="dir.isBeingDeleted" class="neon-yellow row-span-2" :class="classes.restoreButton" @click="$emit('restore', index)">

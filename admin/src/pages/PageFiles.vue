@@ -5,6 +5,8 @@ import type { IDirectory, IFile } from '~/composables/useApi';
 import type { IFilesGrabbedItem, ILocalDirectory, ILocalFile, INewFile } from '~/types';
 
 const api = useApi();
+const route = useRoute();
+const router = useRouter();
 const { toast, toastGenericError } = useToast();
 
 const isTiles = ref(true);
@@ -35,12 +37,23 @@ const newDirName = ref('');
 onMounted(async () => {
 	isLoading.value = true;
 
-	const rawDir = useRoute().query.dir;
+	const rawDir = route.query.dir;
 	const parsedDir = Number.parseInt(`${rawDir}`);
 	const dir = Number.isNaN(parsedDir) ? null : parsedDir;
 
 	await Promise.all([getDirectories(), getDir(dir, true)]);
 	isLoading.value = false;
+});
+
+watch(() => route.query, () => {
+	const rawDir = route.query.dir;
+	const parsedDir = Number.parseInt(`${rawDir}`);
+	const dir = Number.isNaN(parsedDir) ? null : parsedDir;
+
+	if (currentDir.value !== dir) {
+		currentDir.value = dir;
+		getDir(dir);
+	}
 });
 
 async function createDir() {
@@ -125,8 +138,8 @@ function handleFileDrop(event: DragEvent) {
 			alt: '',
 			name: '',
 			path: URL.createObjectURL(file),
-			mimetype: file.type,
 			file,
+			mimetype: file.type,
 		});
 	}
 }
@@ -479,6 +492,7 @@ async function saveChanges() {
 				@restore="restoreDir"
 				@move="grabFile"
 				@open-dialog="openFilesDialog"
+				@go-to="router.push({ query: { dir: $event } })"
 			/>
 			<FilesFileItem
 				v-for="(file, index) in newFiles"
