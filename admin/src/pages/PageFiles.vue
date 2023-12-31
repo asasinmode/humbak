@@ -34,7 +34,12 @@ const newDirName = ref('');
 
 onMounted(async () => {
 	isLoading.value = true;
-	await Promise.all([getDirectories(), getDir(null, true)]);
+
+	const rawDir = useRoute().query.dir;
+	const parsedDir = Number.parseInt(`${rawDir}`);
+	const dir = Number.isNaN(parsedDir) ? null : parsedDir;
+
+	await Promise.all([getDirectories(), getDir(dir, true)]);
 	isLoading.value = false;
 });
 
