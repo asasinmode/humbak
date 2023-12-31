@@ -213,6 +213,7 @@ const dialogAllDirs = computed<IDirectory[]>(() => {
 
 function grabFile(index: number, event: MouseEvent, mimetype: string, isNew?: boolean, src?: string, name?: string) {
 	if (!event.target) {
+		toastGenericError();
 		throw new Error('grab file event has no target');
 	}
 
@@ -236,6 +237,7 @@ function grabFile(index: number, event: MouseEvent, mimetype: string, isNew?: bo
 
 function openFilesDialog(index: number, event: KeyboardEvent, isDir: boolean, isNew?: boolean) {
 	if (!event.target) {
+		toastGenericError();
 		throw new Error('open files dialog event has no target');
 	}
 	mouseDownTimestamp = undefined;
@@ -298,6 +300,7 @@ function movePreview(event: MouseEvent) {
 
 function createPreviewElement(x: number, y: number, mimetype: string, src?: string, name?: string) {
 	if (!container.value) {
+		toastGenericError();
 		throw new Error('create preview element called without container');
 	}
 
