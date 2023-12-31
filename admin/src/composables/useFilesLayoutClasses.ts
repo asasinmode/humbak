@@ -10,20 +10,23 @@ export function useFilesLayoutClasses(isTiles: MaybeRef<boolean>) {
 		let deleteButton = baseButton;
 		let moveButton = baseButton;
 		let restoreButton = baseButton;
+		let goToDirButton = 'col-span-full row-span-2 mx-3 self-start';
 
-		if (!toValue(isTiles)) {
+		if (toValue(isTiles)) {
+			deleteButton += ' mr-2';
+			moveButton += ' -ml-2';
+			restoreButton += ' mx-auto col-span-full';
+			goToDirButton += ' md:mt-[1.625rem]';
+		} else {
 			child += ' md:flex md:gap-3 md:pr-4 md:pb-0 after:-translate-y-1/2';
 			image += ' md:h-20 md:w-20';
 			input += ' md:self-auto md:mx-0';
 			deleteButton += ' md:ml-3 md:mt-auto md:mb-[0.625rem]';
 			moveButton += ' md:mt-auto md:mb-[0.625rem]';
 			restoreButton += ' mx-auto col-span-full md:ml-3 md:mt-auto md:mb-[0.625rem]';
-		} else {
-			deleteButton += ' mr-2';
-			moveButton += ' -ml-2';
-			restoreButton += ' mx-auto col-span-full';
+			goToDirButton += ' md:mt-auto md:mb-[0.625rem] md:mx-0';
 		}
 
-		return { child, image, input, deleteButton, moveButton, restoreButton };
+		return { child, image, input, deleteButton, moveButton, restoreButton, goToDirButton };
 	});
 }

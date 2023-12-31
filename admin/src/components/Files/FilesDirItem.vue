@@ -66,12 +66,14 @@ const hasChanged = computed(() =>
 		<VInput
 			:id="`dir${dir.id}name`"
 			v-model="dir.name"
-			class="row-span-3"
 			label="nazwa"
 			:class="classes.input"
 			:disabled="disableInteractions"
 		/>
-		<VButton v-if="dir.isBeingDeleted" class="neon-yellow" :class="classes.restoreButton" @click="$emit('restore', index)">
+		<VButton class="neon-green" :class="classes.goToDirButton" :disabled="disableInteractions">
+			przejdź do
+		</VButton>
+		<VButton v-if="dir.isBeingDeleted" class="neon-yellow row-span-2" :class="classes.restoreButton" @click="$emit('restore', index)">
 			przywróć
 		</VButton>
 		<VButton v-else-if="hasMoved" class="neon-yellow" :class="classes.restoreButton" @click="dir.movedToId = undefined">
