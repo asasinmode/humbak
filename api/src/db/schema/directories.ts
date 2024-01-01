@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { type AnyMySqlColumn, datetime, int, mysqlTable, text } from 'drizzle-orm/mysql-core';
-import { integer, number, object, optional, string } from 'valibot';
+import { null_, number, object, string, union } from 'valibot';
 
 export const directories = mysqlTable('directories', {
 	id: int('id').primaryKey().autoincrement(),
@@ -12,7 +12,6 @@ export const directories = mysqlTable('directories', {
 });
 
 export const insertDirectorySchema = object({
-	parentId: optional(number([integer()])),
+	parentId: union([number(), null_()]),
 	name: string(),
-	path: optional(string()),
 });

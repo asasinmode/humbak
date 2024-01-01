@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { type AnyMySqlColumn, datetime, int, mysqlTable, text } from 'drizzle-orm/mysql-core';
-import { integer, number, object, optional, string } from 'valibot';
+import { minLength, null_, number, object, string, union } from 'valibot';
 import { directories } from './directories';
 
 export const files = mysqlTable('files', {
@@ -15,8 +15,10 @@ export const files = mysqlTable('files', {
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
-export const insertDirectorySchema = object({
-	parentId: optional(number([integer()])),
+export const insertFileSchema = object({
+	directoryId: union([number(), null_()]),
 	name: string(),
-	path: optional(string()),
+	alt: string(),
+	title: string(),
+	mimetype: string([minLength(1)]),
 });
