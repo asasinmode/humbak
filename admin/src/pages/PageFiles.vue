@@ -582,10 +582,13 @@ async function saveChanges() {
 			isSaving.value = false;
 			return;
 		}
+	} else {
+		toast('zapisano zmiany');
 	}
 
 	await new Promise(resolve => setTimeout(resolve, 500));
 	toast('zuploadowano pliki');
+	isSaving.value = false;
 }
 </script>
 
