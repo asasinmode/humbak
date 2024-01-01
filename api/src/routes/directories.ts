@@ -25,7 +25,7 @@ export const app = new Hono()
 			.insert(directories)
 			.values(input);
 
-		const result = await db
+		const [result] = await db
 			.select({
 				id: directories.id,
 				parentId: directories.parentId,

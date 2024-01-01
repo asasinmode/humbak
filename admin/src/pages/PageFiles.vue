@@ -94,17 +94,14 @@ async function createDir() {
 
 	isSavingDir.value = true;
 	try {
-		await new Promise(resolve => setTimeout(resolve, 250));
-		const newDir = {
-			id: allDirectories.value.length + 1,
-			parentId: currentDir.value,
+		const directory = await api.directories.$post({ json: {
+			parentId: currentDirId.value,
 			name: newDirName.value,
-		};
-		console.log('will create dir', newDirName.value, newDir);
+		} }).then(res => res.json());
 
-		// currentDirDirs.value.push(newFile);
-		// allDirectories.value.push(structuredClone(newFile));
-		// originalCurrentDirDirs.value.push(structuredClone(newFile));
+		allDirectories.value.push(structuredClone(directory));
+		currentDirDirs.value.push(structuredClone(directory));
+		originalCurrentDirDirs.value.push(structuredClone(directory));
 
 		newDirName.value = '';
 	} catch (e) {

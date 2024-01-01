@@ -15,7 +15,7 @@ defineEmits<{
 	restore: [number];
 	move: [number, MouseEvent, string, boolean];
 	openDialog: [number, KeyboardEvent, boolean];
-	goTo: [number];
+	goTo: [number, MouseEvent];
 }>();
 
 const dir = defineModel<ILocalDirectory>({ required: true });
