@@ -441,8 +441,8 @@ async function saveChanges() {
 
 <template>
 	<main id="content" class="flex flex-col gap-x-3 gap-y-5 pb-4 pt-[1.125rem]">
-		<div class="mx-auto max-w-360 w-full items-center flex gap-x-3 px-container md:px-0">
-			<p class="mr-auto text-lg text-neutral-3">
+		<div class="mx-auto max-w-360 w-full flex gap-x-3 px-container md:px-0">
+			<p class="mr-auto text-lg dark:text-neutral-3 text-neutral-5 md:ml-container self-center">
 				<template v-for="{ query, isActive, text } in pathBreadcrumbs" :key="text">
 					<RouterLink
 						:to="{ query }"
@@ -451,7 +451,8 @@ async function saveChanges() {
 					>
 						{{ text }}
 					</RouterLink>
-					<span v-if="!isActive" class="i-fa6-solid-angle-right inline-block w-3 h-3 mx-1" />
+					<br v-if="!isActive" class="sm:hidden">
+					<span v-if="!isActive" class="i-fa6-solid-angle-right inline-block w-3 h-3 mr-1 -ml-[0.125rem] sm:ml-1" />
 				</template>
 			</p>
 			<VButton class="hidden h-9 w-9 shrink-0 md:flex neon-blue" title="widok plików: kafelki" @click="isTiles = true">
