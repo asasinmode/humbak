@@ -6,6 +6,6 @@ const dirname = fileURLToPath(new URL('../..', import.meta.url));
 
 const adminPublicPath = join(dirname, env.ADMIN_PUBLIC_PATH);
 
-export const adminFilesPath = `${adminPublicPath}/files`;
+export const adminFilesPath = join(adminPublicPath, 'files');
 
-export const adminStylesheetsPath = `${adminPublicPath}/stylesheets`;
+export const adminStylesheetsPath = join(adminPublicPath, 'stylesheets');
