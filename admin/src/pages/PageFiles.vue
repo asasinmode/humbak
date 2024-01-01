@@ -517,7 +517,7 @@ function hasChanged() {
 async function goToDir(id: number | null) {
 	console.log('going to dir', id);
 
-	if (hasChanged()) {
+	if (id !== currentDirId.value && hasChanged()) {
 		console.log('stuff changed gotta prompt');
 	}
 
