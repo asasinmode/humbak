@@ -21,7 +21,6 @@ const classContainer = computed(() => {
 });
 
 const isLoading = ref(false);
-const currentDir = ref<number | null>(null);
 const allDirectories = ref<IDirectory[]>([]);
 
 const currentDirDirs = ref<ILocalDirectory[]>([]);
@@ -34,26 +33,22 @@ const newFiles = ref<INewFile[]>([]);
 const isSavingDir = ref(false);
 const newDirName = ref('');
 
-onMounted(async () => {
-	isLoading.value = true;
-
+const currentDir = computed(() => {
 	const rawDir = route.query.dir;
 	const parsedDir = Number.parseInt(`${rawDir}`);
 	const dir = Number.isNaN(parsedDir) ? null : parsedDir;
 
-	await Promise.all([getDirectories(), getDir(dir, true)]);
-	isLoading.value = false;
+	return dir === 0 ? null : dir;
 });
 
-watch(() => route.query, () => {
-	const rawDir = route.query.dir;
-	const parsedDir = Number.parseInt(`${rawDir}`);
-	const dir = Number.isNaN(parsedDir) ? null : parsedDir;
+watch(currentDir, () => {
+	getDir(currentDir.value);
+});
 
-	if (currentDir.value !== dir) {
-		currentDir.value = dir;
-		getDir(dir);
-	}
+onMounted(async () => {
+	isLoading.value = true;
+	await Promise.all([getDirectories(), getDir(currentDir.value, true)]);
+	isLoading.value = false;
 });
 
 async function createDir() {
@@ -64,12 +59,12 @@ async function createDir() {
 	isSavingDir.value = true;
 	try {
 		await new Promise(resolve => setTimeout(resolve, 250));
-		const newFile = {
+		const newDir = {
 			id: allDirectories.value.length + 1,
 			parentId: currentDir.value,
 			name: newDirName.value,
 		};
-		console.log('will create dir', newDirName.value, newFile);
+		console.log('will create dir', newDirName.value, newDir);
 
 		// currentDirDirs.value.push(newFile);
 		// allDirectories.value.push(structuredClone(newFile));
@@ -413,7 +408,10 @@ async function saveChanges() {
 
 <template>
 	<main id="content" class="flex flex-col gap-x-3 gap-y-5 pb-4 pt-[1.125rem]">
-		<div class="mx-auto max-w-360 w-full flex justify-end gap-x-3 px-container md:px-0">
+		<div class="mx-auto max-w-360 w-full flex gap-x-3 px-container md:px-0">
+			<p class="mr-auto">
+				{{ `${currentDir}` }}
+			</p>
 			<VButton class="hidden h-9 w-9 shrink-0 md:flex neon-blue" title="widok plików: kafelki" @click="isTiles = true">
 				<span class="visually-hidden">widok plików: kafelki</span>
 				<div class="i-fluent-grid-20-regular absolute left-1/2 top-1/2 h-[1.125rem] w-[1.125rem] translate-center" />
