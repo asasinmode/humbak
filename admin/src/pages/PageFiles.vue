@@ -34,20 +34,53 @@ const isSavingDir = ref(false);
 const newDirName = ref('');
 
 const currentDir = computed(() => {
-	const rawDir = route.query.dir;
-	const parsedDir = Number.parseInt(`${rawDir}`);
-	const dir = Number.isNaN(parsedDir) ? null : parsedDir;
+	if (!allDirectories.value.length) {
+		return undefined;
+	}
 
-	return dir === 0 ? null : dir;
+	const rawId = route.query.dir;
+	const parsedId = Number.parseInt(`${rawId}`);
+	const id = Number.isNaN(parsedId) ? null : parsedId;
+
+	if (id === 0) {
+		return undefined;
+	}
+
+	return allDirectories.value.find(dir => dir.id === id);
 });
 
+const currentDirId = computed(() => currentDir.value?.id || null);
+
 watch(currentDir, () => {
-	getDir(currentDir.value);
+	getDir(currentDirId.value);
+});
+
+const pathBreadcrumbs = computed(() => {
+	if (!currentDir.value) {
+		return [{ text: 'root', query: {}, isActive: true }];
+	}
+
+	const breadcrumbs: {
+		query: { dir?: number; };
+		isActive?: boolean;
+		text: string;
+	}[] = [{ text: 'root', query: {} }];
+
+	let parent = allDirectories.value.find(dir => dir.id === currentDir.value!.parentId);
+	while (parent) {
+		breadcrumbs.push({ query: { dir: parent.id }, text: parent.name });
+		parent = allDirectories.value.find(dir => dir.id === parent!.parentId);
+	}
+
+	breadcrumbs.push({ query: { dir: currentDir.value.id }, text: currentDir.value.name, isActive: true });
+
+	return breadcrumbs;
 });
 
 onMounted(async () => {
 	isLoading.value = true;
-	await Promise.all([getDirectories(), getDir(currentDir.value, true)]);
+	await getDirectories();
+	await getDir(currentDirId.value, true);
 	isLoading.value = false;
 });
 
@@ -408,9 +441,18 @@ async function saveChanges() {
 
 <template>
 	<main id="content" class="flex flex-col gap-x-3 gap-y-5 pb-4 pt-[1.125rem]">
-		<div class="mx-auto max-w-360 w-full flex gap-x-3 px-container md:px-0">
-			<p class="mr-auto">
-				{{ `${currentDir}` }}
+		<div class="mx-auto max-w-360 w-full items-center flex gap-x-3 px-container md:px-0">
+			<p class="mr-auto text-lg text-neutral-3">
+				<template v-for="{ query, isActive, text } in pathBreadcrumbs" :key="text">
+					<RouterLink
+						:to="{ query }"
+						class="hoverable:underline hoverable:text-black dark:hoverable:text-white"
+						:class="isActive ? 'text-black dark:text-white underline' : ''"
+					>
+						{{ text }}
+					</RouterLink>
+					<span v-if="!isActive" class="i-fa6-solid-angle-right inline-block w-3 h-3 mx-1" />
+				</template>
 			</p>
 			<VButton class="hidden h-9 w-9 shrink-0 md:flex neon-blue" title="widok plików: kafelki" @click="isTiles = true">
 				<span class="visually-hidden">widok plików: kafelki</span>
