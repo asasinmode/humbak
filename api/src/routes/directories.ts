@@ -132,6 +132,7 @@ export const app = new Hono<{
 	.put(
 		'/:id',
 		dirIdParamValidation,
+		targetMiddleware(true),
 		wrap('json', object({
 			removedFileIds: array(number()),
 			movedFiles: array(object({
