@@ -12,6 +12,6 @@ export const directories = mysqlTable('directories', {
 });
 
 export const insertDirectorySchema = object({
-	parentId: union([number(), null_()]),
-	name: string([minLength(1)]),
+	parentId: union([number(), null_()], 'musi być liczbą lub null'),
+	name: string([minLength(1, 'nie może być puste')]),
 });

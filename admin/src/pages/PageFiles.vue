@@ -87,10 +87,17 @@ onMounted(async () => {
 	isLoading.value = false;
 });
 
+const {
+	errors: createDirErrors,
+	handleError: handleCreateDirError,
+	clearErrors: clearCreateDirErrors,
+} = useErrors({ parentId: currentDirId.value, name: newDirName.value });
+
 async function createDir() {
 	if (!newDirName.value) {
 		return;
 	}
+	clearCreateDirErrors();
 
 	isSavingDir.value = true;
 	try {
@@ -105,8 +112,7 @@ async function createDir() {
 
 		newDirName.value = '';
 	} catch (e) {
-		toast('błąd przy tworzeniu folderu', 'error');
-		console.error(e);
+		handleCreateDirError(e);
 	} finally {
 		isSavingDir.value = false;
 	}
@@ -536,6 +542,7 @@ async function goToDir(id: number | null, event: MouseEvent) {
 	}
 
 	await router.push(id ? { query: { dir: id } } : {});
+	createDirErrors.value.parentId = '';
 }
 
 const isSaving = ref(false);
@@ -602,12 +609,14 @@ async function saveChanges() {
 				class="relative row-span-5 flex flex-col of-hidden border-2 border-neutral rounded-lg shadow"
 				:class="isTiles ? '' : 'md:flex-row'"
 			>
-				<div class="flex basis-1/2 flex-col items-center justify-center gap-3 border-b border-neutral px-3 py-4" :class="isTiles ? '' : 'md:flex-row md:border-b-0 md:border-r'">
+				<div class="flex basis-1/2 flex-col items-center justify-center border-b border-neutral px-3 py-4" :class="isTiles ? 'gap-4' : 'md:flex-row md:gap-3 md:border-b-0 md:border-r'">
 					<VInput
 						id="newDirName"
 						v-model="newDirName"
 						label="nazwa folderu"
+						:error="createDirErrors.name || createDirErrors.parentId"
 						:disabled="isLoading"
+						@update:model-value="clearCreateDirErrors"
 					/>
 					<VButton
 						class="h-fit shrink-0 neon-green"
