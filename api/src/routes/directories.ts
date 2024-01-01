@@ -1,6 +1,6 @@
 import { mkdir } from 'node:fs/promises';
-import { Hono } from 'hono';
-import { eq, isNull } from 'drizzle-orm';
+import { Hono, type MiddlewareHandler } from 'hono';
+import { type InferSelectModel, eq, isNull } from 'drizzle-orm';
 import { array, custom, null_, number, object, omit, string, transform, union } from 'valibot';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
 import { files, insertFileSchema } from '../db/schema/files';
@@ -24,7 +24,32 @@ const dirIdParamValidation = wrap('param', transform(object({
 	id: id === 'null' ? null : Number.parseInt(id),
 })));
 
-export const app = new Hono()
+function targetMiddleware(isParam: boolean): MiddlewareHandler {
+	return async (c, next) => {
+		const id = c.req.valid((isParam ? 'param' : 'json') as never)[isParam ? 'id' : 'parentId'] as number;
+		if (id === null) {
+			await next();
+			return;
+		}
+
+		const [dir] = await db.select({
+			path: directories.path,
+		}).from(directories).where(eq(directories.id, id));
+
+		if (!dir) {
+			return isParam ? c.notFound() : c.json({ parentId: 'podany rodzic nie istnieje' }, 400);
+		}
+
+		c.set('targetDir', dir);
+		await next();
+	};
+}
+
+export const app = new Hono<{
+	Variables: {
+		targetDir?: Pick<InferSelectModel<typeof directories>, 'path'>;
+	};
+}>()
 	.get('/', async (c) => {
 		const result = await db
 			.select({
@@ -36,45 +61,42 @@ export const app = new Hono()
 
 		return c.json(result);
 	})
-	.post('/', wrap('json', insertDirectorySchema), async (c) => {
-		const input = c.req.valid('json');
+	.post(
+		'/',
+		wrap('json', insertDirectorySchema),
+		targetMiddleware(false),
+		async (c) => {
+			const input = c.req.valid('json');
 
-		let path = input.name;
+			let path = input.name;
 
-		if (input.parentId !== null) {
-			const [parent] = await db.select({
-				path: directories.path,
-			}).from(directories).where(eq(directories.id, input.parentId));
-
-			if (!parent) {
-				return c.json({
-					parentId: 'podany rodzic nie istnieje',
-				} as unknown as { id: number; parentId: number | null; name: string; }, 400);
+			const target = c.get('targetDir');
+			if (target) {
+				path = `${target.path}/${path}`;
 			}
 
-			path = `${parent.path}/${path}`;
+			const [{ insertId }] = await db
+				.insert(directories)
+				.values({ ...input, path });
+
+			await mkdir(`${adminFilesPath}/${path}`);
+
+			const [result] = await db
+				.select({
+					id: directories.id,
+					parentId: directories.parentId,
+					name: directories.name,
+				})
+				.from(directories)
+				.where(eq(directories.id, insertId));
+
+			return c.json(result);
 		}
-
-		const [{ insertId }] = await db
-			.insert(directories)
-			.values({ ...input, path });
-
-		await mkdir(`${adminFilesPath}/${path}`);
-
-		const [result] = await db
-			.select({
-				id: directories.id,
-				parentId: directories.parentId,
-				name: directories.name,
-			})
-			.from(directories)
-			.where(eq(directories.id, insertId));
-
-		return c.json(result);
-	})
+	)
 	.get(
 		'/:id',
 		dirIdParamValidation,
+		targetMiddleware(true),
 		async (c) => {
 			const { id } = c.req.valid('param');
 
