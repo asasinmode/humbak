@@ -1,9 +1,9 @@
 import { mkdir } from 'node:fs/promises';
 import { Hono } from 'hono';
 import { eq, isNull } from 'drizzle-orm';
-import { custom, minLength, object, optional, string, transform } from 'valibot';
+import { array, custom, null_, number, object, omit, string, transform, union } from 'valibot';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
-import { files } from '../db/schema/files';
+import { files, insertFileSchema } from '../db/schema/files';
 import { wrap } from '../helpers';
 import { adminFilesPath } from '../helpers/files';
 import { db } from '../db';
@@ -23,15 +23,6 @@ const dirIdParamValidation = wrap('param', transform(object({
 }), ({ id }) => ({
 	id: id === 'null' ? null : Number.parseInt(id),
 })));
-
-const postDirValidation = wrap('form', transform(
-	object({
-		removedDirIds: optional(string([minLength(1)])),
-	}),
-	({ removedDirIds }) => ({
-		removedDirIds: removedDirIds ? JSON.parse(removedDirIds) as number[] : undefined,
-	})
-));
 
 export const app = new Hono()
 	.get('/', async (c) => {
@@ -115,20 +106,33 @@ export const app = new Hono()
 				files: foundFiles,
 			});
 		}
-	);
-	// .post(
-	// 	'/:id',
-	// 	dirIdParamValidation,
-	// 	postDirValidation,
-	// 	async (c) => {
-	// 		const { id } = c.req.valid('param');
-	// 		const input = c.req.valid('form');
+	)
+	.put(
+		'/:id',
+		dirIdParamValidation,
+		wrap('json', object({
+			removedFileIds: array(number()),
+			movedFiles: array(object({
+				id: number(),
+				directoryId: union([number(), null_()]),
+			})),
+			editedFiles: array(omit(insertFileSchema, ['directoryId', 'mimetype'])),
+			removedDirIds: array(number()),
+			movedDirs: array(object({
+				id: number(),
+				parentId: union([number(), null_()]),
+			})),
+			editedDirs: array(omit(insertDirectorySchema, ['parentId'])),
+		})),
+		async (c) => {
+			const { id } = c.req.valid('param');
+			const input = c.req.valid('json');
 
-// 		return c.json({
-// 			directories: foundDirectories,
-// 			files: foundFiles,
-// 		});
-// 	}
-// );
+			console.log('stuff', id, input);
+			throw new Error('henlo');
+
+			return c.json({});
+		}
+	);
 
 export type AppType = typeof app;

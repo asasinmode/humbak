@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { knownMimetypeExtensions } from '~/helpers';
 import VDialog from '~/components/V/VDialog.vue';
-import type { IDirectory, IFile } from '~/composables/useApi';
+import type { IDirectory, IFile, IPutDirectoryInput } from '~/composables/useApi';
 import type { IFilesGrabbedItem, ILocalDirectory, ILocalFile, INewFile } from '~/types';
 
 const api = useApi();
@@ -431,10 +431,10 @@ function cleanupDrag() {
 const editableFileKeys = ['title', 'alt', 'name'] as const;
 const editableDirKeys = ['name'] as const;
 
-function getChanged() {
-	const removedFileIds: number[] = [];
-	const movedFiles: { id: number; directoryId: number | null; }[] = [];
-	const editedFiles: ILocalFile[] = [];
+function getChanged(): IPutDirectoryInput {
+	const removedFileIds: IPutDirectoryInput['removedFileIds'] = [];
+	const movedFiles: IPutDirectoryInput['movedFiles'] = [];
+	const editedFiles: IPutDirectoryInput['editedFiles'] = [];
 
 	for (const file of currentDirFiles.value) {
 		if (file.isBeingDeleted) {
@@ -460,9 +460,9 @@ function getChanged() {
 		}
 	}
 
-	const removedDirIds: number[] = [];
-	const movedDirs: { id: number; parentId: number | null; }[] = [];
-	const editedDirs: ILocalDirectory[] = [];
+	const removedDirIds: IPutDirectoryInput['removedDirIds'] = [];
+	const movedDirs: IPutDirectoryInput['movedDirs'] = [];
+	const editedDirs: IPutDirectoryInput['editedDirs'] = [];
 
 	for (const dir of currentDirDirs.value) {
 		if (dir.isBeingDeleted) {
@@ -550,15 +550,42 @@ const isSaving = ref(false);
 async function saveChanges() {
 	isSaving.value = true;
 
-	try {
-		await new Promise(resolve => setTimeout(resolve, 200));
-		toast('zapisano zmiany');
-	} catch (e) {
-		toast('błąd przy zapisywaniu zmian', 'error');
-		console.error(e);
-	} finally {
-		isSaving.value = false;
+	const {
+		removedFileIds,
+		movedFiles,
+		editedFiles,
+		removedDirIds,
+		editedDirs,
+		movedDirs,
+	} = getChanged();
+
+	if (removedFileIds.length || movedFiles.length || editedFiles.length || removedDirIds.length || editedDirs.length || movedDirs.length) {
+		try {
+			const response = await api.directories[':id'].$put({
+				param: { id: `${currentDirId.value}` },
+				json: {
+					removedFileIds,
+					movedFiles,
+					editedFiles,
+					removedDirIds,
+					editedDirs,
+					movedDirs,
+				},
+			});
+
+			console.log('response', response);
+
+			toast('zapisano zmiany');
+		} catch (e) {
+			toast('błąd przy zapisywaniu zmian', 'error');
+			console.error(e);
+			isSaving.value = false;
+			return;
+		}
 	}
+
+	await new Promise(resolve => setTimeout(resolve, 500));
+	toast('zuploadowano pliki');
 }
 </script>
 
