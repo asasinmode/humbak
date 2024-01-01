@@ -76,7 +76,7 @@ const hasChanged = computed(() =>
 			class="neon-green px-3 py-1 shadow text-center"
 			:class="[classes.goToDirButton, disableInteractions ? 'pointer-events-none border-op-30 bg-op-20 op-90 text-neutral-5 dark:(border-op-30 bg-op-20 text-neutral-4)' : '']"
 			:tabindex="disableInteractions ? '-1' : '0'"
-			@click.left.prevent="$emit('goTo', dir.id)"
+			@click.left.prevent="$emit('goTo', dir.id, $event)"
 		>
 			przejdź do
 		</a>

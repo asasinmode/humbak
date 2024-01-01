@@ -7,6 +7,7 @@ import type { IFilesGrabbedItem, ILocalDirectory, ILocalFile, INewFile } from '~
 const api = useApi();
 const route = useRoute();
 const router = useRouter();
+const { confirm } = useConfirm();
 const { toast, toastGenericError } = useToast();
 
 const isTiles = ref(true);
@@ -514,14 +515,29 @@ function hasChanged() {
 	);
 }
 
-async function goToDir(id: number | null) {
-	console.log('going to dir', id);
-
-	if (id !== currentDirId.value && hasChanged()) {
-		console.log('stuff changed gotta prompt');
+async function goToDir(id: number | null, event: MouseEvent) {
+	const targetDir = allDirectories.value.find(dir => dir.id === id);
+	if (id !== null && !targetDir) {
+		toastGenericError();
+		throw new Error('target dir not found');
 	}
 
-	console.log('proceeding');
+	if (id !== currentDirId.value && hasChanged()) {
+		const target = event.target as HTMLElement;
+		if (!target) {
+			console.warn('no dir link element found');
+		}
+
+		const proceed = await confirm(target, {
+			text: `Masz niezapisane zmiany. Czy na pewno chcesz przejść do folderu ${targetDir?.name || 'root'}?`,
+			okText: 'przejdź',
+		});
+		if (!proceed) {
+			return;
+		}
+	}
+
+	await router.push(id ? { query: { dir: id } } : {});
 }
 
 const isSaving = ref(false);
@@ -550,7 +566,7 @@ async function saveChanges() {
 						:href="id ? `?dir=${id}` : ''"
 						:class="isActive ? 'text-black dark:text-white underline' : ''"
 						class="hoverable:underline hoverable:text-black dark:hoverable:text-white"
-						@click.left.prevent="goToDir(id)"
+						@click.left.prevent="goToDir(id, $event)"
 					>
 						{{ text }}
 					</a>
@@ -636,7 +652,7 @@ async function saveChanges() {
 				@restore="restoreDir"
 				@move="grabFile"
 				@open-dialog="openFilesDialog"
-				@go-to="goToDir($event)"
+				@go-to="goToDir"
 			/>
 			<FilesFileItem
 				v-for="(file, index) in newFiles"
