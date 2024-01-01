@@ -55,24 +55,26 @@ watch(currentDir, () => {
 	getDir(currentDirId.value);
 });
 
-const pathBreadcrumbs = computed(() => {
+type IBreadcrumb = {
+	text: string;
+	id: number | null;
+	isActive?: boolean;
+};
+
+const pathBreadcrumbs = computed<IBreadcrumb[]>(() => {
 	if (!currentDir.value) {
-		return [{ text: 'root', query: {}, isActive: true }];
+		return [{ text: 'root', id: null, isActive: true }];
 	}
 
-	const breadcrumbs: {
-		query: { dir?: number; };
-		isActive?: boolean;
-		text: string;
-	}[] = [{ text: 'root', query: {} }];
+	const breadcrumbs: IBreadcrumb[] = [{ text: 'root', id: null }];
 
 	let parent = allDirectories.value.find(dir => dir.id === currentDir.value!.parentId);
 	while (parent) {
-		breadcrumbs.push({ query: { dir: parent.id }, text: parent.name });
+		breadcrumbs.push({ id: parent.id, text: parent.name });
 		parent = allDirectories.value.find(dir => dir.id === parent!.parentId);
 	}
 
-	breadcrumbs.push({ query: { dir: currentDir.value.id }, text: currentDir.value.name, isActive: true });
+	breadcrumbs.push({ id: currentDir.value.id, text: currentDir.value.name, isActive: true });
 
 	return breadcrumbs;
 });
@@ -422,6 +424,106 @@ function cleanupDrag() {
 	dialogSearch.value = '';
 }
 
+const editableFileKeys = ['title', 'alt', 'name'] as const;
+const editableDirKeys = ['name'] as const;
+
+function getChanged() {
+	const removedFileIds: number[] = [];
+	const movedFiles: { id: number; directoryId: number | null; }[] = [];
+	const editedFiles: ILocalFile[] = [];
+
+	for (const file of currentDirFiles.value) {
+		if (file.isBeingDeleted) {
+			removedFileIds.push(file.id);
+			continue;
+		}
+		if (file.movedToId !== undefined) {
+			movedFiles.push({ id: file.id, directoryId: file.movedToId });
+			continue;
+		}
+
+		const originalFile = originalCurrentDirFiles.value.find(originalFile => originalFile.id === file.id);
+		if (!originalFile) {
+			toastGenericError();
+			throw new Error('changed file not found in original current dir files');
+		}
+
+		for (const key of editableFileKeys) {
+			if (originalFile[key] !== file[key]) {
+				editedFiles.push(file);
+				break;
+			}
+		}
+	}
+
+	const removedDirIds: number[] = [];
+	const movedDirs: { id: number; parentId: number | null; }[] = [];
+	const editedDirs: ILocalDirectory[] = [];
+
+	for (const dir of currentDirDirs.value) {
+		if (dir.isBeingDeleted) {
+			removedDirIds.push(dir.id);
+			continue;
+		}
+		if (dir.movedToId !== undefined) {
+			movedDirs.push({ id: dir.id, parentId: dir.movedToId });
+			continue;
+		}
+
+		const originalDir = originalCurrentDirDirs.value.find(originalDir => originalDir.id === dir.id);
+		if (!originalDir) {
+			toastGenericError();
+			throw new Error('changed dir not found in original current dir dirs');
+		}
+
+		for (const key of editableDirKeys) {
+			if (originalDir[key] !== dir[key]) {
+				editedDirs.push(dir);
+				break;
+			}
+		}
+	}
+
+	return {
+		removedFileIds,
+		movedFiles,
+		editedFiles,
+		removedDirIds,
+		movedDirs,
+		editedDirs,
+	};
+}
+
+function hasChanged() {
+	const {
+		removedFileIds,
+		movedFiles,
+		editedFiles,
+		removedDirIds,
+		movedDirs,
+		editedDirs,
+	} = getChanged();
+
+	return !!(
+		removedFileIds.length
+		|| movedFiles.length
+		|| editedFiles.length
+		|| removedDirIds.length
+		|| movedDirs.length
+		|| editedDirs.length
+	);
+}
+
+async function goToDir(id: number | null) {
+	console.log('going to dir', id);
+
+	if (hasChanged()) {
+		console.log('stuff changed gotta prompt');
+	}
+
+	console.log('proceeding');
+}
+
 const isSaving = ref(false);
 
 async function saveChanges() {
@@ -443,14 +545,15 @@ async function saveChanges() {
 	<main id="content" class="flex flex-col gap-x-3 gap-y-5 pb-4 pt-[1.125rem]">
 		<div class="mx-auto max-w-360 w-full flex gap-x-3 px-container md:px-0">
 			<p class="mr-auto text-lg dark:text-neutral-3 text-neutral-5 md:ml-container self-center">
-				<template v-for="{ query, isActive, text } in pathBreadcrumbs" :key="text">
-					<RouterLink
-						:to="{ query }"
-						class="hoverable:underline hoverable:text-black dark:hoverable:text-white"
+				<template v-for="{ id, isActive, text } in pathBreadcrumbs" :key="id">
+					<a
+						:href="id ? `?dir=${id}` : ''"
 						:class="isActive ? 'text-black dark:text-white underline' : ''"
+						class="hoverable:underline hoverable:text-black dark:hoverable:text-white"
+						@click.left.prevent="goToDir(id)"
 					>
 						{{ text }}
-					</RouterLink>
+					</a>
 					<br v-if="!isActive" class="sm:hidden">
 					<span v-if="!isActive" class="i-fa6-solid-angle-right inline-block w-3 h-3 mr-1 -ml-[0.125rem] sm:ml-1" />
 				</template>
@@ -533,6 +636,7 @@ async function saveChanges() {
 				@restore="restoreDir"
 				@move="grabFile"
 				@open-dialog="openFilesDialog"
+				@go-to="goToDir($event)"
 			/>
 			<FilesFileItem
 				v-for="(file, index) in newFiles"
