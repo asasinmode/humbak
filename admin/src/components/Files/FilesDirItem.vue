@@ -15,7 +15,6 @@ defineEmits<{
 	restore: [number];
 	move: [number, MouseEvent, string, boolean];
 	openDialog: [number, KeyboardEvent, boolean];
-	goTo: [number];
 }>();
 
 const dir = defineModel<ILocalDirectory>({ required: true });
@@ -71,9 +70,14 @@ const hasChanged = computed(() =>
 			:class="classes.input"
 			:disabled="disableInteractions"
 		/>
-		<VButton class="neon-green" :class="classes.goToDirButton" :disabled="disableInteractions" @click="$emit('goTo', dir.id)">
+		<RouterLink
+			class="neon-green px-3 py-1 shadow text-center"
+			:class="classes.goToDirButton"
+			:disabled="disableInteractions"
+			:to="{ query: { dir: dir.id } }"
+		>
 			przejdź do
-		</VButton>
+		</RouterLink>
 		<VButton v-if="dir.isBeingDeleted" class="neon-yellow row-span-2" :class="classes.restoreButton" @click="$emit('restore', index)">
 			przywróć
 		</VButton>

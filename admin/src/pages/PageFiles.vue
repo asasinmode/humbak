@@ -490,7 +490,6 @@ async function saveChanges() {
 				@restore="restoreDir"
 				@move="grabFile"
 				@open-dialog="openFilesDialog"
-				@go-to="router.push({ query: { dir: $event } })"
 			/>
 			<FilesFileItem
 				v-for="(file, index) in newFiles"
