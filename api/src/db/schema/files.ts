@@ -17,7 +17,7 @@ export const files = mysqlTable('files', {
 
 export const insertFileSchema = object({
 	directoryId: union([number(), null_()]),
-	name: string(),
+	name: string([minLength(1)]),
 	alt: string(),
 	title: string(),
 	mimetype: string([minLength(1)]),
