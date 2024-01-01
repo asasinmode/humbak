@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { eq, isNull } from 'drizzle-orm';
 import { custom, object, string, transform } from 'valibot';
-import { directories } from '../db/schema/directories';
+import { directories, insertDirectorySchema } from '../db/schema/directories';
 import { files } from '../db/schema/files';
 import { wrap } from '../helpers';
 import { db } from '../db';
@@ -15,6 +15,24 @@ export const app = new Hono()
 				name: directories.name,
 			})
 			.from(directories);
+
+		return c.json(result);
+	})
+	.post('/', wrap('json', insertDirectorySchema), async (c) => {
+		const input = c.req.valid('json');
+
+		const [{ insertId }] = await db
+			.insert(directories)
+			.values(input);
+
+		const result = await db
+			.select({
+				id: directories.id,
+				parentId: directories.parentId,
+				name: directories.name,
+			})
+			.from(directories)
+			.where(eq(directories.id, insertId));
 
 		return c.json(result);
 	})
