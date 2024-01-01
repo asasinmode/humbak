@@ -506,7 +506,8 @@ function hasChanged() {
 	} = getChanged();
 
 	return !!(
-		removedFileIds.length
+		newFiles.value.length
+		|| removedFileIds.length
 		|| movedFiles.length
 		|| editedFiles.length
 		|| removedDirIds.length
