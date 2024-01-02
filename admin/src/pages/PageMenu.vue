@@ -59,9 +59,7 @@ async function getMenuLinks() {
 	}
 
 	isLoading.value = true;
-	console.log('loading');
 	try {
-		await new Promise(resolve => setTimeout(resolve, 5000))
 		const menuLinks = await api.menuLinks.$get({ query: { language: selectedLanguage.value } }).then(r => r.json());
 		originalMenuLinks = [...menuLinks];
 		changedLinks = [];

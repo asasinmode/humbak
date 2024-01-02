@@ -134,13 +134,13 @@ export const app = new Hono<{
 		dirIdParamValidation,
 		targetMiddleware(true),
 		wrap('json', object({
-			removedFileIds: array(number()),
+			deletedFileIds: array(number()),
 			movedFiles: array(object({
 				id: number(),
 				directoryId: union([number(), null_()]),
 			})),
 			editedFiles: array(omit(insertFileSchema, ['directoryId', 'mimetype'])),
-			removedDirIds: array(number()),
+			deletedDirIds: array(number()),
 			movedDirs: array(object({
 				id: number(),
 				parentId: union([number(), null_()]),
@@ -150,6 +150,29 @@ export const app = new Hono<{
 		async (c) => {
 			const { id } = c.req.valid('param');
 			const input = c.req.valid('json');
+
+			const dirs = await db.select({
+				path: directories.path,
+				id: directories.id,
+				parentId: directories.parentId,
+			}).from(directories);
+
+			const dirsToDelete: typeof dirs[number][] = [];
+			for (const id of input.deletedDirIds) {
+				const dir = dirs.find(d => d.id === id);
+				if (dir) {
+					dirsToDelete.push(dir);
+				}
+			}
+			for (let i = 0; i < dirsToDelete.length; i++) {
+				const dir = dirsToDelete[i];
+				if (dirsToDelete.some(d => d.id === dir.parentId)) {
+					dirsToDelete.splice(i, 1);
+					i--;
+				}
+			}
+
+			console.log('dirs to delete', dirsToDelete);
 
 			console.log('stuff', id, input);
 			throw new Error('henlo');
