@@ -97,24 +97,18 @@ export const app = new Hono<{
 		'/',
 		wrap('json', object({
 			deletedFileIds: array(number()),
-			movedFiles: array(object({
-				id: number(),
-				directoryId: union([number(), null_()]),
-			})),
 			editedFiles: array(object({
 				id: number(),
 				name: insertFileSchema.entries.name,
 				title: insertFileSchema.entries.title,
 				alt: insertFileSchema.entries.alt,
+				directoryId: union([number(), null_()]),
 			})),
 			deletedDirIds: array(number()),
-			movedDirs: array(object({
-				id: number(),
-				parentId: union([number(), null_()]),
-			})),
 			editedDirs: array(object({
 				id: number(),
 				name: insertDirectorySchema.entries.name,
+				parentId: union([number(), null_()]),
 			})),
 		})),
 		async (c) => {
@@ -136,15 +130,20 @@ export const app = new Hono<{
 			}
 			console.log('dirs to delete', dirsToDelete);
 
-			const dirsToMove = input.movedDirs
-				.filter((dir) => {
-					const exists = dirs.some(d => d.id === dir.id) && dirs.some(d => d.id === dir.parentId);
-					const isDeleted = dirsToDelete.some(d => d.id === dir.id || d.id === dir.parentId);
-					return exists && !isDeleted;
-				});
-			console.log('dirs to move', dirsToMove);
+			const dirsToEdit = input.editedDirs.filter((dir) => {
+				const original = dirs.find(d => d.id === dir.id);
+				if (!original) {
+					return false;
+				}
 
-			const dirsToEdit = input.editedDirs.filter(dir => dirs.some(d => d.id === dir.id));
+				const isMoved = original.parentId !== dir.parentId;
+				if (isMoved && !dirs.some(d => d.id === dir.parentId)) {
+					return false;
+				}
+
+				const isDeleted = dirsToDelete.some(d => d.id === dir.id || d.id === dir.parentId);
+				return !isDeleted;
+			});
 			console.log('dirs to edit', dirsToEdit);
 
 			throw new Error('henlo');

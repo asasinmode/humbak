@@ -455,16 +455,12 @@ const editableDirKeys = ['name'] as const;
 
 function getChanged(): IPutDirectoriesInput {
 	const deletedFileIds: IPutDirectoriesInput['deletedFileIds'] = [];
-	const movedFiles: IPutDirectoriesInput['movedFiles'] = [];
 	const editedFiles: IPutDirectoriesInput['editedFiles'] = [];
 
 	for (const file of currentDirFiles.value) {
 		if (file.isBeingDeleted) {
 			deletedFileIds.push(file.id);
 			continue;
-		}
-		if (file.movedToId !== undefined) {
-			movedFiles.push({ id: file.id, directoryId: file.movedToId });
 		}
 
 		const originalFile = originalCurrentDirFiles.value.find(originalFile => originalFile.id === file.id);
@@ -473,30 +469,24 @@ function getChanged(): IPutDirectoriesInput {
 			throw new Error('changed file not found in original current dir files');
 		}
 
-		for (const key of editableFileKeys) {
-			if (originalFile[key] !== file[key]) {
-				editedFiles.push({
-					id: file.id,
-					name: file.name,
-					title: file.title,
-					alt: file.alt,
-				});
-				break;
-			}
-		}
+		const directoryId = file.movedToId !== undefined ? file.movedToId : file.directoryId;
+		const hasFileChanged = directoryId !== file.directoryId || editableFileKeys.some(key => originalFile[key] !== file[key]);
+		hasFileChanged && editedFiles.push({
+			id: file.id,
+			name: file.name,
+			title: file.title,
+			alt: file.alt,
+			directoryId,
+		});
 	}
 
 	const deletedDirIds: IPutDirectoriesInput['deletedDirIds'] = [];
-	const movedDirs: IPutDirectoriesInput['movedDirs'] = [];
 	const editedDirs: IPutDirectoriesInput['editedDirs'] = [];
 
 	for (const dir of currentDirDirs.value) {
 		if (dir.isBeingDeleted) {
 			deletedDirIds.push(dir.id);
 			continue;
-		}
-		if (dir.movedToId !== undefined) {
-			movedDirs.push({ id: dir.id, parentId: dir.movedToId });
 		}
 
 		const originalDir = originalCurrentDirDirs.value.find(originalDir => originalDir.id === dir.id);
@@ -505,23 +495,19 @@ function getChanged(): IPutDirectoriesInput {
 			throw new Error('changed dir not found in original current dir dirs');
 		}
 
-		for (const key of editableDirKeys) {
-			if (originalDir[key] !== dir[key]) {
-				editedDirs.push({
-					id: dir.id,
-					name: dir.name,
-				});
-				break;
-			}
-		}
+		const parentId = dir.movedToId !== undefined ? dir.movedToId : originalDir.parentId;
+		const hasDirChanged = parentId !== dir.parentId || editableDirKeys.some(key => originalDir[key] !== dir[key]);
+		hasDirChanged && editedDirs.push({
+			id: dir.id,
+			name: dir.name,
+			parentId,
+		});
 	}
 
 	return {
 		deletedFileIds,
-		movedFiles,
 		editedFiles,
 		deletedDirIds,
-		movedDirs,
 		editedDirs,
 	};
 }
@@ -529,20 +515,16 @@ function getChanged(): IPutDirectoriesInput {
 function hasChanged() {
 	const {
 		deletedFileIds,
-		movedFiles,
 		editedFiles,
 		deletedDirIds,
-		movedDirs,
 		editedDirs,
 	} = getChanged();
 
 	return !!(
 		newFiles.value.length
 		|| deletedFileIds.length
-		|| movedFiles.length
 		|| editedFiles.length
 		|| deletedDirIds.length
-		|| movedDirs.length
 		|| editedDirs.length
 	);
 }
@@ -580,23 +562,19 @@ async function saveChanges() {
 
 	const {
 		deletedFileIds,
-		movedFiles,
 		editedFiles,
 		deletedDirIds,
 		editedDirs,
-		movedDirs,
 	} = getChanged();
 
-	if (deletedFileIds.length || movedFiles.length || editedFiles.length || deletedDirIds.length || editedDirs.length || movedDirs.length) {
+	if (deletedFileIds.length || editedFiles.length || deletedDirIds.length || editedDirs.length) {
 		try {
 			const response = await api.directories.$put({
 				json: {
 					deletedFileIds,
-					movedFiles,
 					editedFiles,
 					deletedDirIds,
 					editedDirs,
-					movedDirs,
 				},
 			});
 
