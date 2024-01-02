@@ -342,10 +342,10 @@ for (let dirId = 0; dirId <= 6; dirId++) {
 	for (let i = 0; i < mimetypes.length; i++) {
 		const [mimetype, extension, getFile] = mimetypes[i];
 
-		const path = `${dirPath}${dirPath ? '/' : ''}plik${i}${dirId}.${extension}`;
-		const name = `nazwa ${mimetype}${i}`;
-		const title = `tytuł dla ${i}${dirId}`;
-		const alt = `alt dla ${i}${dirId}`;
+		const name = `plik${dirId}${i}`;
+		const path = `${dirPath}${dirPath ? '/' : ''}${name}.${extension}`;
+		const title = `tytuł dla ${dirId}${i}`;
+		const alt = `alt dla ${dirId}${i}`;
 
 		await db.insert(files).values({
 			directoryId: dirId === 0 ? null : dirId,
