@@ -130,20 +130,45 @@ export const app = new Hono<{
 			}
 			console.log('dirs to delete', dirsToDelete);
 
-			const dirsToEdit = input.editedDirs.filter((dir) => {
-				const original = dirs.find(d => d.id === dir.id);
-				if (!original) {
-					return false;
-				}
+			const dirsToEdit = input.editedDirs
+				.filter((dir) => {
+					const original = dirs.find(d => d.id === dir.id);
+					if (!original) {
+						return false;
+					}
 
-				const isMoved = original.parentId !== dir.parentId;
-				if (isMoved && !dirs.some(d => d.id === dir.parentId)) {
-					return false;
-				}
+					const isDeleted = dirsToDelete.some(d => d.id === dir.id || d.id === dir.parentId);
+					if (isDeleted) {
+						return false;
+					}
 
-				const isDeleted = dirsToDelete.some(d => d.id === dir.id || d.id === dir.parentId);
-				return !isDeleted;
-			});
+					const isMoved = original.parentId !== dir.parentId;
+					if (!isMoved) {
+						return true;
+					}
+
+					const target = dirs.find(d => d.id === dir.parentId);
+					if (!target) {
+						return false;
+					}
+
+					// moved to itself
+					if (dir.id === target.id) {
+						return false;
+					}
+
+					// moved to its child
+					let parent: IDir | undefined = target;
+					while (parent) {
+						if (parent.parentId === dir.id) {
+							return false;
+						}
+						parent = dirs.find(d => d.id === parent!.parentId);
+					}
+
+					return true;
+				});
+
 			console.log('dirs to edit', dirsToEdit);
 
 			throw new Error('henlo');
