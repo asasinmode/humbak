@@ -1,7 +1,7 @@
 import { mkdir } from 'node:fs/promises';
 import { Hono, type MiddlewareHandler } from 'hono';
 import { type InferSelectModel, eq, isNull } from 'drizzle-orm';
-import { array, custom, null_, number, object, omit, string, transform, union } from 'valibot';
+import { array, custom, null_, number, object, string, transform, union } from 'valibot';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
 import { files, insertFileSchema } from '../db/schema/files';
 import { wrap } from '../helpers';
@@ -93,6 +93,65 @@ export const app = new Hono<{
 			return c.json(result);
 		}
 	)
+	.put(
+		'/',
+		wrap('json', object({
+			deletedFileIds: array(number()),
+			movedFiles: array(object({
+				id: number(),
+				directoryId: union([number(), null_()]),
+			})),
+			editedFiles: array(object({
+				id: number(),
+				name: insertFileSchema.entries.name,
+				title: insertFileSchema.entries.title,
+				alt: insertFileSchema.entries.alt,
+			})),
+			deletedDirIds: array(number()),
+			movedDirs: array(object({
+				id: number(),
+				parentId: union([number(), null_()]),
+			})),
+			editedDirs: array(object({
+				id: number(),
+				name: insertDirectorySchema.entries.name,
+			})),
+		})),
+		async (c) => {
+			const input = c.req.valid('json');
+
+			const dirs = await db.select({
+				path: directories.path,
+				id: directories.id,
+				parentId: directories.parentId,
+			}).from(directories);
+			type IDir = typeof dirs[number];
+
+			const dirsToDelete: IDir[] = [];
+			for (const id of input.deletedDirIds) {
+				const dir = dirs.find(d => d.id === id);
+				if (dir) {
+					dirsToDelete.push(dir);
+				}
+			}
+			console.log('dirs to delete', dirsToDelete);
+
+			const dirsToMove = input.movedDirs
+				.filter((dir) => {
+					const exists = dirs.some(d => d.id === dir.id) && dirs.some(d => d.id === dir.parentId);
+					const isDeleted = dirsToDelete.some(d => d.id === dir.id || d.id === dir.parentId);
+					return exists && !isDeleted;
+				});
+			console.log('dirs to move', dirsToMove);
+
+			const dirsToEdit = input.editedDirs.filter(dir => dirs.some(d => d.id === dir.id));
+			console.log('dirs to edit', dirsToEdit);
+
+			throw new Error('henlo');
+
+			return c.json({});
+		}
+	)
 	.get(
 		'/:id',
 		dirIdParamValidation,
@@ -127,57 +186,6 @@ export const app = new Hono<{
 				directories: foundDirectories,
 				files: foundFiles,
 			});
-		}
-	)
-	.put(
-		'/:id',
-		dirIdParamValidation,
-		targetMiddleware(true),
-		wrap('json', object({
-			deletedFileIds: array(number()),
-			movedFiles: array(object({
-				id: number(),
-				directoryId: union([number(), null_()]),
-			})),
-			editedFiles: array(omit(insertFileSchema, ['directoryId', 'mimetype'])),
-			deletedDirIds: array(number()),
-			movedDirs: array(object({
-				id: number(),
-				parentId: union([number(), null_()]),
-			})),
-			editedDirs: array(omit(insertDirectorySchema, ['parentId'])),
-		})),
-		async (c) => {
-			const { id } = c.req.valid('param');
-			const input = c.req.valid('json');
-
-			const dirs = await db.select({
-				path: directories.path,
-				id: directories.id,
-				parentId: directories.parentId,
-			}).from(directories);
-
-			const dirsToDelete: typeof dirs[number][] = [];
-			for (const id of input.deletedDirIds) {
-				const dir = dirs.find(d => d.id === id);
-				if (dir) {
-					dirsToDelete.push(dir);
-				}
-			}
-			for (let i = 0; i < dirsToDelete.length; i++) {
-				const dir = dirsToDelete[i];
-				if (dirsToDelete.some(d => d.id === dir.parentId)) {
-					dirsToDelete.splice(i, 1);
-					i--;
-				}
-			}
-
-			console.log('dirs to delete', dirsToDelete);
-
-			console.log('stuff', id, input);
-			throw new Error('henlo');
-
-			return c.json({});
 		}
 	);
 

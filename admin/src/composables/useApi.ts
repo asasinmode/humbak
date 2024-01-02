@@ -40,4 +40,4 @@ export type IUpsertPageInput = InferRequestType<Client['pages']['$post']>['json'
 export type IFooterContents = InferResponseType<Client['footerContents']['$get']>;
 export type IDirectory = InferResponseType<Client['directories']['$get']>[number];
 export type IFile = InferResponseType<Client['directories'][':id']['$get']>['files'][number];
-export type IPutDirectoryInput = InferRequestType<Client['directories'][':id']['$put']>['json'];
+export type IPutDirectoriesInput = InferRequestType<Client['directories']['$put']>['json'];

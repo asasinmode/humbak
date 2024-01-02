@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { knownMimetypeExtensions } from '~/helpers';
 import VDialog from '~/components/V/VDialog.vue';
-import type { IDirectory, IFile, IPutDirectoryInput } from '~/composables/useApi';
+import type { IDirectory, IFile, IPutDirectoriesInput } from '~/composables/useApi';
 import type { IFilesGrabbedItem, ILocalDirectory, ILocalFile, INewFile } from '~/types';
 
 const api = useApi();
@@ -453,19 +453,18 @@ function cleanupDrag() {
 const editableFileKeys = ['title', 'alt', 'name'] as const;
 const editableDirKeys = ['name'] as const;
 
-function getChanged(): IPutDirectoryInput {
-	const removedFileIds: IPutDirectoryInput['removedFileIds'] = [];
-	const movedFiles: IPutDirectoryInput['movedFiles'] = [];
-	const editedFiles: IPutDirectoryInput['editedFiles'] = [];
+function getChanged(): IPutDirectoriesInput {
+	const deletedFileIds: IPutDirectoriesInput['deletedFileIds'] = [];
+	const movedFiles: IPutDirectoriesInput['movedFiles'] = [];
+	const editedFiles: IPutDirectoriesInput['editedFiles'] = [];
 
 	for (const file of currentDirFiles.value) {
 		if (file.isBeingDeleted) {
-			removedFileIds.push(file.id);
+			deletedFileIds.push(file.id);
 			continue;
 		}
 		if (file.movedToId !== undefined) {
 			movedFiles.push({ id: file.id, directoryId: file.movedToId });
-			continue;
 		}
 
 		const originalFile = originalCurrentDirFiles.value.find(originalFile => originalFile.id === file.id);
@@ -476,24 +475,28 @@ function getChanged(): IPutDirectoryInput {
 
 		for (const key of editableFileKeys) {
 			if (originalFile[key] !== file[key]) {
-				editedFiles.push(file);
+				editedFiles.push({
+					id: file.id,
+					name: file.name,
+					title: file.title,
+					alt: file.alt,
+				});
 				break;
 			}
 		}
 	}
 
-	const removedDirIds: IPutDirectoryInput['removedDirIds'] = [];
-	const movedDirs: IPutDirectoryInput['movedDirs'] = [];
-	const editedDirs: IPutDirectoryInput['editedDirs'] = [];
+	const deletedDirIds: IPutDirectoriesInput['deletedDirIds'] = [];
+	const movedDirs: IPutDirectoriesInput['movedDirs'] = [];
+	const editedDirs: IPutDirectoriesInput['editedDirs'] = [];
 
 	for (const dir of currentDirDirs.value) {
 		if (dir.isBeingDeleted) {
-			removedDirIds.push(dir.id);
+			deletedDirIds.push(dir.id);
 			continue;
 		}
 		if (dir.movedToId !== undefined) {
 			movedDirs.push({ id: dir.id, parentId: dir.movedToId });
-			continue;
 		}
 
 		const originalDir = originalCurrentDirDirs.value.find(originalDir => originalDir.id === dir.id);
@@ -504,17 +507,20 @@ function getChanged(): IPutDirectoryInput {
 
 		for (const key of editableDirKeys) {
 			if (originalDir[key] !== dir[key]) {
-				editedDirs.push(dir);
+				editedDirs.push({
+					id: dir.id,
+					name: dir.name,
+				});
 				break;
 			}
 		}
 	}
 
 	return {
-		removedFileIds,
+		deletedFileIds,
 		movedFiles,
 		editedFiles,
-		removedDirIds,
+		deletedDirIds,
 		movedDirs,
 		editedDirs,
 	};
@@ -522,20 +528,20 @@ function getChanged(): IPutDirectoryInput {
 
 function hasChanged() {
 	const {
-		removedFileIds,
+		deletedFileIds,
 		movedFiles,
 		editedFiles,
-		removedDirIds,
+		deletedDirIds,
 		movedDirs,
 		editedDirs,
 	} = getChanged();
 
 	return !!(
 		newFiles.value.length
-		|| removedFileIds.length
+		|| deletedFileIds.length
 		|| movedFiles.length
 		|| editedFiles.length
-		|| removedDirIds.length
+		|| deletedDirIds.length
 		|| movedDirs.length
 		|| editedDirs.length
 	);
@@ -573,23 +579,22 @@ async function saveChanges() {
 	isSaving.value = true;
 
 	const {
-		removedFileIds,
+		deletedFileIds,
 		movedFiles,
 		editedFiles,
-		removedDirIds,
+		deletedDirIds,
 		editedDirs,
 		movedDirs,
 	} = getChanged();
 
-	if (removedFileIds.length || movedFiles.length || editedFiles.length || removedDirIds.length || editedDirs.length || movedDirs.length) {
+	if (deletedFileIds.length || movedFiles.length || editedFiles.length || deletedDirIds.length || editedDirs.length || movedDirs.length) {
 		try {
-			const response = await api.directories[':id'].$put({
-				param: { id: `${currentDirId.value}` },
+			const response = await api.directories.$put({
 				json: {
-					removedFileIds,
+					deletedFileIds,
 					movedFiles,
 					editedFiles,
-					removedDirIds,
+					deletedDirIds,
 					editedDirs,
 					movedDirs,
 				},
