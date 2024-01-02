@@ -33,7 +33,7 @@ defineExpose({
 <template>
 	<div class="relative">
 		<article ref="editorRef" class="h-full w-full" />
-		<VLoading v-if="editorIsLoading || isLoading" class="absolute inset-0" :size="40" />
+		<VLoading v-show="editorIsLoading || isLoading" class="absolute inset-0" :size="40" />
 		<p v-if="error" class="pointer-events-none absolute bottom-0 left-3 translate-y-full text-3 text-red-500">
 			{{ error }}
 		</p>
