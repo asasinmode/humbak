@@ -289,8 +289,8 @@ await db.insert(footerContents).values({
 });
 
 for (let dirId = 1; dirId <= 3; dirId++) {
-	const name = `folder${dirId}`;
-	const path = `d${dirId}path`;
+	const name = `d${dirId}`;
+	const path = name;
 	await mkdir(`${adminFilesPath}/${path}`);
 	await db.insert(directories).values({
 		name,
@@ -300,8 +300,8 @@ for (let dirId = 1; dirId <= 3; dirId++) {
 
 for (let childDirId = 4; childDirId <= 6; childDirId++) {
 	const parentId = childDirId - 3;
-	const name = `zagnieżdżony-folder${childDirId}`;
-	const path = `d${parentId}path/dc${childDirId}`;
+	const name = `nd${parentId}${childDirId}`;
+	const path = `d${parentId}/${name}`;
 	await mkdir(`${adminFilesPath}/${path}`);
 	await db.insert(directories).values({
 		name,
@@ -318,9 +318,9 @@ for (let dirId = 0; dirId <= 6; dirId++) {
 	let dirPath = '';
 
 	if (dirId > 0 && dirId <= 3) {
-		dirPath = `d${dirId}path`;
+		dirPath = `d${dirId}`;
 	} else if (dirId > 3) {
-		dirPath = `d${dirId - 3}path/dc${dirId}`;
+		dirPath = `d${dirId - 3}/nd${dirId - 3}${dirId}`;
 	}
 
 	const mimetypes: [string, string, () => any][] = [
