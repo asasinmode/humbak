@@ -556,9 +556,15 @@ async function goToDir(id: number | null, event: MouseEvent) {
 }
 
 const isSaving = ref(false);
+const {
+	errors,
+	handleError,
+	clearErrors,
+} = useErrors({ deletedFileIds: {},	editedFiles: {}, deletedDirIds: {}, editedDirs: {} } as IPutDirectoriesInput);
 
 async function saveChanges() {
 	isSaving.value = true;
+	clearErrors();
 
 	const {
 		deletedFileIds,
@@ -582,8 +588,20 @@ async function saveChanges() {
 
 			toast('zapisano zmiany');
 		} catch (e) {
-			toast('błąd przy zapisywaniu zmian', 'error');
-			console.error(e);
+			handleError(e);
+			// map error keys from array positions to file/dir ids
+			errors.value.editedFiles = Object.fromEntries(
+				Object.entries(errors.value.editedFiles).map(([key, value]) => {
+					const { id: _id, ...rest } = value;
+					return [editedFiles[+key].id, rest];
+				})
+			);
+			errors.value.editedDirs = Object.fromEntries(
+				Object.entries(errors.value.editedDirs).map(([key, value]) => {
+					const { id: _id, ...rest } = value;
+					return [editedDirs[+key].id, rest];
+				})
+			);
 			isSaving.value = false;
 			return;
 		}
@@ -685,6 +703,7 @@ async function saveChanges() {
 				v-for="(dir, index) in currentDirDirs"
 				:key="dir.id"
 				v-model="currentDirDirs[index]"
+				v-model:errors="errors.editedDirs[dir.id]"
 				:index="index"
 				:is-tiles="isTiles"
 				:original-dir="originalCurrentDirDirs[index]"
@@ -712,6 +731,7 @@ async function saveChanges() {
 				v-for="(file, index) in currentDirFiles"
 				:key="file.id"
 				v-model="currentDirFiles[index]"
+				v-model:errors="errors.editedFiles[file.id]"
 				:index="index"
 				:is-tiles="isTiles"
 				:original-file="originalCurrentDirFiles[index]"

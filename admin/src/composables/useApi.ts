@@ -17,7 +17,7 @@ const client = hc<AppType>(env.VITE_API_URL, {
 				}
 
 				return r.text().then((v) => {
-					throw new Error(v);
+					throw new FetchError(v, r.status);
 				});
 			}
 
@@ -32,7 +32,7 @@ type Client = typeof client;
 
 export type IMenuLink = InferResponseType<Client['menuLinks']['$get']>[number];
 export type IUniqueLanguage = InferResponseType<Client['languages']['$get']>[number];
-export type IListedPage = InferResponseType<Client['pages']['$get']>[number];
+export type IListedPage = InferResponseType<Client['pages']['$get']>['items'][number];
 export type IPublicListedSlide = InferResponseType<Client['slides']['public']['$get']>[number];
 export type IListedSlide = InferResponseType<Client['slides']['$get']>[number];
 export type ISlide = InferResponseType<Client['slides'][':id']['$get']>;

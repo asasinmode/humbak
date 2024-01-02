@@ -20,6 +20,13 @@ defineEmits<{
 const file = defineModel<ILocalFile | INewFile>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 
+const errors = defineModel<Record<string, string>>('errors');
+function clearError(key: string) {
+	if (errors.value?.[key]) {
+		errors.value[key] = '';
+	}
+}
+
 const isNew = computed(() => (!('id' in file.value) && 'file' in file.value));
 const hasMoved = computed(() => (file.value as ILocalFile).movedToId !== undefined);
 const disableInteractions = computed(() => (file.value as ILocalFile).isBeingDeleted || hasMoved.value);
@@ -67,6 +74,8 @@ const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype]
 			label="tytuł"
 			:class="classes.input"
 			:disabled="disableInteractions"
+			:error="errors?.title"
+			@update:model-value="clearError('title')"
 		/>
 		<VInput
 			:id="`file${index}alt`"
@@ -74,6 +83,8 @@ const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype]
 			label="alt"
 			:class="classes.input"
 			:disabled="disableInteractions"
+			:error="errors?.alt"
+			@update:model-value="clearError('alt')"
 		/>
 		<VInput
 			:id="`file${index}name`"
@@ -81,6 +92,8 @@ const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype]
 			label="nazwa"
 			:class="classes.input"
 			:disabled="disableInteractions"
+			:error="errors?.name"
+			@update:model-value="clearError('name')"
 		/>
 		<VButton
 			v-if="(file as ILocalFile).isBeingDeleted"

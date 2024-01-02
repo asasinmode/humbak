@@ -1,9 +1,9 @@
 const { toast, toastGenericError } = useToast();
 
 export class FetchError {
-	data: object;
+	data: any;
 	status: number;
-	constructor(data: object, status: number) {
+	constructor(data: any, status: number) {
 		this.data = data;
 		this.status = status;
 	}
@@ -12,7 +12,7 @@ export class FetchError {
 export function useErrors<T extends Record<string, unknown>>(form: T) {
 	const errors = ref(
 		Object.keys(form).reduce((p, c) => ({ ...p, [c]: '' }), {}) as {
-			[K in keyof T]: T[K] extends object ? Record<string | number, string> : string
+			[K in keyof T]: T[K] extends object ? Record<string | number, Record<string, string>> : string
 		}
 	);
 
@@ -26,10 +26,13 @@ export function useErrors<T extends Record<string, unknown>>(form: T) {
 	function handleError(error: unknown) {
 		if (!(error instanceof FetchError)) {
 			toastGenericError();
-			throw error;
+			console.error(error);
+			return;
 		}
 		if (error.status !== 400) {
-			toast(`coś poszło nie tak 😓. ${error.status} ${error.data}`);
+			toast(`błąd ${error.status} ${error.data}`, 'error');
+			console.error(error);
+			return;
 		}
 
 		clearErrors();
