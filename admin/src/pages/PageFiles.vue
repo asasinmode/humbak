@@ -401,6 +401,18 @@ function moveGrabbedElement(targetId?: number | null, closeDialog = false) {
 		throw new Error('move grabbed element called without grabbed element set');
 	}
 
+	const target = allDirectories.value.find(dir => dir.id === targetId);
+	if (!target) {
+		toastGenericError();
+		throw new Error('target dir not found');
+	}
+
+	const currentTarget = currentDirDirs.value.find(dir => dir.id === target.id);
+	if (currentTarget?.isBeingDeleted) {
+		closeDialog && dialog.value?.close();
+		return;
+	}
+
 	if (grabbedItem.value.isDir) {
 		const dirBeingMoved = currentDirDirs.value[grabbedItem.value.index];
 		if (!dirBeingMoved) {
@@ -413,12 +425,6 @@ function moveGrabbedElement(targetId?: number | null, closeDialog = false) {
 			grabbedItem.value = undefined;
 			closeDialog && dialog.value?.close();
 			return;
-		}
-
-		const target = allDirectories.value.find(dir => dir.id === targetId);
-		if (!target) {
-			toastGenericError();
-			throw new Error('target dir not found');
 		}
 
 		// is being moved to its child
@@ -575,7 +581,7 @@ async function saveChanges() {
 
 	if (deletedFileIds.length || editedFiles.length || deletedDirIds.length || editedDirs.length) {
 		try {
-			const response = await api.directories.$put({
+			await api.directories.$put({
 				json: {
 					deletedFileIds,
 					editedFiles,
@@ -583,9 +589,6 @@ async function saveChanges() {
 					editedDirs,
 				},
 			});
-
-			console.log('response', response);
-
 			toast('zapisano zmiany');
 		} catch (e) {
 			handleError(e);
