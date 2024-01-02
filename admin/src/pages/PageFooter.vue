@@ -51,6 +51,7 @@ const {
 
 onMounted(async () => {
 	isLoadingLanguages.value = true;
+	isLoading.value = true;
 	try {
 		languages.value = await api.languages.$get().then(r => r.json());
 
@@ -64,6 +65,7 @@ onMounted(async () => {
 		toast('błąd przy ładowaniu języków', 'error');
 		console.error(e);
 	} finally {
+		isLoading.value = false;
 		isLoadingLanguages.value = false;
 	}
 });
