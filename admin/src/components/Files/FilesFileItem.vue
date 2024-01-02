@@ -65,7 +65,7 @@ const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype]
 			>
 				{{ nonImageText }}
 			</span>
-			<div v-if="(file as ILocalFile).isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow" />
+			<div v-if="(file as ILocalFile).isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red-5 dark:text-red drop-shadow" />
 			<div v-if="hasMoved" class="i-solar-move-to-folder-bold absolute left-1/2 top-1/2 h-full w-full translate-center text-blue drop-shadow" />
 		</div>
 		<VInput

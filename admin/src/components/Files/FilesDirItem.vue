@@ -64,7 +64,7 @@ const hasChanged = computed(() =>
 			/>
 			<div
 				v-if="dir.isBeingDeleted"
-				class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red drop-shadow"
+				class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red-5 dark:text-red drop-shadow"
 			/>
 			<div
 				v-if="hasMoved"

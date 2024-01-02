@@ -234,19 +234,24 @@ const grabPreviewElement = ref<HTMLElement>();
 let	mouseDownTimestamp: number | undefined;
 let createPreviewTimeout: NodeJS.Timeout | undefined;
 
+type IDialogDir = IDirectory & { isBeingDeleted?: boolean; };
 const dialog = ref<InstanceType<typeof VDialog>>();
 const dialogActivator = ref<HTMLButtonElement>();
 const dialogTargetId = ref<number | null>();
 const dialogSearch = ref('');
-const dialogAllDirs = computed<IDirectory[]>(() => {
+const dialogAllDirs = computed<IDialogDir[]>(() => {
 	if (!grabbedItem.value) {
 		return [];
 	}
 
-	const matchingSearch: IDirectory[] = [];
+	const matchingSearch: IDialogDir[] = [];
 	for (const dir of allDirectories.value) {
+		const currentDir = currentDirDirs.value.find(d => d.id === dir.id);
 		if (!dialogSearch.value || dir.name.includes(dialogSearch.value)) {
-			matchingSearch.push(dir);
+			matchingSearch.push({
+				...dir,
+				isBeingDeleted: currentDir?.isBeingDeleted,
+			});
 		}
 	}
 	if (!grabbedItem.value.isDir) {
@@ -770,17 +775,23 @@ async function saveChanges() {
 			v-for="dir in dialogAllDirs"
 			:key="dir.id"
 			:for="`dirCheckbox${dir.id}`"
-			class="col-span-full flex justify-between border-2 border-neutral rounded-lg px-2 py-2 focus-within:border-black hover:border-black dark:focus-within:border-white dark:hover:border-white"
-			:class="dialogTargetId === dir.id ? '!border-black dark:!border-white bg-blue/30' : ''"
+			class="col-span-full flex justify-between border-2 relative border-neutral rounded-lg px-2 py-2"
+			:class="[
+				dialogTargetId === dir.id ? '!border-black dark:!border-white bg-blue/30' : '',
+				dir.isBeingDeleted ? 'text-neutral border-op-50' : 'focus-within:border-black hover:border-black dark:focus-within:border-white dark:hover:border-white',
+			]"
 		>
-			{{ dir.name }}
+			{{ dir.name + (dir.isBeingDeleted ? ' (usuwany)' : '') }}
 			<input
 				:id="`dirCheckbox${dir.id}`"
 				type="radio"
 				name="dialogTargetId"
+				:class="dir.isBeingDeleted ? 'op-0' : ''"
 				:checked="dialogTargetId === dir.id"
+				:disabled="dir.isBeingDeleted"
 				@input="dialogTargetId = dir.id"
 			>
+			<div v-if="dir.isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute top-1/2 -translate-y-1/2 right-[0.3125rem] w-5 h-5 text-red-5 pointer-events-none" />
 		</label>
 
 		<template #post>
