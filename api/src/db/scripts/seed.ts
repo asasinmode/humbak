@@ -342,8 +342,8 @@ for (let dirId = 0; dirId <= 6; dirId++) {
 	for (let i = 0; i < mimetypes.length; i++) {
 		const [mimetype, extension, getFile] = mimetypes[i];
 
-		const name = `plik${dirId}${i}`;
-		const path = `${dirPath}${dirPath ? '/' : ''}${name}.${extension}`;
+		const name = `plik${dirId}${i}.${extension}`;
+		const path = `${dirPath}${dirPath ? '/' : ''}${name}`;
 		const title = `tytuł dla ${dirId}${i}`;
 		const alt = `alt dla ${dirId}${i}`;
 
