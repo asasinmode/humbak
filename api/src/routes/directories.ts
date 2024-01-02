@@ -168,8 +168,15 @@ export const app = new Hono<{
 
 					return true;
 				});
-
 			console.log('dirs to edit', dirsToEdit);
+
+			const filesToEdit = input.editedFiles.filter((file) => {
+				const isDeleted = dirsToDelete.some(dir => file.directoryId === dir.id);
+				return !isDeleted;
+			});
+			console.log('files to edit', filesToEdit);
+
+			// await db.delete(files).where(inArray(files.id, input.deletedFileIds))
 
 			throw new Error('henlo');
 
@@ -212,5 +219,10 @@ export const app = new Hono<{
 			});
 		}
 	);
+
+// UPDATE files
+// JOIN directories ON files.directoryId = directories.id
+// SET files.path = CONCAT(directories.path, '/', files.name)
+// WHERE directories.id = 1;
 
 export type AppType = typeof app;
