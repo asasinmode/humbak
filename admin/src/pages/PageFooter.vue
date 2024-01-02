@@ -184,6 +184,7 @@ function addSocial() {
 			<VButton
 				ref="saveButton"
 				class="mr-12 h-fit md:mr-0 neon-green"
+				:disabled="isLoading"
 				:is-loading="isSaving"
 				@click="sendForm"
 			>
