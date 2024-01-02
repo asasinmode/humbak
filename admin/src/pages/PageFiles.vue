@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { knownMimetypeExtensions } from '~/helpers';
 import VDialog from '~/components/V/VDialog.vue';
-import type { IDirectory, IFile, IPutDirectoriesInput } from '~/composables/useApi';
+import type { IDirectory, IFile, IGetDirectoryResponse, IPutDirectoriesInput } from '~/composables/useApi';
 import type { IFilesGrabbedItem, ILocalDirectory, ILocalFile, INewFile } from '~/types';
 
 const api = useApi();
@@ -586,14 +586,27 @@ async function saveChanges() {
 
 	if (deletedFileIds.length || editedFiles.length || deletedDirIds.length || editedDirs.length) {
 		try {
-			await api.directories.$put({
+			const responseReturnsData = !newFiles.value.length;
+			const response = await api.directories.$put({
 				json: {
 					deletedFileIds,
 					editedFiles,
 					deletedDirIds,
 					editedDirs,
 				},
+			}, {
+				headers: responseReturnsData ? { 'return-for-dir': `${currentDirId.value}` } : {},
 			});
+
+			if (responseReturnsData) {
+				const { directories, files } = await response.json() as IGetDirectoryResponse;
+				originalCurrentDirDirs.value = directories.map(dir => structuredClone(dir));
+				currentDirDirs.value = directories.map(dir => structuredClone(dir));
+
+				originalCurrentDirFiles.value = files.map(file => structuredClone(file));
+				currentDirFiles.value = files.map(file => structuredClone(file));
+			}
+
 			toast('zapisano zmiany');
 		} catch (e) {
 			handleError(e);

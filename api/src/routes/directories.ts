@@ -1,6 +1,7 @@
-import { mkdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { mkdir, rm } from 'node:fs/promises';
 import { Hono, type MiddlewareHandler } from 'hono';
-import { type InferSelectModel, eq, isNull } from 'drizzle-orm';
+import { type InferSelectModel, eq, inArray, isNull } from 'drizzle-orm';
 import { array, custom, null_, number, object, string, transform, union } from 'valibot';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
 import { files, insertFileSchema } from '../db/schema/files';
@@ -42,6 +43,36 @@ function targetMiddleware(isParam: boolean): MiddlewareHandler {
 
 		c.set('targetDir', dir);
 		await next();
+	};
+}
+
+async function dirData(id: number | null) {
+	const [foundDirectories, foundFiles] = await Promise.all([
+		db
+			.select({
+				id: directories.id,
+				parentId: directories.parentId,
+				name: directories.name,
+			})
+			.from(directories)
+			.where(id === null ? isNull(directories.parentId) : eq(directories.parentId, id)),
+		db
+			.select({
+				id: files.id,
+				directoryId: files.directoryId,
+				path: files.path,
+				name: files.name,
+				title: files.title,
+				alt: files.alt,
+				mimetype: files.mimetype,
+			})
+			.from(files)
+			.where(id === null ? isNull(files.directoryId) : eq(files.directoryId, id)),
+	]);
+
+	return {
+		directories: foundDirectories,
+		files: foundFiles,
 	};
 }
 
@@ -176,11 +207,30 @@ export const app = new Hono<{
 			});
 			console.log('files to edit', filesToEdit);
 
-			// await db.delete(files).where(inArray(files.id, input.deletedFileIds))
+			if (input.deletedFileIds.length) {
+				const deletedFilePaths = await db
+					.select({ path: files.path })
+					.from(files)
+					.where(inArray(files.id, input.deletedFileIds));
 
-			throw new Error('henlo');
+				await db.delete(files).where(inArray(files.id, input.deletedFileIds));
+				for (const { path } of deletedFilePaths) {
+					existsSync(`${adminFilesPath}/${path}`) && await rm(`${adminFilesPath}/${path}`);
+				}
+			}
 
-			return c.json({});
+			const returnDirHeader = c.req.header('return-for-dir') || '';
+			const parseResult = Number.parseInt(returnDirHeader);
+			const returnForDirId = returnDirHeader === 'null'
+				? null
+				: !Number.isNaN(parseResult)
+						? parseResult
+						: undefined;
+			if (returnForDirId !== undefined) {
+				return c.json(await dirData(returnForDirId));
+			}
+
+			return c.body(null, 204);
 		}
 	)
 	.get(
@@ -190,33 +240,7 @@ export const app = new Hono<{
 		async (c) => {
 			const { id } = c.req.valid('param');
 
-			const [foundDirectories, foundFiles] = await Promise.all([
-				db
-					.select({
-						id: directories.id,
-						parentId: directories.parentId,
-						name: directories.name,
-					})
-					.from(directories)
-					.where(id === null ? isNull(directories.parentId) : eq(directories.parentId, id)),
-				db
-					.select({
-						id: files.id,
-						directoryId: files.directoryId,
-						path: files.path,
-						name: files.name,
-						title: files.title,
-						alt: files.alt,
-						mimetype: files.mimetype,
-					})
-					.from(files)
-					.where(id === null ? isNull(files.directoryId) : eq(files.directoryId, id)),
-			]);
-
-			return c.json({
-				directories: foundDirectories,
-				files: foundFiles,
-			});
+			return c.json(await dirData(id));
 		}
 	);
 
