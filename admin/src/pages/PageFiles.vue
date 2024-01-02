@@ -401,20 +401,37 @@ function moveGrabbedElement(targetId?: number | null, closeDialog = false) {
 		throw new Error('move grabbed element called without grabbed element set');
 	}
 
-	if (grabbedItem.value.isDir && currentDirDirs.value[grabbedItem.value.index].id === targetId) {
-		grabbedItem.value = undefined;
-		closeDialog && dialog.value?.close();
-		return;
-	}
-
 	if (grabbedItem.value.isDir) {
-		const target = currentDirDirs.value.find(dir => dir.id === targetId);
-		if (target && target.movedToId === currentDirDirs.value[grabbedItem.value.index].id) {
-			toast('folder nie może być przeniesiony do swojego podfolderu', 'error');
-			if (!closeDialog) {
-				grabbedItem.value = undefined;
-			}
+		const dirBeingMoved = currentDirDirs.value[grabbedItem.value.index];
+		if (!dirBeingMoved) {
+			toastGenericError();
+			throw new Error('dir being moved not found');
+		}
+
+		// is being moved to itself
+		if (dirBeingMoved.id === targetId) {
+			grabbedItem.value = undefined;
+			closeDialog && dialog.value?.close();
 			return;
+		}
+
+		const target = allDirectories.value.find(dir => dir.id === targetId);
+		if (!target) {
+			toastGenericError();
+			throw new Error('target dir not found');
+		}
+
+		// is being moved to its child
+		let parent: IDirectory | undefined = target;
+		while (parent) {
+			if (parent.parentId === dirBeingMoved.id) {
+				toast('folder nie może być przeniesiony do swojego podfolderu', 'error');
+				if (!closeDialog) {
+					grabbedItem.value = undefined;
+				}
+				return;
+			}
+			parent = allDirectories.value.find(dir => dir.id === parent!.parentId);
 		}
 		currentDirDirs.value[grabbedItem.value.index].movedToId = targetId;
 	} else if (grabbedItem.value.isNew) {
