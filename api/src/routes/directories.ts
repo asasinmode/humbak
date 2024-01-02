@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { mkdir, rm } from 'node:fs/promises';
 import { Hono, type MiddlewareHandler } from 'hono';
-import { type InferSelectModel, eq, inArray, isNull } from 'drizzle-orm';
+import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { array, custom, null_, number, object, string, transform, union } from 'valibot';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
 import { files, insertFileSchema } from '../db/schema/files';
@@ -46,7 +46,7 @@ function targetMiddleware(isParam: boolean): MiddlewareHandler {
 	};
 }
 
-async function dirData(id: number | null) {
+async function dirData(id: number | null, isPutResponse = false) {
 	const [foundDirectories, foundFiles] = await Promise.all([
 		db
 			.select({
@@ -55,7 +55,10 @@ async function dirData(id: number | null) {
 				name: directories.name,
 			})
 			.from(directories)
-			.where(id === null ? isNull(directories.parentId) : eq(directories.parentId, id)),
+			.where(isPutResponse
+				? sql`1 = 1`
+				: id === null ? isNull(directories.parentId) : eq(directories.parentId, id)
+			),
 		db
 			.select({
 				id: files.id,

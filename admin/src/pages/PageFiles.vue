@@ -599,12 +599,7 @@ async function saveChanges() {
 			});
 
 			if (responseReturnsData) {
-				const { directories, files } = await response.json() as IGetDirectoryResponse;
-				originalCurrentDirDirs.value = directories.map(dir => structuredClone(dir));
-				currentDirDirs.value = directories.map(dir => structuredClone(dir));
-
-				originalCurrentDirFiles.value = files.map(file => structuredClone(file));
-				currentDirFiles.value = files.map(file => structuredClone(file));
+				handlePutResponse(await response.json() as IGetDirectoryResponse);
 			}
 
 			toast('zapisano zmiany');
@@ -633,6 +628,17 @@ async function saveChanges() {
 	await new Promise(resolve => setTimeout(resolve, 500));
 	toast('zuploadowano pliki');
 	isSaving.value = false;
+}
+
+function handlePutResponse(data: IGetDirectoryResponse) {
+	const { directories, files } = data;
+	allDirectories.value = directories;
+
+	originalCurrentDirDirs.value = directories.filter(dir => dir.id === currentDirId.value).map(dir => structuredClone(dir));
+	currentDirDirs.value = originalCurrentDirDirs.value.map(dir => structuredClone(dir));
+
+	originalCurrentDirFiles.value = files.map(file => structuredClone(file));
+	currentDirFiles.value = files.map(file => structuredClone(file));
 }
 </script>
 
