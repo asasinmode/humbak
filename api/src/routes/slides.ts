@@ -79,7 +79,7 @@ export const app = new Hono()
 		const { value } = c.req.valid('json');
 		await db.update(slideAspectRatio).set({ value, updatedAt: new Date() });
 
-		return c.text('', 201);
+		return c.body(null, 204);
 	})
 	.get('/:id', wrap('param', idParamValidation), async (c) => {
 		const { id } = c.req.valid('param');
@@ -102,7 +102,7 @@ export const app = new Hono()
 
 		await db.delete(slides).where(eq(slides.id, id));
 
-		return c.text('', 201);
+		return c.body(null, 204);
 	});
 
 export type AppType = typeof app;

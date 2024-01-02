@@ -10,7 +10,7 @@ export const app = new Hono()
 
 		await writeFile(`${adminStylesheetsPath}/global.css`, value);
 
-		return c.text('', 201);
+		return c.body(null, 204);
 	});
 
 export type AppType = typeof app;

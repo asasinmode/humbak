@@ -134,7 +134,7 @@ export const app = new Hono()
 		await db.delete(pages).where(eq(pages.id, id));
 		console.log('TODO maybe delete old css');
 
-		return c.text('', 201);
+		return c.body(null, 204);
 	});
 
 export type AppType = typeof app;
