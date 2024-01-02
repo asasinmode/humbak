@@ -71,7 +71,7 @@ const pathBreadcrumbs = computed<IBreadcrumb[]>(() => {
 
 	let parent = allDirectories.value.find(dir => dir.id === currentDir.value!.parentId);
 	while (parent) {
-		breadcrumbs.push({ id: parent.id, text: parent.name });
+		breadcrumbs.splice(1, 0, { id: parent.id, text: parent.name });
 		parent = allDirectories.value.find(dir => dir.id === parent!.parentId);
 	}
 
