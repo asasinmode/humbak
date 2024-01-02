@@ -22,6 +22,7 @@ let changedLinks: Pick<IMenuLink, 'pageId' | 'position' | 'parentId'>[] = [];
 
 onMounted(async () => {
 	isLoadingLanguages.value = true;
+	isLoading.value = true;
 	try {
 		languages.value = await api.languages.$get().then(r => r.json());
 
@@ -36,6 +37,7 @@ onMounted(async () => {
 		console.error(e);
 	} finally {
 		isLoadingLanguages.value = false;
+		isLoading.value = false;
 	}
 });
 
@@ -57,7 +59,9 @@ async function getMenuLinks() {
 	}
 
 	isLoading.value = true;
+	console.log('loading');
 	try {
+		await new Promise(resolve => setTimeout(resolve, 5000))
 		const menuLinks = await api.menuLinks.$get({ query: { language: selectedLanguage.value } }).then(r => r.json());
 		originalMenuLinks = [...menuLinks];
 		changedLinks = [];
