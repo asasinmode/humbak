@@ -253,10 +253,15 @@ const dialogAllDirs = computed<IDirectory[]>(() => {
 		return matchingSearch;
 	}
 
-	const grabbedDirId = currentDirDirs.value[grabbedItem.value.index].id;
+	const grabbedDir = currentDirDirs.value[grabbedItem.value.index];
+	if (!grabbedDir) {
+		toastGenericError();
+		throw new Error('grabbed dir not found');
+	}
+
 	const rv = [];
 	for (const dir of matchingSearch) {
-		if (dir.id !== grabbedDirId) {
+		if (dir.id !== grabbedDir.id && dir.id !== grabbedDir.parentId) {
 			rv.push(dir);
 		}
 	}
