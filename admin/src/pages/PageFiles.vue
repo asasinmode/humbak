@@ -106,9 +106,9 @@ async function createDir() {
 			name: newDirName.value,
 		} }).then(res => res.json());
 
-		allDirectories.value.push(structuredClone(directory));
-		currentDirDirs.value.push(structuredClone(directory));
-		originalCurrentDirDirs.value.push(structuredClone(directory));
+		allDirectories.value.unshift(structuredClone(directory));
+		currentDirDirs.value.unshift(structuredClone(directory));
+		originalCurrentDirDirs.value.unshift(structuredClone(directory));
 
 		newDirName.value = '';
 	} catch (e) {
