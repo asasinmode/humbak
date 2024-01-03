@@ -161,6 +161,7 @@ export const app = new Hono<{
 			})),
 		})),
 		async (c) => {
+			console.log('TODO check if there are 2 files being moved into the same place');
 			const input = c.req.valid('json');
 
 			const dirs: IDir[] = await db.select({
@@ -191,7 +192,7 @@ export const app = new Hono<{
 					}
 
 					if (dir.parentId === null) {
-						return original.parentId !== dir.parentId;
+						return original.parentId !== dir.parentId || original.name !== dir.name;
 					}
 
 					const target = dirs.find(d => d.id === dir.parentId);
@@ -215,7 +216,6 @@ export const app = new Hono<{
 
 					return true;
 				});
-			console.log('dirs to edit', dirsToEdit);
 
 			const filesToEdit = input.editedFiles.filter((file) => {
 				const isDeleted = allDirsBeingDeleted.some(dir => file.directoryId === null || file.directoryId === dir.id);
@@ -248,7 +248,7 @@ export const app = new Hono<{
 				for (const file of filesToEdit) {
 					const originalFile = originalFiles.find(f => f.id === file.id);
 					if (!originalFile) {
-						console.error('file to edit not found in db');
+						console.error('FILE to edit not found in db');
 						continue;
 					}
 
@@ -259,7 +259,7 @@ export const app = new Hono<{
 						if (file.directoryId !== null) {
 							const targetDir = dirs.find(d => d.id === file.directoryId);
 							if (!targetDir) {
-								console.error('file to edit target dir not found');
+								console.error('FILE to edit parent dir not found');
 								continue;
 							}
 							targetDirPath = `${targetDir.path}/`;
@@ -269,11 +269,11 @@ export const app = new Hono<{
 						const oldPathExists = existsSync(oldPath);
 						const newPathExists = existsSync(`${adminFilesPath}${targetDirPath}`);
 						if (!oldPathExists) {
-							console.error('file to edit OLD path doesn\'t exist');
+							console.error('FILE to edit OLD path doesn\'t exist');
 							continue;
 						}
 						if (!newPathExists) {
-							console.error('file to edit NEW path doesn\'t exist');
+							console.error('FILE to edit NEW path doesn\'t exist');
 							continue;
 						}
 
@@ -303,6 +303,85 @@ export const app = new Hono<{
 				for (const dir of dirsToDelete) {
 					const path = `${adminFilesPath}${dir.path}`;
 					existsSync(path) && await rm(path, { recursive: true });
+				}
+			}
+
+			while (dirsToEdit.length) {
+				const dirsToGoThrough: (typeof dirsToEdit)[number][] = [];
+
+				for (let i = 0; i < dirsToEdit.length; i++) {
+					const { parentId } = dirsToEdit[i];
+					const parentIds: number[] = [];
+					let parent = dirs.find(d => d.id === parentId);
+					while (parent) {
+						parentIds.push(parent.id);
+						parent = dirs.find(d => d.id === parent!.parentId);
+					}
+
+					const isParentBeingEdited = parentIds.some(id =>
+						dirsToGoThrough.some(dir => dir.id === id) || dirsToEdit.some(dir => dir.id === id)
+					);
+					if (!isParentBeingEdited) {
+						const [dir] = dirsToEdit.splice(i, 1);
+						dirsToGoThrough.push(dir);
+						i--;
+					}
+				}
+
+				for (const dir of dirsToGoThrough) {
+					const originalDirIndex = dirs.findIndex(d => d.id === dir.id);
+					if (originalDirIndex === -1) {
+						console.error('DIR to edit not found');
+						continue;
+					}
+					const originalDir = dirs[originalDirIndex];
+
+					let targetDirPath = '/';
+					if (dir.parentId !== null) {
+						const targetDir = dirs.find(d => d.id === dir.parentId);
+						if (!targetDir) {
+							console.error('DIR to edit parent dir not found');
+							continue;
+						}
+						targetDirPath = `${targetDir.path}/`;
+					}
+
+					const oldPath = `${adminFilesPath}${originalDir.path}`;
+					const oldPathExists = existsSync(oldPath);
+					const newPathExists = existsSync(`${adminFilesPath}${targetDirPath}`);
+					if (!oldPathExists) {
+						console.error('DIR to edit OLD path doesn\'t exist');
+						continue;
+					}
+					if (!newPathExists) {
+						console.error('DIR to edit NEW path doesn\'t exist');
+						continue;
+					}
+
+					const path = `${targetDirPath}${dir.name}`;
+					const newPath = `${adminFilesPath}${path}`;
+					await rename(oldPath, newPath);
+
+					await db
+						.update(directories)
+						.set({
+							name: dir.name,
+							parentId: dir.parentId,
+							path,
+						})
+						.where(eq(directories.id, dir.id));
+					dirs[originalDirIndex] = {
+						id: dir.id,
+						parentId: dir.parentId,
+						name: dir.name,
+						path,
+					};
+					for (let i = 0; i < dirs.length; i++) {
+						const originalChildDir = dirs[i];
+						if (originalChildDir.parentId === dir.id) {
+							dirs[i].path = `${path}/${originalChildDir.name}`;
+						}
+					}
 				}
 			}
 
