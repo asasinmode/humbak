@@ -634,7 +634,7 @@ function handlePutResponse(data: IGetDirectoryResponse) {
 	const { directories, files } = data;
 	allDirectories.value = directories;
 
-	originalCurrentDirDirs.value = directories.filter(dir => dir.id === currentDirId.value).map(dir => structuredClone(dir));
+	originalCurrentDirDirs.value = directories.filter(dir => dir.parentId === currentDirId.value).map(dir => structuredClone(dir));
 	currentDirDirs.value = originalCurrentDirDirs.value.map(dir => structuredClone(dir));
 
 	originalCurrentDirFiles.value = files.map(file => structuredClone(file));
