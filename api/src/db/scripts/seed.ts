@@ -300,7 +300,7 @@ for (let dirId = 1; dirId <= 3; dirId++) {
 
 for (let childDirId = 4; childDirId <= 6; childDirId++) {
 	const parentId = childDirId - 3;
-	const name = `nd${parentId}${childDirId}`;
+	const name = `d${parentId}n`;
 	const path = `/d${parentId}/${name}`;
 	await mkdir(`${adminFilesPath}${path}`);
 	await db.insert(directories).values({
@@ -319,7 +319,7 @@ for (let dirId = 0; dirId <= 6; dirId++) {
 	if (dirId > 0 && dirId <= 3) {
 		dirPath = `/d${dirId}/`;
 	} else if (dirId > 3) {
-		dirPath = `/d${dirId - 3}/nd${dirId - 3}${dirId}/`;
+		dirPath = `/d${dirId - 3}/d${dirId - 3}n/`;
 	}
 
 	const mimetypes: [string, string, () => any][] = [
