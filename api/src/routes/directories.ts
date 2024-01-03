@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { mkdir, rm } from 'node:fs/promises';
+import { mkdir, rename, rm } from 'node:fs/promises';
 import { Hono, type MiddlewareHandler } from 'hono';
 import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { array, custom, null_, number, object, string, transform, union } from 'valibot';
@@ -208,7 +208,6 @@ export const app = new Hono<{
 				const isDeleted = dirsToDelete.some(dir => file.directoryId === dir.id);
 				return !isDeleted;
 			});
-			console.log('files to edit', filesToEdit);
 
 			if (input.deletedFileIds.length) {
 				const deletedFilePaths = await db
@@ -222,6 +221,67 @@ export const app = new Hono<{
 				}
 			}
 
+			if (filesToEdit.length) {
+				const originalFiles = await db
+					.select({
+						id: files.id,
+						directoryId: files.directoryId,
+						name: files.name,
+						path: files.path,
+					})
+					.from(files)
+					.where(inArray(files.id, filesToEdit.map(f => f.id)));
+
+				for (const file of filesToEdit) {
+					const originalFile = originalFiles.find(f => f.id === file.id);
+					if (!originalFile) {
+						console.error('file to edit not gotten back from db');
+						continue;
+					}
+
+					const hasMoved = originalFile.directoryId !== file.directoryId || file.name !== originalFile.name;
+					let path = originalFile.path;
+					if (hasMoved) {
+						let targetDirPath = '/';
+						if (file.directoryId !== null) {
+							const targetDir = dirs.find(d => d.id === file.directoryId);
+							if (!targetDir) {
+								console.error('file to edit target dir not found');
+								continue;
+							}
+							targetDirPath = targetDir.path;
+						}
+
+						const oldPath = `${adminFilesPath}${originalFile.path}`;
+						const oldPathExists = existsSync(oldPath);
+						const newPathExists = existsSync(`${adminFilesPath}${targetDirPath}`);
+						if (!oldPathExists) {
+							console.error('file to edit OLD path doesn\'t exist');
+							continue;
+						}
+						if (!newPathExists) {
+							console.error('file to edit NEW path doesn\'t exist');
+							continue;
+						}
+
+						const newPath = `${adminFilesPath}${targetDirPath}/${file.name}`;
+						await rename(oldPath, newPath);
+						path = `${targetDirPath}/${file.name}`;
+					}
+
+					await db
+						.update(files)
+						.set({
+							name: file.name,
+							title: file.title,
+							alt: file.alt,
+							directoryId: file.directoryId,
+							path,
+						})
+						.where(eq(files.id, file.id));
+				}
+			}
+
 			const returnDirHeader = c.req.header('return-for-dir') || '';
 			const parseResult = Number.parseInt(returnDirHeader);
 			const returnForDirId = returnDirHeader === 'null'
@@ -230,7 +290,7 @@ export const app = new Hono<{
 						? parseResult
 						: undefined;
 			if (returnForDirId !== undefined) {
-				return c.json(await dirData(returnForDirId));
+				return c.json(await dirData(returnForDirId, true));
 			}
 
 			return c.body(null, 204);

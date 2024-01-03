@@ -290,8 +290,8 @@ await db.insert(footerContents).values({
 
 for (let dirId = 1; dirId <= 3; dirId++) {
 	const name = `d${dirId}`;
-	const path = name;
-	await mkdir(`${adminFilesPath}/${path}`);
+	const path = `/${name}`;
+	await mkdir(`${adminFilesPath}${path}`);
 	await db.insert(directories).values({
 		name,
 		path,
@@ -301,8 +301,8 @@ for (let dirId = 1; dirId <= 3; dirId++) {
 for (let childDirId = 4; childDirId <= 6; childDirId++) {
 	const parentId = childDirId - 3;
 	const name = `nd${parentId}${childDirId}`;
-	const path = `d${parentId}/${name}`;
-	await mkdir(`${adminFilesPath}/${path}`);
+	const path = `/d${parentId}/${name}`;
+	await mkdir(`${adminFilesPath}${path}`);
 	await db.insert(directories).values({
 		name,
 		parentId,
@@ -315,12 +315,11 @@ const { data: rawGifData } = await fetch('https://api.giphy.com/v1/gifs/random?a
 const gifBuffer = await fetch(rawGifData.images.original.url).then(r => r.arrayBuffer()).then(v => Buffer.from(v));
 
 for (let dirId = 0; dirId <= 6; dirId++) {
-	let dirPath = '';
-
+	let dirPath = '/';
 	if (dirId > 0 && dirId <= 3) {
-		dirPath = `d${dirId}`;
+		dirPath = `/d${dirId}/`;
 	} else if (dirId > 3) {
-		dirPath = `d${dirId - 3}/nd${dirId - 3}${dirId}`;
+		dirPath = `/d${dirId - 3}/nd${dirId - 3}${dirId}/`;
 	}
 
 	const mimetypes: [string, string, () => any][] = [
@@ -343,7 +342,7 @@ for (let dirId = 0; dirId <= 6; dirId++) {
 		const [mimetype, extension, getFile] = mimetypes[i];
 
 		const name = `plik${dirId}${i}.${extension}`;
-		const path = `${dirPath}${dirPath ? '/' : ''}${name}`;
+		const path = `${dirPath}${name}`;
 		const title = `tytuł dla ${dirId}${i}`;
 		const alt = `alt dla ${dirId}${i}`;
 
@@ -356,7 +355,7 @@ for (let dirId = 0; dirId <= 6; dirId++) {
 			mimetype,
 		});
 
-		await writeFile(`${adminFilesPath}/${path}`, await getFile());
+		await writeFile(`${adminFilesPath}${path}`, await getFile());
 	}
 }
 
