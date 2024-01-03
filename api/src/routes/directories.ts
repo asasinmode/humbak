@@ -81,6 +81,19 @@ async function dirData(id: number | null, isPutResponse = false) {
 	};
 }
 
+type IDir = Pick<InferSelectModel<typeof directories>, 'id' | 'name' | 'parentId' | 'path'>;
+function getAllDirsToDelete(allDirs: IDir[], dirsToDelete: IDir[], acc: IDir[] = []) {
+	while (dirsToDelete.length) {
+		const dir = dirsToDelete.pop()!;
+		acc.push(dir);
+		const childrenToDelete = allDirs.filter(child => child.parentId === dir.id);
+		for (const child of getAllDirsToDelete(allDirs, childrenToDelete)) {
+			acc.push(child);
+		}
+	}
+	return acc;
+}
+
 export const app = new Hono<{
 	Variables: {
 		targetDir?: Pick<InferSelectModel<typeof directories>, 'path'>;
@@ -151,15 +164,14 @@ export const app = new Hono<{
 		async (c) => {
 			const input = c.req.valid('json');
 
-			const dirs = await db.select({
+			const dirs: IDir[] = await db.select({
 				path: directories.path,
 				id: directories.id,
 				name: directories.name,
 				parentId: directories.parentId,
 			}).from(directories);
-			type IDir = typeof dirs[number];
 
-			const dirsToDelete: IDir[] = [];
+			let dirsToDelete: IDir[] = [];
 			for (const id of input.deletedDirIds) {
 				const dir = dirs.find(d => d.id === id);
 				if (dir) {
@@ -292,6 +304,14 @@ export const app = new Hono<{
 						.where(eq(files.id, file.id));
 				}
 			}
+
+			dirsToDelete = getAllDirsToDelete(dirs, dirsToDelete);
+			console.log('all dirs to delete', dirsToDelete);
+			// for (const dir of dirsToDelete) {
+			// 	const childrenDirs: IDir[] = [];
+
+			// // await db.delete(files).where(eq(files.directoryId, dir.id));
+			// }
 
 			const returnDirHeader = c.req.header('return-for-dir') || '';
 			const parseResult = Number.parseInt(returnDirHeader);
