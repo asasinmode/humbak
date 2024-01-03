@@ -58,7 +58,8 @@ async function dirData(id: number | null, isPutResponse = false) {
 			.where(isPutResponse
 				? sql`1 = 1`
 				: id === null ? isNull(directories.parentId) : eq(directories.parentId, id)
-			),
+			)
+			.orderBy(directories.name),
 		db
 			.select({
 				id: files.id,
@@ -70,7 +71,8 @@ async function dirData(id: number | null, isPutResponse = false) {
 				mimetype: files.mimetype,
 			})
 			.from(files)
-			.where(id === null ? isNull(files.directoryId) : eq(files.directoryId, id)),
+			.where(id === null ? isNull(files.directoryId) : eq(files.directoryId, id))
+			.orderBy(files.name),
 	]);
 
 	return {
@@ -122,7 +124,8 @@ export const app = new Hono<{
 					name: directories.name,
 				})
 				.from(directories)
-				.where(eq(directories.id, insertId));
+				.where(eq(directories.id, insertId))
+				.orderBy(directories.name);
 
 			return c.json(result);
 		}
@@ -284,6 +287,7 @@ export const app = new Hono<{
 							alt: file.alt,
 							directoryId: file.directoryId,
 							path,
+							updatedAt: new Date(),
 						})
 						.where(eq(files.id, file.id));
 				}

@@ -652,12 +652,12 @@ async function saveChanges() {
 			isSaving.value = false;
 			return;
 		}
-	} else {
+	} else if (!newFiles.value.length) {
 		toast('zapisano zmiany');
 	}
 
 	await new Promise(resolve => setTimeout(resolve, 500));
-	toast('zuploadowano pliki');
+	newFiles.value.length && toast('zuploadowano pliki');
 	isSaving.value = false;
 }
 
