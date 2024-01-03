@@ -5,7 +5,7 @@ import { directories } from './directories';
 
 export const files = mysqlTable('files', {
 	id: int('id').primaryKey().autoincrement(),
-	directoryId: int('directoryId').references((): AnyMySqlColumn => directories.id),
+	directoryId: int('directoryId').references((): AnyMySqlColumn => directories.id, { onDelete: 'cascade' }),
 	path: text('path').notNull().default(''),
 	name: text('name').notNull(),
 	title: text('title').notNull(),

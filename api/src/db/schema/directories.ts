@@ -4,7 +4,7 @@ import { minLength, null_, number, object, string, union } from 'valibot';
 
 export const directories = mysqlTable('directories', {
 	id: int('id').primaryKey().autoincrement(),
-	parentId: int('parentId').references((): AnyMySqlColumn => directories.id),
+	parentId: int('parentId').references((): AnyMySqlColumn => directories.id, { onDelete: 'cascade' }),
 	path: text('path').notNull().default(''),
 	name: text('name').notNull(),
 	createdAt: datetime('createdAt').notNull().default(sql`NOW()`),
