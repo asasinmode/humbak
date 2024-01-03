@@ -171,14 +171,7 @@ export const app = new Hono<{
 				parentId: directories.parentId,
 			}).from(directories);
 
-			let dirsToDelete: IDir[] = [];
-			for (const id of input.deletedDirIds) {
-				const dir = dirs.find(d => d.id === id);
-				if (dir) {
-					dirsToDelete.push(dir);
-				}
-			}
-			console.log('dirs to delete', dirsToDelete);
+			const dirsToDelete = getAllDirsToDelete(dirs, dirs.filter(dir => input.deletedDirIds.includes(dir.id)));
 
 			const dirsToEdit = input.editedDirs
 				.filter((dir) => {
@@ -240,8 +233,6 @@ export const app = new Hono<{
 					existsSync(`${adminFilesPath}/${path}`) && await rm(`${adminFilesPath}/${path}`);
 				}
 			}
-
-			console.log('files to edit', filesToEdit);
 
 			if (filesToEdit.length) {
 				const originalFiles = await db
@@ -305,13 +296,16 @@ export const app = new Hono<{
 				}
 			}
 
-			dirsToDelete = getAllDirsToDelete(dirs, dirsToDelete);
-			console.log('all dirs to delete', dirsToDelete);
-			// for (const dir of dirsToDelete) {
-			// 	const childrenDirs: IDir[] = [];
+			if (dirsToDelete.length) {
+				const dirsToDeleteIds = dirsToDelete.map(dir => dir.id);
+				await db.delete(files).where(inArray(files.directoryId, dirsToDeleteIds));
+				await db.delete(directories).where(inArray(directories.id, dirsToDeleteIds));
 
-			// // await db.delete(files).where(eq(files.directoryId, dir.id));
-			// }
+				for (const dir of dirsToDelete) {
+					const path = `${adminFilesPath}${dir.path}`;
+					existsSync(path) && await rm(path, { recursive: true });
+				}
+			}
 
 			const returnDirHeader = c.req.header('return-for-dir') || '';
 			const parseResult = Number.parseInt(returnDirHeader);
