@@ -254,22 +254,42 @@ const dialogAllDirs = computed<IDialogDir[]>(() => {
 			});
 		}
 	}
-	if (!grabbedItem.value.isDir) {
-		return matchingSearch;
-	}
 
-	const grabbedDir = currentDirDirs.value[grabbedItem.value.index];
-	if (!grabbedDir) {
-		toastGenericError();
-		throw new Error('grabbed dir not found');
+	if (!dialogSearch.value || 'root'.includes(dialogSearch.value)) {
+		matchingSearch.unshift({
+			id: null as unknown as number,
+			parentId: -1,
+			name: 'root',
+		});
 	}
 
 	const rv = [];
-	for (const dir of matchingSearch) {
-		if (dir.id !== grabbedDir.id && dir.id !== grabbedDir.parentId) {
-			rv.push(dir);
+	if (grabbedItem.value.isDir) {
+		const grabbedDir = currentDirDirs.value[grabbedItem.value.index];
+		if (!grabbedDir) {
+			toastGenericError();
+			throw new Error('grabbed dir not found');
+		}
+
+		for (const dir of matchingSearch) {
+			if (dir.id !== grabbedDir.id && dir.id !== grabbedDir.parentId) {
+				rv.push(dir);
+			}
+		}
+	} else {
+		const grabbedFile = currentDirFiles.value[grabbedItem.value.index];
+		if (!grabbedFile) {
+			toastGenericError();
+			throw new Error('grabbed file not found');
+		}
+
+		for (const dir of matchingSearch) {
+			if (dir.id !== grabbedFile.directoryId) {
+				rv.push(dir);
+			}
 		}
 	}
+
 	return rv;
 });
 
@@ -406,13 +426,24 @@ function moveGrabbedElement(targetId?: number | null, closeDialog = false) {
 		throw new Error('move grabbed element called without grabbed element set');
 	}
 
-	const target = allDirectories.value.find(dir => dir.id === targetId);
+	let target: IDirectory | undefined;
+
+	if (targetId === null) {
+		target = {
+			id: null as unknown as number,
+			parentId: -1,
+			name: 'root',
+		};
+	} else {
+		target = allDirectories.value.find(dir => dir.id === targetId);
+	}
+
 	if (!target) {
 		toastGenericError();
 		throw new Error('target dir not found');
 	}
 
-	const currentTarget = currentDirDirs.value.find(dir => dir.id === target.id);
+	const currentTarget = currentDirDirs.value.find(dir => dir.id === target!.id);
 	if (currentTarget?.isBeingDeleted) {
 		closeDialog && dialog.value?.close();
 		return;

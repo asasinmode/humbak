@@ -151,6 +151,7 @@ export const app = new Hono<{
 			const dirs = await db.select({
 				path: directories.path,
 				id: directories.id,
+				name: directories.name,
 				parentId: directories.parentId,
 			}).from(directories);
 			type IDir = typeof dirs[number];
@@ -176,9 +177,13 @@ export const app = new Hono<{
 						return false;
 					}
 
-					const isMoved = original.parentId !== dir.parentId;
+					const isMoved = original.parentId !== dir.parentId || original.name !== dir.name;
 					if (!isMoved) {
 						return true;
+					}
+
+					if (dir.parentId === null) {
+						return original.parentId !== dir.parentId;
 					}
 
 					const target = dirs.find(d => d.id === dir.parentId);
@@ -205,7 +210,7 @@ export const app = new Hono<{
 			console.log('dirs to edit', dirsToEdit);
 
 			const filesToEdit = input.editedFiles.filter((file) => {
-				const isDeleted = dirsToDelete.some(dir => file.directoryId === dir.id);
+				const isDeleted = dirsToDelete.some(dir => file.directoryId === null || file.directoryId === dir.id);
 				return !isDeleted;
 			});
 
@@ -221,6 +226,8 @@ export const app = new Hono<{
 				}
 			}
 
+			console.log('files to edit', filesToEdit);
+
 			if (filesToEdit.length) {
 				const originalFiles = await db
 					.select({
@@ -235,7 +242,7 @@ export const app = new Hono<{
 				for (const file of filesToEdit) {
 					const originalFile = originalFiles.find(f => f.id === file.id);
 					if (!originalFile) {
-						console.error('file to edit not gotten back from db');
+						console.error('file to edit not found in db');
 						continue;
 					}
 
@@ -249,7 +256,7 @@ export const app = new Hono<{
 								console.error('file to edit target dir not found');
 								continue;
 							}
-							targetDirPath = targetDir.path;
+							targetDirPath = `${targetDir.path}/`;
 						}
 
 						const oldPath = `${adminFilesPath}${originalFile.path}`;
@@ -266,7 +273,7 @@ export const app = new Hono<{
 
 						const newPath = `${adminFilesPath}${targetDirPath}/${file.name}`;
 						await rename(oldPath, newPath);
-						path = `${targetDirPath}/${file.name}`;
+						path = `${targetDirPath}${file.name}`;
 					}
 
 					await db
