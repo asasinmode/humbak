@@ -83,8 +83,7 @@ async function dirData(id: number | null, isPutResponse = false) {
 
 type IDir = Pick<InferSelectModel<typeof directories>, 'id' | 'name' | 'parentId' | 'path'>;
 function getAllDirsToDelete(allDirs: IDir[], dirsToDelete: IDir[], acc: IDir[] = []) {
-	while (dirsToDelete.length) {
-		const dir = dirsToDelete.pop()!;
+	for (const dir of dirsToDelete) {
 		acc.push(dir);
 		const childrenToDelete = allDirs.filter(child => child.parentId === dir.id);
 		for (const child of getAllDirsToDelete(allDirs, childrenToDelete)) {
@@ -171,7 +170,8 @@ export const app = new Hono<{
 				parentId: directories.parentId,
 			}).from(directories);
 
-			const dirsToDelete = getAllDirsToDelete(dirs, dirs.filter(dir => input.deletedDirIds.includes(dir.id)));
+			const dirsToDelete = dirs.filter(dir => input.deletedDirIds.includes(dir.id));
+			const allDirsBeingDeleted = getAllDirsToDelete(dirs, dirsToDelete);
 
 			const dirsToEdit = input.editedDirs
 				.filter((dir) => {
@@ -180,7 +180,7 @@ export const app = new Hono<{
 						return false;
 					}
 
-					const isDeleted = dirsToDelete.some(d => d.id === dir.id || d.id === dir.parentId);
+					const isDeleted = allDirsBeingDeleted.some(d => d.id === dir.id || d.id === dir.parentId);
 					if (isDeleted) {
 						return false;
 					}
@@ -218,7 +218,7 @@ export const app = new Hono<{
 			console.log('dirs to edit', dirsToEdit);
 
 			const filesToEdit = input.editedFiles.filter((file) => {
-				const isDeleted = dirsToDelete.some(dir => file.directoryId === null || file.directoryId === dir.id);
+				const isDeleted = allDirsBeingDeleted.some(dir => file.directoryId === null || file.directoryId === dir.id);
 				return !isDeleted;
 			});
 
@@ -298,7 +298,6 @@ export const app = new Hono<{
 
 			if (dirsToDelete.length) {
 				const dirsToDeleteIds = dirsToDelete.map(dir => dir.id);
-				await db.delete(files).where(inArray(files.directoryId, dirsToDeleteIds));
 				await db.delete(directories).where(inArray(directories.id, dirsToDeleteIds));
 
 				for (const dir of dirsToDelete) {
