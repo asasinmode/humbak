@@ -34,4 +34,9 @@ export default defineConfig({
 			vueTemplate: true,
 		}),
 	],
+	server: {
+		watch: {
+			ignored: '**/public/**',
+		},
+	},
 });
