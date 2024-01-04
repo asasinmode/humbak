@@ -104,8 +104,8 @@ const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype]
 			label="nazwa"
 			:class="classes.input"
 			:disabled="disableInteractions"
-			:error="errors?.name || errors?.directoryId || errors?.file"
-			@update:model-value="clearError('name', 'directoryId', 'file')"
+			:error="errors?.id || errors?.directoryId || errors?.name || errors?.file"
+			@update:model-value="clearError('id', 'directoryId', 'name', 'file')"
 		/>
 		<VButton
 			v-if="(file as ILocalFile).isBeingDeleted"

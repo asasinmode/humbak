@@ -212,9 +212,25 @@ export const app = new Hono<{
 				editedFilesErrors[index] ||= {};
 				editedFilesErrors[index][key] = value;
 			};
+			const originalFiles = input.editedFiles.length
+				? await
+				db.select({
+					id: files.id,
+					directoryId: files.directoryId,
+					name: files.name,
+				})
+					.from(files)
+					.where(inArray(files.id, input.editedFiles.map(f => f.id)))
+				: [];
 
 			for (let i = 0; i < input.editedFiles.length; i++) {
 				const file = input.editedFiles[i];
+
+				const originalFile = originalFiles.find(f => f.id === file.id);
+				if (!originalFile) {
+					setEditedFilesError(i, 'id', 'plik nie istnieje');
+					continue;
+				}
 
 				const isDeleted = allDirsBeingDeleted!.some(dir => file.directoryId === null || file.directoryId === dir.id);
 				if (isDeleted) {
@@ -232,7 +248,8 @@ export const app = new Hono<{
 				}
 
 				const newPath = `${adminFilesPath}${targetDirPath}/${file.name}`;
-				const somethingExists = existsSync(newPath);
+				const hasMoved = file.directoryId !== originalFile.directoryId || file.name !== originalFile.name;
+				const somethingExists = hasMoved && existsSync(newPath);
 				if (somethingExists) {
 					const stats = await lstat(newPath);
 					if (!stats.isDirectory()) {
@@ -280,7 +297,6 @@ export const app = new Hono<{
 			await next();
 		},
 		async (c) => {
-			console.log('TODO check if there are 2 files being moved into the same place');
 			const input = c.req.valid('json');
 
 			const dirs = c.get('dirs');
@@ -563,7 +579,6 @@ export const app = new Hono<{
 				return c.json({ newFiles: errors }, 400);
 			}
 
-			console.log('gotta save', filesToSave);
 			if (filesToSave.length) {
 				await db.insert(files).values(filesToSave.map(file => ({
 					title: file.title,
@@ -571,6 +586,7 @@ export const app = new Hono<{
 					name: file.name,
 					path: file.path,
 					mimetype: file.mimetype,
+					directoryId: id,
 				})));
 			}
 			for (const file of filesToSave) {

@@ -45,6 +45,8 @@ const currentDir = computed(() => {
 	const parsedId = Number.parseInt(`${rawId}`);
 	const id = Number.isNaN(parsedId) ? null : parsedId;
 
+	console.log('computed dir', id);
+
 	if (id === 0) {
 		return undefined;
 	}
@@ -55,6 +57,7 @@ const currentDir = computed(() => {
 const currentDirId = computed(() => currentDir.value?.id || null);
 
 watch(currentDir, () => {
+	console.log('watch happening');
 	getDir(currentDirId.value);
 });
 
@@ -635,8 +638,7 @@ async function saveChanges() {
 			// map error keys from array positions to file/dir ids
 			errors.value.editedFiles = Object.fromEntries(
 				Object.entries(errors.value.editedFiles).map(([key, value]) => {
-					const { id: _id, ...rest } = value;
-					return [editedFiles[+key].id, rest];
+					return [editedFiles[+key].id, value];
 				})
 			);
 			errors.value.editedDirs = Object.fromEntries(
