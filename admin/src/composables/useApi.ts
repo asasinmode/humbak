@@ -8,20 +8,19 @@ const client = hc<AppType>(env.VITE_API_URL, {
 	fetch(...args) {
 		// @ts-expect-error args type doesn't matter
 		return fetch(...args).then(async (r) => {
-			if (!r.ok) {
-				const contentType = r.headers.get('content-type');
-				if (contentType && contentType.slice(0, 16) === 'application/json') {
-					return r.json().then((v) => {
-						throw new FetchError(v, r.status);
-					});
-				}
-
-				return r.text().then((v) => {
+			if (r.ok) {
+				return r;
+			}
+			const contentType = r.headers.get('content-type');
+			if (contentType && contentType.slice(0, 16) === 'application/json') {
+				return r.json().then((v) => {
 					throw new FetchError(v, r.status);
 				});
 			}
 
-			return r;
+			return r.text().then((v) => {
+				throw new FetchError(v, r.status);
+			});
 		});
 	},
 });
