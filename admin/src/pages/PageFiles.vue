@@ -571,32 +571,6 @@ function hasChanged() {
 	);
 }
 
-async function goToDir(id: number | null, event: MouseEvent) {
-	const targetDir = allDirectories.value.find(dir => dir.id === id);
-	if (id !== null && !targetDir) {
-		toastGenericError();
-		throw new Error('target dir not found');
-	}
-
-	if (id !== currentDirId.value && hasChanged()) {
-		const target = event.target as HTMLElement;
-		if (!target) {
-			console.warn('no dir link element found');
-		}
-
-		const proceed = await confirm(target, {
-			text: `Masz niezapisane zmiany. Czy na pewno chcesz przejść do folderu ${targetDir?.name || 'root'}?`,
-			okText: 'przejdź',
-		});
-		if (!proceed) {
-			return;
-		}
-	}
-
-	await router.push(id ? { query: { dir: id } } : {});
-	createDirErrors.value.parentId = '';
-}
-
 const isSaving = ref(false);
 const {
 	errors,
@@ -669,6 +643,33 @@ function handlePutResponse(data: IGetDirectoryResponse) {
 
 	originalCurrentDirFiles.value = files.map(file => structuredClone(file));
 	currentDirFiles.value = files.map(file => structuredClone(file));
+}
+
+async function goToDir(id: number | null, event: MouseEvent) {
+	const targetDir = allDirectories.value.find(dir => dir.id === id);
+	if (id !== null && !targetDir) {
+		toastGenericError();
+		throw new Error('target dir not found');
+	}
+
+	if (id !== currentDirId.value && hasChanged()) {
+		const target = event.target as HTMLElement;
+		if (!target) {
+			console.warn('no dir link element found');
+		}
+
+		const proceed = await confirm(target, {
+			text: `Masz niezapisane zmiany. Czy na pewno chcesz przejść do folderu ${targetDir?.name || 'root'}?`,
+			okText: 'przejdź',
+		});
+		if (!proceed) {
+			return;
+		}
+	}
+
+	await router.push(id ? { query: { dir: id } } : {});
+	clearErrors();
+	createDirErrors.value.parentId = '';
 }
 </script>
 
