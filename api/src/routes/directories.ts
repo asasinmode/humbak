@@ -28,6 +28,10 @@ const dirIdParamValidation = wrap('param', transform(object({
 export const app = new Hono<{
 	Variables: {
 		targetDir?: Pick<InferSelectModel<typeof directories>, 'path'>;
+		dirs?: IDir[];
+		dirsToDelete?: IDir[];
+		dirsToEdit?: Omit<IDir, 'path'>[];
+		allDirsBeingDeleted?: IDir[];
 	};
 }>()
 	.get('/', async (c) => {
@@ -92,65 +96,90 @@ export const app = new Hono<{
 				parentId: union([number(), null_()]),
 			})),
 		})),
-		async (c) => {
-			console.log('TODO check if there are 2 files being moved into the same place');
+		async (c, next) => {
 			const input = c.req.valid('json');
-
 			const dirs: IDir[] = await db.select({
 				path: directories.path,
 				id: directories.id,
 				name: directories.name,
 				parentId: directories.parentId,
 			}).from(directories);
-
+			c.set('dirs', dirs);
 			const dirsToDelete = dirs.filter(dir => input.deletedDirIds.includes(dir.id));
+			c.set('dirsToDelete', dirsToDelete);
 			const allDirsBeingDeleted = getAllDirsToDelete(dirs, dirsToDelete);
+			c.set('dirsToDeleteAll', []);
 
-			const dirsToEdit = input.editedDirs
-				.filter((dir) => {
-					const original = dirs.find(d => d.id === dir.id);
-					if (!original) {
-						return false;
-					}
+			const dirsToEdit: (typeof input)['editedDirs'] = [];
+			const errors: Record<string | number, Record<string, string>> = {};
 
-					const isDeleted = allDirsBeingDeleted.some(d => d.id === dir.id || d.id === dir.parentId);
-					if (isDeleted) {
-						return false;
-					}
+			for (const dir of input.editedDirs) {
+				const originalDir = dirs.find(d => d.id === dir.id);
+				if (!originalDir) {
+					continue;
+				}
+				const isDeleted = allDirsBeingDeleted!.some(d => d.id === dir.id || d.id === dir.parentId);
+				if (isDeleted) {
+					continue;
+				}
 
-					const isMoved = original.parentId !== dir.parentId || original.name !== dir.name;
-					if (!isMoved) {
-						return true;
-					}
+				const hasMoved = dir.parentId !== originalDir.parentId || dir.name !== originalDir.name;
+				if (!hasMoved) {
+					continue;
+				}
 
-					if (dir.parentId === null) {
-						return original.parentId !== dir.parentId || original.name !== dir.name;
-					}
-
+				if (dir.parentId !== null) {
 					const target = dirs.find(d => d.id === dir.parentId);
 					if (!target) {
-						return false;
+						continue;
 					}
 
 					// moved to itself
 					if (dir.id === target.id) {
-						return false;
+						continue;
 					}
 
 					// moved to its child
 					let parent: IDir | undefined = target;
 					while (parent) {
 						if (parent.parentId === dir.id) {
-							return false;
+							continue;
 						}
 						parent = dirs.find(d => d.id === parent!.parentId);
 					}
+				}
 
-					return true;
-				});
+				dirsToEdit.push(dir);
+			}
+
+			console.log('dirs to edit', dirsToEdit);
+
+			c.set('dirsToEdit', dirsToEdit);
+			await next();
+		},
+		async (c) => {
+			console.log('TODO check if there are 2 files being moved into the same place');
+			const input = c.req.valid('json');
+
+			const dirs = c.get('dirs');
+			if (!dirs) {
+				throw new Error('dirs from middleware not found');
+			}
+			const dirsToDelete = c.get('dirsToDelete');
+			if (!dirsToDelete) {
+				throw new Error('dirs to delete from middleware not found');
+			}
+			const allDirsBeingDeleted = c.get('allDirsBeingDeleted');
+			if (!dirs) {
+				throw new Error('all dirs being deleted from middleware not found');
+			}
+			const dirsToEdit = c.get('dirsToEdit');
+			if (!dirsToEdit) {
+				throw new Error('all dirs being deleted from middleware not found');
+			}
 
 			const filesToEdit = input.editedFiles.filter((file) => {
-				const isDeleted = allDirsBeingDeleted.some(dir => file.directoryId === null || file.directoryId === dir.id);
+				const isDeleted = allDirsBeingDeleted!.some(dir => file.directoryId === null || file.directoryId === dir.id);
 				return !isDeleted;
 			});
 
