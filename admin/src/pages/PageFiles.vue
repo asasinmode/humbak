@@ -612,8 +612,8 @@ async function saveChanges() {
 	} = getChanged();
 
 	if (deletedFileIds.length || editedFiles.length || deletedDirIds.length || editedDirs.length) {
+		const responseReturnsData = !newFiles.value.length;
 		try {
-			const responseReturnsData = !newFiles.value.length;
 			const response = await api.directories.$put({
 				json: {
 					deletedFileIds,
@@ -644,8 +644,11 @@ async function saveChanges() {
 					return [editedDirs[+key].id, value];
 				})
 			);
-			isSaving.value = false;
 			return;
+		} finally {
+			if (responseReturnsData) {
+				isSaving.value = false;
+			}
 		}
 	} else if (!newFiles.value.length) {
 		toast('zapisano zmiany');
@@ -681,6 +684,7 @@ async function saveChanges() {
 				});
 			}).then(r => r.json());
 			handlePutResponse(response);
+			newFiles.value = [];
 			toast('zuploadowano pliki');
 		} catch (e) {
 			handleNewFilesError(e);

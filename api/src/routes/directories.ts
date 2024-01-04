@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { lstat, mkdir, rename, rm } from 'node:fs/promises';
+import { lstat, mkdir, rename, rm, writeFile } from 'node:fs/promises';
 import { Hono, type MiddlewareHandler } from 'hono';
 import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { type Input, array, custom, null_, number, object, string, transform, union } from 'valibot';
@@ -506,20 +506,15 @@ export const app = new Hono<{
 				return c.json({ message: 'must be formdata' }, 400);
 			}
 
-			type IFile = {
-				title: string;
-				alt: string;
-				path: string;
-				file: File;
-			};
+			type IFile = Pick<InferSelectModel<typeof files>, 'title' | 'alt' | 'path' | 'name' | 'mimetype'> & { file: Uint8Array; };
 			const errors: Record<string | number, Record<string, string>> = {};
-			function setError(index: number, key: keyof (IFile & { name: string; }), value: string) {
+			function setError(index: number, key: keyof IFile, value: string) {
 				errors[index] ||= {};
 				errors[index][key] = value;
 			};
 
 			const length = Math.floor(Object.keys(input).length / 3);
-			const files: IFile[] = [];
+			const filesToSave: IFile[] = [];
 			for (let i = 0; i < length; i++) {
 				const alt = input[`alt[${i}]`] || '';
 				if (typeof alt !== 'string') {
@@ -554,11 +549,13 @@ export const app = new Hono<{
 					continue;
 				}
 
-				files.push({
+				filesToSave.push({
 					alt: alt as string,
 					title: title as string,
 					path: `${targetDirPath}${file.name}`,
-					file: file as File,
+					name: file.name,
+					mimetype: file.type,
+					file: new Uint8Array(await file.arrayBuffer()),
 				});
 			}
 
@@ -566,7 +563,19 @@ export const app = new Hono<{
 				return c.json({ newFiles: errors }, 400);
 			}
 
-			console.log('gotta save', files);
+			console.log('gotta save', filesToSave);
+			if (filesToSave.length) {
+				await db.insert(files).values(filesToSave.map(file => ({
+					title: file.title,
+					alt: file.alt,
+					name: file.name,
+					path: file.path,
+					mimetype: file.mimetype,
+				})));
+			}
+			for (const file of filesToSave) {
+				await writeFile(`${adminFilesPath}${file.path}`, file.file);
+			}
 
 			return c.json(await dirData(id));
 		}
