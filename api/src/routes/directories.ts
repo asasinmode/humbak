@@ -186,6 +186,10 @@ export const app = new Hono<{
 
 			for (let i = 0; i < input.editedDirs.length; i++) {
 				const dir = input.editedDirs[i];
+				if (!dirsToEdit.some(d => d.id === dir.id)) {
+					continue;
+				}
+
 				for (const otherDir of dirsToEdit) {
 					if (otherDir.id === dir.id) {
 						continue;
@@ -241,7 +245,27 @@ export const app = new Hono<{
 				filesToEdit.push(file);
 			}
 
-			console.log('files to edit', filesToEdit);
+			for (let i = 0; i < input.editedFiles.length; i++) {
+				const file = input.editedFiles[i];
+				if (!filesToEdit.some(f => f.id === file.id)) {
+					continue;
+				}
+
+				for (const otherFile of filesToEdit) {
+					if (otherFile.id === file.id) {
+						continue;
+					}
+					const sameParent = file.directoryId === otherFile.directoryId;
+					if (!sameParent) {
+						continue;
+					}
+					const sameName = file.name === otherFile.name;
+					if (sameName) {
+						setEditedFilesError(i, 'directoryId', 'dwa pliki nie mogą mieć tej samej nazwy');
+						break;
+					}
+				}
+			}
 
 			const anyDirErrors = Object.keys(editedDirsErrors).length;
 			const anyFileErrors = Object.keys(editedFilesErrors).length;
