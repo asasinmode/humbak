@@ -2,7 +2,7 @@ import { and, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { object } from 'valibot';
 import { db } from '../db';
-import { idParamValidation, languageQueryValidation, nonEmptyMaxLengthString, wrap } from '../helpers';
+import { idParamValidationMiddleware, languageQueryValidation, nonEmptyMaxLengthString, wrap } from '../helpers';
 import { insertSlideSchema, slides } from '../db/schema/slides';
 import { slideAspectRatio } from '../db/schema/slideAspectRatio';
 
@@ -81,7 +81,7 @@ export const app = new Hono()
 
 		return c.body(null, 204);
 	})
-	.get('/:id', wrap('param', idParamValidation), async (c) => {
+	.get('/:id', idParamValidationMiddleware, async (c) => {
 		const { id } = c.req.valid('param');
 
 		const [result] = await db
@@ -97,7 +97,7 @@ export const app = new Hono()
 
 		return c.json(result);
 	})
-	.delete('/:id', wrap('param', idParamValidation), async (c) => {
+	.delete('/:id', idParamValidationMiddleware, async (c) => {
 		const { id } = c.req.valid('param');
 
 		await db.delete(slides).where(eq(slides.id, id));

@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 import { eq, isNull, like, or, sql } from 'drizzle-orm';
 import { merge, object, optional, pick, string } from 'valibot';
 import { adminStylesheetsPath } from '../helpers/files';
-import { idParamValidation, paginationQueryValidation, wrap } from '../helpers';
+import { idParamValidationMiddleware, paginationQueryValidation, wrap } from '../helpers';
 import { db } from '../db';
 import { insertPageSchema, pages } from '../db/schema/pages';
 import { contents, insertContentSchema } from '../db/schema/contents';
@@ -47,7 +47,7 @@ export const app = new Hono()
 
 		return c.json({ items, count });
 	})
-	.get('/:id', wrap('param', idParamValidation), async (c) => {
+	.get('/:id', idParamValidationMiddleware, async (c) => {
 		const { id } = c.req.valid('param');
 
 		const [[result], stylesheetFileData] = await Promise.all([
@@ -128,7 +128,7 @@ export const app = new Hono()
 
 		return c.json({ ...result, css: stylesheetFileData.toString() });
 	})
-	.delete('/:id', wrap('param', idParamValidation), async (c) => {
+	.delete('/:id', idParamValidationMiddleware, async (c) => {
 		const { id } = c.req.valid('param');
 
 		await db.delete(pages).where(eq(pages.id, id));
