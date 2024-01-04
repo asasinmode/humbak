@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { lstat, mkdir, rename, rm } from 'node:fs/promises';
 import { Hono, type MiddlewareHandler } from 'hono';
 import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
-import { array, custom, null_, number, object, string, transform, union } from 'valibot';
+import { type Input, array, custom, null_, number, object, string, transform, union } from 'valibot';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
 import { files, insertFileSchema } from '../db/schema/files';
 import { wrap } from '../helpers';
@@ -25,12 +25,31 @@ const dirIdParamValidation = wrap('param', transform(object({
 	id: id === 'null' ? null : Number.parseInt(id),
 })));
 
+const putDirectoryInput = object({
+	deletedFileIds: array(number()),
+	editedFiles: array(object({
+		id: number(),
+		name: insertFileSchema.entries.name,
+		title: insertFileSchema.entries.title,
+		alt: insertFileSchema.entries.alt,
+		directoryId: union([number(), null_()]),
+	})),
+	deletedDirIds: array(number()),
+	editedDirs: array(object({
+		id: number(),
+		name: insertDirectorySchema.entries.name,
+		parentId: union([number(), null_()]),
+	})),
+});
+type IPutDirectoryInput = Input<typeof putDirectoryInput>;
+
 export const app = new Hono<{
 	Variables: {
 		targetDir?: Pick<InferSelectModel<typeof directories>, 'path'>;
 		dirs?: IDir[];
 		dirsToDelete?: IDir[];
-		dirsToEdit?: Omit<IDir, 'path'>[];
+		dirsToEdit?: IPutDirectoryInput['editedDirs'];
+		filesToEdit?: IPutDirectoryInput['editedFiles'];
 		allDirsBeingDeleted?: IDir[];
 	};
 }>()
@@ -80,22 +99,7 @@ export const app = new Hono<{
 	)
 	.put(
 		'/',
-		wrap('json', object({
-			deletedFileIds: array(number()),
-			editedFiles: array(object({
-				id: number(),
-				name: insertFileSchema.entries.name,
-				title: insertFileSchema.entries.title,
-				alt: insertFileSchema.entries.alt,
-				directoryId: union([number(), null_()]),
-			})),
-			deletedDirIds: array(number()),
-			editedDirs: array(object({
-				id: number(),
-				name: insertDirectorySchema.entries.name,
-				parentId: union([number(), null_()]),
-			})),
-		})),
+		wrap('json', putDirectoryInput),
 		async (c, next) => {
 			const input = c.req.valid('json');
 			const dirs: IDir[] = await db.select({
@@ -110,7 +114,7 @@ export const app = new Hono<{
 			const allDirsBeingDeleted = getAllDirsToDelete(dirs, dirsToDelete);
 			c.set('dirsToDeleteAll', []);
 
-			type IEditedDir = (typeof input)['editedDirs'][number];
+			type IEditedDir = IPutDirectoryInput['editedDirs'][number];
 			const dirsToEdit: IEditedDir[] = [];
 			const editedDirsErrors: Record<string | number, Record<string, string>> = {};
 			function setEditedDirsError(index: number, key: keyof IEditedDir, value: string) {
@@ -159,12 +163,6 @@ export const app = new Hono<{
 					}
 				}
 
-				// const existingDirInSamePlace = dirs.find(d => d.id !== dir.id && d.parentId === dir.parentId && d.name === dir.name);
-				// if (existingDirInSamePlace) {
-				// 	setEditedDirsError(i, 'name', 'folder o podanej nazwie istnieje w wybranej lokacji');
-				// 	continue;
-				// }
-
 				let targetDirPath = '/';
 				if (dir.parentId !== null) {
 					if (!target) {
@@ -204,13 +202,33 @@ export const app = new Hono<{
 				}
 			}
 
-			if (Object.keys(editedDirsErrors).length) {
-				return c.json({ editedDirs: editedDirsErrors }, 400);
+			const editedFilesErrors: Record<string | number, Record<string, string>> = {};
+			const filesToEdit: (typeof input)[ 'editedFiles' ] = [];
+			for (let i = 0; i < input.editedFiles.length; i++) {
+				const file = input.editedFiles[i];
+
+				const isDeleted = allDirsBeingDeleted!.some(dir => file.directoryId === null || file.directoryId === dir.id);
+
+				if (isDeleted) {
+					continue;
+				}
+
+				filesToEdit.push(file);
 			}
 
-			console.log('dirs to edit', dirsToEdit);
+			console.log('files to edit', filesToEdit);
+
+			const anyDirErrors = Object.keys(editedDirsErrors).length;
+			const anyFileErrors = Object.keys(editedFilesErrors).length;
+			if (anyDirErrors || anyFileErrors) {
+				return c.json({
+					editedDirs: anyDirErrors ? editedDirsErrors : undefined,
+					editedFiles: anyFileErrors ? editedFilesErrors : undefined,
+				}, 400);
+			}
 
 			c.set('dirsToEdit', dirsToEdit);
+			c.set('filesToEdit', filesToEdit);
 			await next();
 		},
 		async (c) => {
@@ -225,19 +243,14 @@ export const app = new Hono<{
 			if (!dirsToDelete) {
 				throw new Error('dirs to delete from middleware not found');
 			}
-			const allDirsBeingDeleted = c.get('allDirsBeingDeleted');
-			if (!dirs) {
-				throw new Error('all dirs being deleted from middleware not found');
-			}
 			const dirsToEdit = c.get('dirsToEdit');
 			if (!dirsToEdit) {
-				throw new Error('all dirs being deleted from middleware not found');
+				throw new Error('dirs to edit from middleware not found');
 			}
-
-			const filesToEdit = input.editedFiles.filter((file) => {
-				const isDeleted = allDirsBeingDeleted!.some(dir => file.directoryId === null || file.directoryId === dir.id);
-				return !isDeleted;
-			});
+			const filesToEdit = c.get('filesToEdit');
+			if (!filesToEdit) {
+				throw new Error('files to edit from middleware not found');
+			}
 
 			if (input.deletedFileIds.length) {
 				const deletedFilePaths = await db
