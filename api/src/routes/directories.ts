@@ -502,7 +502,6 @@ export const app = new Hono<{
 			}
 
 			const input = await c.req.parseBody();
-			console.log('will upload to', { id, input, targetDirPath });
 			if (typeof input !== 'object') {
 				return c.json({ message: 'must be formdata' }, 400);
 			}
@@ -510,6 +509,7 @@ export const app = new Hono<{
 			type IFile = {
 				title: string;
 				alt: string;
+				path: string;
 				file: File;
 			};
 			const errors: Record<string | number, Record<string, string>> = {};
@@ -539,7 +539,7 @@ export const app = new Hono<{
 				if (!file.name) {
 					setError(i, 'name', 'nie może być puste');
 				} else {
-					const newPath = `${adminFilesPath}${targetDirPath}/${file.name}`;
+					const newPath = `${adminFilesPath}${targetDirPath}${file.name}`;
 					const somethingExists = existsSync(newPath);
 					if (somethingExists) {
 						const stats = await lstat(newPath);
@@ -557,6 +557,7 @@ export const app = new Hono<{
 				files.push({
 					alt: alt as string,
 					title: title as string,
+					path: `${targetDirPath}${file.name}`,
 					file: file as File,
 				});
 			}
