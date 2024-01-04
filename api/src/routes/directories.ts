@@ -202,15 +202,40 @@ export const app = new Hono<{
 				}
 			}
 
+			type IEditedFile = (typeof input)['editedFiles'][number];
+			const filesToEdit: IEditedFile[] = [];
 			const editedFilesErrors: Record<string | number, Record<string, string>> = {};
-			const filesToEdit: (typeof input)[ 'editedFiles' ] = [];
+			function setEditedFilesError(index: number, key: keyof IEditedFile, value: string) {
+				editedFilesErrors[index] ||= {};
+				editedFilesErrors[index][key] = value;
+			};
+
 			for (let i = 0; i < input.editedFiles.length; i++) {
 				const file = input.editedFiles[i];
 
 				const isDeleted = allDirsBeingDeleted!.some(dir => file.directoryId === null || file.directoryId === dir.id);
-
 				if (isDeleted) {
 					continue;
+				}
+
+				let targetDirPath = '/';
+				if (file.directoryId !== null) {
+					const targetDir = dirs.find(d => d.id === file.directoryId);
+					if (!targetDir) {
+						setEditedFilesError(i, 'directoryId', 'wybrany rodzic nie istnieje');
+						continue;
+					}
+					targetDirPath = `${targetDir.path}/`;
+				}
+
+				const newPath = `${adminFilesPath}${targetDirPath}/${file.name}`;
+				const somethingExists = existsSync(newPath);
+				if (somethingExists) {
+					const stats = await lstat(newPath);
+					if (!stats.isDirectory()) {
+						setEditedFilesError(i, 'name', 'plik o podanej nazwie istnieje w wybranej lokacji');
+						continue;
+					}
 				}
 
 				filesToEdit.push(file);
