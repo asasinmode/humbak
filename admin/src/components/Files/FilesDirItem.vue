@@ -22,8 +22,8 @@ const dir = defineModel<ILocalDirectory>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 
 const errors = defineModel<Record<string, string>>('errors');
-function clearErrors() {
-	for (const key of ['name', 'id', 'parentId']) {
+function clearErrors(...keys: (keyof IDirectory)[]) {
+	for (const key of keys) {
 		if (errors.value?.[key]) {
 			errors.value[key] = '';
 		}
@@ -80,7 +80,7 @@ const hasChanged = computed(() =>
 			:class="classes.input"
 			:disabled="disableInteractions"
 			:error="errors?.name || errors?.id || errors?.parentId"
-			@update:model-value="clearErrors"
+			@update:model-value="clearErrors('id', 'parentId', 'name')"
 		/>
 		<a
 			:href="`?dir=${dir.id}`"
