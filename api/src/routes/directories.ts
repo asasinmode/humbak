@@ -25,74 +25,6 @@ const dirIdParamValidation = wrap('param', transform(object({
 	id: id === 'null' ? null : Number.parseInt(id),
 })));
 
-function targetMiddleware(isParam: boolean): MiddlewareHandler {
-	return async (c, next) => {
-		const id = c.req.valid((isParam ? 'param' : 'json') as never)[isParam ? 'id' : 'parentId'] as number;
-		if (id === null) {
-			await next();
-			return;
-		}
-
-		const [dir] = await db.select({
-			path: directories.path,
-		}).from(directories).where(eq(directories.id, id));
-
-		if (!dir) {
-			return isParam ? c.notFound() : c.json({ parentId: 'podany rodzic nie istnieje' }, 400);
-		}
-
-		c.set('targetDir', dir);
-		await next();
-	};
-}
-
-async function dirData(id: number | null, isPutResponse = false) {
-	const [foundDirectories, foundFiles] = await Promise.all([
-		db
-			.select({
-				id: directories.id,
-				parentId: directories.parentId,
-				name: directories.name,
-			})
-			.from(directories)
-			.where(isPutResponse
-				? sql`1 = 1`
-				: id === null ? isNull(directories.parentId) : eq(directories.parentId, id)
-			)
-			.orderBy(directories.name),
-		db
-			.select({
-				id: files.id,
-				directoryId: files.directoryId,
-				path: files.path,
-				name: files.name,
-				title: files.title,
-				alt: files.alt,
-				mimetype: files.mimetype,
-			})
-			.from(files)
-			.where(id === null ? isNull(files.directoryId) : eq(files.directoryId, id))
-			.orderBy(files.name),
-	]);
-
-	return {
-		directories: foundDirectories,
-		files: foundFiles,
-	};
-}
-
-type IDir = Pick<InferSelectModel<typeof directories>, 'id' | 'name' | 'parentId' | 'path'>;
-function getAllDirsToDelete(allDirs: IDir[], dirsToDelete: IDir[], acc: IDir[] = []) {
-	for (const dir of dirsToDelete) {
-		acc.push(dir);
-		const childrenToDelete = allDirs.filter(child => child.parentId === dir.id);
-		for (const child of getAllDirsToDelete(allDirs, childrenToDelete)) {
-			acc.push(child);
-		}
-	}
-	return acc;
-}
-
 export const app = new Hono<{
 	Variables: {
 		targetDir?: Pick<InferSelectModel<typeof directories>, 'path'>;
@@ -410,9 +342,72 @@ export const app = new Hono<{
 		}
 	);
 
-// UPDATE files
-// JOIN directories ON files.directoryId = directories.id
-// SET files.path = CONCAT(directories.path, '/', files.name)
-// WHERE directories.id = 1;
+function targetMiddleware(isParam: boolean): MiddlewareHandler {
+	return async (c, next) => {
+		const id = c.req.valid((isParam ? 'param' : 'json') as never)[isParam ? 'id' : 'parentId'] as number;
+		if (id === null) {
+			await next();
+			return;
+		}
+
+		const [dir] = await db.select({
+			path: directories.path,
+		}).from(directories).where(eq(directories.id, id));
+
+		if (!dir) {
+			return isParam ? c.notFound() : c.json({ parentId: 'podany rodzic nie istnieje' }, 400);
+		}
+
+		c.set('targetDir', dir);
+		await next();
+	};
+}
+
+async function dirData(id: number | null, isPutResponse = false) {
+	const [foundDirectories, foundFiles] = await Promise.all([
+		db
+			.select({
+				id: directories.id,
+				parentId: directories.parentId,
+				name: directories.name,
+			})
+			.from(directories)
+			.where(isPutResponse
+				? sql`1 = 1`
+				: id === null ? isNull(directories.parentId) : eq(directories.parentId, id)
+			)
+			.orderBy(directories.name),
+		db
+			.select({
+				id: files.id,
+				directoryId: files.directoryId,
+				path: files.path,
+				name: files.name,
+				title: files.title,
+				alt: files.alt,
+				mimetype: files.mimetype,
+			})
+			.from(files)
+			.where(id === null ? isNull(files.directoryId) : eq(files.directoryId, id))
+			.orderBy(files.name),
+	]);
+
+	return {
+		directories: foundDirectories,
+		files: foundFiles,
+	};
+}
+
+type IDir = Pick<InferSelectModel<typeof directories>, 'id' | 'name' | 'parentId' | 'path'>;
+function getAllDirsToDelete(allDirs: IDir[], dirsToDelete: IDir[], acc: IDir[] = []) {
+	for (const dir of dirsToDelete) {
+		acc.push(dir);
+		const childrenToDelete = allDirs.filter(child => child.parentId === dir.id);
+		for (const child of getAllDirsToDelete(allDirs, childrenToDelete)) {
+			acc.push(child);
+		}
+	}
+	return acc;
+}
 
 export type AppType = typeof app;
