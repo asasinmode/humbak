@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { mkdir, rename, rm } from 'node:fs/promises';
+import { lstat, mkdir, rename, rm } from 'node:fs/promises';
 import { Hono, type MiddlewareHandler } from 'hono';
 import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { array, custom, null_, number, object, string, transform, union } from 'valibot';
@@ -118,7 +118,7 @@ export const app = new Hono<{
 				editedDirsErrors[index][key] = value;
 			};
 
-			// eslint-disable-next-line no-restricted-syntax,no-labels
+			// eslint-disable-next-line no-restricted-syntax, no-labels
 			outerDirLoop: for (let i = 0; i < input.editedDirs.length; i++) {
 				const dir = input.editedDirs[i];
 				const originalDir = dirs.find(d => d.id === dir.id);
@@ -136,8 +136,8 @@ export const app = new Hono<{
 					continue;
 				}
 
+				const target = dirs.find(d => d.id === dir.parentId);
 				if (dir.parentId !== null) {
-					const target = dirs.find(d => d.id === dir.parentId);
 					if (!target) {
 						setEditedDirsError(i, 'parentId', 'wybrany rodzic nie istnieje');
 						continue;
@@ -148,7 +148,6 @@ export const app = new Hono<{
 						continue;
 					}
 
-					// moved to its child
 					let parent: IDir | undefined = target;
 					while (parent) {
 						if (parent.parentId === dir.id) {
@@ -157,6 +156,30 @@ export const app = new Hono<{
 							continue outerDirLoop;
 						}
 						parent = dirs.find(d => d.id === parent!.parentId);
+					}
+				}
+
+				// const existingDirInSamePlace = dirs.find(d => d.id !== dir.id && d.parentId === dir.parentId && d.name === dir.name);
+				// if (existingDirInSamePlace) {
+				// 	setEditedDirsError(i, 'name', 'folder o podanej nazwie istnieje w wybranej lokacji');
+				// 	continue;
+				// }
+
+				let targetDirPath = '/';
+				if (dir.parentId !== null) {
+					if (!target) {
+						throw new Error('target should\'ve been set by now');
+					}
+					targetDirPath = `${target.path}/`;
+				}
+
+				const newPath = `${adminFilesPath}${targetDirPath}${originalDir.name}`;
+				const somethingExists = existsSync(newPath);
+				if (somethingExists) {
+					const stats = await lstat(newPath);
+					if (stats.isDirectory()) {
+						setEditedDirsError(i, 'name', 'folder o podanej nazwie istnieje w wybranej lokacji');
+						continue;
 					}
 				}
 
