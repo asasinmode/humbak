@@ -173,7 +173,7 @@ export const app = new Hono<{
 					targetDirPath = `${target.path}/`;
 				}
 
-				const newPath = `${adminFilesPath}${targetDirPath}${originalDir.name}`;
+				const newPath = `${adminFilesPath}${targetDirPath}${dir.name}`;
 				const somethingExists = existsSync(newPath);
 				if (somethingExists) {
 					const stats = await lstat(newPath);
@@ -184,6 +184,24 @@ export const app = new Hono<{
 				}
 
 				dirsToEdit.push(dir);
+			}
+
+			for (let i = 0; i < input.editedDirs.length; i++) {
+				const dir = input.editedDirs[i];
+				for (const otherDir of dirsToEdit) {
+					if (otherDir.id === dir.id) {
+						continue;
+					}
+					const sameParent = dir.parentId === otherDir.parentId;
+					if (!sameParent) {
+						continue;
+					}
+					const sameName = dir.name === otherDir.name;
+					if (sameName) {
+						setEditedDirsError(i, 'name', 'dwa foldery nie mogą mieć tej samej nazwy');
+						break;
+					}
+				}
 			}
 
 			if (Object.keys(editedDirsErrors).length) {
