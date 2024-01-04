@@ -293,6 +293,13 @@ const dialogAllDirs = computed<IDialogDir[]>(() => {
 	return rv;
 });
 
+const isSaving = ref(false);
+const {
+	errors,
+	handleError,
+	clearErrors,
+} = useErrors({ deletedFileIds: {},	editedFiles: {}, deletedDirIds: {}, editedDirs: {} } as IPutDirectoriesInput);
+
 function grabFile(index: number, event: MouseEvent, mimetype: string, isNew?: boolean, src?: string, name?: string) {
 	if (!event.target) {
 		toastGenericError();
@@ -475,10 +482,16 @@ function moveGrabbedElement(targetId?: number | null, closeDialog = false) {
 			}
 			parent = allDirectories.value.find(dir => dir.id === parent!.parentId);
 		}
+
+		if (errors.value.editedDirs[dirBeingMoved.id]) {
+			errors.value.editedDirs[dirBeingMoved.id] = {};
+		}
 		currentDirDirs.value[grabbedItem.value.index].movedToId = targetId;
 	} else if (grabbedItem.value.isNew) {
+		// todo clear errors
 		newFiles.value[grabbedItem.value.index].movedToId = targetId;
 	} else {
+		// todo clear errors
 		currentDirFiles.value[grabbedItem.value.index].movedToId = targetId;
 	}
 
@@ -570,13 +583,6 @@ function hasChanged() {
 		|| editedDirs.length
 	);
 }
-
-const isSaving = ref(false);
-const {
-	errors,
-	handleError,
-	clearErrors,
-} = useErrors({ deletedFileIds: {},	editedFiles: {}, deletedDirIds: {}, editedDirs: {} } as IPutDirectoriesInput);
 
 async function saveChanges() {
 	isSaving.value = true;
