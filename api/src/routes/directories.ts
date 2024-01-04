@@ -537,6 +537,16 @@ export const app = new Hono<{
 
 				if (!file.name) {
 					setError(i, 'name', 'nie może być puste');
+				} else {
+					const newPath = `${adminFilesPath}${targetDirPath}/${file.name}`;
+					const somethingExists = existsSync(newPath);
+					if (somethingExists) {
+						const stats = await lstat(newPath);
+						if (!stats.isDirectory()) {
+							setError(i, 'name', 'plik o podanej nazwie istnieje w wybranej lokacji');
+							continue;
+						}
+					}
 				}
 
 				if (errors[i]) {

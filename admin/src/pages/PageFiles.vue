@@ -2,6 +2,7 @@
 import { knownMimetypeExtensions } from '~/helpers';
 import VDialog from '~/components/V/VDialog.vue';
 import { env } from '~/env';
+import { FetchError } from '~/composables/useErrors';
 import type { IDirectory, IFile, IGetDirectoryResponse, IPutDirectoriesInput } from '~/composables/useApi';
 import type { IFilesGrabbedItem, ILocalDirectory, ILocalFile, INewFile } from '~/types';
 
@@ -601,6 +602,7 @@ function hasChanged() {
 async function saveChanges() {
 	isSaving.value = true;
 	clearErrors();
+	clearNewFilesErrors();
 
 	const {
 		deletedFileIds,
@@ -681,7 +683,7 @@ async function saveChanges() {
 			handlePutResponse(response);
 			toast('zuploadowano pliki');
 		} catch (e) {
-			handleError(e);
+			handleNewFilesError(e);
 		} finally {
 			isSaving.value = false;
 		}

@@ -21,7 +21,7 @@ const file = defineModel<ILocalFile | INewFile>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 
 const errors = defineModel<Record<string, string>>('errors');
-function clearError(...keys: (keyof IFile)[]) {
+function clearError(...keys: (keyof (IFile & { file: INewFile['file']; }))[]) {
 	for (const key of keys) {
 		if (errors.value?.[key]) {
 			errors.value[key] = '';
@@ -104,8 +104,8 @@ const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype]
 			label="nazwa"
 			:class="classes.input"
 			:disabled="disableInteractions"
-			:error="errors?.name || errors?.directoryId"
-			@update:model-value="clearError('name', 'directoryId')"
+			:error="errors?.name || errors?.directoryId || errors?.file"
+			@update:model-value="clearError('name', 'directoryId', 'file')"
 		/>
 		<VButton
 			v-if="(file as ILocalFile).isBeingDeleted"
