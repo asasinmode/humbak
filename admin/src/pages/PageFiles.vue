@@ -45,8 +45,6 @@ const currentDir = computed(() => {
 	const parsedId = Number.parseInt(`${rawId}`);
 	const id = Number.isNaN(parsedId) ? null : parsedId;
 
-	console.log('computed dir', id);
-
 	if (id === 0) {
 		return undefined;
 	}
@@ -56,8 +54,7 @@ const currentDir = computed(() => {
 
 const currentDirId = computed(() => currentDir.value?.id || null);
 
-watch(currentDir, () => {
-	console.log('watch happening');
+watch(currentDirId, () => {
 	getDir(currentDirId.value);
 });
 
@@ -698,7 +695,6 @@ async function saveChanges() {
 
 function handlePutResponse(data: IGetDirectoryResponse) {
 	const { directories, files } = data;
-	allDirectories.value = directories;
 
 	originalCurrentDirDirs.value = directories.filter(dir => dir.parentId === currentDirId.value).map(dir => structuredClone(dir));
 	currentDirDirs.value = originalCurrentDirDirs.value.map(dir => structuredClone(dir));
@@ -729,11 +725,11 @@ async function goToDir(id: number | null, event: MouseEvent) {
 		}
 	}
 
-	await router.push(id ? { query: { dir: id } } : {});
 	clearErrors();
 	clearCreateDirErrors();
 	clearNewFilesErrors();
 	newFiles.value = [];
+	await router.push(id ? { query: { dir: id } } : {});
 }
 </script>
 
