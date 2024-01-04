@@ -163,7 +163,6 @@ export const app = new Hono<{
 				dirsToEdit.push(dir);
 			}
 
-			console.log('errors', editedDirsErrors);
 			if (Object.keys(editedDirsErrors).length) {
 				return c.json({ editedDirs: editedDirsErrors }, 400);
 			}

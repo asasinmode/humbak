@@ -65,19 +65,19 @@ const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype]
 			>
 				{{ nonImageText }}
 			</span>
-			<a
-				class="bg-blue hoverable:text-blue-6 border-l-2 border-b-2 absolute top-0 right-0 p-[0.125rem] border-r-0 rounded-bl-1"
-				:class="hasChanged ? 'border-blue' : 'border-neutral'"
-				title="pobierz"
-				:href="path"
-				:download="file.name"
-			>
-				<span class="visually-hidden">pobierz</span>
-				<div class="i-fluent-arrow-download-16-filled w-5 h-5" />
-			</a>
 			<div v-if="(file as ILocalFile).isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute left-1/2 top-1/2 h-full w-full translate-center text-red-5 dark:text-red drop-shadow" />
 			<div v-if="hasMoved" class="i-solar-move-to-folder-bold absolute left-1/2 top-1/2 h-full w-full translate-center text-blue drop-shadow" />
 		</div>
+		<a
+			class="bg-blue hoverable:text-blue-6 border-l-2 border-b-2 absolute top-0 right-0 p-[0.125rem] border-r-0 rounded-bl-1"
+			:class="hasChanged ? 'border-blue' : 'border-neutral'"
+			title="pobierz"
+			:href="path"
+			:download="file.name"
+		>
+			<span class="visually-hidden">pobierz</span>
+			<div class="i-fluent-arrow-download-16-filled w-5 h-5" />
+		</a>
 		<VInput
 			:id="`file${index}title`"
 			v-model="file.title"
