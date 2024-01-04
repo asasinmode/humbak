@@ -446,6 +446,7 @@ export const app = new Hono<{
 							name: dir.name,
 							parentId: dir.parentId,
 							path,
+							updatedAt: new Date(),
 						})
 						.where(eq(directories.id, dir.id));
 					dirs[originalDirIndex] = {
