@@ -491,7 +491,14 @@ function moveGrabbedElement(targetId?: number | null, closeDialog = false) {
 		// todo clear errors
 		newFiles.value[grabbedItem.value.index].movedToId = targetId;
 	} else {
-		// todo clear errors
+		const fileBeingMoved = currentDirFiles.value[grabbedItem.value.index];
+		if (!fileBeingMoved) {
+			toastGenericError();
+			throw new Error('file being moved not found');
+		}
+		if (errors.value.editedFiles[fileBeingMoved.id]) {
+			errors.value.editedFiles[fileBeingMoved.id] = {};
+		}
 		currentDirFiles.value[grabbedItem.value.index].movedToId = targetId;
 	}
 
