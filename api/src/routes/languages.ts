@@ -8,5 +8,3 @@ export const app = new Hono()
 
 		return c.json(result.map(item => item.language));
 	});
-
-export type AppType = typeof app;

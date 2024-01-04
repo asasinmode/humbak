@@ -67,5 +67,3 @@ export const app = new Hono()
 
 		return c.json(result);
 	});
-
-export type AppType = typeof app;

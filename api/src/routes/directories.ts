@@ -409,5 +409,3 @@ function getAllDirsToDelete(allDirs: IDir[], dirsToDelete: IDir[], acc: IDir[] =
 	}
 	return acc;
 }
-
-export type AppType = typeof app;
