@@ -1,4 +1,5 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { readFile, rm, writeFile } from 'node:fs/promises';
 import { Hono } from 'hono';
 import { eq, isNull, like, or, sql } from 'drizzle-orm';
 import { merge, object, optional, pick, string } from 'valibot';
@@ -131,8 +132,16 @@ export const app = new Hono()
 	.delete('/:id', idParamValidationMiddleware, async (c) => {
 		const { id } = c.req.valid('param');
 
-		await db.delete(pages).where(eq(pages.id, id));
-		console.log('TODO maybe delete old css');
+		await Promise.all([
+			db.delete(pages).where(eq(pages.id, id)),
+			db
+				.update(menuLinks)
+				.set({
+					parentId: -1,
+				})
+				.where(eq(menuLinks.parentId, id)),
+			existsSync(`${adminStylesheetsPath}/${id}.css`) && rm(`${adminStylesheetsPath}/${id}.css`),
+		]);
 
 		return c.body(null, 204);
 	});
