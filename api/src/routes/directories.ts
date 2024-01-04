@@ -72,7 +72,6 @@ export const app = new Hono<{
 			const input = c.req.valid('json');
 
 			let path = input.name;
-
 			const target = c.get('targetDir');
 			if (target) {
 				path = `${target.path}/${path}`;
@@ -484,6 +483,78 @@ export const app = new Hono<{
 		targetMiddleware(true),
 		async (c) => {
 			const { id } = c.req.valid('param');
+
+			return c.json(await dirData(id));
+		}
+	)
+	.post(
+		'/:id',
+		dirIdParamValidation,
+		targetMiddleware(true),
+		async (c) => {
+			const { id } = c.req.valid('param');
+
+			let targetDirPath = '/';
+			const target = c.get('targetDir');
+			if (target) {
+				targetDirPath = `${target.path}/`;
+			}
+
+			const input = await c.req.parseBody();
+			console.log('will upload to', { id, input, targetDirPath });
+			if (typeof input !== 'object') {
+				return c.json({ message: 'must be formdata' }, 400);
+			}
+
+			type IFile = {
+				title: string;
+				alt: string;
+				file: File;
+			};
+			const errors: Record<string | number, Record<string, string>> = {};
+			function setError(index: number, key: keyof (IFile & { name: string; }), value: string) {
+				errors[index] ||= {};
+				errors[index][key] = value;
+			};
+
+			const length = Math.floor(Object.keys(input).length / 3);
+			const files: IFile[] = [];
+			for (let i = 0; i < length; i++) {
+				const alt = input[`alt[${i}]`] || '';
+				if (typeof alt !== 'string') {
+					setError(i, 'alt', 'musi być tekstem');
+				}
+
+				const title = input[`title[${i}]`] || '';
+				if (typeof title !== 'string') {
+					setError(i, 'title', 'musi być tekstem');
+				}
+
+				const file = input[`file[${i}]`] as File;
+				if (!(file instanceof File)) {
+					setError(i, 'file', 'musi być plikiem');
+				}
+
+				if (!file.name) {
+					setError(i, 'name', 'nie może być puste');
+				}
+
+				if (errors[i]) {
+					continue;
+				}
+
+				files.push({
+					alt: alt as string,
+					title: title as string,
+					file: file as File,
+				});
+			}
+
+			if (Object.keys(errors).length) {
+				return c.json({ newFiles: errors }, 400);
+			}
+
+			console.log('gotta save', files);
 
 			return c.json(await dirData(id));
 		}

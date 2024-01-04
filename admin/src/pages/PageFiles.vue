@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { knownMimetypeExtensions } from '~/helpers';
 import VDialog from '~/components/V/VDialog.vue';
+import { env } from '~/env';
 import type { IDirectory, IFile, IGetDirectoryResponse, IPutDirectoriesInput } from '~/composables/useApi';
 import type { IFilesGrabbedItem, ILocalDirectory, ILocalFile, INewFile } from '~/types';
 
@@ -170,7 +171,7 @@ function handleFileDrop(event: DragEvent) {
 		newFiles.value.unshift({
 			title: '',
 			alt: '',
-			name: '',
+			name: file.name,
 			path: URL.createObjectURL(file),
 			file,
 			mimetype: file.type,
@@ -187,7 +188,7 @@ function handleFileInput(event: Event) {
 		newFiles.value.unshift({
 			title: '',
 			alt: '',
-			name: '',
+			name: file.name,
 			path: URL.createObjectURL(file),
 			mimetype: file.type,
 			file,
@@ -299,6 +300,12 @@ const {
 	handleError,
 	clearErrors,
 } = useErrors({ deletedFileIds: {},	editedFiles: {}, deletedDirIds: {}, editedDirs: {} } as IPutDirectoriesInput);
+
+const {
+	errors: newFilesErrors,
+	handleError: handleNewFilesError,
+	clearErrors: clearNewFilesErrors,
+} = useErrors({ newFiles: {} as INewFile[] });
 
 function grabFile(index: number, event: MouseEvent, mimetype: string, isNew?: boolean, src?: string, name?: string) {
 	if (!event.target) {
@@ -640,11 +647,45 @@ async function saveChanges() {
 		}
 	} else if (!newFiles.value.length) {
 		toast('zapisano zmiany');
+		isSaving.value = false;
 	}
 
-	await new Promise(resolve => setTimeout(resolve, 500));
-	newFiles.value.length && toast('zuploadowano pliki');
-	isSaving.value = false;
+	if (newFiles.value.length) {
+		const formdata = new FormData();
+		for (let i = 0; i < newFiles.value.length; i++) {
+			const file = newFiles.value[i];
+			formdata.append(`file[${i}]`, file.file, file.name);
+			formdata.append(`title[${i}]`, file.title);
+			formdata.append(`alt[${i}]`, file.alt);
+		}
+
+		try {
+			const response: IGetDirectoryResponse = await fetch(
+				`${env.VITE_API_URL}/directories/${currentDirId.value}`,
+				{ method: 'post', body: formdata }
+			).then(async (r) => {
+				if (r.ok) {
+					return r;
+				}
+				const contentType = r.headers.get('content-type');
+				if (contentType && contentType.slice(0, 16) === 'application/json') {
+					return r.json().then((v) => {
+						throw new FetchError(v, r.status);
+					});
+				}
+
+				return r.text().then((v) => {
+					throw new FetchError(v, r.status);
+				});
+			}).then(r => r.json());
+			handlePutResponse(response);
+			toast('zuploadowano pliki');
+		} catch (e) {
+			handleError(e);
+		} finally {
+			isSaving.value = false;
+		}
+	}
 }
 
 function handlePutResponse(data: IGetDirectoryResponse) {
@@ -682,7 +723,9 @@ async function goToDir(id: number | null, event: MouseEvent) {
 
 	await router.push(id ? { query: { dir: id } } : {});
 	clearErrors();
-	createDirErrors.value.parentId = '';
+	clearCreateDirErrors();
+	clearNewFilesErrors();
+	newFiles.value = [];
 }
 </script>
 
@@ -790,6 +833,7 @@ async function goToDir(id: number | null, event: MouseEvent) {
 				v-for="(file, index) in newFiles"
 				:key="file.path"
 				v-model="newFiles[index]"
+				v-model:errors="newFilesErrors.newFiles[index]"
 				:index="index"
 				:is-tiles="isTiles"
 				:grabbed-item="grabbedItem"
