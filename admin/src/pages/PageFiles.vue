@@ -645,8 +645,7 @@ async function saveChanges() {
 			);
 			errors.value.editedDirs = Object.fromEntries(
 				Object.entries(errors.value.editedDirs).map(([key, value]) => {
-					const { id: _id, ...rest } = value;
-					return [editedDirs[+key].id, rest];
+					return [editedDirs[+key].id, value];
 				})
 			);
 			isSaving.value = false;

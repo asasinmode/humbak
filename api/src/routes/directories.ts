@@ -110,12 +110,20 @@ export const app = new Hono<{
 			const allDirsBeingDeleted = getAllDirsToDelete(dirs, dirsToDelete);
 			c.set('dirsToDeleteAll', []);
 
-			const dirsToEdit: (typeof input)['editedDirs'] = [];
-			const errors: Record<string | number, Record<string, string>> = {};
+			type IEditedDir = (typeof input)['editedDirs'][number];
+			const dirsToEdit: IEditedDir[] = [];
+			const editedDirsErrors: Record<string | number, Record<string, string>> = {};
+			function setEditedDirsError(index: number, key: keyof IEditedDir, value: string) {
+				editedDirsErrors[index] ||= {};
+				editedDirsErrors[index][key] = value;
+			};
 
-			for (const dir of input.editedDirs) {
+			// eslint-disable-next-line no-restricted-syntax,no-labels
+			outerDirLoop: for (let i = 0; i < input.editedDirs.length; i++) {
+				const dir = input.editedDirs[i];
 				const originalDir = dirs.find(d => d.id === dir.id);
 				if (!originalDir) {
+					setEditedDirsError(i, 'id', 'folder nie istnieje');
 					continue;
 				}
 				const isDeleted = allDirsBeingDeleted!.some(d => d.id === dir.id || d.id === dir.parentId);
@@ -131,6 +139,7 @@ export const app = new Hono<{
 				if (dir.parentId !== null) {
 					const target = dirs.find(d => d.id === dir.parentId);
 					if (!target) {
+						setEditedDirsError(i, 'parentId', 'wybrany rodzic nie istnieje');
 						continue;
 					}
 
@@ -143,13 +152,20 @@ export const app = new Hono<{
 					let parent: IDir | undefined = target;
 					while (parent) {
 						if (parent.parentId === dir.id) {
-							continue;
+							setEditedDirsError(i, 'parentId', 'folder nie może być przeniesiony do swojego podfolderu');
+							// eslint-disable-next-line no-labels
+							continue outerDirLoop;
 						}
 						parent = dirs.find(d => d.id === parent!.parentId);
 					}
 				}
 
 				dirsToEdit.push(dir);
+			}
+
+			console.log('errors', editedDirsErrors);
+			if (Object.keys(editedDirsErrors).length) {
+				return c.json({ editedDirs: editedDirsErrors }, 400);
 			}
 
 			console.log('dirs to edit', dirsToEdit);
