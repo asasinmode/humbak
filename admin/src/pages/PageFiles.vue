@@ -103,6 +103,7 @@ async function createDir() {
 			name: newDirName.value,
 		} }).then(res => res.json());
 
+		// todo sort in current dir by name
 		allDirectories.value.unshift(structuredClone(directory));
 		currentDirDirs.value.unshift(structuredClone(directory));
 		originalCurrentDirDirs.value.unshift(structuredClone(directory));
@@ -492,7 +493,9 @@ function moveGrabbedElement(targetId?: number | null, closeDialog = false) {
 		}
 		currentDirDirs.value[grabbedItem.value.index].movedToId = targetId;
 	} else if (grabbedItem.value.isNew) {
-		// todo clear errors
+		if (newFilesErrors.value.newFiles[grabbedItem.value.index]) {
+			newFilesErrors.value.newFiles[grabbedItem.value.index] = {};
+		}
 		newFiles.value[grabbedItem.value.index].movedToId = targetId;
 	} else {
 		const fileBeingMoved = currentDirFiles.value[grabbedItem.value.index];
