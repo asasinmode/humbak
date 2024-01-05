@@ -143,7 +143,7 @@ export const app = new Hono<{
 				const target = dirs.find(d => d.id === dir.parentId);
 				if (dir.parentId !== null) {
 					if (!target) {
-						setEditedDirsError(i, 'parentId', 'wybrany rodzic nie istnieje');
+						setEditedDirsError(i, 'parentId', 'wybrany folder nie istnieje');
 						continue;
 					}
 
@@ -511,28 +511,56 @@ export const app = new Hono<{
 		targetMiddleware(true),
 		async (c) => {
 			const { id } = c.req.valid('param');
-
-			let targetDirPath = '/';
-			const target = c.get('targetDir');
-			if (target) {
-				targetDirPath = `${target.path}/`;
-			}
+			const dirs: IDir[] = await db.select({
+				path: directories.path,
+				id: directories.id,
+				name: directories.name,
+				parentId: directories.parentId,
+			}).from(directories);
 
 			const input = await c.req.parseBody();
 			if (typeof input !== 'object') {
-				return c.json({ message: 'must be formdata' }, 400);
+				return c.json({ message: 'musi być formdata' }, 400);
 			}
 
-			type IFile = Pick<InferSelectModel<typeof files>, 'title' | 'alt' | 'path' | 'name' | 'mimetype'> & { file: Uint8Array; };
+			type IFile = Pick<InferSelectModel<typeof files>, 'directoryId' | 'title' | 'alt' | 'path' | 'name' | 'mimetype'> & { file: Uint8Array; };
 			const errors: Record<string | number, Record<string, string>> = {};
 			function setError(index: number, key: keyof IFile, value: string) {
 				errors[index] ||= {};
 				errors[index][key] = value;
 			};
 
-			const length = Math.floor(Object.keys(input).length / 3);
+			const length = Math.floor(Object.keys(input).length / 4);
+			if (length === 0) {
+				return c.json({ message: 'nieprawidłowy format' }, 400);
+			}
+
 			const filesToSave: IFile[] = [];
 			for (let i = 0; i < length; i++) {
+				let targetDirPath = '/';
+				let directoryId: number | null | undefined;
+
+				const rawDirectoryId = input[`directoryId[${i}]`] as string | undefined;
+				if (rawDirectoryId === undefined) {
+					setError(i, 'directoryId', 'nie może być puste');
+				} else if (typeof rawDirectoryId !== 'string') {
+					setError(i, 'directoryId', 'musi być tekstem');
+				} else {
+					const parsedDirectoryId = Number.parseInt(rawDirectoryId);
+					directoryId = rawDirectoryId === 'null' ? null : Number.isNaN(parsedDirectoryId) ? undefined : parsedDirectoryId;
+
+					if (directoryId === undefined) {
+						setError(i, 'directoryId', 'nieprawidłowy format');
+					} else if (directoryId !== null) {
+						const target = dirs.find(d => d.id === directoryId);
+						if (target) {
+							targetDirPath = `${target.path}/`;
+						} else {
+							setError(i, 'directoryId', 'wybrany folder nie istnieje');
+						}
+					}
+				}
+
 				const alt = input[`alt[${i}]`] || '';
 				if (typeof alt !== 'string') {
 					setError(i, 'alt', 'musi być tekstem');
@@ -566,12 +594,17 @@ export const app = new Hono<{
 					continue;
 				}
 
+				if (directoryId === undefined) {
+					throw new Error('directoryId should\'ve been set by now');
+				}
+
 				filesToSave.push({
 					alt: alt as string,
 					title: title as string,
 					path: `${targetDirPath}${file.name}`,
 					name: file.name,
 					mimetype: file.type,
+					directoryId,
 					file: new Uint8Array(await file.arrayBuffer()),
 				});
 			}
@@ -587,7 +620,7 @@ export const app = new Hono<{
 					name: file.name,
 					path: file.path,
 					mimetype: file.mimetype,
-					directoryId: id,
+					directoryId: file.directoryId,
 				})));
 			}
 			for (const file of filesToSave) {

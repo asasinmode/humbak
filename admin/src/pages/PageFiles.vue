@@ -656,6 +656,8 @@ async function saveChanges() {
 			formdata.append(`file[${i}]`, file.file, file.name);
 			formdata.append(`title[${i}]`, file.title);
 			formdata.append(`alt[${i}]`, file.alt);
+			const directoryId = `${file.movedToId !== undefined ? file.movedToId : currentDirId.value}`;
+			formdata.append(`directoryId[${i}]`, directoryId);
 		}
 
 		try {
