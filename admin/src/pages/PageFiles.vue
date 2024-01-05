@@ -103,10 +103,12 @@ async function createDir() {
 			name: newDirName.value,
 		} }).then(res => res.json());
 
-		// todo sort in current dir by name
 		allDirectories.value.unshift(structuredClone(directory));
 		currentDirDirs.value.unshift(structuredClone(directory));
 		originalCurrentDirDirs.value.unshift(structuredClone(directory));
+
+		currentDirDirs.value.sort((a, b) => a.name.localeCompare(b.name));
+		originalCurrentDirDirs.value.sort((a, b) => a.name.localeCompare(b.name));
 
 		newDirName.value = '';
 	} catch (e) {
