@@ -47,7 +47,7 @@ export const idParamValidationMiddleware = wrap('param', transform(object({
 })));
 
 export function nonEmptyMaxLengthString(length = 256) {
-	return string([minLength(1, 'nie może być puste'), maxLength(length, `maksymalna długość: ${32}`)]);
+	return string([minLength(1, 'nie może być puste'), maxLength(length, `maksymalna długość: ${length}`)]);
 }
 
 // copied and adapted to valibot from https://github.com/honojs/hono/blob/main/src/validator/validator.ts#L22
