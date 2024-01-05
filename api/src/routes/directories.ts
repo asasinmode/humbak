@@ -609,6 +609,15 @@ export const app = new Hono<{
 				});
 			}
 
+			for (let i = 0; i < filesToSave.length; i++) {
+				const file = filesToSave[i];
+				const sameNameAndDirCount = filesToSave.filter(f => f.name === file.name && f.directoryId === file.directoryId).length;
+
+				if (sameNameAndDirCount > 1) {
+					setError(i, 'name', 'dwa pliki nie mogą mieć tej samej nazwy');
+				}
+			}
+
 			if (Object.keys(errors).length) {
 				return c.json({ newFiles: errors }, 400);
 			}
