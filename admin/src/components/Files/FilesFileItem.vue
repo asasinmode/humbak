@@ -42,6 +42,11 @@ const hasChanged = computed(() =>
 const isImage = computed(() => file.value.mimetype.slice(0, 5) === 'image');
 const path = computed(() => isNew.value ? file.value.path : `files${file.value.path}`);
 const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype] || file.value.mimetype);
+
+function cancelMove() {
+	file.value.movedToId = undefined;
+	clearError('directoryId', 'name');
+}
 </script>
 
 <template>
@@ -115,7 +120,7 @@ const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype]
 		>
 			przywróć
 		</VButton>
-		<VButton v-else-if="hasMoved" class="neon-yellow" :class="classes.restoreButton" @click="file.movedToId = undefined">
+		<VButton v-else-if="hasMoved" class="neon-yellow" :class="classes.restoreButton" @click="cancelMove">
 			anuluj
 		</VButton>
 		<template v-else>
