@@ -252,7 +252,7 @@ const dialogAllDirs = computed<IDialogDir[]>(() => {
 		}
 	}
 
-	if (!dialogSearch.value || 'root'.includes(dialogSearch.value)) {
+	if (!grabbedItem.value.isNew && (!dialogSearch.value || 'root'.includes(dialogSearch.value))) {
 		matchingSearch.unshift({
 			id: null as unknown as number,
 			parentId: -1,
@@ -274,14 +274,15 @@ const dialogAllDirs = computed<IDialogDir[]>(() => {
 			}
 		}
 	} else {
-		const grabbedFile = currentDirFiles.value[grabbedItem.value.index];
+		const grabbedFile = (grabbedItem.value.isNew ? newFiles : currentDirFiles).value[grabbedItem.value.index];
 		if (!grabbedFile) {
 			toastGenericError();
 			throw new Error('grabbed file not found');
 		}
 
 		for (const dir of matchingSearch) {
-			if (dir.id !== grabbedFile.directoryId) {
+			const key = (grabbedItem.value.isNew ? 'movedToId' : 'directoryId') as keyof typeof grabbedFile;
+			if (dir.id !== grabbedFile[key]) {
 				rv.push(dir);
 			}
 		}
