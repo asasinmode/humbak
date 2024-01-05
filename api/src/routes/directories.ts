@@ -70,18 +70,19 @@ export const app = new Hono<{
 		targetMiddleware(false),
 		async (c) => {
 			const input = c.req.valid('json');
-
-			let path = input.name;
 			const target = c.get('targetDir');
+
+			let targetDirPath = '/';
 			if (target) {
-				path = `${target.path}/${path}`;
-			}
+				targetDirPath = `${target.path}/`;
+			};
+			const path = `${targetDirPath}${input.name}`;
 
 			const [{ insertId }] = await db
 				.insert(directories)
 				.values({ ...input, path });
 
-			await mkdir(`${adminFilesPath}/${path}`);
+			await mkdir(`${adminFilesPath}${path}`);
 
 			const [result] = await db
 				.select({
