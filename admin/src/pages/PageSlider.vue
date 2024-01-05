@@ -254,42 +254,32 @@ async function deleteSlide() {
 	}
 }
 
-const aspectRatioError = ref('');
 const isSavingAspectRatio = ref(false);
 const configurationDialog = ref<InstanceType<typeof VDialog>>();
+const {
+	errors: aspectRatioErrors,
+	clearErrors: clearAspectRatioErrors,
+	handleError: handleAspectRatioError,
+} = useErrors({ value: '' });
 
 async function saveAspectRatio() {
+	clearAspectRatioErrors();
 	isSavingAspectRatio.value = true;
-
-	console.log('todo check error handling');
 
 	try {
 		// @ts-expect-error idk why type is wrong
 		await api.slides.aspectRatio.$put({ json: { value: aspectRatio.value } });
 		previousAspectRatio.value = aspectRatio.value;
 		configurationDialog.value?.close();
-	} catch (error: any) {
-		if (error.data && error.data.status !== 400) {
-			toast('błąd przy zapisywaniu aspect ratio', 'error');
-			console.error(error);
-			return;
-		}
-
-		aspectRatioError.value = '';
-
-		try {
-			aspectRatioError.value = JSON.parse(error.message).unknown;
-		} catch (e) {
-			toastGenericError();
-			throw new Error(`Parsing error message failed. ${error.message}`);
-		}
+	} catch (e) {
+		handleAspectRatioError(e);
 	} finally {
 		isSavingAspectRatio.value = false;
 	}
 }
 
 function revertAspectRatioIfUnsaved() {
-	aspectRatioError.value = '';
+	aspectRatioErrors.value.value = '';
 	if (aspectRatio.value !== previousAspectRatio.value) {
 		aspectRatio.value = previousAspectRatio.value;
 	}
@@ -358,8 +348,8 @@ function revertAspectRatioIfUnsaved() {
 						class="col-span-full mb-2"
 						class-input="!w-fit"
 						label="aspect ratio"
-						:error="aspectRatioError"
-						@update:model-value="aspectRatioError = ''"
+						:error="aspectRatioErrors.value"
+						@update:model-value="aspectRatioErrors.value = ''"
 					/>
 
 					<template #post>
