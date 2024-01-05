@@ -502,7 +502,7 @@ export const app = new Hono<{
 		async (c) => {
 			const { id } = c.req.valid('param');
 
-			return c.json(await dirData(id));
+			return c.json(await dirData(id, false));
 		}
 	)
 	.post(
@@ -594,7 +594,7 @@ export const app = new Hono<{
 				await writeFile(`${adminFilesPath}${file.path}`, file.file);
 			}
 
-			return c.json(await dirData(id));
+			return c.json(await dirData(id, true));
 		}
 	);
 
@@ -619,7 +619,7 @@ function targetMiddleware(isParam: boolean): MiddlewareHandler {
 	};
 }
 
-async function dirData(id: number | null, isPutResponse = false) {
+async function dirData(id: number | null, returnAllDirs: boolean) {
 	const [foundDirectories, foundFiles] = await Promise.all([
 		db
 			.select({
@@ -628,7 +628,7 @@ async function dirData(id: number | null, isPutResponse = false) {
 				name: directories.name,
 			})
 			.from(directories)
-			.where(isPutResponse
+			.where(returnAllDirs
 				? sql`1 = 1`
 				: id === null ? isNull(directories.parentId) : eq(directories.parentId, id)
 			)

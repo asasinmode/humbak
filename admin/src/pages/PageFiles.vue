@@ -37,15 +37,11 @@ const isSavingDir = ref(false);
 const newDirName = ref('');
 
 const currentDir = computed(() => {
-	if (!allDirectories.value.length) {
-		return undefined;
-	}
-
 	const rawId = route.query.dir;
 	const parsedId = Number.parseInt(`${rawId}`);
 	const id = Number.isNaN(parsedId) ? null : parsedId;
 
-	if (id === 0) {
+	if (id === 0 || id === null) {
 		return undefined;
 	}
 
@@ -56,7 +52,7 @@ const currentDirId = computed(() => currentDir.value?.id || null);
 
 watch(currentDirId, () => {
 	getDir(currentDirId.value);
-});
+}, { immediate: true });
 
 type IBreadcrumb = {
 	text: string;
@@ -85,7 +81,6 @@ const pathBreadcrumbs = computed<IBreadcrumb[]>(() => {
 onMounted(async () => {
 	isLoading.value = true;
 	await getDirectories();
-	await getDir(currentDirId.value, true);
 	isLoading.value = false;
 });
 
@@ -695,6 +690,7 @@ async function saveChanges() {
 
 function handlePutResponse(data: IGetDirectoryResponse) {
 	const { directories, files } = data;
+	allDirectories.value = directories;
 
 	originalCurrentDirDirs.value = directories.filter(dir => dir.parentId === currentDirId.value).map(dir => structuredClone(dir));
 	currentDirDirs.value = originalCurrentDirDirs.value.map(dir => structuredClone(dir));
