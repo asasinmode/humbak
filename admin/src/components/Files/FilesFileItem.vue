@@ -21,7 +21,7 @@ const file = defineModel<ILocalFile | INewFile>({ required: true });
 const classes = useFilesLayoutClasses(computed(() => props.isTiles));
 
 const errors = defineModel<Record<string, string>>('errors');
-function clearError(...keys: (keyof (IFile & { file: INewFile['file']; }))[]) {
+function clearErrors(...keys: (keyof (IFile & { file: INewFile['file']; }))[]) {
 	for (const key of keys) {
 		if (errors.value?.[key]) {
 			errors.value[key] = '';
@@ -45,7 +45,7 @@ const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype]
 
 function cancelMove() {
 	file.value.movedToId = undefined;
-	clearError('directoryId', 'name');
+	clearErrors('directoryId', 'name');
 }
 </script>
 
@@ -92,7 +92,7 @@ function cancelMove() {
 			:class="classes.input"
 			:disabled="disableInteractions"
 			:error="errors?.title"
-			@update:model-value="clearError('title')"
+			@update:model-value="clearErrors('title')"
 		/>
 		<VInput
 			:id="`file${index}alt`"
@@ -101,7 +101,7 @@ function cancelMove() {
 			:class="classes.input"
 			:disabled="disableInteractions"
 			:error="errors?.alt"
-			@update:model-value="clearError('alt')"
+			@update:model-value="clearErrors('alt')"
 		/>
 		<VInput
 			:id="`file${index}name`"
@@ -110,7 +110,7 @@ function cancelMove() {
 			:class="classes.input"
 			:disabled="disableInteractions"
 			:error="errors?.id || errors?.directoryId || errors?.name || errors?.file"
-			@update:model-value="clearError('id', 'directoryId', 'name', 'file')"
+			@update:model-value="clearErrors('id', 'directoryId', 'name', 'file')"
 		/>
 		<VButton
 			v-if="(file as ILocalFile).isBeingDeleted"

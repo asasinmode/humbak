@@ -44,6 +44,11 @@ const hasChanged = computed(() =>
 	|| (props.originalDir
 	&& (dir.value.name !== props.originalDir.name))
 );
+
+function cancelMove() {
+	dir.value.movedToId = undefined;
+	clearErrors('parentId', 'name');
+}
 </script>
 
 <template>
@@ -94,7 +99,7 @@ const hasChanged = computed(() =>
 		<VButton v-if="dir.isBeingDeleted" class="neon-yellow row-span-2" :class="classes.restoreButton" @click="$emit('restore', index)">
 			przywróć
 		</VButton>
-		<VButton v-else-if="hasMoved" class="neon-yellow" :class="classes.restoreButton" @click="dir.movedToId = undefined">
+		<VButton v-else-if="hasMoved" class="neon-yellow" :class="classes.restoreButton" @click="cancelMove">
 			anuluj
 		</VButton>
 		<template v-else>
