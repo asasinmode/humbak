@@ -21,12 +21,12 @@ const snippets = [
 		snippet: indentedParagraphs,
 	},
 	{
-		icon: 'M4 6H20 M4 18H20 M4 10H11v4H4zM13 10H20v4H13z',
+		icon: 'M4 6H20 M4 18H20 M4 10H20v4H4zM12 10v4',
 		text: 'podwójny kontener',
 		snippet: doubleContainer,
 	},
 	{
-		icon: 'M4 6H20 M4 18H20 M4 10H8v4H4zM10 10H14v4H10zM16 10H20v4H16z',
+		icon: 'M4 6H20 M4 18H20 M4 10H20v4H4zM9 10v4M15 10v4',
 		text: 'potrójny kontener',
 		snippet: tripleContainer,
 	},
@@ -50,14 +50,20 @@ const snippets = [
 			snippety
 		</h3>
 
-		<div v-for="(snippet, index) in snippets" :key="index" class="col-span-full items-center flex gap-4">
-			<h6>
-				<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="inline-block mr-2">
-					<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" :d="snippet.icon" />
-				</svg>
+		<div v-for="(snippet, index) in snippets" :key="index" class="col-span-full items-center flex-col gap-2 lg:flex-row flex">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="32"
+				height="32"
+				viewBox="0 0 24 24"
+				class="inline-block shrink-0 hyphens-auto"
+			>
+				<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" :d="snippet.icon" />
+			</svg>
+			<h6 class="flex-1">
 				{{ snippet.text }}
 			</h6>
-			<VButton class="neon-green ml-auto h-fit">
+			<VButton class="neon-green shrink-0">
 				kopiuj
 			</VButton>
 		</div>
