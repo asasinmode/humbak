@@ -8,6 +8,12 @@ const doubleContainer = `<div class="grid md:grid-cols-2">
 	<div>druga połowa</div>
 </div>`;
 
+const tripleContainer = `<div class="grid lg:grid-cols-3">
+	<div>jedna trzecia</div>
+	<div>druga trzecia</div>
+	<div>trzecia trzecia</div>
+</div>`;
+
 const snippets = [
 	{
 		icon: 'M4 8H20M8 12H20M8 16H20',
@@ -15,9 +21,14 @@ const snippets = [
 		snippet: indentedParagraphs,
 	},
 	{
-		icon: 'M4 6H20 M4 18H20 M4 10H10v4H4zM14 10H20v4H14z',
+		icon: 'M4 6H20 M4 18H20 M4 10H11v4H4zM13 10H20v4H13z',
 		text: 'podwójny kontener',
 		snippet: doubleContainer,
+	},
+	{
+		icon: 'M4 6H20 M4 18H20 M4 10H8v4H4zM10 10H14v4H10zM16 10H20v4H16z',
+		text: 'potrójny kontener',
+		snippet: tripleContainer,
 	},
 ];
 </script>
