@@ -16,6 +16,7 @@ declare module 'vue' {
     PagesContentEditor: typeof import('./../components/Pages/PagesContentEditor.vue')['default']
     PagesContentEditorModelSelect: typeof import('./../components/Pages/PagesContentEditorModelSelect.vue')['default']
     PagesSnippetIcons2Paragraphs: typeof import('./../components/Pages/PagesSnippetIcons/PagesSnippetIcons2Paragraphs.vue')['default']
+    PagesSnippetIconsDoubleContainer: typeof import('./../components/Pages/PagesSnippetIcons/PagesSnippetIconsDoubleContainer.vue')['default']
     PagesSnippetsDialog: typeof import('./../components/Pages/PagesSnippetsDialog.vue')['default']
     PagesTable: typeof import('./../components/Pages/PagesTable.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

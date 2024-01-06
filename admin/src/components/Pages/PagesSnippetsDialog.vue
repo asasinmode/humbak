@@ -1,15 +1,26 @@
 <script setup lang="ts">
 import PagesSnippetIcons2Paragraphs from '~/components/Pages/PagesSnippetIcons/PagesSnippetIcons2Paragraphs.vue';
+import PagesSnippetIconsDoubleContainer from '~/components/Pages/PagesSnippetIcons/PagesSnippetIconsDoubleContainer.vue';
 
 const indentedParagraphs = `<p>Przykładowy tekst</p>
 <p class="indent-4">Druga linijka przykładowego tekstu</p>
 <p class="indent-4">Trzecia linijka przykładowego tekstu</p>`;
+
+const doubleContainer = `<div class="grid md:grid-cols-2">
+	<div>pierwsza połowa</div>
+	<div>druga połowa</div>
+</div>`;
 
 const snippets = [
 	{
 		icon: PagesSnippetIcons2Paragraphs,
 		text: 'trzy paragrafy, kolejne wcięte',
 		snippet: indentedParagraphs,
+	},
+	{
+		icon: PagesSnippetIconsDoubleContainer,
+		text: 'podwójny kontener',
+		snippet: doubleContainer,
 	},
 ];
 </script>
@@ -31,7 +42,7 @@ const snippets = [
 			snippety
 		</h3>
 
-		<div v-for="(snippet, index) in snippets" :key="index" class="col-span-full flex gap-4">
+		<div v-for="(snippet, index) in snippets" :key="index" class="col-span-full items-center flex gap-4">
 			<h6>
 				<component :is="snippet.icon" class="inline-block mr-2" />
 				{{ snippet.text }}
