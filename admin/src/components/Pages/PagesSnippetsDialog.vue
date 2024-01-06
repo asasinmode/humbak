@@ -50,20 +50,24 @@ const snippets = [
 			snippety
 		</h3>
 
-		<div v-for="(snippet, index) in snippets" :key="index" class="col-span-full items-center flex-col gap-2 lg:flex-row flex">
+		<div
+			v-for="(snippet, index) in snippets"
+			:key="index"
+			class="col-span-full flex items-center gap-2 lg:flex"
+		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="32"
 				height="32"
 				viewBox="0 0 24 24"
-				class="inline-block shrink-0 hyphens-auto"
+				class="inline-block shrink-0"
 			>
 				<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" :d="snippet.icon" />
 			</svg>
-			<h6 class="flex-1">
+			<h6 class="flex-1 hyphens-auto">
 				{{ snippet.text }}
 			</h6>
-			<VButton class="neon-green shrink-0">
+			<VButton class="neon-green shrink-0 h-min">
 				kopiuj
 			</VButton>
 		</div>
