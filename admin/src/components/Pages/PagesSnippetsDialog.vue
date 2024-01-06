@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import PagesSnippetIcons2Paragraphs from '~/components/Pages/PagesSnippetIcons/PagesSnippetIcons2Paragraphs.vue';
 
-const paragraphsSecondIndented = `<p>Przykładowy tekst</p>
-<p class="indent-4">Więcej przykładowego tekstu</p>`;
+const indentedParagraphs = `<p>Przykładowy tekst</p>
+<p class="indent-4">Druga linijka przykładowego tekstu</p>
+<p class="indent-4">Trzecia linijka przykładowego tekstu</p>`;
 
 const snippets = [
 	{
 		icon: PagesSnippetIcons2Paragraphs,
-		text: 'dwa paragrafy, drugi wcięty',
-		snippet: paragraphsSecondIndented,
+		text: 'trzy paragrafy, kolejne wcięte',
+		snippet: indentedParagraphs,
 	},
 ];
 </script>
