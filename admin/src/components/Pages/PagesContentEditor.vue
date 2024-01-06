@@ -143,6 +143,22 @@ defineExpose({
 				<span class="visually-hidden">formatuj</span>
 				<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-[1.15rem] w-[1.15rem] translate-center" />
 			</VButton>
+			<VDialog
+				class="mt-2 h-8 w-8 p-0 neon-teal"
+				title="snippety"
+				class-container="grid grid-cols-[1fr_1fr_min-content] gap-x-3 gap-y-5"
+				class-close-button="col-span-full mx-auto w-fit"
+				close-button-text="zamknij"
+			>
+				<template #button>
+					<span class="visually-hidden">snippety</span>
+					<div class="i-fluent-clipboard-code-24-regular group absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
+				</template>
+
+				<h3 class="col-span-full text-center text-5 font-600">
+					snippety
+				</h3>
+			</VDialog>
 			<VButton
 				class="left-1/2 top-1/2 h-8 w-8 translate-center cursor-move p-0 !absolute neon-neutral"
 				title="zmień rozmiar"
