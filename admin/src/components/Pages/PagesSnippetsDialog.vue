@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import PagesSnippetIcons2Paragraphs from '~/components/Pages/PagesSnippetIcons/PagesSnippetIcons2Paragraphs.vue';
-import PagesSnippetIconsDoubleContainer from '~/components/Pages/PagesSnippetIcons/PagesSnippetIconsDoubleContainer.vue';
-
 const indentedParagraphs = `<p>Przykładowy tekst</p>
 <p class="indent-4">Druga linijka przykładowego tekstu</p>
 <p class="indent-4">Trzecia linijka przykładowego tekstu</p>`;
@@ -13,12 +10,12 @@ const doubleContainer = `<div class="grid md:grid-cols-2">
 
 const snippets = [
 	{
-		icon: PagesSnippetIcons2Paragraphs,
+		icon: 'M4 8H20M8 12H20M8 16H20',
 		text: 'trzy paragrafy, kolejne wcięte',
 		snippet: indentedParagraphs,
 	},
 	{
-		icon: PagesSnippetIconsDoubleContainer,
+		icon: 'M4 6H20 M4 18H20 M4 10H10v4H4zM14 10H20v4H14z',
 		text: 'podwójny kontener',
 		snippet: doubleContainer,
 	},
@@ -44,7 +41,9 @@ const snippets = [
 
 		<div v-for="(snippet, index) in snippets" :key="index" class="col-span-full items-center flex gap-4">
 			<h6>
-				<component :is="snippet.icon" class="inline-block mr-2" />
+				<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="inline-block mr-2">
+					<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" :d="snippet.icon" />
+				</svg>
 				{{ snippet.text }}
 			</h6>
 			<VButton class="neon-green ml-auto h-fit">
