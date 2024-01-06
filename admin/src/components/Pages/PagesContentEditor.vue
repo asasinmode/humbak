@@ -125,7 +125,7 @@ defineExpose({
 </script>
 
 <template>
-	<section ref="container" class="mt-6 hidden h-[60vh] min-h-64 gap-x-2 lg:flex">
+	<section ref="container" class="mt-6 hidden h-[60vh] min-h-[19.5rem] gap-x-2 lg:flex">
 		<VEditor
 			ref="editor"
 			class="flex-1 shadow"
