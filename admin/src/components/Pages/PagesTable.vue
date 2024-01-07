@@ -116,7 +116,7 @@ function startSearchTimeout() {
 	}
 	searchTimeout = setTimeout(() => {
 		searchTimeout = undefined;
-		callGetItems(true);
+		!isLoading.value && callGetItems(true);
 	}, 500);
 }
 

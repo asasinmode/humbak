@@ -16,6 +16,7 @@ export const app = new Hono()
 				title: files.title,
 				alt: files.alt,
 				name: files.name,
+				mimetype: files.mimetype,
 			})
 				.from(files)
 				.where(query

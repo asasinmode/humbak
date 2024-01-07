@@ -41,3 +41,4 @@ export type IDirectory = InferResponseType<Client['directories']['$get']>[number
 export type IGetDirectoryResponse = InferResponseType<Client['directories'][':id']['$get']>;
 export type IFile = IGetDirectoryResponse['files'][number];
 export type IPutDirectoriesInput = InferRequestType<Client['directories']['$put']>['json'];
+export type IDialogFile = InferResponseType<Client['files']['$get']>['items'][number];

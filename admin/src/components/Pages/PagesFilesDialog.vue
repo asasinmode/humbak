@@ -1,5 +1,10 @@
 <script setup lang="ts">
+import type { IDialogFile } from '~/composables/useApi';
+
 const api = useApi();
+const { toast } = useToast();
+
+const isLoading = ref(false);
 
 let searchTimeout: NodeJS.Timeout | undefined;
 function startSearchTimeout() {
@@ -9,20 +14,25 @@ function startSearchTimeout() {
 	}
 	searchTimeout = setTimeout(() => {
 		searchTimeout = undefined;
-		getItems(false);
+		!isLoading.value && getItems(false);
 	}, 500);
 }
 
-const isLoading = ref(false);
 const search = ref('');
-
+let previousSearch = '';
 const total = ref(0);
-const files = ref([]);
+const files = ref<IDialogFile[]>([]);
 
 async function getItems(skipTotalCheck: boolean) {
 	if (searchTimeout) {
 		clearTimeout(searchTimeout);
 		searchTimeout = undefined;
+	}
+
+	let offset = files.value.length;
+	if (previousSearch !== search.value) {
+		skipTotalCheck = true;
+		offset = 0;
 	}
 
 	if (!skipTotalCheck && files.value.length >= total.value) {
@@ -32,15 +42,28 @@ async function getItems(skipTotalCheck: boolean) {
 	isLoading.value = true;
 
 	try {
-		const { items, count } = await api.files.$get();
-		files.value = items;
+		const { items, count } = await api.files
+			.$get({ query: { offset: offset.toString(), limit: '5', query: search.value } })
+			.then(r => r.json());
+		previousSearch = search.value;
 		total.value = count;
+		if (offset === 0) {
+			files.value = items;
+		} else {
+			files.value.push(...items);
+		}
 	} catch (e) {
-		useToast().toast('błąd przy ładowaniu danych', 'error');
+		toast('błąd przy ładowaniu danych', 'error');
 		console.error(e);
 	} finally {
 		isLoading.value = false;
 	}
+}
+
+async function initLoadItems() {
+	files.value = [];
+	total.value = 0;
+	await getItems(true);
 }
 </script>
 
@@ -51,6 +74,8 @@ async function getItems(skipTotalCheck: boolean) {
 		class-container="flex flex-col"
 		class-close-button="mx-auto w-fit mt-5"
 		close-button-text="zamknij"
+		@open="initLoadItems"
+		@close="search = ''"
 	>
 		<template #button>
 			<span class="visually-hidden">pliki</span>
@@ -79,5 +104,9 @@ async function getItems(skipTotalCheck: boolean) {
 		<p v-if="!total && !files.length && !isLoading" class="text-center text-lg">
 			brak wyników
 		</p>
+
+		<div v-for="file in files" :key="file.id">
+			{{ file }}
+		</div>
 	</VDialog>
 </template>
