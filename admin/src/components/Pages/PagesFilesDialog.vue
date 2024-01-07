@@ -82,7 +82,7 @@ async function copy(file: IDialogFile) {
 	let text: string;
 
 	if (isImage(file.mimetype)) {
-		text = `<HumbakImage hid="${file.id}"></HumbakImage>`;
+		text = `<HumbakImage fid="${file.id}"></HumbakImage>`;
 	} else {
 		text = `<a href="files${file.path}" target="_blank">${file.name}</a>`;
 	}

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import VEditor from '~/components/V/VEditor.vue';
-import type { IUpsertPageInput } from '~/composables/useApi';
+import type { IDialogFile, IUpsertPageInput } from '~/composables/useApi';
 
 const editor = ref<InstanceType<typeof VEditor>>();
 const container = ref<HTMLDivElement>();
 
+const api = useApi();
+const { toast, toastGenericError } = useToast();
 const { initResizeDrag } = useResizeHandler(container);
 
 const contents = ref({
@@ -36,6 +38,7 @@ function updateCurrentModel(value: string) {
 	const index = currentModelIndex.value;
 	if (index === 0) {
 		contents.value.html.value = value;
+		updateParsedContent();
 	} else if (index === 1) {
 		contents.value.css.value = value;
 		updateStyleElement(value);
@@ -117,6 +120,108 @@ function updateStyleElement(newValue: string) {
 	}, 500);
 }
 
+const parser = new DOMParser();
+const parsedContent = ref('');
+let fetchImagesTimeout: NodeJS.Timeout | undefined;
+
+const loadingIndicatorContainer = document.createElement('div');
+loadingIndicatorContainer.className = 'flex-center animate-duration-4500 text-black dark:text-white';
+loadingIndicatorContainer.setAttribute('aria-hidden', 'true');
+const loadingIndicator = document.createElement('div');
+loadingIndicator.className = 'hourglass-loader after:block after:rounded-full after:content-empty';
+loadingIndicator.style.setProperty('--size', '20px');
+loadingIndicatorContainer.appendChild(loadingIndicator);
+
+type ITempFileElement = {
+	placeholder: HTMLElement;
+	attributes: NamedNodeMap;
+};
+function updateParsedContent() {
+	fetchImagesTimeout && clearTimeout(fetchImagesTimeout);
+
+	let dom: Document;
+	try {
+		dom = parser.parseFromString(contents.value.html.value, 'text/html');
+	} catch (e) {
+		toastGenericError();
+		throw e;
+	}
+
+	parsedContent.value = dom.body.innerHTML;
+
+	const imageElements = dom.querySelectorAll('HumbakImage');
+	if (!imageElements.length) {
+		return;
+	}
+
+	const tempFiles: ITempFileElement[] = [];
+	for (const element of imageElements) {
+		const loadingCopy = loadingIndicatorContainer.cloneNode(true) as HTMLElement;
+		element.replaceWith(loadingCopy);
+		tempFiles.push({
+			placeholder: loadingCopy,
+			attributes: element.attributes,
+		});
+	}
+
+	parsedContent.value = dom.body.innerHTML;
+	fetchImagesTimeout = setTimeout(() => fetchAndReplaceImages(dom, tempFiles), 1000);
+}
+
+async function fetchAndReplaceImages(dom: Document, tempFiles: ITempFileElement[]) {
+	const ids: number[] = [];
+	const placeholdersAndIds: { id: number; tempFile: ITempFileElement; }[] = [];
+
+	for (const tempFile of tempFiles) {
+		const fid = tempFile.attributes.getNamedItem('fid');
+		if (!fid) {
+			toast('HumbakImage nie ma ustawionego "fid"', 'warning');
+			continue;
+		}
+		const parseResult = Number.parseInt(fid.value);
+		if (Number.isNaN(parseResult)) {
+			toast('HumbakImage "fid" musi być liczbą', 'warning');
+			continue;
+		}
+		ids.push(parseResult);
+		placeholdersAndIds.push({ id: parseResult, tempFile });
+	}
+
+	let filesById: Record<number, IDialogFile>;
+
+	try {
+		const files = await api.files.byIds.$get({ query: {
+			ids: JSON.stringify(ids),
+		} }).then(r => r.json());
+		filesById = files.reduce((p, c) => ({
+			...p,
+			[c.id]: c,
+		}), {});
+	} catch (e) {
+		toast('błąd przy ładowaniu obrazów', 'error');
+		console.error(e);
+		return;
+	}
+
+	for (const { id, tempFile } of placeholdersAndIds) {
+		const file = filesById[id];
+		if (!file) {
+			toast(`plik "${id}" nie znaleziony w bazie danych`, 'error');
+			continue;
+		}
+		replaceTempWithImage(tempFile, id, file);
+	}
+
+	parsedContent.value = dom.body.innerHTML;
+}
+
+function replaceTempWithImage(temp: ITempFileElement, id: number, file: IDialogFile) {
+	console.log('replacing', { id, file });
+	const imageElement = document.createElement('div');
+	imageElement.textContent = `replaced ${id}`;
+	temp.placeholder.replaceWith(imageElement);
+}
+
 defineExpose({
 	clear,
 	updateValues,
@@ -154,7 +259,7 @@ defineExpose({
 				<div class="i-fa6-solid-arrows-up-down absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
 			</VButton>
 		</aside>
-		<main class="flex-1 bg-white text-black shadow" v-html="contents.html.value" />
+		<main class="flex-1 bg-white text-black shadow of-auto" v-html="parsedContent" />
 	</section>
 	<VAlert class="mt-4 max-w-3xl md:mx-auto lg:hidden" variant="warning">
 		edytowanie zawartości nie jest dostępne na małych ekranach
