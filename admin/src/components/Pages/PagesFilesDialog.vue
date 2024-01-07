@@ -120,31 +120,31 @@ function nonImageText(mimetype: string) {
 		<div
 			v-for="file in files"
 			:key="file.id"
-			class="has-focused-button-highlight relative hover:bg-black/10 dark:hover:bg-white/10 grid grid-cols-2 gap-2 py-[0.625rem] after:(content-empty absolute bottom-0 w-full h-px bg-neutral) last-of-type:after:hidden"
+			class="has-focused-button-highlight relative hover:bg-black/10 dark:hover:bg-white/10 grid grid-cols-2 gap-2 py-[0.625rem] after:(content-empty absolute bottom-0 w-full h-px bg-neutral) last-of-type:after:hidden lg:grid-cols-[8rem_1fr_min-content] lg:grid-rows-2 lg:gap-x-3"
 		>
 			<img
 				v-if="isImage(file.mimetype)"
 				:src="`files${file.path}`"
 				:title="file.title"
 				:alt="file.alt"
-				class="object-cover col-span-full h-18 justify-self-center"
+				class="object-cover col-span-full h-18 justify-self-center lg:row-span-full lg:col-span-1 lg:h-25 lg:w-full lg:self-center"
 			>
 			<span
 				v-else
-				class="col-span-full grid place-items-center text-center hyphens-auto font-bold h-18"
+				class="col-span-full grid place-items-center text-center hyphens-auto font-bold h-18 lg:row-span-full lg:col-span-1 lg:h-25 lg:self-center"
 				:title="file.title"
 				:alt="file.alt"
 			>
 				{{ nonImageText(file.mimetype) }}
 			</span>
-			<h6 class="hyphens-auto col-span-full text-center">
+			<h6 class="hyphens-auto lg:text-lg col-span-full text-center lg:row-span-full lg:col-span-1 lg:text-start lg:self-center">
 				{{ file.name }}
 			</h6>
-			<a :href="`files${file.path}`" target="_blank" class="neon-blue px-3 py-1 shadow h-fit justify-self-end">
+			<a :href="`files${file.path}`" target="_blank" class="neon-blue text-sm px-3 py-1 shadow h-fit justify-self-end lg:self-end lg:justify-self-center lg:text-base">
 				podgląd
 			</a>
-			<VButton class="neon-green h-fit justify-self-start">
-				kopiuj
+			<VButton class="neon-green text-sm h-fit justify-self-start lg:justify-self-center lg:text-base">
+				&lt;img&gt;
 			</VButton>
 		</div>
 
