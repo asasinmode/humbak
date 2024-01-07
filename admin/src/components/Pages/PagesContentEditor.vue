@@ -149,7 +149,7 @@ function updateParsedContent() {
 
 	parsedContent.value = dom.body.innerHTML;
 
-	const imageElements = dom.querySelectorAll('HumbakImage');
+	const imageElements = dom.querySelectorAll('HumbakFile');
 	if (!imageElements.length) {
 		return;
 	}
@@ -175,12 +175,12 @@ async function fetchAndReplaceImages(dom: Document, tempFiles: ITempFileElement[
 	for (const tempFile of tempFiles) {
 		const fid = tempFile.attributes.getNamedItem('fid');
 		if (!fid) {
-			placeholderError('HumbakImage nie ma ustawionego "fid"', tempFile.placeholder);
+			placeholderError('HumbakFile nie ma ustawionego "fid"', tempFile.placeholder);
 			continue;
 		}
 		const parseResult = Number.parseInt(fid.value);
 		if (Number.isNaN(parseResult)) {
-			placeholderError(`HumbakImage fid="${fid.value}" musi być liczbą`, tempFile.placeholder);
+			placeholderError(`HumbakFile fid="${fid.value}" musi być liczbą`, tempFile.placeholder);
 			continue;
 		}
 		ids.push(parseResult);
@@ -209,16 +209,20 @@ async function fetchAndReplaceImages(dom: Document, tempFiles: ITempFileElement[
 			placeholderError(`plik id "${id}" nieznaleziony w bazie danych`, tempFile.placeholder);
 			continue;
 		}
-		replaceTempWithImage(tempFile, id, file);
+		replaceTempWithImage(tempFile, file);
 	}
 
 	parsedContent.value = dom.body.innerHTML;
 }
 
-function replaceTempWithImage(temp: ITempFileElement, id: number, file: IDialogFile) {
-	console.log('replacing', { id, file });
-	const imageElement = document.createElement('div');
-	imageElement.textContent = `replaced ${id}`;
+function replaceTempWithImage(temp: ITempFileElement, file: IDialogFile) {
+	const imageElement = document.createElement('img');
+	imageElement.src = `files${file.path}`;
+	imageElement.title = file.title;
+	imageElement.alt = file.alt;
+	for (const attribute of temp.attributes) {
+		imageElement.setAttribute(attribute.name, attribute.value);
+	}
 	temp.placeholder.replaceWith(imageElement);
 }
 
