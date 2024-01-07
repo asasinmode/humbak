@@ -7,6 +7,7 @@ import { serveStatic } from '@hono/node-server/serve-static';
 import { env } from './env';
 import { adminFilesPath, adminStylesheetsPath } from './helpers/files';
 import { app as pagesApp } from './routes/pages';
+import { app as filesApp } from './routes/files';
 import { app as slidesApp } from './routes/slides';
 import { app as globalCssApp } from './routes/globalCss';
 import { app as languagesApp } from './routes/languages';
@@ -39,7 +40,8 @@ const typedApp = app
 	.route('/menuLinks', menuLinksApp)
 	.route('/pages', pagesApp)
 	.route('/slides', slidesApp)
-	.route('/directories', directoriesApp);
+	.route('/directories', directoriesApp)
+	.route('/files', filesApp);
 
 serve({ port: env.PORT, fetch: app.fetch }, (info) => {
 	console.log(`server listening on\x1B[36m http://localhost:${info.port}/ \x1B[0m`);
