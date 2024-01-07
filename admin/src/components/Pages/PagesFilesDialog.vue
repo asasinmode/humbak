@@ -60,10 +60,14 @@ async function getItems(skipTotalCheck: boolean) {
 	}
 }
 
+let wasLoaded = false;
 async function initLoadItems() {
-	files.value = [];
-	total.value = 0;
-	await getItems(true);
+	if (!wasLoaded) {
+		files.value = [];
+		total.value = 0;
+		await getItems(true);
+		wasLoaded = true;
+	}
 }
 </script>
 
@@ -108,5 +112,17 @@ async function initLoadItems() {
 		<div v-for="file in files" :key="file.id">
 			{{ file }}
 		</div>
+
+		<button
+			v-show="files.length < total || isLoading"
+			class="relative text-blue text-sm w-fit mx-auto hoverable:text-blue-5 dark:hoverable:text-blue-3"
+			:disabled="isLoading"
+			@click="getItems(false)"
+		>
+			<span :class="isLoading ? 'op-0' : ''">
+				załaduj więcej
+			</span>
+			<VLoading v-show="isLoading" class="absolute left-1/2 top-1/2 translate-center" />
+		</button>
 	</VDialog>
 </template>

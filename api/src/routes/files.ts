@@ -24,7 +24,7 @@ export const app = new Hono()
 					: sql`1 = 1`)
 				.orderBy(files.name)
 				.limit(limit)
-				.offset(offset * limit),
+				.offset(offset),
 			db.select({ count: sql<number>`COUNT(*)` })
 				.from(files)
 				.where(query

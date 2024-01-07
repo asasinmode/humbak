@@ -151,7 +151,7 @@ defineExpose({
 			<article
 				ref="dialog"
 				role="dialog" aria-live="polite" aria-modal="true" :aria-busy="loading" :aria-hidden="!isOpen"
-				class="max-w-[80vw] w-sm rounded bg-neutral-1 px-2 py-4 shadow-lg lg:max-w-5xl lg:w-xl dark:bg-neutral-9 md:px-4"
+				class="max-w-[90vw] w-sm rounded bg-neutral-1 px-2 py-4 shadow-lg lg:max-w-5xl lg:w-xl dark:bg-neutral-9 md:px-4"
 				:class="classContainer"
 			>
 				<slot />
