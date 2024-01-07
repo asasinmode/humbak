@@ -72,12 +72,12 @@ const snippets = [
 		snippet: unorderedList,
 	},
 	{
-		icon: IconsSnippetOrderedList,
+		iconClass: 'i-ph-list-numbers',
 		text: 'ponumerowana lista',
 		snippet: orderedList,
 	},
 	{
-		icon: IconsSnippetTable,
+		iconClass: 'i-fluent-table-freeze-row-24-regular',
 		text: 'tabela',
 		snippet: table,
 	},
@@ -106,7 +106,7 @@ const snippets = [
 			:key="index"
 			class="has-focused-button-highlight col-span-full flex items-center py-2.5 gap-2 lg:flex hover:bg-black/10 dark:hover:bg-white/10"
 		>
-			<component :is="snippet.icon" class="inline-block shrink-0 w-8 h-8" />
+			<component :is="snippet.icon || 'div'" class="inline-block shrink-0 w-8 h-8" :class="snippet.iconClass" />
 			<h6 class="flex-1 hyphens-auto">
 				{{ snippet.text }}
 			</h6>
