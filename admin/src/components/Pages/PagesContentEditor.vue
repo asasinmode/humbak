@@ -125,7 +125,7 @@ const parsedContent = ref('');
 let fetchImagesTimeout: NodeJS.Timeout | undefined;
 
 const loadingIndicatorContainer = document.createElement('div');
-loadingIndicatorContainer.className = 'flex-center animate-duration-4500 text-black dark:text-white';
+loadingIndicatorContainer.className = 'flex-center animate-duration-4500 text-black';
 loadingIndicatorContainer.setAttribute('aria-hidden', 'true');
 const loadingIndicator = document.createElement('div');
 loadingIndicator.className = 'hourglass-loader after:block after:rounded-full after:content-empty';
