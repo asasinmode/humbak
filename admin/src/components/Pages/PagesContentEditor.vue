@@ -125,7 +125,7 @@ defineExpose({
 </script>
 
 <template>
-	<section ref="container" class="mt-6 hidden h-[60vh] min-h-[19.5rem] gap-x-2 lg:flex">
+	<section ref="container" class="mt-6 hidden h-[60vh] min-h-88 gap-x-2 lg:flex">
 		<VEditor
 			ref="editor"
 			class="flex-1 shadow"
@@ -144,6 +144,7 @@ defineExpose({
 				<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-[1.15rem] w-[1.15rem] translate-center" />
 			</VButton>
 			<PagesSnippetsDialog />
+			<PagesFilesDialog />
 			<VButton
 				class="left-1/2 top-1/2 h-8 w-8 translate-center cursor-move p-0 !absolute neon-neutral"
 				title="zmień rozmiar"
