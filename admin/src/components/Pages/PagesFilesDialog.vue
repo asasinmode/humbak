@@ -74,7 +74,9 @@ async function initLoadItems() {
 function isImage(mimetype: string) {
 	return mimetype.slice(0, 5) === 'image';
 }
-const nonImageText = computed(() => knownMimetypeExtensions[mimetype] || mimetype);
+function nonImageText(mimetype: string) {
+	return knownMimetypeExtensions[mimetype] || mimetype;
+}
 </script>
 
 <template>
@@ -118,35 +120,37 @@ const nonImageText = computed(() => knownMimetypeExtensions[mimetype] || mimetyp
 		<div
 			v-for="file in files"
 			:key="file.id"
-			class="has-focused-button-highlight hover:bg-black/10 dark:hover:bg-white/10 flex gap-2 items-center"
+			class="has-focused-button-highlight relative hover:bg-black/10 dark:hover:bg-white/10 grid grid-cols-2 gap-2 py-[0.625rem] after:(content-empty absolute bottom-0 w-full h-px bg-neutral) last-of-type:after:hidden"
 		>
 			<img
 				v-if="isImage(file.mimetype)"
 				:src="`files${file.path}`"
 				:title="file.title"
 				:alt="file.alt"
-				class="h-full w-full object-cover"
+				class="object-cover col-span-full h-18 justify-self-center"
 			>
 			<span
 				v-else
-				class="w-full h-full grid place-items-center text-center bg-black/15 hyphens-auto dark:bg-white/15 font-bold"
+				class="col-span-full grid place-items-center text-center hyphens-auto font-bold h-18"
 				:title="file.title"
 				:alt="file.alt"
 			>
-				{{ nonImageText }}
+				{{ nonImageText(file.mimetype) }}
 			</span>
-			<h6> {{ file.name }} </h6>
-			<a :href="`files${file.path}`" target="_blank" class="neon-blue px-3 py-1 shadow h-fit">
+			<h6 class="hyphens-auto col-span-full text-center">
+				{{ file.name }}
+			</h6>
+			<a :href="`files${file.path}`" target="_blank" class="neon-blue px-3 py-1 shadow h-fit justify-self-end">
 				podgląd
 			</a>
-			<VButton class="neon-green h-fit">
+			<VButton class="neon-green h-fit justify-self-start">
 				kopiuj
 			</VButton>
 		</div>
 
 		<button
 			v-show="files.length < total || isLoading"
-			class="relative text-blue text-sm w-fit mx-auto hoverable:text-blue-5 dark:hoverable:text-blue-3"
+			class="relative text-blue text-sm w-fit mx-auto hoverable:text-blue-5 mt-3 dark:hoverable:text-blue-3"
 			:disabled="isLoading"
 			@click="getItems(false)"
 		>

@@ -48,6 +48,7 @@
 	}
 }
 
-.has-focused-button-highlight:has(button:focus-visible) {
+.has-focused-button-highlight:has(button:focus-visible),
+.has-focused-button-highlight:has(a:focus-visible) {
 	@apply bg-black/10 dark:bg-white/10
 }
