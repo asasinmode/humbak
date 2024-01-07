@@ -175,12 +175,12 @@ async function fetchAndReplaceImages(dom: Document, tempFiles: ITempFileElement[
 	for (const tempFile of tempFiles) {
 		const fid = tempFile.attributes.getNamedItem('fid');
 		if (!fid) {
-			toast('HumbakImage nie ma ustawionego "fid"', 'warning');
+			placeholderError('HumbakImage nie ma ustawionego "fid"', tempFile.placeholder);
 			continue;
 		}
 		const parseResult = Number.parseInt(fid.value);
 		if (Number.isNaN(parseResult)) {
-			toast('HumbakImage "fid" musi być liczbą', 'warning');
+			placeholderError(`HumbakImage fid="${fid.value}" musi być liczbą`, tempFile.placeholder);
 			continue;
 		}
 		ids.push(parseResult);
@@ -206,7 +206,7 @@ async function fetchAndReplaceImages(dom: Document, tempFiles: ITempFileElement[
 	for (const { id, tempFile } of placeholdersAndIds) {
 		const file = filesById[id];
 		if (!file) {
-			toast(`plik "${id}" nie znaleziony w bazie danych`, 'error');
+			placeholderError(`plik id "${id}" nieznaleziony w bazie danych`, tempFile.placeholder);
 			continue;
 		}
 		replaceTempWithImage(tempFile, id, file);
@@ -220,6 +220,14 @@ function replaceTempWithImage(temp: ITempFileElement, id: number, file: IDialogF
 	const imageElement = document.createElement('div');
 	imageElement.textContent = `replaced ${id}`;
 	temp.placeholder.replaceWith(imageElement);
+}
+
+function placeholderError(message: string, replaceTarget: HTMLElement) {
+	toast(message, 'warning');
+	const errorMessage = document.createElement('p');
+	errorMessage.textContent = message;
+	errorMessage.className = 'text-red-5 font-600 border-2 border-red-5 border-dashed flex-center p-1 m-1 bg-red/10';
+	replaceTarget.replaceWith(errorMessage);
 }
 
 defineExpose({
