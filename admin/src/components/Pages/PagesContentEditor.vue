@@ -132,7 +132,10 @@ loadingIndicator.className = 'hourglass-loader after:block after:rounded-full af
 loadingIndicator.style.setProperty('--size', '20px');
 loadingIndicatorContainer.appendChild(loadingIndicator);
 
+const loadedFiles: Record<number, IDialogFile> = {};
+
 type ITempFileElement = {
+	fid?: number;
 	placeholder: HTMLElement;
 	attributes: NamedNodeMap;
 };
@@ -156,9 +159,24 @@ function updateParsedContent() {
 
 	const tempFiles: ITempFileElement[] = [];
 	for (const element of imageElements) {
+		const rawFid = element.attributes.getNamedItem('fid');
+		let fid: number | undefined;
+		if (rawFid !== null) {
+			fid = Number.parseInt(rawFid.value);
+			if (loadedFiles[fid]) {
+				replaceTempWithImage({
+					fid,
+					attributes: element.attributes,
+					placeholder: element as HTMLElement,
+				}, loadedFiles[fid]);
+				continue;
+			}
+		}
+
 		const loadingCopy = loadingIndicatorContainer.cloneNode(true) as HTMLElement;
 		element.replaceWith(loadingCopy);
 		tempFiles.push({
+			fid,
 			placeholder: loadingCopy,
 			attributes: element.attributes,
 		});
@@ -173,30 +191,30 @@ async function fetchAndReplaceImages(dom: Document, tempFiles: ITempFileElement[
 	const placeholdersAndIds: { id: number; tempFile: ITempFileElement; }[] = [];
 
 	for (const tempFile of tempFiles) {
-		const fid = tempFile.attributes.getNamedItem('fid');
-		if (!fid) {
+		if (tempFile.fid === undefined) {
 			placeholderError('HumbakFile nie ma ustawionego "fid"', tempFile.placeholder);
 			continue;
 		}
-		const parseResult = Number.parseInt(fid.value);
-		if (Number.isNaN(parseResult)) {
-			placeholderError(`HumbakFile fid="${fid.value}" musi być liczbą`, tempFile.placeholder);
+		if (Number.isNaN(tempFile.fid)) {
+			placeholderError(`HumbakFile fid musi być liczbą`, tempFile.placeholder);
 			continue;
 		}
-		ids.push(parseResult);
-		placeholdersAndIds.push({ id: parseResult, tempFile });
+		ids.push(tempFile.fid);
+		placeholdersAndIds.push({ id: tempFile.fid, tempFile });
 	}
 
-	let filesById: Record<number, IDialogFile>;
+	if (!ids.length) {
+		parsedContent.value = dom.body.innerHTML;
+		return;
+	}
 
 	try {
 		const files = await api.files.byIds.$get({ query: {
-			ids: JSON.stringify(ids),
+			ids: JSON.stringify([...new Set(ids)]),
 		} }).then(r => r.json());
-		filesById = files.reduce((p, c) => ({
-			...p,
-			[c.id]: c,
-		}), {});
+		for (const file of files) {
+			loadedFiles[file.id] = file;
+		}
 	} catch (e) {
 		toast('błąd przy ładowaniu obrazów', 'error');
 		console.error(e);
@@ -204,7 +222,7 @@ async function fetchAndReplaceImages(dom: Document, tempFiles: ITempFileElement[
 	}
 
 	for (const { id, tempFile } of placeholdersAndIds) {
-		const file = filesById[id];
+		const file = loadedFiles[id];
 		if (!file) {
 			placeholderError(`plik id "${id}" nieznaleziony w bazie danych`, tempFile.placeholder);
 			continue;
