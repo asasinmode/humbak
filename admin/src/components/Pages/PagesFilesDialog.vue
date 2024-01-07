@@ -144,7 +144,7 @@ function nonImageText(mimetype: string) {
 				podgląd
 			</a>
 			<VButton class="neon-green text-sm h-fit justify-self-start lg:justify-self-center lg:text-base">
-				&lt;img&gt;
+				{{ isImage(file.mimetype) ? '&lt;img&gt;' : '&lt;a&gt;' }}
 			</VButton>
 		</div>
 
