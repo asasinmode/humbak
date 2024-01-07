@@ -136,7 +136,7 @@ defineExpose({
 			label-visually-hidden
 			@update:model-value="startSearchTimeout"
 		/>
-		<VButton class="mr-12 neon-blue">
+		<VButton class="mr-12 neon-blue" :is-loading="isLoading">
 			szukaj
 		</VButton>
 	</form>
