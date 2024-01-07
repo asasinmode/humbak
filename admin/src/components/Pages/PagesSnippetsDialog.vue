@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import IconsSnippetOrderedList from '~/components/Icons/IconsSnippetOrderedList.vue';
+import IconsSnippetUnorderedList from '~/components/Icons/IconsSnippetUnorderedList.vue';
+import IconsSnippetDoubleContainer from '~/components/Icons/IconsSnippetDoubleContainer.vue';
+import IconsSnippetTripleContainer from '~/components/Icons/IconsSnippetTripleContainer.vue';
+import IconsSnippetIndentedParagraphs from '~/components/Icons/IconsSnippetIndentedParagraphs.vue';
+
 const indentedParagraphs = `<p>Przykładowy tekst</p>
 <p class="indent-4">Druga linijka przykładowego tekstu</p>
 <p class="indent-4">Trzecia linijka przykładowego tekstu</p>`;
@@ -14,21 +20,43 @@ const tripleContainer = `<div class="grid lg:grid-cols-3">
 	<div>trzecia trzecia</div>
 </div>`;
 
+const orderedList = `<ol>
+	<li>pierwszy przedmiot</li>
+	<li>drugi przedmiot</li>
+	<li>trzeci przedmiot</li>
+</ol>`;
+
+const unorderedList = `<ul>
+	<li>pierwszy przedmiot</li>
+	<li>drugi przedmiot</li>
+	<li>trzeci przedmiot</li>
+</ul>`;
+
 const snippets = [
 	{
-		icon: 'M4 8H20M8 12H20M8 16H20',
+		icon: IconsSnippetIndentedParagraphs,
 		text: 'trzy paragrafy, kolejne wcięte',
 		snippet: indentedParagraphs,
 	},
 	{
-		icon: 'M4 6H20 M4 18H20 M4 10H20v4H4zM12 10v4',
+		icon: IconsSnippetDoubleContainer,
 		text: 'podwójny kontener',
 		snippet: doubleContainer,
 	},
 	{
-		icon: 'M4 6H20 M4 18H20 M4 10H20v4H4zM9 10v4M15 10v4',
+		icon: IconsSnippetTripleContainer,
 		text: 'potrójny kontener',
 		snippet: tripleContainer,
+	},
+	{
+		icon: IconsSnippetUnorderedList,
+		text: 'lista',
+		snippet: unorderedList,
+	},
+	{
+		icon: IconsSnippetOrderedList,
+		text: 'ponumerowana lista',
+		snippet: orderedList,
 	},
 ];
 </script>
@@ -55,15 +83,7 @@ const snippets = [
 			:key="index"
 			class="has-focused-button-highlight col-span-full flex items-center py-2.5 gap-2 lg:flex hover:bg-black/10 dark:hover:bg-white/10"
 		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="32"
-				height="32"
-				viewBox="0 0 24 24"
-				class="inline-block shrink-0"
-			>
-				<path fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5" :d="snippet.icon" />
-			</svg>
+			<component :is="snippet.icon" class="inline-block shrink-0 w-8 h-8" />
 			<h6 class="flex-1 hyphens-auto">
 				{{ snippet.text }}
 			</h6>
