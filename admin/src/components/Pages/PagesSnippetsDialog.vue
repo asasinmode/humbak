@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import IconsSnippetTable from '~/components/Icons/IconsSnippetTable.vue';
 import IconsSnippetOrderedList from '~/components/Icons/IconsSnippetOrderedList.vue';
 import IconsSnippetUnorderedList from '~/components/Icons/IconsSnippetUnorderedList.vue';
 import IconsSnippetDoubleContainer from '~/components/Icons/IconsSnippetDoubleContainer.vue';
@@ -32,6 +33,23 @@ const unorderedList = `<ul>
 	<li>trzeci przedmiot</li>
 </ul>`;
 
+const table = `<table>
+	<thead>
+		<tr>
+			<th>kolumna 1</th>
+			<th>kolumna 2</th>
+			<th>kolumna 3</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>wiersz 1 1</td>
+			<td>wiersz 1 2</td>
+			<td>wiersz 1 3</td>
+		</tr>
+	</tbody>
+</table>`;
+
 const snippets = [
 	{
 		icon: IconsSnippetIndentedParagraphs,
@@ -57,6 +75,11 @@ const snippets = [
 		icon: IconsSnippetOrderedList,
 		text: 'ponumerowana lista',
 		snippet: orderedList,
+	},
+	{
+		icon: IconsSnippetTable,
+		text: 'tabela',
+		snippet: table,
 	},
 ];
 </script>

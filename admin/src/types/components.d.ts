@@ -14,6 +14,7 @@ declare module 'vue' {
     IconsSnippetDoubleContainer: typeof import('./../components/Icons/IconsSnippetDoubleContainer.vue')['default']
     IconsSnippetIndentedParagraphs: typeof import('./../components/Icons/IconsSnippetIndentedParagraphs.vue')['default']
     IconsSnippetOrderedList: typeof import('./../components/Icons/IconsSnippetOrderedList.vue')['default']
+    IconsSnippetTable: typeof import('./../components/Icons/IconsSnippetTable.vue')['default']
     IconsSnippetTripleContainer: typeof import('./../components/Icons/IconsSnippetTripleContainer.vue')['default']
     IconsSnippetUnorderedList: typeof import('./../components/Icons/IconsSnippetUnorderedList.vue')['default']
     IconsTripleContainerSnippet: typeof import('./../components/Icons/IconsTripleContainerSnippet.vue')['default']
