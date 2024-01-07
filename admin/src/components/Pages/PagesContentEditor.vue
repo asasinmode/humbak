@@ -199,7 +199,9 @@ async function fetchAndReplaceImages(dom: Document, tempFiles: ITempFileElement[
 			placeholderError(`HumbakFile fid musi być liczbą`, tempFile.placeholder);
 			continue;
 		}
-		ids.push(tempFile.fid);
+		if (!ids.includes(tempFile.fid)) {
+			ids.push(tempFile.fid);
+		}
 		placeholdersAndIds.push({ id: tempFile.fid, tempFile });
 	}
 
@@ -210,7 +212,7 @@ async function fetchAndReplaceImages(dom: Document, tempFiles: ITempFileElement[
 
 	try {
 		const files = await api.files.byIds.$get({ query: {
-			ids: JSON.stringify([...new Set(ids)]),
+			ids: JSON.stringify(ids),
 		} }).then(r => r.json());
 		for (const file of files) {
 			loadedFiles[file.id] = file;
