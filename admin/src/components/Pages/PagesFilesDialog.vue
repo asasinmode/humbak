@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { knownMimetypeExtensions } from '~/helpers';
 import type { IDialogFile } from '~/composables/useApi';
 
 const api = useApi();
@@ -69,6 +70,11 @@ async function initLoadItems() {
 		wasLoaded = true;
 	}
 }
+
+function isImage(mimetype: string) {
+	return mimetype.slice(0, 5) === 'image';
+}
+const nonImageText = computed(() => knownMimetypeExtensions[mimetype] || mimetype);
 </script>
 
 <template>
@@ -109,8 +115,33 @@ async function initLoadItems() {
 			brak wyników
 		</p>
 
-		<div v-for="file in files" :key="file.id">
-			{{ file }}
+		<div
+			v-for="file in files"
+			:key="file.id"
+			class="has-focused-button-highlight hover:bg-black/10 dark:hover:bg-white/10 flex gap-2 items-center"
+		>
+			<img
+				v-if="isImage(file.mimetype)"
+				:src="`files${file.path}`"
+				:title="file.title"
+				:alt="file.alt"
+				class="h-full w-full object-cover"
+			>
+			<span
+				v-else
+				class="w-full h-full grid place-items-center text-center bg-black/15 hyphens-auto dark:bg-white/15 font-bold"
+				:title="file.title"
+				:alt="file.alt"
+			>
+				{{ nonImageText }}
+			</span>
+			<h6> {{ file.name }} </h6>
+			<a :href="`files${file.path}`" target="_blank" class="neon-blue px-3 py-1 shadow h-fit">
+				podgląd
+			</a>
+			<VButton class="neon-green h-fit">
+				kopiuj
+			</VButton>
 		</div>
 
 		<button

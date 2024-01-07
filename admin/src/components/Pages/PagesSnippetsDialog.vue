@@ -126,9 +126,3 @@ async function copy(text: string) {
 		</div>
 	</VDialog>
 </template>
-
-<style>
-.has-focused-button-highlight:has(button:focus-visible) {
-	@apply bg-black/10 dark:bg-white/10
-}
-</style>

@@ -1,4 +1,6 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
 	-webkit-tap-highlight-color: transparent;
 }
 
@@ -9,34 +11,43 @@
 .visually-hidden {
 	position: absolute;
 	overflow: hidden;
-	clip: rect(0 0 0 0); 
+	clip: rect(0 0 0 0);
 	clip-path: inset(50%);
 	width: 1px;
 	height: 1px;
 	white-space: nowrap;
 }
 
-.shake{
+.shake {
 	animation: shake 0.3s infinite;
 }
 
-@keyframes shake{
+@keyframes shake {
 	0% {
 		transform: translate(0);
 	}
+
 	20% {
 		transform: translate(0.5em);
 	}
+
 	40% {
 		transform: translate(-0.5em);
 	}
+
 	60% {
 		transform: translate(0.5em);
 	}
+
 	80% {
 		transform: translate(-0.5em);
 	}
+
 	100% {
 		transform: translate(0);
 	}
+}
+
+.has-focused-button-highlight:has(button:focus-visible) {
+	@apply bg-black/10 dark:bg-white/10
 }
