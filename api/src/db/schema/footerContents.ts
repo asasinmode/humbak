@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { datetime, json, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
-import { array, object, optional, picklist, string } from 'valibot';
+import { array, maxLength, object, optional, picklist, string } from 'valibot';
 import { nonEmptyMaxLengthString } from '../../helpers';
 
 const knownSocials = ['facebook', 'youtube', 'instagram', 'twitter'] as const;
@@ -25,6 +25,9 @@ export const insertFooterContentSchema = object({
 	language: nonEmptyMaxLengthString(32),
 	emails: optional(array(string())),
 	phoneNumbers: optional(array(string())),
-	location: optional(object({ text: nonEmptyMaxLengthString(), value: nonEmptyMaxLengthString() })),
+	location: optional(object({
+		text: string([maxLength(256, `maksymalna długość: 256`)]),
+		value: string([maxLength(256, `maksymalna długość: 256`)]),
+	})),
 	socials: optional(array(object({ type: picklist(knownSocials), value: nonEmptyMaxLengthString() }))),
 });
