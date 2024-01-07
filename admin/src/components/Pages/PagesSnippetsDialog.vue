@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import IconsSnippetTable from '~/components/Icons/IconsSnippetTable.vue';
-import IconsSnippetOrderedList from '~/components/Icons/IconsSnippetOrderedList.vue';
 import IconsSnippetUnorderedList from '~/components/Icons/IconsSnippetUnorderedList.vue';
 import IconsSnippetDoubleContainer from '~/components/Icons/IconsSnippetDoubleContainer.vue';
 import IconsSnippetTripleContainer from '~/components/Icons/IconsSnippetTripleContainer.vue';
@@ -82,6 +80,18 @@ const snippets = [
 		snippet: table,
 	},
 ];
+
+const { toast } = useToast();
+
+async function copy(text: string) {
+	try {
+		await navigator.clipboard.writeText(text);
+		toast('skopiowano do schowka');
+	} catch (e) {
+		console.error(e);
+		toast('błąd przy kopiowaniu', 'error');
+	}
+}
 </script>
 
 <template>
@@ -110,7 +120,7 @@ const snippets = [
 			<h6 class="flex-1 hyphens-auto">
 				{{ snippet.text }}
 			</h6>
-			<VButton class="neon-green shrink-0 h-min">
+			<VButton class="neon-green shrink-0 h-min" @click="copy(snippet.snippet)">
 				kopiuj
 			</VButton>
 		</div>
