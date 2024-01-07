@@ -77,6 +77,24 @@ function isImage(mimetype: string) {
 function nonImageText(mimetype: string) {
 	return knownMimetypeExtensions[mimetype] || mimetype;
 }
+
+async function copy(file: IDialogFile) {
+	let text: string;
+
+	if (isImage(file.mimetype)) {
+		text = `<HumbakImage hid="${file.id}">`;
+	} else {
+		text = `<a href="files${file.path}" target="_blank">${file.name}</a>`;
+	}
+
+	try {
+		await navigator.clipboard.writeText(text);
+		toast('skopiowano do schowka');
+	} catch (e) {
+		console.error(e);
+		toast('błąd przy kopiowaniu', 'error');
+	}
+}
 </script>
 
 <template>
@@ -143,7 +161,7 @@ function nonImageText(mimetype: string) {
 			<a :href="`files${file.path}`" target="_blank" class="neon-blue text-sm px-3 py-1 shadow h-fit justify-self-end lg:self-end lg:justify-self-center lg:text-base">
 				podgląd
 			</a>
-			<VButton class="neon-green text-sm h-fit justify-self-start lg:justify-self-center lg:text-base">
+			<VButton class="neon-green text-sm h-fit justify-self-start lg:justify-self-center lg:text-base" @click="copy(file)">
 				{{ isImage(file.mimetype) ? '&lt;img&gt;' : '&lt;a&gt;' }}
 			</VButton>
 		</div>
