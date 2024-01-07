@@ -98,8 +98,8 @@ async function copy(text: string) {
 	<VDialog
 		class="mt-2 h-8 w-8 p-0 neon-teal"
 		title="snippety"
-		class-container="grid grid-cols-[1fr_1fr_min-content] gap-x-3"
-		class-close-button="col-span-full mx-auto w-fit mt-3"
+		class-container="flex flex-col"
+		class-close-button="mx-auto w-fit mt-3"
 		close-button-text="zamknij"
 	>
 		<template #button>
@@ -107,14 +107,14 @@ async function copy(text: string) {
 			<div class="i-fluent-clipboard-code-24-regular group absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
 		</template>
 
-		<h3 class="col-span-full text-center text-5 font-600 mb-3">
+		<h3 class="text-center text-5 font-600 mb-3">
 			snippety
 		</h3>
 
 		<div
 			v-for="(snippet, index) in snippets"
 			:key="index"
-			class="has-focused-button-highlight col-span-full flex items-center py-2.5 gap-2 lg:flex hover:bg-black/10 dark:hover:bg-white/10"
+			class="has-focused-button-highlight flex items-center py-2.5 gap-2 lg:flex hover:bg-black/10 dark:hover:bg-white/10"
 		>
 			<component :is="snippet.icon || 'div'" class="inline-block shrink-0 w-8 h-8" :class="snippet.iconClass" />
 			<h6 class="flex-1 hyphens-auto">
