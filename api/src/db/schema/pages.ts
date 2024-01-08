@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { integer, number, object, optional } from 'valibot';
-import { datetime, index, int, mysqlTable, uniqueIndex, varchar } from 'drizzle-orm/mysql-core';
+import { datetime, index, int, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
 import { nonEmptyMaxLengthString } from '../../helpers';
 
 export const pages = mysqlTable('pages', {
@@ -12,7 +12,6 @@ export const pages = mysqlTable('pages', {
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 }, table => ({
 	languageIndex: index('languageIndex').on(table.language),
-	titleIndex: uniqueIndex('titleIndex').on(table.title),
 }));
 
 export const insertPageSchema = object({

@@ -7,6 +7,7 @@ import { adminStylesheetsPath } from '../helpers/files';
 import { idParamValidationMiddleware, paginationQueryValidation, wrap } from '../helpers';
 import { db } from '../db';
 import { parsePageHtml } from '../helpers/pages';
+import { filesToPages } from '../db/schema/filesToPages';
 import { insertPageSchema, pages } from '../db/schema/pages';
 import { contents, insertContentSchema } from '../db/schema/contents';
 import { insertMenuLinkSchema, menuLinks } from '../db/schema/menuLinks';
@@ -75,7 +76,7 @@ export const app = new Hono()
 	.post('/', wrap('json', upsertPageInputSchema), async (c) => {
 		const { menuText, html, meta, css, ...pageFields } = c.req.valid('json');
 
-		const parsedHtml = await parsePageHtml(html);
+		const { value: parsedHtml, fileIds: associatedFilesIds } = await parsePageHtml(html);
 
 		const [{ insertId: pageId }] = await db
 			.insert(pages)
@@ -112,6 +113,11 @@ export const app = new Hono()
 				? writeFile(`${adminStylesheetsPath}/${pageId}.css`, css || '')
 				: () => {},
 		]);
+
+		await db.delete(filesToPages).where(eq(filesToPages.pageId, pageId));
+		if (associatedFilesIds.length) {
+			await db.insert(filesToPages).values(associatedFilesIds.map(fileId => ({ pageId, fileId })));
+		}
 
 		const [[result], stylesheetFileData] = await Promise.all([
 			db

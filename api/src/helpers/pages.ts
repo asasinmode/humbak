@@ -4,17 +4,17 @@ import { inArray } from 'drizzle-orm';
 import { db } from '../db';
 import { files } from '../db/schema/files';
 
-export async function parsePageHtml(html?: string) {
+export async function parsePageHtml(html?: string): Promise<{ value?: string; fileIds: number[]; }> {
 	if (html === undefined) {
-		return undefined;
+		return { fileIds: [] };
 	} else if (html === '') {
-		return '';
+		return { value: '', fileIds: [] };
 	}
 
 	const dom = load(html, {}, false);
 	const humbakElements = dom('HumbakFile');
 
-	const fileIds: number[] = [];
+	const allFileIds: number[] = [];
 	const humbakFiles: { id: number; element: Element; }[] = [];
 
 	for (const element of humbakElements) {
@@ -30,7 +30,7 @@ export async function parsePageHtml(html?: string) {
 			continue;
 		}
 
-		!fileIds.includes(parsedId) && fileIds.push(parsedId);
+		!allFileIds.includes(parsedId) && allFileIds.push(parsedId);
 		humbakFiles.push({ id: parsedId, element });
 	}
 
@@ -43,12 +43,13 @@ export async function parsePageHtml(html?: string) {
 		mimetype: files.mimetype,
 	})
 		.from(files)
-		.where(inArray(files.id, fileIds));
+		.where(inArray(files.id, allFileIds));
 
 	const filesById: Record<number, typeof fileItems[number]> = fileItems.reduce((p, c) => ({
 		...p,
 		[c.id]: c,
 	}), {});
+	const fileIds: number[] = [];
 
 	for (const { id, element } of humbakFiles) {
 		const file = filesById[id];
@@ -56,6 +57,8 @@ export async function parsePageHtml(html?: string) {
 			replaceWithError(`plik id "${id}" nieznaleziony w bazie danych`, element, dom);
 			continue;
 		}
+
+		!fileIds.includes(id) && fileIds.push(id);
 
 		const image = dom('<img>');
 		image.attr('src', `files${file.path}`);
@@ -69,7 +72,7 @@ export async function parsePageHtml(html?: string) {
 		dom(element).replaceWith(image);
 	}
 
-	return dom.html();
+	return { value: dom.html(), fileIds };
 }
 
 function replaceWithError(message: string, element: Element, dom: CheerioAPI) {
