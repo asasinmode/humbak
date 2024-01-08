@@ -75,7 +75,7 @@ export const app = new Hono()
 	.post('/', wrap('json', upsertPageInputSchema), async (c) => {
 		const { menuText, html, meta, css, ...pageFields } = c.req.valid('json');
 
-		const parsedHtml = parsePageHtml(html);
+		const parsedHtml = await parsePageHtml(html);
 
 		const [{ insertId: pageId }] = await db
 			.insert(pages)
