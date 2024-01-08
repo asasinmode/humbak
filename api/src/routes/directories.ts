@@ -320,6 +320,7 @@ export const app = new Hono<{
 				throw new Error('files to edit from middleware not found');
 			}
 
+			// todo select all page ids of deleted files then use them in contents to update
 			if (input.deletedFileIds.length) {
 				const deletedFilePaths = await db
 					.select({ path: files.path })
@@ -400,6 +401,7 @@ export const app = new Hono<{
 				}
 			}
 
+			// todo collect file ids to update pages
 			if (dirsToDelete.length) {
 				const dirsToDeleteIds = dirsToDelete.map(dir => dir.id);
 				await db.delete(directories).where(inArray(directories.id, dirsToDeleteIds));
@@ -413,6 +415,8 @@ export const app = new Hono<{
 					}
 				}
 			}
+
+			const updatedDirIds: number[] = [];
 
 			while (dirsToEdit.length) {
 				const dirsToGoThrough: (typeof dirsToEdit)[number][] = [];
@@ -437,70 +441,23 @@ export const app = new Hono<{
 				}
 
 				for (const dir of dirsToGoThrough) {
-					const originalDirIndex = dirs.findIndex(d => d.id === dir.id);
-					if (originalDirIndex === -1) {
-						console.error('DIR to edit not found');
-						continue;
-					}
-					const originalDir = dirs[originalDirIndex];
-
-					let targetDirPath = '/';
-					if (dir.parentId !== null) {
-						const targetDir = dirs.find(d => d.id === dir.parentId);
-						if (!targetDir) {
-							console.error('DIR to edit parent dir not found');
-							continue;
-						}
-						targetDirPath = `${targetDir.path}/`;
-					}
-
-					const oldPath = `${adminFilesPath}${originalDir.path}`;
-					const oldPathExists = existsSync(oldPath);
-					const newPathExists = existsSync(`${adminFilesPath}${targetDirPath}`);
-					if (!oldPathExists) {
-						console.error('DIR to edit OLD path doesn\'t exist');
-						continue;
-					}
-					if (!newPathExists) {
-						console.error('DIR to edit NEW path doesn\'t exist');
-						continue;
-					}
-
-					const path = `${targetDirPath}${dir.name}`;
-					const newPath = `${adminFilesPath}${path}`;
-					await rename(oldPath, newPath);
-
-					await db
-						.update(directories)
-						.set({
-							name: dir.name,
-							parentId: dir.parentId,
-							path,
-							updatedAt: new Date(),
-						})
-						.where(eq(directories.id, dir.id));
-					await db.execute(sql`UPDATE files JOIN directories ON files.directoryId = directories.id SET files.path = CONCAT(directories.path, '/', files.name) WHERE directories.id = ${dir.id}`);
-
-					const associatedFiles = await db.select({ id: files.id }).from(files).where(eq(files.directoryId, dir.id));
-					for (const { id } of associatedFiles) {
-						!updatedFilesIds.includes(id) && updatedFilesIds.push(id);
-					}
-
-					dirs[originalDirIndex] = {
-						id: dir.id,
-						parentId: dir.parentId,
-						name: dir.name,
-						path,
-					};
-					for (let i = 0; i < dirs.length; i++) {
-						const originalChildDir = dirs[i];
-						if (originalChildDir.parentId === dir.id) {
-							dirs[i].path = `${path}/${originalChildDir.name}`;
+					const dirIds = await updateDir(dirs, dir);
+					if (dirIds) {
+						for (const id of dirIds) {
+							!updatedDirIds.includes(id) && updatedDirIds.push(id);
 						}
 					}
 				}
 			}
 
+			if (updatedDirIds.length) {
+				const dirUpdatedFiles = await db.selectDistinct({ id: files.id }).from(files).where(inArray(files.directoryId, updatedDirIds));
+				for (const { id } of dirUpdatedFiles) {
+					!updatedFilesIds.includes(id) && updatedFilesIds.push(id);
+				}
+			}
+
+			console.log('updated', updatedFilesIds);
 			if (updatedFilesIds.length) {
 				const contentsToUpdate = await db
 					.selectDistinct({
@@ -510,6 +467,7 @@ export const app = new Hono<{
 					.from(contents)
 					.leftJoin(filesToPages, eq(contents.pageId, filesToPages.pageId))
 					.where(inArray(filesToPages.fileId, updatedFilesIds));
+				console.log('contents', contentsToUpdate);
 				for (const { pageId, rawHtml } of contentsToUpdate) {
 					const { value } = await parsePageHtml(rawHtml);
 					await db.update(contents).set({ parsedHtml: value }).where(eq(contents.pageId, pageId));
@@ -741,4 +699,83 @@ function getAllDirsToDelete(allDirs: IDir[], dirsToDelete: IDir[], acc: IDir[] =
 		}
 	}
 	return acc;
+}
+
+async function updateDir(dirs: IDir[], dir: Omit<IDir, 'path'>) {
+	const originalDirIndex = dirs.findIndex(d => d.id === dir.id);
+	if (originalDirIndex === -1) {
+		console.error('DIR to edit not found');
+		return;
+	}
+	const originalDir = dirs[originalDirIndex];
+
+	let targetDirPath = '/';
+	if (dir.parentId !== null) {
+		const targetDir = dirs.find(d => d.id === dir.parentId);
+		if (!targetDir) {
+			console.error('DIR to edit parent dir not found');
+			return;
+		}
+		targetDirPath = `${targetDir.path}/`;
+	}
+
+	const oldPath = `${adminFilesPath}${originalDir.path}`;
+	const oldPathExists = existsSync(oldPath);
+	const newPathExists = existsSync(`${adminFilesPath}${targetDirPath}`);
+	if (!oldPathExists) {
+		console.error('DIR to edit OLD path doesn\'t exist');
+		return;
+	}
+	if (!newPathExists) {
+		console.error('DIR to edit NEW path doesn\'t exist');
+		return;
+	}
+
+	const path = `${targetDirPath}${dir.name}`;
+	const newPath = `${adminFilesPath}${path}`;
+	await rename(oldPath, newPath);
+
+	console.log('updating dir', dir);
+
+	await db
+		.update(directories)
+		.set({
+			name: dir.name,
+			parentId: dir.parentId,
+			path,
+			updatedAt: new Date(),
+		})
+		.where(eq(directories.id, dir.id));
+	await db.execute(sql`UPDATE files JOIN directories ON files.directoryId = directories.id SET files.path = CONCAT(directories.path, '/', files.name) WHERE directories.id = ${dir.id}`);
+
+	dirs[originalDirIndex] = {
+		path,
+		id: dir.id,
+		parentId: dir.parentId,
+		name: dir.name,
+	};
+
+	const changedIds: number[] = [];
+	await updateDirAssociations(dirs, dirs[originalDirIndex], changedIds);
+	return changedIds;
+}
+
+async function updateDirAssociations(dirs: IDir[], dir: IDir, changedIds: number[]) {
+	!changedIds.includes(dir.id) && changedIds.push(dir.id);
+
+	const children: IDir[] = [];
+	for (let i = 0; i < dirs.length; i++) {
+		const originalChildDir = dirs[i];
+		if (originalChildDir.parentId === dir.id) {
+			dirs[i].path = `${dir.path}/${originalChildDir.name}`;
+			children.push(dirs[i]);
+		}
+	}
+
+	await db.execute(sql`UPDATE directories JOIN directories as parentDirectories ON directories.parentId = parentDirectories.id SET directories.path = CONCAT(parentDirectories.path, '/', directories.name) WHERE directories.parentId = ${dir.id}; `);
+	await db.execute(sql`UPDATE files JOIN directories ON files.directoryId = directories.id SET files.path = CONCAT(directories.path, '/', files.name) WHERE directories.id = ${dir.id}`);
+
+	for (const child of children) {
+		await updateDirAssociations(dirs, child, changedIds);
+	}
 }
