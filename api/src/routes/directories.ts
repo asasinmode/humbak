@@ -407,6 +407,10 @@ export const app = new Hono<{
 				for (const dir of dirsToDelete) {
 					const path = `${adminFilesPath}${dir.path}`;
 					existsSync(path) && await rm(path, { recursive: true });
+					const index = dirs.findIndex(d => d.id === dir.id);
+					if (index !== -1) {
+						dirs.splice(index, 1);
+					}
 				}
 			}
 
@@ -466,18 +470,16 @@ export const app = new Hono<{
 					const newPath = `${adminFilesPath}${path}`;
 					await rename(oldPath, newPath);
 
-					await Promise.all([
-						db
-							.update(directories)
-							.set({
-								name: dir.name,
-								parentId: dir.parentId,
-								path,
-								updatedAt: new Date(),
-							})
-							.where(eq(directories.id, dir.id)),
-						db.execute(sql`UPDATE files JOIN directories ON files.directoryId = directories.id SET files.path = CONCAT(directories.path, '/', files.name) WHERE directories.id = ${dir.id}`),
-					]);
+					await db
+						.update(directories)
+						.set({
+							name: dir.name,
+							parentId: dir.parentId,
+							path,
+							updatedAt: new Date(),
+						})
+						.where(eq(directories.id, dir.id));
+					await db.execute(sql`UPDATE files JOIN directories ON files.directoryId = directories.id SET files.path = CONCAT(directories.path, '/', files.name) WHERE directories.id = ${dir.id}`);
 
 					const associatedFiles = await db.select({ id: files.id }).from(files).where(eq(files.directoryId, dir.id));
 					for (const { id } of associatedFiles) {
