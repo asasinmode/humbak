@@ -329,7 +329,7 @@ export const app = new Hono<{
 				}
 			}
 
-			const updatedFileIds: number[] = [];
+			const updatedFilesIds: number[] = [];
 
 			if (filesToEdit.length) {
 				const originalFiles = await db
@@ -349,8 +349,8 @@ export const app = new Hono<{
 						continue;
 					}
 
-					if (!updatedFileIds.includes(originalFile.id)) {
-						updatedFileIds.push(originalFile.id);
+					if (!updatedFilesIds.includes(originalFile.id)) {
+						updatedFilesIds.push(originalFile.id);
 					}
 
 					const hasMoved = originalFile.directoryId !== file.directoryId || file.name !== originalFile.name;
@@ -476,6 +476,11 @@ export const app = new Hono<{
 						db.execute(sql`UPDATE files JOIN directories ON files.directoryId = directories.id SET files.path = CONCAT(directories.path, '/', files.name) WHERE directories.id = ${dir.id}`),
 					]);
 
+					const associatedFiles = await db.select({ id: files.id }).from(files).where(eq(files.directoryId, dir.id));
+					for (const { id } of associatedFiles) {
+						!updatedFilesIds.includes(id) && updatedFilesIds.push(id);
+					}
+
 					dirs[originalDirIndex] = {
 						id: dir.id,
 						parentId: dir.parentId,
@@ -491,7 +496,7 @@ export const app = new Hono<{
 				}
 			}
 
-			console.log('updated files to update pages of', updatedFileIds);
+			console.log('updated files to update pages of', updatedFilesIds);
 
 			const returnDirHeader = c.req.header('return-for-dir') || '';
 			const parseResult = Number.parseInt(returnDirHeader);
