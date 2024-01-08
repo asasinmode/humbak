@@ -3,8 +3,11 @@ import { lstat, mkdir, rename, rm, writeFile } from 'node:fs/promises';
 import { Hono, type MiddlewareHandler } from 'hono';
 import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { type Input, array, custom, null_, number, object, string, transform, union } from 'valibot';
+import { parsePageHtml } from 'src/helpers/pages';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
 import { files, insertFileSchema } from '../db/schema/files';
+import { filesToPages } from '../db/schema/filesToPages';
+import { contents } from '../db/schema/contents';
 import { wrap } from '../helpers';
 import { adminFilesPath } from '../helpers/files';
 import { db } from '../db';
@@ -496,7 +499,20 @@ export const app = new Hono<{
 				}
 			}
 
-			console.log('updated files to update pages of', updatedFilesIds);
+			if (updatedFilesIds.length) {
+				const contentsToUpdate = await db
+					.selectDistinct({
+						pageId: contents.pageId,
+						rawHtml: contents.rawHtml,
+					})
+					.from(contents)
+					.leftJoin(filesToPages, eq(contents.pageId, filesToPages.pageId))
+					.where(inArray(filesToPages.fileId, updatedFilesIds));
+				for (const { pageId, rawHtml } of contentsToUpdate) {
+					const { value } = await parsePageHtml(rawHtml);
+					await db.update(contents).set({ parsedHtml: value }).where(eq(contents.pageId, pageId));
+				}
+			}
 
 			const returnDirHeader = c.req.header('return-for-dir') || '';
 			const parseResult = Number.parseInt(returnDirHeader);
