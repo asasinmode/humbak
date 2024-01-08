@@ -56,35 +56,21 @@ export async function parsePageHtml(html?: string) {
 			replaceWithError(`plik id "${id}" nieznaleziony w bazie danych`, element, dom);
 			continue;
 		}
-	}
 
-	console.log('set to', dom.html());
+		const image = dom('<img>');
+		image.attr('src', `files${file.path}`);
+		image.attr('title', file.title);
+		image.attr('alt', file.alt);
+		for (const attribute of element.attributes) {
+			if (attribute.name !== 'fid') {
+				image.attr(attribute.name, attribute.value);
+			}
+		}
+		dom(element).replaceWith(image);
+	}
 
 	return dom.html();
 }
-
-// 	for (const { id, tempFile } of placeholdersAndIds) {
-// 		const file = loadedFiles[id];
-// 		if (!file) {
-// 			placeholderError(`plik id "${id}" nieznaleziony w bazie danych`, tempFile.placeholder);
-// 			continue;
-// 		}
-// 		replaceTempWithImage(tempFile, file);
-// 	}
-
-// 	parsedContent.value = dom.body.innerHTML;
-// }
-
-// function replaceTempWithImage(temp: ITempFileElement, file: IDialogFile) {
-// 	const imageElement = document.createElement('img');
-// 	imageElement.src = `files${file.path}`;
-// 	imageElement.title = file.title;
-// 	imageElement.alt = file.alt;
-// 	for (const attribute of temp.attributes) {
-// 		imageElement.setAttribute(attribute.name, attribute.value);
-// 	}.parseHTML()
-// 	temp.placeholder.replaceWith(imageElement);
-// }
 
 function replaceWithError(message: string, element: Element, dom: CheerioAPI) {
 	const error = dom(`<p class="text-red-5 font-600 border-2 border-red-5 border-dashed flex-center p-1 m-1 bg-red/10">${message}</p>`);

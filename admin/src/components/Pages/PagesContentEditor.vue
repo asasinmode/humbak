@@ -241,7 +241,9 @@ function replaceTempWithImage(temp: ITempFileElement, file: IDialogFile) {
 	element.title = file.title;
 	element.alt = file.alt;
 	for (const attribute of temp.attributes) {
-		element.setAttribute(attribute.name, attribute.value);
+		if (attribute.name !== 'fid') {
+			element.setAttribute(attribute.name, attribute.value);
+		}
 	}
 	temp.placeholder.replaceWith(element);
 }
