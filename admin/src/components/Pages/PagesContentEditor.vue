@@ -196,7 +196,7 @@ async function fetchAndReplaceImages(dom: Document, tempFiles: ITempFileElement[
 			continue;
 		}
 		if (Number.isNaN(tempFile.fid)) {
-			placeholderError(`HumbakFile fid musi być liczbą`, tempFile.placeholder);
+			placeholderError('HumbakFile fid musi być liczbą', tempFile.placeholder);
 			continue;
 		}
 		if (!ids.includes(tempFile.fid)) {
@@ -236,22 +236,24 @@ async function fetchAndReplaceImages(dom: Document, tempFiles: ITempFileElement[
 }
 
 function replaceTempWithImage(temp: ITempFileElement, file: IDialogFile) {
-	const imageElement = document.createElement('img');
-	imageElement.src = `files${file.path}`;
-	imageElement.title = file.title;
-	imageElement.alt = file.alt;
+	const element = document.createElement('img');
+	element.src = `files${file.path}`;
+	element.title = file.title;
+	element.alt = file.alt;
 	for (const attribute of temp.attributes) {
-		imageElement.setAttribute(attribute.name, attribute.value);
+		element.setAttribute(attribute.name, attribute.value);
 	}
-	temp.placeholder.replaceWith(imageElement);
+	temp.placeholder.replaceWith(element);
 }
 
 function placeholderError(message: string, replaceTarget: HTMLElement) {
 	toast(message, 'warning');
-	const errorMessage = document.createElement('p');
-	errorMessage.textContent = message;
-	errorMessage.className = 'text-red-5 font-600 border-2 border-red-5 border-dashed flex-center p-1 m-1 bg-red/10';
-	replaceTarget.replaceWith(errorMessage);
+
+	const element = document.createElement('p');
+	element.textContent = message;
+	element.classList.add('text-red-5', 'font-600', 'border-2', 'border-red-5', 'border-dashed', 'flex-center', 'p-1', 'm-1', 'bg-red/10');
+
+	replaceTarget.replaceWith(element);
 }
 
 defineExpose({
