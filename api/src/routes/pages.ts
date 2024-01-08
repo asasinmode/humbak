@@ -6,6 +6,7 @@ import { merge, object, optional, pick, string } from 'valibot';
 import { adminStylesheetsPath } from '../helpers/files';
 import { idParamValidationMiddleware, paginationQueryValidation, wrap } from '../helpers';
 import { db } from '../db';
+import { parsePageHtml } from '../helpers/pages';
 import { insertPageSchema, pages } from '../db/schema/pages';
 import { contents, insertContentSchema } from '../db/schema/contents';
 import { insertMenuLinkSchema, menuLinks } from '../db/schema/menuLinks';
@@ -59,7 +60,7 @@ export const app = new Hono()
 					title: pages.title,
 					slug: pages.slug,
 					menuText: sql<string>`${menuLinks.text}`,
-					html: sql<string>`${contents.html}`,
+					html: sql<string>`${contents.rawHtml}`,
 					meta: sql<string>`${contents.meta}`,
 				})
 				.from(pages)
@@ -73,6 +74,8 @@ export const app = new Hono()
 	})
 	.post('/', wrap('json', upsertPageInputSchema), async (c) => {
 		const { menuText, html, meta, css, ...pageFields } = c.req.valid('json');
+
+		const parsedHtml = parsePageHtml(html);
 
 		const [{ insertId: pageId }] = await db
 			.insert(pages)
@@ -97,9 +100,10 @@ export const app = new Hono()
 					updatedAt: new Date(),
 				},
 			}),
-			db.insert(contents).values({ pageId, html, meta }).onDuplicateKeyUpdate({
+			db.insert(contents).values({ pageId, rawHtml: html, parsedHtml, meta }).onDuplicateKeyUpdate({
 				set: {
-					html,
+					rawHtml: html,
+					parsedHtml,
 					meta,
 					updatedAt: new Date(),
 				},
@@ -117,7 +121,7 @@ export const app = new Hono()
 					title: pages.title,
 					slug: pages.slug,
 					menuText: sql<string>`${menuLinks.text}`,
-					html: sql<string>`${contents.html}`,
+					html: sql<string>`${contents.rawHtml}`,
 					meta: sql<string>`${contents.meta}`,
 				})
 				.from(pages)

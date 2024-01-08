@@ -4,13 +4,14 @@ import { array, integer, number, object, optional, record, string } from 'valibo
 import { pages } from './pages';
 
 const defaultHtml = `<section>
-	<h1>Content</h1>
+	<h1>Nagłówek</h1>
 </section>`;
 const defaultMeta = [{ name: 'robots', content: 'index, follow' }];
 
 export const contents = mysqlTable('contents', {
 	pageId: int('pageId').primaryKey().references(() => pages.id, { onDelete: 'cascade' }),
-	html: text('html').notNull().default(defaultHtml),
+	rawHtml: text('rawHtml').notNull().default(defaultHtml),
+	parsedHtml: text('parsedHtml').notNull().default(defaultHtml),
 	meta: json('meta').$type<Record<string, string>[]>().notNull().default(defaultMeta),
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
