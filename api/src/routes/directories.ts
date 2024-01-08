@@ -329,6 +329,8 @@ export const app = new Hono<{
 				}
 			}
 
+			const updatedFileIds: number[] = [];
+
 			if (filesToEdit.length) {
 				const originalFiles = await db
 					.select({
@@ -345,6 +347,10 @@ export const app = new Hono<{
 					if (!originalFile) {
 						console.error('FILE to edit not found in db');
 						continue;
+					}
+
+					if (!updatedFileIds.includes(originalFile.id)) {
+						updatedFileIds.push(originalFile.id);
 					}
 
 					const hasMoved = originalFile.directoryId !== file.directoryId || file.name !== originalFile.name;
@@ -457,15 +463,19 @@ export const app = new Hono<{
 					const newPath = `${adminFilesPath}${path}`;
 					await rename(oldPath, newPath);
 
-					await db
-						.update(directories)
-						.set({
-							name: dir.name,
-							parentId: dir.parentId,
-							path,
-							updatedAt: new Date(),
-						})
-						.where(eq(directories.id, dir.id));
+					await Promise.all([
+						db
+							.update(directories)
+							.set({
+								name: dir.name,
+								parentId: dir.parentId,
+								path,
+								updatedAt: new Date(),
+							})
+							.where(eq(directories.id, dir.id)),
+						db.execute(sql`UPDATE files JOIN directories ON files.directoryId = directories.id SET files.path = CONCAT(directories.path, '/', files.name) WHERE directories.id = ${dir.id}`),
+					]);
+
 					dirs[originalDirIndex] = {
 						id: dir.id,
 						parentId: dir.parentId,
@@ -480,6 +490,8 @@ export const app = new Hono<{
 					}
 				}
 			}
+
+			console.log('updated files to update pages of', updatedFileIds);
 
 			const returnDirHeader = c.req.header('return-for-dir') || '';
 			const parseResult = Number.parseInt(returnDirHeader);
