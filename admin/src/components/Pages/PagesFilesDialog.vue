@@ -145,7 +145,7 @@ async function copy(file: IDialogFile) {
 				:src="`files${file.path}`"
 				:title="file.title"
 				:alt="file.alt"
-				class="object-cover col-span-full h-18 justify-self-center lg:row-span-full lg:col-span-1 lg:h-25 lg:w-full lg:self-center"
+				class="object-cover col-span-full h-18 w-full max-w-1/2 justify-self-center lg:row-span-full lg:col-span-1 lg:h-25 lg:max-w-none lg:self-center"
 			>
 			<span
 				v-else
