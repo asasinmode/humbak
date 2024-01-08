@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { inArray, like, sql } from 'drizzle-orm';
+import { inArray, like, or, sql } from 'drizzle-orm';
 import { minLength, object, string } from 'valibot';
 import { paginationQueryValidation, wrap } from '../helpers';
 import { db } from '../db';
@@ -25,7 +25,10 @@ export const app = new Hono<{
 			})
 				.from(files)
 				.where(query
-					? like(files.name, `%${query}%`)
+					? or(
+						like(files.name, `%${query}%`),
+						like(files.path, `%${query}%`)
+					)
 					: sql`1 = 1`)
 				.orderBy(files.name)
 				.limit(limit)
