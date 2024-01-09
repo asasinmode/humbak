@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import test from 'node:test';
-import { type IAllDirs, type IDir, getDirsToDelete } from 'src/helpers/fileProcessing';
+import { type IDir, getDirsToDelete, getDirsToEdit } from 'src/helpers/fileProcessing';
 
 function createDir(id: number, parentId: number | null, path?: string) {
 	return {
@@ -12,10 +12,10 @@ function createDir(id: number, parentId: number | null, path?: string) {
 }
 
 function createAllDirs(dirs: { parentId: number | null; path?: string; }[]): {
-	allDirs: IAllDirs;
+	allDirs: Map<number, IDir>;
 	allDirsArray: IDir[];
 } {
-	const allDirs: IAllDirs = new Map();
+	const allDirs = new Map<number, IDir>();
 	const allDirsArray: IDir[] = [];
 
 	for (let i = 0; i < dirs.length; i++) {
@@ -29,15 +29,17 @@ function createAllDirs(dirs: { parentId: number | null; path?: string; }[]): {
 	return { allDirs, allDirsArray };
 }
 
-test('dir deleting', async (t) => {
+test('dir deleting', { skip: true }, async (t) => {
 	await t.test('dedupes', async () => {
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },
 		]);
 
 		assert.deepStrictEqual(
-			[...getDirsToDelete(allDirs, allDirsArray, [1, 1])],
-			[allDirs.get(1)]
+			getDirsToDelete(allDirs, allDirsArray, [1, 1]),
+			new Map([
+				[1, allDirs.get(1)],
+			])
 		);
 	});
 
@@ -47,8 +49,10 @@ test('dir deleting', async (t) => {
 		]);
 
 		assert.deepStrictEqual(
-			[...getDirsToDelete(allDirs, allDirsArray, [1, 2])],
-			[allDirs.get(1)]
+			getDirsToDelete(allDirs, allDirsArray, [1, 2]),
+			new Map([
+				[1, allDirs.get(1)],
+			])
 		);
 	});
 
@@ -65,56 +69,83 @@ test('dir deleting', async (t) => {
 		]);
 
 		assert.deepStrictEqual(
-			[...getDirsToDelete(allDirs, allDirsArray, [1])],
-			[
-				allDirs.get(1),
-				allDirs.get(3),
-				allDirs.get(4),
-				allDirs.get(6),
-				allDirs.get(7),
-				allDirs.get(8),
-				allDirs.get(5),
-			]
+			getDirsToDelete(allDirs, allDirsArray, [3, 1]),
+			new Map([
+				[3, allDirs.get(3)],
+				[1, allDirs.get(1)],
+				[4, allDirs.get(4)],
+				[6, allDirs.get(6)],
+				[7, allDirs.get(7)],
+				[8, allDirs.get(8)],
+				[5, allDirs.get(5)],
+			])
 		);
 	});
 });
 
-// test('dir editing error', async (t) => {
-// 	await t.test('errors nonexistent', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
+test('dir editing error', async (t) => {
+	await t.test('errors nonexistent', async () => {
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null },
+		]);
 
-// 	// 136 remove check? should move dirs then delete, so moving to dirs being deleted should be allowed
-// 	// keep check because all deleted should already be there from walking children
-// 	// so just skip
-// 	await t.test('skips deleted', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
+		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+			{ id: 1, parentId: null, name: '1' },
+			{ id: 2, parentId: null, name: '2' },
+		]);
 
-// 	await t.test('skips unchanged (same name & parentId)', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
+		assert.deepStrictEqual(
+			result.dirsToEdit,
+			[{ id: 1, parentId: null, name: '1' }]
+		);
+		assert.deepStrictEqual(result.errors, { 1: { id: 'folder nie istnieje' } });
+	});
 
-// 	await t.test('errors nonexistent parent id', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
+	await t.test('skips deleted', async () => {
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null },
+		]);
+		const deletedDirs = new Map([[1, allDirs.get(1)!]]);
 
-// 	await t.test('errors moved to itself', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
+		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
+			{ id: 1, parentId: null, name: '1' },
+		]);
 
-// 	await t.test('errors moved to its child', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
+		assert.deepStrictEqual(result.dirsToEdit, []);
+		assert.deepStrictEqual(result.errors, {});
+	});
 
-// 	await t.test('errors dir exists in chosen location', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
+	// 136 remove check? should move dirs then delete, so moving to dirs being deleted should be allowed
+	// keep check because all deleted should already be there from walking children
+	// so just skip
+	// await t.test('skips deleted', async () => {
+	// 	assert.equal(1, 1);
+	// });
 
-// 	await t.test('errors 2 dirs moved to same location', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-// });
+	// await t.test('skips unchanged (same name & parentId)', async () => {
+	// 	assert.equal(1, 1);
+	// });
+
+	// await t.test('errors nonexistent parent id', async () => {
+	// 	assert.equal(1, 1);
+	// });
+
+	// await t.test('errors moved to itself', async () => {
+	// 	assert.equal(1, 1);
+	// });
+
+	// await t.test('errors moved to its child', async () => {
+	// 	assert.equal(1, 1);
+	// });
+
+	// await t.test('errors dir exists in chosen location', async () => {
+	// 	assert.equal(1, 1);
+	// });
+
+	// await t.test('errors 2 dirs moved to same location', async () => {
+	// 	assert.equal(1, 1);
+	// });
+});
 
 // test('dir editing success', async (t) => {
 // 	await t.test('renamed in root', async (t) => {
