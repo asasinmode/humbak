@@ -45,6 +45,7 @@ const putDirectoryInput = object({
 	})),
 });
 export type IPutDirectoryInput = Input<typeof putDirectoryInput>;
+export type IDir = Pick<InferSelectModel<typeof directories>, 'id' | 'name' | 'parentId' | 'path'>;
 
 export const app = new Hono<{
 	Variables: {
@@ -689,7 +690,6 @@ async function dirData(id: number | null, returnAllDirs: boolean) {
 	};
 }
 
-type IDir = Pick<InferSelectModel<typeof directories>, 'id' | 'name' | 'parentId' | 'path'>;
 function getAllDirsToDelete(allDirs: IDir[], dirsToDelete: IDir[], acc: IDir[] = []) {
 	for (const dir of dirsToDelete) {
 		acc.push(dir);
