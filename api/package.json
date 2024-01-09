@@ -17,7 +17,8 @@
 		"db:drop:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/drop.ts",
 		"db:truncate": "tsx ./src/db/scripts/truncate.ts",
 		"db:truncate:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/truncate.ts",
-		"type-check": "tsc"
+		"type-check": "tsc",
+		"test": "node --test --import tsx ./test/*"
 	},
 	"dependencies": {
 		"@hono/node-server": "^1.3.1",
