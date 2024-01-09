@@ -3,7 +3,7 @@ import test from 'node:test';
 import { getDirsToDelete } from 'src/helpers/files/dirDeleteValidation';
 import { createAllDirs } from './helpers';
 
-test('dir deleting', { skip: true }, async (t) => {
+test('dir delete validation', { skip: true }, async (t) => {
 	await t.test('dedupes', async () => {
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },

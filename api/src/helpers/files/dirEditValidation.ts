@@ -11,7 +11,8 @@ export async function getDirsToEdit(
 	dirsToEdit: IEditedDir[];
 	errors: Record<number, Record<string, string>>;
 }> {
-	const dirsToEdit: IEditedDir[] = [];
+	const validEditedDirs: IEditedDir[] = [];
+
 	const errors: Record<number, Record<string, string>> = {};
 	function setEditedDirsError(index: number, key: keyof IEditedDir, value: string) {
 		errors[index] ||= {};
@@ -36,8 +37,32 @@ export async function getDirsToEdit(
 			continue;
 		}
 
-		dirsToEdit.push(dir);
+		const parentExists = dir.parentId === null || allDirs.has(dir.parentId);
+		if (!parentExists) {
+			setEditedDirsError(i, 'parentId', 'wybrany rodzic nie istnieje');
+			continue;
+		}
+
+		validEditedDirs.push(dir);
 	}
 
-	return { dirsToEdit, errors };
+	const dirsAndDepths: { dir: IEditedDir; depth: number; }[] = [];
+	for (const dir of validEditedDirs) {
+		let depth = 0;
+		if (dir.parentId === null) {
+			dirsAndDepths.push({ dir, depth });
+			continue;
+		}
+
+		let parent = allDirsArray.find(d => d.id === dir.parentId);
+		while (parent) {
+			depth += 1;
+			parent = allDirsArray.find(d => d.id === parent!.parentId);
+		}
+		dirsAndDepths.push({ dir, depth });
+	}
+
+	console.log('dirs and depths', dirsAndDepths);
+
+	return { dirsToEdit: validEditedDirs, errors };
 }
