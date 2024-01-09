@@ -10,13 +10,13 @@ test('dir editing error', async (t) => {
 		]);
 
 		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
-			{ id: 1, parentId: null, name: '1' },
+			{ id: 1, parentId: null, name: 'one' },
 			{ id: 2, parentId: null, name: '2' },
 		]);
 
 		assert.deepStrictEqual(
 			result.dirsToEdit,
-			[{ id: 1, parentId: null, name: '1' }]
+			[{ id: 1, parentId: null, name: 'one' }]
 		);
 		assert.deepStrictEqual(result.errors, { 1: { id: 'folder nie istnieje' } });
 	});
