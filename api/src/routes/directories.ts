@@ -44,7 +44,7 @@ const putDirectoryInput = object({
 		parentId: union([number(), null_()]),
 	})),
 });
-type IPutDirectoryInput = Input<typeof putDirectoryInput>;
+export type IPutDirectoryInput = Input<typeof putDirectoryInput>;
 
 export const app = new Hono<{
 	Variables: {
