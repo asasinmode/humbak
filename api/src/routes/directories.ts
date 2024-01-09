@@ -3,7 +3,7 @@ import { lstat, mkdir, rename, rm, writeFile } from 'node:fs/promises';
 import { Hono, type MiddlewareHandler } from 'hono';
 import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { type Input, array, custom, null_, number, object, string, transform, union } from 'valibot';
-import { parsePageHtml } from 'src/helpers/pages';
+import { parsePageHtml } from '../helpers/pages';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
 import { files, insertFileSchema } from '../db/schema/files';
 import { filesToPages } from '../db/schema/filesToPages';
