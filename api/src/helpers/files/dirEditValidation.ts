@@ -12,10 +12,10 @@ export async function getDirsToEdit(
 	dirsToEdit: IEditedDir[];
 	errors: Record<number, Record<string, string>>;
 }> {
-	const validEditedDirs: IEditedDir[] = [];
+	const firstPassDirs: IEditedDir[] = [];
 
 	const errors: Record<number, Record<string, string>> = {};
-	function setEditedDirsError(index: number, key: keyof IEditedDir, value: string) {
+	function setError(index: number, key: keyof IEditedDir, value: string) {
 		errors[index] ||= {};
 		errors[index][key] = value;
 	};
@@ -24,7 +24,7 @@ export async function getDirsToEdit(
 		const dir = input[i];
 		const originalDir = allDirs.get(dir.id);
 		if (!originalDir) {
-			setEditedDirsError(i, 'id', 'folder nie istnieje');
+			setError(i, 'id', 'folder nie istnieje');
 			continue;
 		}
 
@@ -35,7 +35,7 @@ export async function getDirsToEdit(
 			return p;
 		}, 0);
 		if (count > 1) {
-			setEditedDirsError(i, 'id', 'tylko jedna instrukcja może być wysłana naraz');
+			setError(i, 'id', 'tylko jedna instrukcja może być wysłana naraz');
 			continue;
 		}
 
@@ -51,14 +51,24 @@ export async function getDirsToEdit(
 
 		const parentExists = dir.parentId === null || allDirs.has(dir.parentId);
 		if (!parentExists) {
-			setEditedDirsError(i, 'parentId', 'wybrany rodzic nie istnieje');
+			setError(i, 'parentId', 'wybrany rodzic nie istnieje');
 			continue;
 		}
 
-		validEditedDirs.push({ ...dir, originalIndex: i });
+		firstPassDirs.push({ ...dir, originalIndex: i });
 	}
 
-	const dirsToEdit = extractDeletedFromMoved(allDirs, allDirsArray, deletedDirs, validEditedDirs);
+	const secondPassDirs = extractDeletedFromMoved(allDirs, allDirsArray, deletedDirs, firstPassDirs);
+
+	const dirsToEdit: IEditedDir[] = [];
+	for (const dir of secondPassDirs) {
+		if (dir.id === dir.parentId) {
+			setError(dir.originalIndex, 'parentId', 'folder nie może być przeniesiony do samego siebie');
+			continue;
+		}
+
+		dirsToEdit.push(dir);
+	}
 
 	return { dirsToEdit, errors };
 }
