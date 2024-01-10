@@ -95,10 +95,10 @@ test('dir edit validation', { only: true }, async (t) => {
 	});
 
 	await t.test('moves children to deleted 1', async () => {
-		/*
-		*	1
-		*	2
-		*	| 3
+		/*			TO
+		*	1			 1 (deleted)
+		*	2			 | 2
+		*	| 3		   | 3
 		*/
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },
@@ -106,11 +106,11 @@ test('dir edit validation', { only: true }, async (t) => {
 			{ parentId: 2 },
 		]);
 		const deletedDirs = new Map([
-			[1, allDirs.get(1)!], // 1 being deleted
+			[1, allDirs.get(1)!],
 		]);
 
 		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
-			{ id: 2, parentId: 1, name: '1' }, // 2 moved to 1
+			{ id: 2, parentId: 1, name: '1' }, // move 2 to 1
 		]);
 
 		assert.deepStrictEqual(result.dirsToEdit, []);
@@ -122,13 +122,13 @@ test('dir edit validation', { only: true }, async (t) => {
 	});
 
 	await t.test('moves children to deleted 2', async () => {
-		/*
-		*	1
-		*	2
-		*	| 3
-		*	4
-		*	| 5
-		*	  | 6
+		/*				TO
+		*	1				 1 (deleted)
+		*	2				 | 2
+		*	| 3			   | 3
+		*	4				     | 5
+		*	| 5			       | 6
+		*	  | 6		 four
 		*/
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },
@@ -139,7 +139,7 @@ test('dir edit validation', { only: true }, async (t) => {
 			{ parentId: 5 },
 		]);
 		const deletedDirs = new Map([
-			[1, allDirs.get(1)!],	// 1 being deleted
+			[1, allDirs.get(1)!],
 		]);
 
 		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
