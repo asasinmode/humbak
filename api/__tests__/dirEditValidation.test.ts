@@ -64,12 +64,26 @@ test('dir edit validation', async (t) => {
 			},
 		});
 	});
-	// 136 remove check? should move dirs then delete, so moving to dirs being deleted should be allowed
-	// keep check because all deleted should already be there from walking children
-	// so just skip
-	// await t.test('skips deleted', async () => {
-	// 	assert.equal(1, 1);
-	// });
+
+	await t.test('handles moved to deleted 1', async () => {
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null },
+			{ parentId: null },
+		]);
+		const deletedDirs = new Map([
+			[1, allDirs.get(1)],
+		]);
+
+		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+			{ id: 2, parentId: 1, name: '1' },
+		]);
+
+		assert.deepStrictEqual(result.dirsToEdit, []);
+		assert.deepStrictEqual(deletedDirs, new Map([
+			[1, allDirs.get(1)],
+			[2, allDirs.get(2)],
+		]));
+	});
 
 	// await t.test('errors moved to itself', async () => {
 	// 	assert.equal(1, 1);

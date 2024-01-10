@@ -1,4 +1,5 @@
 import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
+import { recursiveDirChildren } from './dirDeleteValidation';
 
 export type IEditedDir = IPutDirectoryInput['editedDirs'][number];
 
@@ -46,23 +47,43 @@ export async function getDirsToEdit(
 		validEditedDirs.push(dir);
 	}
 
-	const dirsAndDepths: { dir: IEditedDir; depth: number; }[] = [];
-	for (const dir of validEditedDirs) {
-		let depth = 0;
-		if (dir.parentId === null) {
-			dirsAndDepths.push({ dir, depth });
-			continue;
-		}
+	const dirsToEdit = extractDeletedFromMoved(allDirsArray, deletedDirs, validEditedDirs);
 
-		let parent = allDirsArray.find(d => d.id === dir.parentId);
-		while (parent) {
-			depth += 1;
-			parent = allDirsArray.find(d => d.id === parent!.parentId);
+	return { dirsToEdit, errors };
+}
+
+function extractDeletedFromMoved(allDirsArray: IDir[], deletedDirs: Map<number, IDir>, editedDirs: IPutDirectoryInput['editedDirs']) {
+	const dirsMovedToRoot: IPutDirectoryInput['editedDirs'] = [];
+	let dirsMovedToOtherDirs: IPutDirectoryInput['editedDirs'] = [];
+	for (const dir of editedDirs) {
+		if (dir.parentId === null) {
+			dirsMovedToRoot.push(dir);
+		} else {
+			dirsMovedToOtherDirs.push(dir);
 		}
-		dirsAndDepths.push({ dir, depth });
 	}
 
-	console.log('dirs and depths', dirsAndDepths);
+	while (true) {
+		let deletedDir: IPutDirectoryInput['editedDirs'][number] | undefined;
+		for (const dir of dirsMovedToOtherDirs) {
+			const isMovedToDeleted = deletedDirs.has(dir.parentId!);
+			if (isMovedToDeleted) {
+				deletedDir = dir;
+				break;
+			}
+		}
 
-	return { dirsToEdit: validEditedDirs, errors };
+		if (deletedDir === undefined) {
+			break;
+		}
+
+		const deletedChildren = recursiveDirChildren(allDirsArray, [deletedDir]);
+		for (const [id, dir] of deletedChildren.entries()) {
+			deletedDirs.set(id, dir);
+		}
+
+		dirsMovedToOtherDirs = dirsMovedToOtherDirs.filter(dir => deletedDirs.has(dir.id));
+	}
+
+	return dirsMovedToRoot.concat(dirsMovedToOtherDirs);
 }
