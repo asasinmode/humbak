@@ -20,7 +20,7 @@ test('dir edit validation', { only: true }, async (t) => {
 		assert.deepStrictEqual(result.errors, { 1: { id: 'folder nie istnieje' } });
 	});
 
-	await t.test('errors multiple of same file', { only: true }, async () => {
+	await t.test('errors multiple of same file', async () => {
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },
 			{ parentId: null },
@@ -279,9 +279,22 @@ test('dir edit validation', { only: true }, async (t) => {
 		]));
 	});
 
-	// await t.test('errors moved to itself', async () => {
-	// 	assert.equal(1, 1);
-	// });
+	await t.test('errors moved to itself', async () => {
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null },
+		]);
+
+		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+			{ id: 1, parentId: 1, name: '1' },
+		]);
+
+		assert.deepStrictEqual(result.dirsToEdit, []);
+		assert.deepStrictEqual(result.errors, {
+			0: {
+				parentId: 'folder nie może być przeniesiony do samego siebie',
+			},
+		});
+	});
 
 	// await t.test('errors moved to its child', async () => {
 	// 	assert.equal(1, 1);
