@@ -144,7 +144,7 @@ test('dir edit validation', { only: true }, async (t) => {
 
 		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
 			{ id: 5, parentId: 3, name: '5' },	// move 5 to 3
-			{ id: 4, parentId: null, name: 'four' },	// just edit 4
+			{ id: 4, parentId: null, name: 'four' },	// rename 4
 			{ id: 2, parentId: 1, name: '2' },	// move 2 to 1
 		]);
 
@@ -191,7 +191,7 @@ test('dir edit validation', { only: true }, async (t) => {
 		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
 			{ id: 7, parentId: 9, name: '7' },	// move 7 to 9
 			{ id: 8, parentId: 3, name: '8' },	// move 8 to 3
-			{ id: 4, parentId: null, name: 'four' },	// just edit 4
+			{ id: 4, parentId: null, name: 'four' },	// rename 4
 			{ id: 9, parentId: 6, name: '9' },	// move 9 to 6
 			{ id: 2, parentId: 1, name: '2' },	// move 2 to 1
 			{ id: 6, parentId: 5, name: '6' },	// move 6 to 5
@@ -209,6 +209,45 @@ test('dir edit validation', { only: true }, async (t) => {
 			[7, allDirs.get(7)],
 			[8, allDirs.get(8)],
 			[9, allDirs.get(9)],
+		]));
+	});
+
+	await t.test('moves to deleted 4', { only: true }, async () => {
+		/*	FROM			TO
+		*		1					 1
+		*		| 5				 | 5 (deleted)
+		*		4					   | 6
+		*		| 2				   | 3
+		*		  | 3			 four
+		*		    | 6		 2
+		*/
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null },
+			{ parentId: 4 },
+			{ parentId: 2 },
+			{ parentId: null },
+			{ parentId: 1 },
+			{ parentId: 3 },
+		]);
+		const deletedDirs = new Map([
+			[5, allDirs.get(5)!],
+		]);
+
+		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
+			{ id: 2, parentId: null, name: '2' }, // move 2 to root
+			{ id: 6, parentId: 5, name: '2' }, // move 6 to 5
+			{ id: 4, parentId: null, name: 'four' }, // rename 4
+			{ id: 3, parentId: 5, name: '3' }, // move 3 to 5
+		]);
+
+		assert.deepStrictEqual(result.dirsToEdit, [
+			{ id: 2, parentId: null, name: '2' },
+			{ id: 4, parentId: null, name: 'four' },
+		]);
+		assert.deepStrictEqual(deletedDirs, new Map([
+			[3, allDirs.get(3)],
+			[5, allDirs.get(5)],
+			[6, allDirs.get(6)],
 		]));
 	});
 
