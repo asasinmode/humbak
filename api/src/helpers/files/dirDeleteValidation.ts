@@ -15,19 +15,21 @@ export function getDirsToDelete(
 	return recursiveDirChildren(allDirsArray, dirsToDelete);
 }
 
-export function recursiveDirChildren(allDirs: IDir[], dirsToDelete: IDir[]): Map<number, IDir> {
-	const rv = new Map(dirsToDelete.map(d => [d.id, d]));
-
-	function recurse(parentId: number) {
-		const children = allDirs.filter(d => d.parentId === parentId);
+export function recursiveDirChildren(
+	allDirs: IDir[],
+	dirsToDelete: IDir[],
+	rv = new Map<number, IDir>()
+): Map<number, IDir> {
+	function recurse(dir: IDir) {
+		rv!.set(dir.id, dir);
+		const children = allDirs.filter(d => d.parentId === dir.id);
 		for (const child of children) {
-			rv.set(child.id, child);
-			recurse(child.id);
+			recurse(child);
 		}
 	}
 
 	for (const dir of dirsToDelete) {
-		recurse(dir.id);
+		recurse(dir);
 	}
 
 	return rv;
