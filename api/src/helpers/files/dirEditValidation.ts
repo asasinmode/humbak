@@ -47,12 +47,17 @@ export async function getDirsToEdit(
 		validEditedDirs.push(dir);
 	}
 
-	const dirsToEdit = extractDeletedFromMoved(allDirsArray, deletedDirs, validEditedDirs);
+	const dirsToEdit = extractDeletedFromMoved(allDirs, allDirsArray, deletedDirs, validEditedDirs);
 
 	return { dirsToEdit, errors };
 }
 
-function extractDeletedFromMoved(allDirsArray: IDir[], deletedDirs: Map<number, IDir>, editedDirs: IPutDirectoryInput['editedDirs']) {
+function extractDeletedFromMoved(
+	allDirs: Map<number, IDir>,
+	allDirsArray: IDir[],
+	deletedDirs: Map<number, IDir>,
+	editedDirs: IPutDirectoryInput['editedDirs']
+) {
 	const dirsMovedToRoot: IPutDirectoryInput['editedDirs'] = [];
 	let dirsMovedToOtherDirs: IPutDirectoryInput['editedDirs'] = [];
 	for (const dir of editedDirs) {
@@ -64,17 +69,22 @@ function extractDeletedFromMoved(allDirsArray: IDir[], deletedDirs: Map<number, 
 	}
 
 	while (true) {
-		let deletedDir: IPutDirectoryInput['editedDirs'][number] | undefined;
+		let deletedDirId: number | undefined;
 		for (const dir of dirsMovedToOtherDirs) {
 			const isMovedToDeleted = deletedDirs.has(dir.parentId!);
 			if (isMovedToDeleted) {
-				deletedDir = dir;
+				deletedDirId = dir.id;
 				break;
 			}
 		}
 
-		if (deletedDir === undefined) {
+		if (deletedDirId === undefined) {
 			break;
+		}
+
+		const deletedDir = allDirs.get(deletedDirId);
+		if (!deletedDir) {
+			throw new Error('original deleted dir doesn\'t exist in all dirs');
 		}
 
 		const deletedChildren = recursiveDirChildren(allDirsArray, [deletedDir]);
@@ -82,7 +92,7 @@ function extractDeletedFromMoved(allDirsArray: IDir[], deletedDirs: Map<number, 
 			deletedDirs.set(id, dir);
 		}
 
-		dirsMovedToOtherDirs = dirsMovedToOtherDirs.filter(dir => deletedDirs.has(dir.id));
+		dirsMovedToOtherDirs = dirsMovedToOtherDirs.filter(dir => !deletedDirs.has(dir.id));
 	}
 
 	return dirsMovedToRoot.concat(dirsMovedToOtherDirs);

@@ -71,10 +71,10 @@ test('dir edit validation', async (t) => {
 			{ parentId: null },
 		]);
 		const deletedDirs = new Map([
-			[1, allDirs.get(1)],
+			[1, allDirs.get(1)!],
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
 			{ id: 2, parentId: 1, name: '1' },
 		]);
 
