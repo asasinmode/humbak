@@ -160,6 +160,58 @@ test('dir edit validation', { only: true }, async (t) => {
 		]));
 	});
 
+	await t.test('moves to deleted 3', async () => {
+		/*	FROM			TO
+		*		1					 1 (deleted)
+		*		2					 | 2
+		*		| 3				   | 3
+		*		4					     | 8
+		*		5					 four
+		*		6					 5 (deleted)
+		*		| 7				 | 6
+		*			| 8			   | 9
+		*		9					     | 7
+		*/
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null },
+			{ parentId: null },
+			{ parentId: 2 },
+			{ parentId: null },
+			{ parentId: null },
+			{ parentId: null },
+			{ parentId: 6 },
+			{ parentId: 7 },
+			{ parentId: null },
+		]);
+		const deletedDirs = new Map([
+			[1, allDirs.get(1)!],
+			[5, allDirs.get(5)!],
+		]);
+
+		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
+			{ id: 7, parentId: 9, name: '7' },	// move 7 to 9
+			{ id: 8, parentId: 3, name: '8' },	// move 8 to 3
+			{ id: 4, parentId: null, name: 'four' },	// just edit 4
+			{ id: 9, parentId: 6, name: '9' },	// move 9 to 6
+			{ id: 2, parentId: 1, name: '2' },	// move 2 to 1
+			{ id: 6, parentId: 5, name: '6' },	// move 6 to 5
+		]);
+
+		assert.deepStrictEqual(result.dirsToEdit, [
+			{ id: 4, parentId: null, name: 'four' },
+		]);
+		assert.deepStrictEqual(deletedDirs, new Map([
+			[1, allDirs.get(1)],
+			[2, allDirs.get(2)],
+			[3, allDirs.get(3)],
+			[5, allDirs.get(5)],
+			[6, allDirs.get(6)],
+			[7, allDirs.get(7)],
+			[8, allDirs.get(8)],
+			[9, allDirs.get(9)],
+		]));
+	});
+
 	// await t.test('errors moved to itself', async () => {
 	// 	assert.equal(1, 1);
 	// });
