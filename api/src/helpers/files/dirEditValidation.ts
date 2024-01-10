@@ -87,11 +87,7 @@ function extractDeletedFromMoved(
 			throw new Error('original deleted dir doesn\'t exist in all dirs');
 		}
 
-		const deletedChildren = recursiveDirChildren(allDirsArray, [deletedDir]);
-		for (const [id, dir] of deletedChildren.entries()) {
-			deletedDirs.set(id, dir);
-		}
-
+		recursiveDirChildren(allDirsArray, [deletedDir], deletedDirs);
 		dirsMovedToOtherDirs = dirsMovedToOtherDirs.filter(dir => !deletedDirs.has(dir.id));
 	}
 
