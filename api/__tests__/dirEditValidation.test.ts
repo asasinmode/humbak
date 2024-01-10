@@ -20,6 +20,35 @@ test('dir edit validation', { only: true }, async (t) => {
 		assert.deepStrictEqual(result.errors, { 1: { id: 'folder nie istnieje' } });
 	});
 
+	await t.test('errors multiple of same file', { only: true }, async () => {
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null },
+			{ parentId: null },
+			{ parentId: null },
+			{ parentId: null },
+		]);
+
+		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+			{ id: 3, parentId: null, name: 'three' },
+			{ id: 4, parentId: null, name: 'four' },
+			{ id: 2, parentId: null, name: 'two' },
+			{ id: 1, parentId: null, name: 'one' },
+			{ id: 4, parentId: null, name: 'four' },
+			{ id: 2, parentId: null, name: 'two' },
+		]);
+
+		assert.deepStrictEqual(result.dirsToEdit, [
+			{ id: 3, parentId: null, name: 'three', originalIndex: 0 },
+			{ id: 1, parentId: null, name: 'one', originalIndex: 3 },
+		]);
+		assert.deepStrictEqual(result.errors, {
+			1: { id: 'tylko jedna instrukcja może być wysłana naraz' },
+			2: { id: 'tylko jedna instrukcja może być wysłana naraz' },
+			4: { id: 'tylko jedna instrukcja może być wysłana naraz' },
+			5: { id: 'tylko jedna instrukcja może być wysłana naraz' },
+		});
+	});
+
 	await t.test('skips deleted', async () => {
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },

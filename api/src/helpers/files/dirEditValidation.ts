@@ -28,6 +28,17 @@ export async function getDirsToEdit(
 			continue;
 		}
 
+		const count = input.reduce((p, c) => {
+			if (c.id === dir.id) {
+				return p + 1;
+			}
+			return p;
+		}, 0);
+		if (count > 1) {
+			setEditedDirsError(i, 'id', 'tylko jedna instrukcja może być wysłana naraz');
+			continue;
+		}
+
 		const isDeleted = deletedDirs.has(dir.id);
 		if (isDeleted) {
 			continue;
