@@ -94,11 +94,11 @@ test('dir edit validation', { only: true }, async (t) => {
 		]));
 	});
 
-	await t.test('moves children to deleted 1', async () => {
-		/*			TO
-		*	1			 1 (deleted)
-		*	2			 | 2
-		*	| 3		   | 3
+	await t.test('moves to deleted 1', async () => {
+		/*	FROM		TO
+		*		1				 1 (deleted)
+		*		2				 | 2
+		*		| 3			   | 3
 		*/
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },
@@ -121,14 +121,14 @@ test('dir edit validation', { only: true }, async (t) => {
 		]));
 	});
 
-	await t.test('moves children to deleted 2', async () => {
-		/*				TO
-		*	1				 1 (deleted)
-		*	2				 | 2
-		*	| 3			   | 3
-		*	4				     | 5
-		*	| 5			       | 6
-		*	  | 6		 four
+	await t.test('moves to deleted 2', async () => {
+		/*	FROM			TO
+		*		1					 1 (deleted)
+		*		2					 | 2
+		*		| 3				   | 3
+		*		4					     | 5
+		*		| 5				       | 6
+		*			| 6			 four
 		*/
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },
