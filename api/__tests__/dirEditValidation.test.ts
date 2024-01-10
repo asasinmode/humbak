@@ -14,10 +14,9 @@ test('dir edit validation', { only: true }, async (t) => {
 			{ id: 2, parentId: null, name: 'two' },
 		]);
 
-		assert.deepStrictEqual(
-			result.dirsToEdit,
-			[{ id: 1, parentId: null, name: 'one' }]
-		);
+		assert.deepStrictEqual(result.dirsToEdit, [
+			{ id: 1, parentId: null, name: 'one', originalIndex: 0 },
+		]);
 		assert.deepStrictEqual(result.errors, { 1: { id: 'folder nie istnieje' } });
 	});
 
@@ -86,7 +85,7 @@ test('dir edit validation', { only: true }, async (t) => {
 		]);
 
 		assert.deepStrictEqual(result.dirsToEdit, [
-			{ id: 3, parentId: null, name: 'three' },
+			{ id: 3, parentId: null, name: 'three', originalIndex: 1 },
 		]);
 		assert.deepStrictEqual(deletedDirs, new Map([
 			[1, allDirs.get(1)],
@@ -149,7 +148,7 @@ test('dir edit validation', { only: true }, async (t) => {
 		]);
 
 		assert.deepStrictEqual(result.dirsToEdit, [
-			{ id: 4, parentId: null, name: 'four' },
+			{ id: 4, parentId: null, name: 'four', originalIndex: 1 },
 		]);
 		assert.deepStrictEqual(deletedDirs, new Map([
 			[1, allDirs.get(1)],
@@ -198,7 +197,7 @@ test('dir edit validation', { only: true }, async (t) => {
 		]);
 
 		assert.deepStrictEqual(result.dirsToEdit, [
-			{ id: 4, parentId: null, name: 'four' },
+			{ id: 4, parentId: null, name: 'four', originalIndex: 2 },
 		]);
 		assert.deepStrictEqual(deletedDirs, new Map([
 			[1, allDirs.get(1)],
@@ -212,7 +211,7 @@ test('dir edit validation', { only: true }, async (t) => {
 		]));
 	});
 
-	await t.test('moves to deleted 4', { only: true }, async () => {
+	await t.test('moves to deleted 4', async () => {
 		/*	FROM			TO
 		*		1					 1
 		*		| 5				 | 5 (deleted)
@@ -241,8 +240,8 @@ test('dir edit validation', { only: true }, async (t) => {
 		]);
 
 		assert.deepStrictEqual(result.dirsToEdit, [
-			{ id: 2, parentId: null, name: '2' },
-			{ id: 4, parentId: null, name: 'four' },
+			{ id: 2, parentId: null, name: '2', originalIndex: 0 },
+			{ id: 4, parentId: null, name: 'four', originalIndex: 2 },
 		]);
 		assert.deepStrictEqual(deletedDirs, new Map([
 			[3, allDirs.get(3)],

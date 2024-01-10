@@ -1,7 +1,7 @@
 import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
 import { recursiveDirChildren } from './dirDeleteValidation';
 
-export type IEditedDir = IPutDirectoryInput['editedDirs'][number];
+export type IEditedDir = IPutDirectoryInput['editedDirs'][number] & { originalIndex: number; };
 
 export async function getDirsToEdit(
 	allDirs: Map<number, IDir>,
@@ -44,7 +44,7 @@ export async function getDirsToEdit(
 			continue;
 		}
 
-		validEditedDirs.push(dir);
+		validEditedDirs.push({ ...dir, originalIndex: i });
 	}
 
 	const dirsToEdit = extractDeletedFromMoved(allDirs, allDirsArray, deletedDirs, validEditedDirs);
@@ -56,10 +56,10 @@ function extractDeletedFromMoved(
 	allDirs: Map<number, IDir>,
 	allDirsArray: IDir[],
 	deletedDirs: Map<number, IDir>,
-	editedDirs: IPutDirectoryInput['editedDirs']
+	editedDirs: IEditedDir[]
 ) {
-	const dirsMovedToRoot: IPutDirectoryInput['editedDirs'] = [];
-	let dirsMovedToOtherDirs: IPutDirectoryInput['editedDirs'] = [];
+	const dirsMovedToRoot: IEditedDir[] = [];
+	let dirsMovedToOtherDirs: IEditedDir[] = [];
 	for (const dir of editedDirs) {
 		if (dir.parentId === null) {
 			dirsMovedToRoot.push(dir);
