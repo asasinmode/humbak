@@ -41,6 +41,28 @@ test('dir edit validation', async (t) => {
 		assert.deepStrictEqual(result.errors, { 1: { id: 'folder nie istnieje' } });
 	});
 
+	await t.test('errors 2 dirs moved to same location', async () => {
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null },
+			{ parentId: null },
+		]);
+
+		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+			{ id: 1, parentId: null, name: 'changed' },
+			{ id: 2, parentId: null, name: 'changed' },
+		]);
+
+		assert.deepStrictEqual(result.dirsToEdit, []);
+		assert.deepStrictEqual(result.errors, {
+			0: {
+				name: 'dwa foldery nie mogą mieć tej samej nazwy',
+			},
+			1: {
+				name: 'dwa foldery nie mogą mieć tej samej nazwy',
+			},
+		});
+	});
+
 	await t.test('errors multiple of same', async () => {
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },
@@ -313,28 +335,6 @@ test('dir edit validation', async (t) => {
 		assert.deepStrictEqual(result.errors, {
 			0: {
 				parentId: 'folder nie może być przeniesiony do samego siebie',
-			},
-		});
-	});
-
-	await t.test('errors 2 dirs moved to same location', async () => {
-		const { allDirs, allDirsArray } = createAllDirs([
-			{ parentId: null },
-			{ parentId: null },
-		]);
-
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
-			{ id: 1, parentId: null, name: 'changed' },
-			{ id: 2, parentId: null, name: 'changed' },
-		]);
-
-		assert.deepStrictEqual(result.dirsToEdit, []);
-		assert.deepStrictEqual(result.errors, {
-			0: {
-				name: 'dwa foldery nie mogą mieć tej samej nazwy',
-			},
-			1: {
-				name: 'dwa foldery nie mogą mieć tej samej nazwy',
 			},
 		});
 	});
