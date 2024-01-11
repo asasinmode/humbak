@@ -353,9 +353,23 @@ test('dir edit validation', async (t) => {
 		});
 	});
 
-	// await t.test('errors dir exists in chosen location', async () => {
-	// 	assert.equal(1, 1);
-	// });
+	await t.test('errors dir exists in chosen location', async () => {
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null },
+			{ parentId: null },
+		]);
+
+		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+			{ id: 2, parentId: null, name: '1' },
+		]);
+
+		assert.deepStrictEqual(result.dirsToEdit, []);
+		assert.deepStrictEqual(result.errors, {
+			0: {
+				name: 'folder o podanej nazwie istnieje w wybranej lokacji',
+			},
+		});
+	});
 
 	// await t.test('errors 2 dirs moved to same location', async () => {
 	// 	assert.equal(1, 1);
