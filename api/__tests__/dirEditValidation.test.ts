@@ -3,7 +3,7 @@ import test from 'node:test';
 import { getDirsToEdit } from 'src/helpers/files/dirEditValidation';
 import { createAllDirs } from './helpers';
 
-test('dir edit validation', { only: true }, async (t) => {
+test('dir edit validation', async (t) => {
 	await t.test('errors nonexistent', async () => {
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },
@@ -340,8 +340,8 @@ test('dir edit validation', { only: true }, async (t) => {
 		]);
 
 		assert.deepStrictEqual(result.dirsToEdit, [
-			{ id: 6, parentId: null, name: '6' },
-			{ id: 3, parentId: 5, name: '3' },
+			{ id: 6, parentId: null, name: '6', originalIndex: 0 },
+			{ id: 3, parentId: 5, name: '3', originalIndex: 1 },
 		]);
 		assert.deepStrictEqual(result.errors, {
 			2: {

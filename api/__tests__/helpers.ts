@@ -10,7 +10,7 @@ export function createDir(id: number, parentId: number | null, path?: string) {
 }
 
 export function createAllDirs(dirs: { parentId: number | null; path?: string; }[]): {
-	allDirs: Map<number, IDir>;
+	allDirs: Map<number | null, IDir>;
 	allDirsArray: IDir[];
 } {
 	const allDirs = new Map<number, IDir>();
