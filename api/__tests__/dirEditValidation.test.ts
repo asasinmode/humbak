@@ -317,6 +317,28 @@ test('dir edit validation', async (t) => {
 		});
 	});
 
+	await t.test('errors 2 dirs moved to same location', async () => {
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null },
+			{ parentId: null },
+		]);
+
+		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+			{ id: 1, parentId: null, name: 'changed' },
+			{ id: 2, parentId: null, name: 'changed' },
+		]);
+
+		assert.deepStrictEqual(result.dirsToEdit, []);
+		assert.deepStrictEqual(result.errors, {
+			0: {
+				name: 'dwa foldery nie mogą mieć tej samej nazwy',
+			},
+			1: {
+				name: 'dwa foldery nie mogą mieć tej samej nazwy',
+			},
+		});
+	});
+
 	await t.test('errors moved to its child 1', async () => {
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },
@@ -370,28 +392,6 @@ test('dir edit validation', async (t) => {
 			},
 			3: {
 				parentId: 'folder nie może być przeniesiony do swojego podfolderu',
-			},
-		});
-	});
-
-	await t.test('errors 2 dirs moved to same location', async () => {
-		const { allDirs, allDirsArray } = createAllDirs([
-			{ parentId: null },
-			{ parentId: null },
-		]);
-
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
-			{ id: 1, parentId: null, name: 'changed' },
-			{ id: 2, parentId: null, name: 'changed' },
-		]);
-
-		assert.deepStrictEqual(result.dirsToEdit, []);
-		assert.deepStrictEqual(result.errors, {
-			0: {
-				name: 'dwa foldery nie mogą mieć tej samej nazwy',
-			},
-			1: {
-				name: 'dwa foldery nie mogą mieć tej samej nazwy',
 			},
 		});
 	});
