@@ -24,7 +24,8 @@ export async function getDirsToEdit(
 		errors[index][key] = value;
 	};
 
-	for (let i = 0; i < input.length; i++) {
+	// eslint-disable-next-line no-restricted-syntax, no-labels
+	outerLoop: for (let i = 0; i < input.length; i++) {
 		const dir = input[i];
 		const originalDir = allDirs.get(dir.id);
 		if (!originalDir) {
@@ -32,12 +33,18 @@ export async function getDirsToEdit(
 			continue;
 		}
 
-		const count = input.reduce((p, c) => {
-			if (c.id === dir.id) {
-				return p + 1;
+		let count = 0;
+		for (let j = 0; j < input.length; j++) {
+			const otherDir = input[j];
+			if (dir.id === otherDir.id) {
+				count += 1;
+			} else if (dir.parentId === otherDir.parentId && dir.name === otherDir.name) {
+				setError(i, 'name', 'dwa foldery nie mogą mieć tej samej nazwy');
+				// eslint-disable-next-line no-labels
+				continue outerLoop;
 			}
-			return p;
-		}, 0);
+		}
+
 		if (count > 1) {
 			setError(i, 'id', 'tylko jedna instrukcja może być wysłana naraz');
 			continue;
@@ -70,18 +77,6 @@ export async function getDirsToEdit(
 		if (dir.id === dir.parentId) {
 			setError(dir.originalIndex, 'parentId', 'folder nie może być przeniesiony do samego siebie');
 			continue;
-		}
-
-		for (const otherDir of secondPassDirs) {
-			if (
-				otherDir.id !== dir.id
-				&& otherDir.parentId === dir.parentId
-				&& otherDir.name === dir.name
-			) {
-				setError(dir.originalIndex, 'name', 'dwa foldery nie mogą mieć tej samej nazwy');
-				// eslint-disable-next-line no-labels
-				continue outerLoop;
-			}
 		}
 
 		const target = allDirs.get(dir.parentId);
