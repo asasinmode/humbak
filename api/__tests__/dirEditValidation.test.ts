@@ -1,9 +1,28 @@
 import assert from 'node:assert';
-import test from 'node:test';
+import { existsSync } from 'node:fs';
+import { lstat } from 'node:fs/promises';
+import test, { after, before } from 'node:test';
 import { getDirsToEdit } from 'src/helpers/files/dirEditValidation';
+import { adminFilesPath } from 'src/helpers/files';
 import { createAllDirs } from './helpers';
 
+const testsDirPath = `${adminFilesPath}/__tests__/dirEditValidation`;
+
 test('dir edit validation', async (t) => {
+	before(async () => {
+		const exists = existsSync(testsDirPath);
+		if (exists) {
+			const stats = await lstat(testsDirPath);
+			if (stats.isDirectory()) {
+				throw new Error('test dir already exists');
+			}
+		}
+	});
+
+	after(async () => {
+
+	});
+
 	await t.test('errors nonexistent', async () => {
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },
