@@ -7,6 +7,7 @@ export default await antfu({
 	},
 	rules: {
 		'curly': ['error', 'all'],
+		'no-labels': 'off',
 		'ts/consistent-type-definitions': ['error', 'type'],
 		'style/brace-style': ['error', '1tbs'],
 		'style/member-delimiter-style': ['error', {
