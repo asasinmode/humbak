@@ -55,10 +55,10 @@ test('dir edit validation', async (t) => {
 		assert.deepStrictEqual(result.dirsToEdit, []);
 		assert.deepStrictEqual(result.errors, {
 			0: {
-				name: 'dwa foldery nie mogą mieć tej samej nazwy',
+				name: 'wiele folderów nie może być przeniesione w to samo miejsce',
 			},
 			1: {
-				name: 'dwa foldery nie mogą mieć tej samej nazwy',
+				name: 'wiele folderów nie może być przeniesione w to samo miejsce',
 			},
 		});
 	});
@@ -79,13 +79,13 @@ test('dir edit validation', async (t) => {
 		assert.deepStrictEqual(result.dirsToEdit, []);
 		assert.deepStrictEqual(result.errors, {
 			0: {
-				name: 'dwa foldery nie mogą mieć tej samej nazwy',
+				name: 'wiele folderów nie może być przeniesione w to samo miejsce',
 			},
 			1: {
-				name: 'dwa foldery nie mogą mieć tej samej nazwy',
+				name: 'wiele folderów nie może być przeniesione w to samo miejsce',
 			},
 			2: {
-				name: 'dwa foldery nie mogą mieć tej samej nazwy',
+				name: 'wiele folderów nie może być przeniesione w to samo miejsce',
 			},
 		});
 	});

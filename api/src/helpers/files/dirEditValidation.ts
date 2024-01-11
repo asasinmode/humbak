@@ -24,7 +24,7 @@ export async function getDirsToEdit(
 		errors[index][key] = value;
 	};
 
-	// eslint-disable-next-line no-restricted-syntax, no-labels
+	// eslint-disable-next-line no-restricted-syntax
 	outerLoop: for (let i = 0; i < input.length; i++) {
 		const dir = input[i];
 		const originalDir = allDirs.get(dir.id);
@@ -39,8 +39,7 @@ export async function getDirsToEdit(
 			if (dir.id === otherDir.id) {
 				count += 1;
 			} else if (dir.parentId === otherDir.parentId && dir.name === otherDir.name) {
-				setError(i, 'name', 'dwa foldery nie mogą mieć tej samej nazwy');
-				// eslint-disable-next-line no-labels
+				setError(i, 'name', 'wiele folderów nie może być przeniesione w to samo miejsce');
 				continue outerLoop;
 			}
 		}
@@ -72,7 +71,7 @@ export async function getDirsToEdit(
 	const secondPassDirs = extractDeletedFromMoved(allDirs, allDirsArray, deletedDirs, firstPassDirs);
 
 	const dirsToEdit: IEditedDir[] = [];
-	// eslint-disable-next-line no-restricted-syntax, no-labels
+	// eslint-disable-next-line no-restricted-syntax
 	outerLoop: for (const dir of secondPassDirs) {
 		if (dir.id === dir.parentId) {
 			setError(dir.originalIndex, 'parentId', 'folder nie może być przeniesiony do samego siebie');
@@ -84,7 +83,6 @@ export async function getDirsToEdit(
 		while (parent) {
 			if (parent.id === dir.id) {
 				setError(dir.originalIndex, 'parentId', 'folder nie może być przeniesiony do swojego podfolderu');
-				// eslint-disable-next-line no-labels
 				continue outerLoop;
 			}
 			parent = allDirs.get(parent.parentId);
