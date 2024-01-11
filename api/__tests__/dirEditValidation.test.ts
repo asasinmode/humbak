@@ -6,22 +6,23 @@ import { getDirsToEdit } from 'src/helpers/files/dirEditValidation';
 import { adminFilesPath } from 'src/helpers/files';
 import { createAllDirs } from './helpers';
 
-const testsDirPath = `${adminFilesPath}/__tests__/dirEditValidation`;
+const dirPath = '/__tests__/dirEditValidation';
+const testFilesPath = `${adminFilesPath}${dirPath}`;
 
 test('dir edit validation', async (t) => {
 	before(async () => {
-		const exists = existsSync(testsDirPath);
+		const exists = existsSync(testFilesPath);
 		if (exists) {
-			const stats = await lstat(testsDirPath);
+			const stats = await lstat(testFilesPath);
 			if (stats.isDirectory()) {
 				throw new Error('test dir already exists');
 			}
 		}
-		await mkdir(testsDirPath, { recursive: true });
+		await mkdir(testFilesPath, { recursive: true });
 	});
 
 	after(async () => {
-		await rm(testsDirPath, { recursive: true });
+		await rm(testFilesPath, { recursive: true });
 	});
 
 	await t.test('errors nonexistent', async () => {
@@ -373,20 +374,46 @@ test('dir edit validation', async (t) => {
 		});
 	});
 
-	await t.test('errors dir exists in chosen location', async () => {
+	// await t.test('errors 2 dirs moved to same location', async () => {
+	// 	assert.equal(1, 1);
+	// });
+
+	await t.test('errors dir exists in chosen location (root)', async () => {
+		await mkdir(`${testFilesPath}/one`);
 		const { allDirs, allDirsArray } = createAllDirs([
-			{ parentId: null },
-			{ parentId: null },
+			{ parentId: null, path: `${dirPath}/one` },
 			{ parentId: null },
 		]);
 
 		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
-			{ id: 3, parentId: null, name: 'three' },
-			{ id: 2, parentId: null, name: '1' },
+			{ id: 2, parentId: null, name: 'one' },
+		], `${dirPath}/`);
+
+		assert.deepStrictEqual(result.dirsToEdit, []);
+		assert.deepStrictEqual(result.errors, {
+			0: {
+				name: 'folder o podanej nazwie istnieje w wybranej lokacji',
+			},
+		});
+	});
+
+	await t.test('errors dir exists in chosen location (nested)', async () => {
+		await mkdir(`${testFilesPath}/1`);
+		await mkdir(`${testFilesPath}/1/2`);
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null, path: `${dirPath}/1` },
+			{ parentId: 1 },
+			{ parentId: 1 },
+			{ parentId: null },
+		]);
+
+		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+			{ id: 4, parentId: null, name: 'four' },
+			{ id: 3, parentId: 1, name: '2' },
 		]);
 
 		assert.deepStrictEqual(result.dirsToEdit, [
-			{ id: 3, parentId: null, name: 'three', originalIndex: 0 },
+			{ id: 4, parentId: null, name: 'four', originalIndex: 0 },
 		]);
 		assert.deepStrictEqual(result.errors, {
 			1: {
@@ -394,8 +421,4 @@ test('dir edit validation', async (t) => {
 			},
 		});
 	});
-
-	// await t.test('errors 2 dirs moved to same location', async () => {
-	// 	assert.equal(1, 1);
-	// });
 });
