@@ -41,7 +41,7 @@ test('dir edit validation', async (t) => {
 		assert.deepStrictEqual(result.errors, { 1: { id: 'folder nie istnieje' } });
 	});
 
-	await t.test('errors multiple of same file', async () => {
+	await t.test('errors multiple of same', async () => {
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },
 			{ parentId: null },
