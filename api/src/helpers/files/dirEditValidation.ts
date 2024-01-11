@@ -72,6 +72,18 @@ export async function getDirsToEdit(
 			continue;
 		}
 
+		for (const otherDir of secondPassDirs) {
+			if (
+				otherDir.id !== dir.id
+				&& otherDir.parentId === dir.parentId
+				&& otherDir.name === dir.name
+			) {
+				setError(dir.originalIndex, 'name', 'dwa foldery nie mogą mieć tej samej nazwy');
+				// eslint-disable-next-line no-labels
+				continue outerLoop;
+			}
+		}
+
 		const target = allDirs.get(dir.parentId);
 		let parent = target;
 		while (parent) {
