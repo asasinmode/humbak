@@ -296,9 +296,62 @@ test('dir edit validation', { only: true }, async (t) => {
 		});
 	});
 
-	// await t.test('errors moved to its child', async () => {
-	// 	assert.equal(1, 1);
-	// });
+	await t.test('errors moved to its child 1', async () => {
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null },
+			{ parentId: 1 },
+		]);
+
+		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+			{ id: 1, parentId: 2, name: '1' },
+		]);
+
+		assert.deepStrictEqual(result.dirsToEdit, []);
+		assert.deepStrictEqual(result.errors, {
+			0: {
+				parentId: 'folder nie może być przeniesiony do swojego podfolderu',
+			},
+		});
+	});
+
+	await t.test('errors moved to its child 2', async () => {
+		/*	FROM			TO
+		*		1					 1
+		*		| 5				 | 5
+		*		4					   | 3
+		*		| 2				     | 4
+		*		  | 3			 6
+		*		    | 6		 | 2
+		*/
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null },
+			{ parentId: 4 },
+			{ parentId: 2 },
+			{ parentId: null },
+			{ parentId: 1 },
+			{ parentId: 3 },
+		]);
+
+		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+			{ id: 6, parentId: null, name: '6' },	// move 6 to root
+			{ id: 3, parentId: 5, name: '3' },	// move 3 to 5
+			{ id: 2, parentId: 6, name: '2' },	// move 2 to 6
+			{ id: 4, parentId: 3, name: '4' },	// move 4 to 3
+		]);
+
+		assert.deepStrictEqual(result.dirsToEdit, [
+			{ id: 6, parentId: null, name: '6' },
+			{ id: 3, parentId: 5, name: '3' },
+		]);
+		assert.deepStrictEqual(result.errors, {
+			2: {
+				parentId: 'folder nie może być przeniesiony do swojego podfolderu',
+			},
+			3: {
+				parentId: 'folder nie może być przeniesiony do swojego podfolderu',
+			},
+		});
+	});
 
 	// await t.test('errors dir exists in chosen location', async () => {
 	// 	assert.equal(1, 1);
