@@ -10,7 +10,8 @@ export async function getDirsToEdit(
 	allDirs: Map<number | null, IDir>,
 	allDirsArray: IDir[],
 	deletedDirs: Map<number, IDir>,
-	input: IPutDirectoryInput['editedDirs']
+	input: IPutDirectoryInput['editedDirs'],
+	rootPath = '/'
 ): Promise<{
 	dirsToEdit: IEditedDir[];
 	errors: Record<number, Record<string, string>>;
@@ -82,7 +83,7 @@ export async function getDirsToEdit(
 			parent = allDirs.get(parent.parentId);
 		}
 
-		let targetDirPath = '/';
+		let targetDirPath = rootPath;
 		if (dir.parentId !== null) {
 			if (!target) {
 				throw new Error('target not found for dir moved to non-root');
