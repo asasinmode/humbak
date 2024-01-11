@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { existsSync } from 'node:fs';
-import { lstat } from 'node:fs/promises';
+import { lstat, mkdir, rm } from 'node:fs/promises';
 import test, { after, before } from 'node:test';
 import { getDirsToEdit } from 'src/helpers/files/dirEditValidation';
 import { adminFilesPath } from 'src/helpers/files';
@@ -17,10 +17,11 @@ test('dir edit validation', async (t) => {
 				throw new Error('test dir already exists');
 			}
 		}
+		await mkdir(testsDirPath, { recursive: true });
 	});
 
 	after(async () => {
-
+		await rm(testsDirPath, { recursive: true });
 	});
 
 	await t.test('errors nonexistent', async () => {
