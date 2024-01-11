@@ -1,3 +1,6 @@
+import { existsSync } from 'node:fs';
+import { lstat } from 'node:fs/promises';
+import { adminFilesPath } from 'src/helpers/files';
 import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
 import { recursiveDirChildren } from './dirDeleteValidation';
 
@@ -68,7 +71,8 @@ export async function getDirsToEdit(
 			continue;
 		}
 
-		let parent = allDirs.get(dir.parentId);
+		const target = allDirs.get(dir.parentId);
+		let parent = target;
 		while (parent) {
 			if (parent.id === dir.id) {
 				setError(dir.originalIndex, 'parentId', 'folder nie może być przeniesiony do swojego podfolderu');
@@ -76,6 +80,24 @@ export async function getDirsToEdit(
 				continue outerLoop;
 			}
 			parent = allDirs.get(parent.parentId);
+		}
+
+		let targetDirPath = '/';
+		if (dir.parentId !== null) {
+			if (!target) {
+				throw new Error('target not found for dir moved to non-root');
+			}
+			targetDirPath = `${target.path}/`;
+		}
+
+		const newPath = `${adminFilesPath}${targetDirPath}${dir.name}`;
+		const somethingExists = existsSync(newPath);
+		if (somethingExists) {
+			const stats = await lstat(newPath);
+			if (stats.isDirectory()) {
+				setError(dir.originalIndex, 'name', 'folder o podanej nazwie istnieje w wybranej lokacji');
+				continue;
+			}
 		}
 
 		dirsToEdit.push(dir);
