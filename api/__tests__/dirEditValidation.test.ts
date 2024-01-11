@@ -357,15 +357,19 @@ test('dir edit validation', async (t) => {
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },
 			{ parentId: null },
+			{ parentId: null },
 		]);
 
 		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+			{ id: 3, parentId: null, name: 'three' },
 			{ id: 2, parentId: null, name: '1' },
 		]);
 
-		assert.deepStrictEqual(result.dirsToEdit, []);
+		assert.deepStrictEqual(result.dirsToEdit, [
+			{ id: 3, parentId: null, name: 'three', originalIndex: 0 },
+		]);
 		assert.deepStrictEqual(result.errors, {
-			0: {
+			1: {
 				name: 'folder o podanej nazwie istnieje w wybranej lokacji',
 			},
 		});
