@@ -24,11 +24,28 @@ export async function getFilesToEdit(
 		errors[index][key] = value;
 	};
 
-	for (let i = 0; i < input.length; i++) {
+	// eslint-disable-next-line no-restricted-syntax
+	outerLoop: for (let i = 0; i < input.length; i++) {
 		const file = input[i];
 		const originalFile = originalFiles.get(file.id);
 		if (!originalFile) {
 			setError(i, 'id', 'plik nie istnieje');
+			continue;
+		}
+
+		let count = 0;
+		for (let j = 0; j < input.length; j++) {
+			const otherFile = input[j];
+			if (file.id === otherFile.id) {
+				count += 1;
+			} else if (file.directoryId === otherFile.directoryId && file.name === otherFile.name) {
+				setError(i, 'name', 'wiele plików nie może być przeniesione w to samo miejsce');
+				continue outerLoop;
+			}
+		}
+
+		if (count > 1) {
+			setError(i, 'id', 'tylko jedna instrukcja może być wysłana naraz');
 			continue;
 		}
 
