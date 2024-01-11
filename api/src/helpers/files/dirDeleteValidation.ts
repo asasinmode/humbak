@@ -1,7 +1,7 @@
 import type { IDir, IPutDirectoryInput } from '../../routes/directories.ts';
 
 export function getDirsToDelete(
-	allDirs: Map<number, IDir>,
+	allDirs: Map<number | null, IDir>,
 	allDirsArray: IDir[],
 	input: IPutDirectoryInput['deletedDirIds']
 ) {

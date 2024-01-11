@@ -4,7 +4,7 @@ import { recursiveDirChildren } from './dirDeleteValidation';
 export type IEditedDir = IPutDirectoryInput['editedDirs'][number] & { originalIndex: number; };
 
 export async function getDirsToEdit(
-	allDirs: Map<number, IDir>,
+	allDirs: Map<number | null, IDir>,
 	allDirsArray: IDir[],
 	deletedDirs: Map<number, IDir>,
 	input: IPutDirectoryInput['editedDirs']
@@ -61,10 +61,21 @@ export async function getDirsToEdit(
 	const secondPassDirs = extractDeletedFromMoved(allDirs, allDirsArray, deletedDirs, firstPassDirs);
 
 	const dirsToEdit: IEditedDir[] = [];
-	for (const dir of secondPassDirs) {
+	// eslint-disable-next-line no-restricted-syntax, no-labels
+	outerLoop: for (const dir of secondPassDirs) {
 		if (dir.id === dir.parentId) {
 			setError(dir.originalIndex, 'parentId', 'folder nie może być przeniesiony do samego siebie');
 			continue;
+		}
+
+		let parent = allDirs.get(dir.parentId);
+		while (parent) {
+			if (parent.id === dir.id) {
+				setError(dir.originalIndex, 'parentId', 'folder nie może być przeniesiony do swojego podfolderu');
+				// eslint-disable-next-line no-labels
+				continue outerLoop;
+			}
+			parent = allDirs.get(parent.parentId);
 		}
 
 		dirsToEdit.push(dir);
@@ -74,7 +85,7 @@ export async function getDirsToEdit(
 }
 
 function extractDeletedFromMoved(
-	allDirs: Map<number, IDir>,
+	allDirs: Map<number | null, IDir>,
 	allDirsArray: IDir[],
 	deletedDirs: Map<number, IDir>,
 	editedDirs: IEditedDir[]
