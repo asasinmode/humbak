@@ -19,7 +19,7 @@ export async function promptProdContinue() {
 
 export async function getTableNames() {
 	const queryResult = await pool.execute(
-		`SELECT table_name FROM information_schema.tables
+		`SELECT table_name as table_name FROM information_schema.tables
 		WHERE table_schema = '${env.DATABASE_NAME}' AND table_name != 'pages'`
 	);
 
