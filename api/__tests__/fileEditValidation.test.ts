@@ -89,4 +89,20 @@ test('file edit validation', { only: true }, async (t) => {
 			},
 		});
 	});
+
+	await t.test('skips deleted', { todo: true }, async () => {
+
+	});
+
+	await t.test('errors nonexistent directoryId', { todo: true }, async () => {
+
+	});
+
+	await t.test('errors file exists in chosen location (root)', { todo: true }, async () => {
+
+	});
+
+	await t.test('errors file exists in chosen location (nested)', { todo: true }, async () => {
+
+	});
 });
