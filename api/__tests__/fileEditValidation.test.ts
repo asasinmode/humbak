@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { existsSync } from 'node:fs';
-import { lstat, mkdir, rm } from 'node:fs/promises';
+import { lstat, mkdir, rm, writeFile } from 'node:fs/promises';
 import test, { after, before } from 'node:test';
 import { getFilesToEdit } from 'src/helpers/files/fileEditValidation';
 import { adminFilesPath } from 'src/helpers/files';
@@ -159,8 +159,27 @@ test('file edit validation', { only: true }, async (t) => {
 		});
 	});
 
-	await t.test('errors file exists in chosen location (root)', { todo: true }, async () => {
+	await t.test('errors file exists in chosen location (root)', async () => {
+		await writeFile(`${testFilesPath}/tmp`, '');
 
+		const originalFiles = createOriginalFiles([
+			{ directoryId: null },
+			{ directoryId: null },
+		]);
+
+		const result = await getFilesToEdit(new Map(), new Map(), [], originalFiles, [
+			createInputFile(1, null, 'tmp'),
+			createInputFile(2, null, 'two'),
+		], `${dirPath}/`);
+
+		assert.deepStrictEqual(result.filesToEdit, [
+			{ id: 2, directoryId: null, name: 'two', title: '2', alt: '2' },
+		]);
+		assert.deepStrictEqual(result.errors, {
+			1: {
+				directoryId: 'plik o podanej nazwie istnieje w wybranej lokacji',
+			},
+		});
 	});
 
 	await t.test('errors file exists in chosen location (nested)', { todo: true }, async () => {
