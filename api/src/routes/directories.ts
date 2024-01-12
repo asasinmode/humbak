@@ -9,7 +9,7 @@ import { files, insertFileSchema } from '../db/schema/files';
 import { filesToPages } from '../db/schema/filesToPages';
 import { contents } from '../db/schema/contents';
 import { wrap } from '../helpers';
-import { adminFilesPath } from '../helpers/files';
+import { filesStoragePath } from '../helpers/files';
 import { db } from '../db';
 
 const dirIdParamValidation = wrap('param', transform(object({
@@ -86,7 +86,7 @@ export const app = new Hono<{
 				.insert(directories)
 				.values({ ...input, path });
 
-			await mkdir(`${adminFilesPath}${path}`);
+			await mkdir(`${filesStoragePath}${path}`);
 
 			const [result] = await db
 				.select({
@@ -126,7 +126,7 @@ export const app = new Hono<{
 				editedDirsErrors[index][key] = value;
 			};
 
-			// eslint-disable-next-line no-restricted-syntax, no-labels
+			// eslint-disable-next-line no-restricted-syntax
 			outerDirLoop: for (let i = 0; i < input.editedDirs.length; i++) {
 				const dir = input.editedDirs[i];
 				const originalDir = dirs.find(d => d.id === dir.id);
@@ -160,7 +160,7 @@ export const app = new Hono<{
 					while (parent) {
 						if (parent.parentId === dir.id) {
 							setEditedDirsError(i, 'parentId', 'folder nie może być przeniesiony do swojego podfolderu');
-							// eslint-disable-next-line no-labels
+
 							continue outerDirLoop;
 						}
 						parent = dirs.find(d => d.id === parent!.parentId);
@@ -175,7 +175,7 @@ export const app = new Hono<{
 					targetDirPath = `${target.path}/`;
 				}
 
-				const newPath = `${adminFilesPath}${targetDirPath}${dir.name}`;
+				const newPath = `${filesStoragePath}${targetDirPath}${dir.name}`;
 				const somethingExists = existsSync(newPath);
 				if (somethingExists) {
 					const stats = await lstat(newPath);
@@ -252,7 +252,7 @@ export const app = new Hono<{
 					targetDirPath = `${targetDir.path}/`;
 				}
 
-				const newPath = `${adminFilesPath}${targetDirPath}/${file.name}`;
+				const newPath = `${filesStoragePath}${targetDirPath}/${file.name}`;
 				const hasMoved = file.directoryId !== originalFile.directoryId || file.name !== originalFile.name;
 				const somethingExists = hasMoved && existsSync(newPath);
 				if (somethingExists) {
@@ -330,7 +330,7 @@ export const app = new Hono<{
 
 				await db.delete(files).where(inArray(files.id, input.deletedFileIds));
 				for (const { path } of deletedFilePaths) {
-					existsSync(`${adminFilesPath}/${path}`) && await rm(`${adminFilesPath}/${path}`);
+					existsSync(`${filesStoragePath}/${path}`) && await rm(`${filesStoragePath}/${path}`);
 				}
 			}
 
@@ -371,9 +371,9 @@ export const app = new Hono<{
 							targetDirPath = `${targetDir.path}/`;
 						}
 
-						const oldPath = `${adminFilesPath}${originalFile.path}`;
+						const oldPath = `${filesStoragePath}${originalFile.path}`;
 						const oldPathExists = existsSync(oldPath);
-						const newPathExists = existsSync(`${adminFilesPath}${targetDirPath}`);
+						const newPathExists = existsSync(`${filesStoragePath}${targetDirPath}`);
 						if (!oldPathExists) {
 							console.error('FILE to edit OLD path doesn\'t exist');
 							continue;
@@ -383,7 +383,7 @@ export const app = new Hono<{
 							continue;
 						}
 
-						const newPath = `${adminFilesPath}${targetDirPath}/${file.name}`;
+						const newPath = `${filesStoragePath}${targetDirPath}/${file.name}`;
 						await rename(oldPath, newPath);
 						path = `${targetDirPath}${file.name}`;
 					}
@@ -408,7 +408,7 @@ export const app = new Hono<{
 				await db.delete(directories).where(inArray(directories.id, dirsToDeleteIds));
 
 				for (const dir of dirsToDelete) {
-					const path = `${adminFilesPath}${dir.path}`;
+					const path = `${filesStoragePath}${dir.path}`;
 					existsSync(path) && await rm(path, { recursive: true });
 					const index = dirs.findIndex(d => d.id === dir.id);
 					if (index !== -1) {
@@ -573,7 +573,7 @@ export const app = new Hono<{
 				if (!file.name) {
 					setError(i, 'name', 'nie może być puste');
 				} else {
-					const newPath = `${adminFilesPath}${targetDirPath}${file.name}`;
+					const newPath = `${filesStoragePath}${targetDirPath}${file.name}`;
 					const somethingExists = existsSync(newPath);
 					if (somethingExists) {
 						const stats = await lstat(newPath);
@@ -627,7 +627,7 @@ export const app = new Hono<{
 				})));
 			}
 			for (const file of filesToSave) {
-				await writeFile(`${adminFilesPath}${file.path}`, file.file);
+				await writeFile(`${filesStoragePath}${file.path}`, file.file);
 			}
 
 			return c.json(await dirData(id, true));
@@ -719,9 +719,9 @@ async function updateDir(dirs: IDir[], dir: Omit<IDir, 'path'>) {
 		targetDirPath = `${targetDir.path}/`;
 	}
 
-	const oldPath = `${adminFilesPath}${originalDir.path}`;
+	const oldPath = `${filesStoragePath}${originalDir.path}`;
 	const oldPathExists = existsSync(oldPath);
-	const newPathExists = existsSync(`${adminFilesPath}${targetDirPath}`);
+	const newPathExists = existsSync(`${filesStoragePath}${targetDirPath}`);
 	if (!oldPathExists) {
 		console.error('DIR to edit OLD path doesn\'t exist');
 		return;
@@ -732,7 +732,7 @@ async function updateDir(dirs: IDir[], dir: Omit<IDir, 'path'>) {
 	}
 
 	const path = `${targetDirPath}${dir.name}`;
-	const newPath = `${adminFilesPath}${path}`;
+	const newPath = `${filesStoragePath}${path}`;
 	await rename(oldPath, newPath);
 
 	console.log('updating dir', dir);

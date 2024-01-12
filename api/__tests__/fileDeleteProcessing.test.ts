@@ -2,10 +2,10 @@ import assert from 'node:assert';
 import { existsSync } from 'node:fs';
 import { lstat, mkdir, rm } from 'node:fs/promises';
 import test, { after, before } from 'node:test';
-import { adminFilesPath } from 'src/helpers/files';
+import { filesStoragePath } from 'src/helpers/files';
 
-const dirPath = '/__tests__/fileEditValidation';
-const testFilesPath = `${adminFilesPath}${dirPath}`;
+const dirPath = '/fileEditValidation';
+const testFilesPath = `${filesStoragePath}${dirPath}`;
 
 test('file edit validation', async (t) => {
 	before(async () => {

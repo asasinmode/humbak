@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { lstat } from 'node:fs/promises';
-import { adminFilesPath } from 'src/helpers/files';
+import { filesStoragePath } from 'src/helpers/files';
 import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
 import { recursiveDirChildren } from './dirDeleteValidation';
 
@@ -96,7 +96,7 @@ export async function getDirsToEdit(
 			targetDirPath = `${target.path}/`;
 		}
 
-		const newPath = `${adminFilesPath}${targetDirPath}${dir.name}`;
+		const newPath = `${filesStoragePath}${targetDirPath}${dir.name}`;
 		const somethingExists = existsSync(newPath);
 		if (somethingExists) {
 			const stats = await lstat(newPath);

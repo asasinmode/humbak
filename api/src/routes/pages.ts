@@ -3,7 +3,7 @@ import { readFile, rm, writeFile } from 'node:fs/promises';
 import { Hono } from 'hono';
 import { eq, isNull, like, or, sql } from 'drizzle-orm';
 import { merge, object, optional, pick, string } from 'valibot';
-import { adminStylesheetsPath } from '../helpers/files';
+import { stylesheetsStoragePath } from '../helpers/files';
 import { idParamValidationMiddleware, paginationQueryValidation, wrap } from '../helpers';
 import { db } from '../db';
 import { parsePageHtml } from '../helpers/pages';
@@ -68,7 +68,7 @@ export const app = new Hono()
 				.leftJoin(menuLinks, eq(menuLinks.pageId, id))
 				.leftJoin(contents, eq(contents.pageId, id))
 				.where(eq(pages.id, id)),
-			readFile(`${adminStylesheetsPath}/${id}.css`),
+			readFile(`${stylesheetsStoragePath}/${id}.css`),
 		]);
 
 		return c.json({ ...result, css: stylesheetFileData.toString() });
@@ -110,7 +110,7 @@ export const app = new Hono()
 				},
 			}),
 			css !== undefined || pageFields.id === undefined
-				? writeFile(`${adminStylesheetsPath}/${pageId}.css`, css || '')
+				? writeFile(`${stylesheetsStoragePath}/${pageId}.css`, css || '')
 				: () => {},
 		]);
 
@@ -134,7 +134,7 @@ export const app = new Hono()
 				.leftJoin(menuLinks, eq(menuLinks.pageId, pageId))
 				.leftJoin(contents, eq(contents.pageId, pageId))
 				.where(eq(pages.id, pageId)),
-			readFile(`${adminStylesheetsPath}/${pageId}.css`),
+			readFile(`${stylesheetsStoragePath}/${pageId}.css`),
 		]);
 
 		return c.json({ ...result, css: stylesheetFileData.toString() });
@@ -150,7 +150,7 @@ export const app = new Hono()
 					parentId: -1,
 				})
 				.where(eq(menuLinks.parentId, id)),
-			existsSync(`${adminStylesheetsPath}/${id}.css`) && rm(`${adminStylesheetsPath}/${id}.css`),
+			existsSync(`${stylesheetsStoragePath}/${id}.css`) && rm(`${stylesheetsStoragePath}/${id}.css`),
 		]);
 
 		return c.body(null, 204);

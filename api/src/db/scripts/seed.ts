@@ -2,7 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { Buffer } from 'node:buffer';
 import { db, pool } from '..';
 import { promptProdContinue } from '../../helpers';
-import { adminFilesPath, adminStylesheetsPath } from '../../helpers/files';
+import { filesStoragePath, stylesheetsStoragePath } from '../../helpers/files';
 import { pages } from '../schema/pages';
 import { slides } from '../schema/slides';
 import { contents } from '../schema/contents';
@@ -240,7 +240,7 @@ for (const { pageData, text, parentId, position } of [
 	await Promise.all([
 		db.insert(menuLinks).values({ text, pageId, position, parentId }),
 		db.insert(contents).values({ pageId }),
-		writeFile(`${adminStylesheetsPath}/${pageId}.css`, ''),
+		writeFile(`${stylesheetsStoragePath}/${pageId}.css`, ''),
 	]);
 }
 
@@ -291,7 +291,7 @@ await db.insert(footerContents).values({
 for (let dirId = 1; dirId <= 3; dirId++) {
 	const name = `d${dirId}`;
 	const path = `/${name}`;
-	await mkdir(`${adminFilesPath}${path}`);
+	await mkdir(`${filesStoragePath}${path}`);
 	await db.insert(directories).values({
 		name,
 		path,
@@ -302,7 +302,7 @@ for (let childDirId = 4; childDirId <= 6; childDirId++) {
 	const parentId = childDirId - 3;
 	const name = `d${parentId}n`;
 	const path = `/d${parentId}/${name}`;
-	await mkdir(`${adminFilesPath}${path}`);
+	await mkdir(`${filesStoragePath}${path}`);
 	await db.insert(directories).values({
 		name,
 		parentId,
@@ -355,7 +355,7 @@ for (let dirId = 0; dirId <= 6; dirId++) {
 			mimetype,
 		});
 
-		await writeFile(`${adminFilesPath}${path}`, await getFile());
+		await writeFile(`${filesStoragePath}${path}`, await getFile());
 	}
 }
 

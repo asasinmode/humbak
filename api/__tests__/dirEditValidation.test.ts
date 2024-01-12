@@ -3,11 +3,11 @@ import { existsSync } from 'node:fs';
 import { lstat, mkdir, rm } from 'node:fs/promises';
 import test, { after, before } from 'node:test';
 import { getDirsToEdit } from 'src/helpers/files/dirEditValidation';
-import { adminFilesPath } from 'src/helpers/files';
+import { filesStoragePath } from 'src/helpers/files';
 import { createAllDirs } from './helpers';
 
 const dirPath = '/__tests__/dirEditValidation';
-const testFilesPath = `${adminFilesPath}${dirPath}`;
+const testFilesPath = `${filesStoragePath}${dirPath}`;
 
 test('dir edit validation', async (t) => {
 	before(async () => {

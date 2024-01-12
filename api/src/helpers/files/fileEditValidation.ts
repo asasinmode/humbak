@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { lstat } from 'node:fs/promises';
-import { adminFilesPath } from 'src/helpers/files';
+import { filesStoragePath } from 'src/helpers/files';
 import type { InferSelectModel } from 'drizzle-orm';
 import type { files } from 'src/db/schema/files';
 import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
@@ -69,7 +69,7 @@ export async function getFilesToEdit(
 			targetDirPath = `${target.path}/`;
 		}
 
-		const newPath = `${adminFilesPath}${targetDirPath}${file.name}`;
+		const newPath = `${filesStoragePath}${targetDirPath}${file.name}`;
 		const somethingExists = existsSync(newPath);
 		if (somethingExists) {
 			const stats = await lstat(newPath);
