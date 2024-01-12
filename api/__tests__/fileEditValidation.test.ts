@@ -130,7 +130,15 @@ test('file edit validation', async (t) => {
 		], allDirs, [1], originalFiles);
 
 		assert.deepStrictEqual(result.filesToEdit, [
-			{ id: 2, directoryId: 1, name: 'two', title: '2', alt: '2', target: allDirs.get(1) },
+			{
+				id: 2,
+				directoryId: 1,
+				name: 'two',
+				title: '2',
+				alt: '2',
+				targetDir: allDirs.get(1),
+				originalFile: originalFiles.get(2),
+			},
 		]);
 		assert.deepStrictEqual(result.errors, {});
 	});
@@ -150,7 +158,15 @@ test('file edit validation', async (t) => {
 		], allDirs, [], originalFiles);
 
 		assert.deepStrictEqual(result.filesToEdit, [
-			{ id: 1, directoryId: null, name: '1', title: '1', alt: '1', target: undefined },
+			{
+				id: 1,
+				directoryId: null,
+				name: '1',
+				title: '1',
+				alt: '1',
+				targetDir: undefined,
+				originalFile: originalFiles.get(1),
+			},
 		]);
 		assert.deepStrictEqual(result.errors, {
 			1: {
@@ -173,7 +189,15 @@ test('file edit validation', async (t) => {
 		], new Map(), [], originalFiles, `${dirPath}/`);
 
 		assert.deepStrictEqual(result.filesToEdit, [
-			{ id: 2, directoryId: null, name: 'two', title: '2', alt: '2', target: undefined },
+			{
+				id: 2,
+				directoryId: null,
+				name: 'two',
+				title: '2',
+				alt: '2',
+				targetDir: undefined,
+				originalFile: originalFiles.get(2),
+			},
 		]);
 		assert.deepStrictEqual(result.errors, {
 			0: {
@@ -201,7 +225,15 @@ test('file edit validation', async (t) => {
 		], allDirs, [], originalFiles, `${dirPath}/`);
 
 		assert.deepStrictEqual(result.filesToEdit, [
-			{ id: 2, directoryId: null, name: 'two', title: '2', alt: '2', target: undefined },
+			{
+				id: 2,
+				directoryId: null,
+				name: 'two',
+				title: '2',
+				alt: '2',
+				targetDir: undefined,
+				originalFile: originalFiles.get(2),
+			},
 		]);
 		assert.deepStrictEqual(result.errors, {
 			1: {

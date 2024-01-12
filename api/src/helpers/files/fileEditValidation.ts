@@ -5,8 +5,8 @@ import type { InferSelectModel } from 'drizzle-orm';
 import type { files } from 'src/db/schema/files';
 import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
 
-export type IEditedFile = IPutDirectoryInput['editedFiles'][number] & { target?: IDir; };
 export type IOriginalFile = Pick<InferSelectModel<typeof files>, 'id' | 'directoryId' | 'name'>;
+export type IEditedFile = IPutDirectoryInput['editedFiles'][number] & { targetDir?: IDir; originalFile: IOriginalFile; };
 
 export async function getFilesToEdit(
 	input: IPutDirectoryInput['editedFiles'],
@@ -55,18 +55,18 @@ export async function getFilesToEdit(
 			continue;
 		}
 
-		const target = allDirs.get(file.directoryId);
-		if (file.directoryId !== null && !target) {
+		const targetDir = allDirs.get(file.directoryId);
+		if (file.directoryId !== null && !targetDir) {
 			setError(i, 'directoryId', 'wybrany folder nie istnieje');
 			continue;
 		}
 
 		let targetDirPath = rootPath;
 		if (file.directoryId !== null) {
-			if (!target) {
+			if (!targetDir) {
 				throw new Error('target not found for dir moved to non-root');
 			}
-			targetDirPath = `${target.path}/`;
+			targetDirPath = `${targetDir.path}/`;
 		}
 
 		const newPath = `${filesStoragePath}${targetDirPath}${file.name}`;
@@ -81,7 +81,8 @@ export async function getFilesToEdit(
 
 		filesToEdit.push({
 			...file,
-			target,
+			targetDir,
+			originalFile,
 		});
 	}
 
