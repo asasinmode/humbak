@@ -78,8 +78,4 @@ test('file edit validation', { concurrency: false, only: true }, async (t) => {
 		assert.deepStrictEqual(modifiedFileIds, new Set(deletedFilesIds));
 		assert.strictEqual(existsSync(`${testFilesPath}/tmp`), false);
 	});
-
-	await t.test('return associated pages\' ids', { todo: true }, async () => {
-		assert.equal(1, 1);
-	});
 });
