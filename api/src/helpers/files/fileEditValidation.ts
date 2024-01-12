@@ -49,6 +49,10 @@ export async function getFilesToEdit(
 			continue;
 		}
 
+		if (deletedFileIds.includes(file.id)) {
+			continue;
+		}
+
 		filesToEdit.push(file);
 	}
 
