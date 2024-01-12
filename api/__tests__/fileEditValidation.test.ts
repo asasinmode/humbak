@@ -90,8 +90,17 @@ test('file edit validation', { only: true }, async (t) => {
 		});
 	});
 
-	await t.test('skips deleted', { todo: true }, async () => {
+	await t.test('skips deleted', async () => {
+		const originalFiles = createOriginalFiles([
+			{ directoryId: null },
+		]);
 
+		const result = await getFilesToEdit(new Map(), new Map(), [1], originalFiles, [
+			createInputFile(1, null),
+		]);
+
+		assert.deepStrictEqual(result.filesToEdit, []);
+		assert.deepStrictEqual(result.errors, {});
 	});
 
 	await t.test('errors nonexistent directoryId', { todo: true }, async () => {
