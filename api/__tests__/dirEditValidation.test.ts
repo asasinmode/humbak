@@ -6,7 +6,7 @@ import { getDirsToEdit } from 'src/helpers/files/dirEditValidation';
 import { filesStoragePath } from 'src/helpers/files';
 import { createAllDirs } from './helpers';
 
-const dirPath = '/__tests__/dirEditValidation';
+const dirPath = '/dirEditValidation';
 const testFilesPath = `${filesStoragePath}${dirPath}`;
 
 test('dir edit validation', async (t) => {
