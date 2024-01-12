@@ -14,6 +14,7 @@ const schema = object({
 	NODE_ENV: picklist(['production', 'development', 'test']),
 	PORT: coerce(number([integer()]), Number),
 	DATABASE_URL: string(),
+	DATABASE_NAME: string(),
 	ADMIN_URL: string(),
 	FILES_PATH: string(),
 	STYLESHEETS_PATH: string(),

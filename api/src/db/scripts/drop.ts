@@ -20,7 +20,7 @@ for (const { path } of rawFiles as unknown as { path: string; }[]) {
 
 await pool.execute('SET FOREIGN_KEY_CHECKS = 0');
 
-for (const { table_name } of tables.filter(({ table_name }) => table_name !== 'pages')) {
+for (const { table_name } of tables) {
 	await pool.execute(`DROP TABLE ${table_name}`);
 }
 

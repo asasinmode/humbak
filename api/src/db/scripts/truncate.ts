@@ -21,7 +21,7 @@ for (const { path } of rawFiles as unknown as { path: string; }[]) {
 	existsSync(`${filesStoragePath}/${path}`) && await rm(`${filesStoragePath}/${path}`);
 }
 
-for (const { table_name } of tables.filter(({ table_name }) => table_name !== 'pages')) {
+for (const { table_name } of tables) {
 	await pool.execute(`TRUNCATE TABLE ${table_name}`);
 }
 
