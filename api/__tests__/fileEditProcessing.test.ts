@@ -64,17 +64,7 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 
 		await processEditedFiles(input, modifiedFileIds, `${dirPath}/`);
 
-		const filesSearchResult = await db
-			.select({
-				id: files.id,
-				directoryId: files.directoryId,
-				path: files.path,
-				name: files.name,
-				title: files.title,
-				alt: files.alt,
-			})
-			.from(files)
-			.where(inArray(files.id, createdFileIds));
+		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
 		assert.deepStrictEqual(
 			filesSearchResult.find(d => d.id === fileInsertId),
@@ -136,17 +126,7 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 
 		await processEditedFiles(input, modifiedFileIds, `${dirPath}/`);
 
-		const filesSearchResult = await db
-			.select({
-				id: files.id,
-				directoryId: files.directoryId,
-				path: files.path,
-				name: files.name,
-				title: files.title,
-				alt: files.alt,
-			})
-			.from(files)
-			.where(inArray(files.id, createdFileIds));
+		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
 		assert.deepStrictEqual(
 			filesSearchResult.find(d => d.id === fileInsertId),
@@ -197,17 +177,7 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 
 		await processEditedFiles(input, modifiedFileIds, `${dirPath}/`);
 
-		const filesSearchResult = await db
-			.select({
-				id: files.id,
-				directoryId: files.directoryId,
-				path: files.path,
-				name: files.name,
-				title: files.title,
-				alt: files.alt,
-			})
-			.from(files)
-			.where(inArray(files.id, createdFileIds));
+		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
 		assert.deepStrictEqual(
 			filesSearchResult.find(d => d.id === fileInsertId),
@@ -230,3 +200,17 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 		assert.equal(1, 1);
 	});
 });
+
+function getUpdatedFiles(ids: number[]) {
+	return db
+		.select({
+			id: files.id,
+			directoryId: files.directoryId,
+			path: files.path,
+			name: files.name,
+			title: files.title,
+			alt: files.alt,
+		})
+		.from(files)
+		.where(inArray(files.id, ids));
+}
