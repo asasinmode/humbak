@@ -4,13 +4,13 @@ import { lstat, mkdir, rm, writeFile } from 'node:fs/promises';
 import test, { after, before } from 'node:test';
 import { filesStoragePath } from 'src/helpers/files';
 import { processDeletedFiles } from 'src/helpers/files/fileDeleteProcessing';
-import { db } from 'src/db';
+import { db, pool } from 'src/db';
 import { directories } from 'src/db/schema/directories';
 import { files } from 'src/db/schema/files';
 import { inArray } from 'drizzle-orm';
 import { createDirectories, createFiles } from './helpers';
 
-const dirPath = '/fileEditValidation';
+const dirPath = '/fileDeleteProcessing';
 const testFilesPath = `${filesStoragePath}${dirPath}`;
 
 test('file edit validation', { concurrency: false, only: true }, async (t) => {
@@ -27,6 +27,7 @@ test('file edit validation', { concurrency: false, only: true }, async (t) => {
 
 	after(async () => {
 		await rm(testFilesPath, { recursive: true });
+		await pool.end();
 	});
 
 	await t.test('deletes files', async () => {

@@ -1,5 +1,6 @@
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
+import { finished } from 'node:stream/promises';
 import { spec } from 'node:test/reporters';
 import { run } from 'node:test';
 import { env } from 'src/env';
@@ -41,3 +42,6 @@ const stream = run({
 }).compose(new spec()); /* eslint-disable-line new-cap */
 
 stream.pipe(process.stdout);
+await finished(stream);
+
+await pool.end();
