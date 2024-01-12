@@ -61,7 +61,7 @@ export async function getDirsToEdit(
 
 		const parentExists = dir.parentId === null || allDirs.has(dir.parentId);
 		if (!parentExists) {
-			setError(i, 'parentId', 'wybrany rodzic nie istnieje');
+			setError(i, 'parentId', 'wybrany folder nie istnieje');
 			continue;
 		}
 

@@ -158,7 +158,7 @@ test('dir edit validation', async (t) => {
 		assert.deepStrictEqual(result.dirsToEdit, []);
 		assert.deepStrictEqual(result.errors, {
 			0: {
-				parentId: 'wybrany rodzic nie istnieje',
+				parentId: 'wybrany folder nie istnieje',
 			},
 		});
 	});
