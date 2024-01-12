@@ -169,6 +169,59 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 		assert.deepStrictEqual(modifiedFileIds, new Set(createdFileIds));
 	});
 
+	await t.test('updates title', async () => {
+		await mkdir(`${testFilesPath}/4`);
+		await writeFile(`${testFilesPath}/tmp8`, '');
+		await writeFile(`${testFilesPath}/4/tmp9`, '');
+
+		const [{ insertId: dirInsertId }] = await db.insert(directories).values(createDirectories([
+			{ parentId: null, path: `${dirPath}/4` },
+		]));
+		const [{ insertId: fileInsertId }] = await db.insert(files).values(createFiles([
+			{ directoryId: null, path: `${dirPath}/tmp8` },
+			{ directoryId: dirInsertId, path: `${dirPath}/4/tmp9` },
+		]));
+
+		const { createdDirs, createdFiles, createdFileIds } = await getCreatedFiles({
+			dirInsertId,
+			dirCount: 1,
+			fileInsertId,
+			fileCount: 2,
+		});
+
+		const input = createProcessedInputFiles(fileInsertId, createdDirs, createdFiles, [
+			{ directoryId: null, name: '1', title: 'one' },
+			{ directoryId: dirInsertId, name: '2', title: 'two' },
+		]);
+		const modifiedFileIds = new Set<number>();
+
+		await processEditedFiles(input, modifiedFileIds, `${dirPath}/`);
+
+		const filesSearchResult = await db
+			.select({
+				id: files.id,
+				directoryId: files.directoryId,
+				path: files.path,
+				name: files.name,
+				title: files.title,
+				alt: files.alt,
+			})
+			.from(files)
+			.where(inArray(files.id, createdFileIds));
+
+		assert.deepStrictEqual(
+			filesSearchResult.find(d => d.id === fileInsertId),
+			{ ...createdFiles.get(fileInsertId), title: 'one' }
+		);
+		assert.strictEqual(existsSync(`${testFilesPath}/tmp8`), true);
+		assert.deepStrictEqual(
+			filesSearchResult.find(d => d.id === fileInsertId + 1),
+			{ ...createdFiles.get(fileInsertId + 1), title: 'two' }
+		);
+		assert.strictEqual(existsSync(`${testFilesPath}/4/tmp9`), true);
+		assert.deepStrictEqual(modifiedFileIds, new Set(createdFileIds));
+	});
+
 	await t.test('skips nonexistent old path', { todo: true }, async () => {
 		assert.equal(1, 1);
 	});
