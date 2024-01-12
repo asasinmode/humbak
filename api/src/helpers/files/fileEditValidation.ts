@@ -5,11 +5,11 @@ import type { InferSelectModel } from 'drizzle-orm';
 import type { files } from 'src/db/schema/files';
 import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
 
-type IEditedFile = IPutDirectoryInput['editedFiles'][number];
+export type IEditedFile = IPutDirectoryInput['editedFiles'][number] & { target?: IDir; };
 export type IOriginalFile = Pick<InferSelectModel<typeof files>, 'id' | 'directoryId' | 'name'>;
 
 export async function getFilesToEdit(
-	input: IEditedFile[],
+	input: IPutDirectoryInput['editedFiles'],
 	allDirs: Map<number | null, IDir>,
 	deletedFileIds: number[],
 	originalFiles: Map<number, IOriginalFile>,
@@ -21,7 +21,7 @@ export async function getFilesToEdit(
 	const filesToEdit: IEditedFile[] = [];
 
 	const errors: Record<number, Record<string, string>> = {};
-	function setError(index: number, key: keyof IEditedFile, value: string) {
+	function setError(index: number, key: keyof IPutDirectoryInput['editedFiles'][number], value: string) {
 		errors[index] ||= {};
 		errors[index][key] = value;
 	};
@@ -79,7 +79,10 @@ export async function getFilesToEdit(
 			}
 		}
 
-		filesToEdit.push(file);
+		filesToEdit.push({
+			...file,
+			target,
+		});
 	}
 
 	return { filesToEdit, errors };
