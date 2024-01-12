@@ -68,14 +68,17 @@ export function createFiles(
 		mimetype?: string;
 	}[]
 ) {
-	return files.map((f, i) => ({
-		directoryId: f.directoryId,
-		path: f.path ?? `/${i}`,
-		name: f.name ?? `${i}`,
-		title: f.title ?? `${i}`,
-		alt: f.alt ?? `${i}`,
-		mimetype: f.mimetype ?? `text/plain`,
-	}));
+	return files.map((f, i) => {
+		const index = i + 1;
+		return {
+			directoryId: f.directoryId,
+			path: f.path ?? `/${index}`,
+			name: f.name ?? `${index}`,
+			title: f.title ?? `${index}`,
+			alt: f.alt ?? `${index}`,
+			mimetype: f.mimetype ?? `text/plain`,
+		};
+	});
 }
 
 export function createDirectories(dirs: { parentId: number | null; path?: string; name?: string; }[]) {
@@ -89,15 +92,15 @@ export function createDirectories(dirs: { parentId: number | null; path?: string
 export async function getCreatedFiles({
 	fileInsertId,
 	fileCount,
-	dirInsertId: directoryInsertId,
-	dirCount: directoryCount,
+	dirInsertId,
+	dirCount,
 }: {
 	fileInsertId: number;
 	fileCount: number;
 	dirInsertId: number;
 	dirCount: number;
 }) {
-	const createdDirIds = Array.from({ length: directoryCount }, (_, i) => i + directoryInsertId);
+	const createdDirIds = Array.from({ length: dirCount }, (_, i) => i + dirInsertId);
 	const createdDirs: IDir[] = await db.select({
 		id: directories.id,
 		parentId: directories.parentId,
@@ -105,7 +108,7 @@ export async function getCreatedFiles({
 		path: directories.path,
 	})
 		.from(directories)
-		.where(inArray(files.id, createdDirIds));
+		.where(inArray(directories.id, createdDirIds));
 
 	const createdFileIds = Array.from({ length: fileCount }, (_, i) => i + fileInsertId);
 	const createdFiles: IOriginalFile[] = await db.select({
@@ -113,6 +116,8 @@ export async function getCreatedFiles({
 		directoryId: files.directoryId,
 		path: files.path,
 		name: files.name,
+		title: files.title,
+		alt: files.alt,
 	})
 		.from(files)
 		.where(inArray(files.id, createdFileIds));

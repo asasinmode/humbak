@@ -33,10 +33,10 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 
 	await t.test('edits files', async () => {
 		await mkdir(`${testFilesPath}/1`);
-		await writeFile(`${testFilesPath}/1/tmp`, '');
-		await writeFile(`${testFilesPath}/tmp1`, '');
+		await writeFile(`${testFilesPath}/1/tmp1`, '');
 		await writeFile(`${testFilesPath}/tmp2`, '');
-		await writeFile(`${testFilesPath}/1/tmp3`, '');
+		await writeFile(`${testFilesPath}/tmp3`, '');
+		await writeFile(`${testFilesPath}/1/tmp4`, '');
 
 		const [{ insertId: dirInsertId }] = await db.insert(directories).values(createDirectories([
 			{ parentId: null, path: `${dirPath}/1` },
@@ -64,7 +64,7 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 		];
 		const modifiedFileIds = new Set<number>();
 
-		await processEditedFiles(editedFiles);
+		await processEditedFiles(editedFiles, modifiedFileIds);
 
 		const filesSearchResult = await db
 			.select({
