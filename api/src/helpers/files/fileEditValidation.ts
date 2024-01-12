@@ -9,10 +9,10 @@ type IEditedFile = IPutDirectoryInput['editedFiles'][number];
 export type IOriginalFile = Pick<InferSelectModel<typeof files>, 'id' | 'directoryId' | 'name'>;
 
 export async function getFilesToEdit(
+	input: IEditedFile[],
 	allDirs: Map<number | null, IDir>,
 	deletedFileIds: number[],
 	originalFiles: Map<number, IOriginalFile>,
-	input: IEditedFile[],
 	rootPath = '/'
 ): Promise<{
 	filesToEdit: IEditedFile[];

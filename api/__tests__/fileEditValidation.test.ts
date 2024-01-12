@@ -31,9 +31,9 @@ test('file edit validation', async (t) => {
 		]);
 		const originalFiles = createOriginalFiles([]);
 
-		const result = await getFilesToEdit(allDirs, [], originalFiles, [
+		const result = await getFilesToEdit([
 			createInputFile(1, null),
-		]);
+		], allDirs, [], originalFiles);
 
 		assert.deepStrictEqual(result.filesToEdit, []);
 		assert.deepStrictEqual(result.errors, {
@@ -49,10 +49,10 @@ test('file edit validation', async (t) => {
 			{ directoryId: null },
 		]);
 
-		const result = await getFilesToEdit(new Map(), [], originalFiles, [
+		const result = await getFilesToEdit([
 			createInputFile(1, null, '1'),
 			createInputFile(2, null, '1'),
-		]);
+		], new Map(), [], originalFiles);
 
 		assert.deepStrictEqual(result.filesToEdit, []);
 		assert.deepStrictEqual(result.errors, {
@@ -72,11 +72,11 @@ test('file edit validation', async (t) => {
 			{ directoryId: null },
 		]);
 
-		const result = await getFilesToEdit(new Map(), [], originalFiles, [
+		const result = await getFilesToEdit([
 			createInputFile(1, null, '1'),
 			createInputFile(2, null, '1'),
 			createInputFile(3, null, '1'),
-		]);
+		], new Map(), [], originalFiles);
 
 		assert.deepStrictEqual(result.filesToEdit, []);
 		assert.deepStrictEqual(result.errors, {
@@ -98,10 +98,10 @@ test('file edit validation', async (t) => {
 			{ directoryId: null },
 		]);
 
-		const result = await getFilesToEdit(new Map(), [], originalFiles, [
+		const result = await getFilesToEdit([
 			createInputFile(1, null),
 			createInputFile(1, null),
-		]);
+		], new Map(), [], originalFiles);
 
 		assert.deepStrictEqual(result.filesToEdit, []);
 		assert.deepStrictEqual(result.errors, {
@@ -124,10 +124,10 @@ test('file edit validation', async (t) => {
 			{ directoryId: null },
 		]);
 
-		const result = await getFilesToEdit(allDirs, [1], originalFiles, [
+		const result = await getFilesToEdit([
 			createInputFile(1, null),
 			createInputFile(2, 1, 'two'),
-		]);
+		], allDirs, [1], originalFiles);
 
 		assert.deepStrictEqual(result.filesToEdit, [
 			{ id: 2, directoryId: 1, name: 'two', title: '2', alt: '2' },
@@ -144,10 +144,10 @@ test('file edit validation', async (t) => {
 			{ directoryId: null },
 		]);
 
-		const result = await getFilesToEdit(allDirs, [], originalFiles, [
+		const result = await getFilesToEdit([
 			createInputFile(1, null),
 			createInputFile(2, 2),
-		]);
+		], allDirs, [], originalFiles);
 
 		assert.deepStrictEqual(result.filesToEdit, [
 			{ id: 1, directoryId: null, name: '1', title: '1', alt: '1' },
@@ -167,10 +167,10 @@ test('file edit validation', async (t) => {
 			{ directoryId: null },
 		]);
 
-		const result = await getFilesToEdit(new Map(), [], originalFiles, [
+		const result = await getFilesToEdit([
 			createInputFile(1, null, 'tmp'),
 			createInputFile(2, null, 'two'),
-		], `${dirPath}/`);
+		], new Map(), [], originalFiles, `${dirPath}/`);
 
 		assert.deepStrictEqual(result.filesToEdit, [
 			{ id: 2, directoryId: null, name: 'two', title: '2', alt: '2' },
@@ -195,10 +195,10 @@ test('file edit validation', async (t) => {
 			{ directoryId: null },
 		]);
 
-		const result = await getFilesToEdit(allDirs, [], originalFiles, [
+		const result = await getFilesToEdit([
 			createInputFile(2, null, 'two'),
 			createInputFile(1, 1, 'tmp'),
-		], `${dirPath}/`);
+		], allDirs, [], originalFiles, `${dirPath}/`);
 
 		assert.deepStrictEqual(result.filesToEdit, [
 			{ id: 2, directoryId: null, name: 'two', title: '2', alt: '2' },

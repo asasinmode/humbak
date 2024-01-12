@@ -7,10 +7,10 @@ import { recursiveDirChildren } from './dirDeleteValidation';
 export type IEditedDir = IPutDirectoryInput['editedDirs'][number] & { originalIndex: number; };
 
 export async function getDirsToEdit(
+	input: IPutDirectoryInput['editedDirs'],
 	allDirs: Map<number | null, IDir>,
 	allDirsArray: IDir[],
 	deletedDirs: Map<number, IDir>,
-	input: IPutDirectoryInput['editedDirs'],
 	rootPath = '/'
 ): Promise<{
 	dirsToEdit: IEditedDir[];

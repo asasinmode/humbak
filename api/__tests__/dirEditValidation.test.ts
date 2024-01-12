@@ -30,10 +30,10 @@ test('dir edit validation', async (t) => {
 			{ parentId: null },
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+		const result = await getDirsToEdit([
 			{ id: 1, parentId: null, name: 'one' },
 			{ id: 2, parentId: null, name: 'two' },
-		]);
+		], allDirs, allDirsArray, new Map());
 
 		assert.deepStrictEqual(result.dirsToEdit, [
 			{ id: 1, parentId: null, name: 'one', originalIndex: 0 },
@@ -47,10 +47,10 @@ test('dir edit validation', async (t) => {
 			{ parentId: null },
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+		const result = await getDirsToEdit([
 			{ id: 1, parentId: null, name: 'changed' },
 			{ id: 2, parentId: null, name: 'changed' },
-		]);
+		], allDirs, allDirsArray, new Map());
 
 		assert.deepStrictEqual(result.dirsToEdit, []);
 		assert.deepStrictEqual(result.errors, {
@@ -70,11 +70,11 @@ test('dir edit validation', async (t) => {
 			{ parentId: null },
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+		const result = await getDirsToEdit([
 			{ id: 1, parentId: null, name: 'changed' },
 			{ id: 2, parentId: null, name: 'changed' },
 			{ id: 3, parentId: null, name: 'changed' },
-		]);
+		], allDirs, allDirsArray, new Map());
 
 		assert.deepStrictEqual(result.dirsToEdit, []);
 		assert.deepStrictEqual(result.errors, {
@@ -98,14 +98,14 @@ test('dir edit validation', async (t) => {
 			{ parentId: null },
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+		const result = await getDirsToEdit([
 			{ id: 3, parentId: null, name: 'three' },
 			{ id: 4, parentId: null, name: 'four' },
 			{ id: 2, parentId: null, name: 'two' },
 			{ id: 1, parentId: null, name: 'one' },
 			{ id: 4, parentId: null, name: 'four' },
 			{ id: 2, parentId: null, name: 'two' },
-		]);
+		], allDirs, allDirsArray, new Map());
 
 		assert.deepStrictEqual(result.dirsToEdit, [
 			{ id: 3, parentId: null, name: 'three', originalIndex: 0 },
@@ -125,9 +125,9 @@ test('dir edit validation', async (t) => {
 		]);
 		const deletedDirs = new Map([[1, allDirs.get(1)!]]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
+		const result = await getDirsToEdit([
 			{ id: 1, parentId: null, name: 'one' },
-		]);
+		], allDirs, allDirsArray, deletedDirs);
 
 		assert.deepStrictEqual(result.dirsToEdit, []);
 		assert.deepStrictEqual(result.errors, {});
@@ -138,9 +138,9 @@ test('dir edit validation', async (t) => {
 			{ parentId: null },
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+		const result = await getDirsToEdit([
 			{ id: 1, parentId: null, name: '1' },
-		]);
+		], allDirs, allDirsArray, new Map());
 
 		assert.deepStrictEqual(result.dirsToEdit, []);
 		assert.deepStrictEqual(result.errors, {});
@@ -151,9 +151,9 @@ test('dir edit validation', async (t) => {
 			{ parentId: null },
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+		const result = await getDirsToEdit([
 			{ id: 1, parentId: 2, name: '1' },
-		]);
+		], allDirs, allDirsArray, new Map());
 
 		assert.deepStrictEqual(result.dirsToEdit, []);
 		assert.deepStrictEqual(result.errors, {
@@ -178,10 +178,10 @@ test('dir edit validation', async (t) => {
 			[1, allDirs.get(1)!],
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
+		const result = await getDirsToEdit([
 			{ id: 2, parentId: 1, name: '1' },
 			{ id: 3, parentId: null, name: 'three' },
-		]);
+		], allDirs, allDirsArray, deletedDirs);
 
 		assert.deepStrictEqual(result.dirsToEdit, [
 			{ id: 3, parentId: null, name: 'three', originalIndex: 1 },
@@ -207,9 +207,9 @@ test('dir edit validation', async (t) => {
 			[1, allDirs.get(1)!],
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
+		const result = await getDirsToEdit([
 			{ id: 2, parentId: 1, name: '1' }, // move 2 to 1
-		]);
+		], allDirs, allDirsArray, deletedDirs);
 
 		assert.deepStrictEqual(result.dirsToEdit, []);
 		assert.deepStrictEqual(deletedDirs, new Map([
@@ -240,11 +240,11 @@ test('dir edit validation', async (t) => {
 			[1, allDirs.get(1)!],
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
+		const result = await getDirsToEdit([
 			{ id: 5, parentId: 3, name: '5' },	// move 5 to 3
 			{ id: 4, parentId: null, name: 'four' },	// rename 4
 			{ id: 2, parentId: 1, name: '2' },	// move 2 to 1
-		]);
+		], allDirs, allDirsArray, deletedDirs);
 
 		assert.deepStrictEqual(result.dirsToEdit, [
 			{ id: 4, parentId: null, name: 'four', originalIndex: 1 },
@@ -286,14 +286,14 @@ test('dir edit validation', async (t) => {
 			[5, allDirs.get(5)!],
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
+		const result = await getDirsToEdit([
 			{ id: 7, parentId: 9, name: '7' },	// move 7 to 9
 			{ id: 8, parentId: 3, name: '8' },	// move 8 to 3
 			{ id: 4, parentId: null, name: 'four' },	// rename 4
 			{ id: 9, parentId: 6, name: '9' },	// move 9 to 6
 			{ id: 2, parentId: 1, name: '2' },	// move 2 to 1
 			{ id: 6, parentId: 5, name: '6' },	// move 6 to 5
-		]);
+		], allDirs, allDirsArray, deletedDirs);
 
 		assert.deepStrictEqual(result.dirsToEdit, [
 			{ id: 4, parentId: null, name: 'four', originalIndex: 2 },
@@ -331,12 +331,12 @@ test('dir edit validation', async (t) => {
 			[5, allDirs.get(5)!],
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, deletedDirs, [
+		const result = await getDirsToEdit([
 			{ id: 2, parentId: null, name: '2' }, // move 2 to root
 			{ id: 6, parentId: 5, name: '2' }, // move 6 to 5
 			{ id: 4, parentId: null, name: 'four' }, // rename 4
 			{ id: 3, parentId: 5, name: '3' }, // move 3 to 5
-		]);
+		], allDirs, allDirsArray, deletedDirs);
 
 		assert.deepStrictEqual(result.dirsToEdit, [
 			{ id: 2, parentId: null, name: '2', originalIndex: 0 },
@@ -354,9 +354,9 @@ test('dir edit validation', async (t) => {
 			{ parentId: null },
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+		const result = await getDirsToEdit([
 			{ id: 1, parentId: 1, name: '1' },
-		]);
+		], allDirs, allDirsArray, new Map());
 
 		assert.deepStrictEqual(result.dirsToEdit, []);
 		assert.deepStrictEqual(result.errors, {
@@ -372,9 +372,9 @@ test('dir edit validation', async (t) => {
 			{ parentId: 1 },
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+		const result = await getDirsToEdit([
 			{ id: 1, parentId: 2, name: '1' },
-		]);
+		], allDirs, allDirsArray, new Map());
 
 		assert.deepStrictEqual(result.dirsToEdit, []);
 		assert.deepStrictEqual(result.errors, {
@@ -402,12 +402,12 @@ test('dir edit validation', async (t) => {
 			{ parentId: 3 },
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+		const result = await getDirsToEdit([
 			{ id: 6, parentId: null, name: '6' },	// move 6 to root
 			{ id: 3, parentId: 5, name: '3' },	// move 3 to 5
 			{ id: 2, parentId: 6, name: '2' },	// move 2 to 6
 			{ id: 4, parentId: 3, name: '4' },	// move 4 to 3
-		]);
+		], allDirs, allDirsArray, new Map());
 
 		assert.deepStrictEqual(result.dirsToEdit, [
 			{ id: 6, parentId: null, name: '6', originalIndex: 0 },
@@ -430,9 +430,9 @@ test('dir edit validation', async (t) => {
 			{ parentId: null },
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+		const result = await getDirsToEdit([
 			{ id: 2, parentId: null, name: 'one' },
-		], `${dirPath}/`);
+		], allDirs, allDirsArray, new Map(), `${dirPath}/`);
 
 		assert.deepStrictEqual(result.dirsToEdit, []);
 		assert.deepStrictEqual(result.errors, {
@@ -452,10 +452,10 @@ test('dir edit validation', async (t) => {
 			{ parentId: null },
 		]);
 
-		const result = await getDirsToEdit(allDirs, allDirsArray, new Map(), [
+		const result = await getDirsToEdit([
 			{ id: 4, parentId: null, name: 'four' },
 			{ id: 3, parentId: 1, name: '2' },
-		]);
+		], allDirs, allDirsArray, new Map());
 
 		assert.deepStrictEqual(result.dirsToEdit, [
 			{ id: 4, parentId: null, name: 'four', originalIndex: 0 },

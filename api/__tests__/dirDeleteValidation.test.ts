@@ -10,7 +10,7 @@ test('dir delete validation', async (t) => {
 		]);
 
 		assert.deepStrictEqual(
-			getDirsToDelete(allDirs, allDirsArray, [1, 1]),
+			getDirsToDelete([1, 1], allDirs, allDirsArray),
 			new Map([
 				[1, allDirs.get(1)],
 			])
@@ -23,7 +23,7 @@ test('dir delete validation', async (t) => {
 		]);
 
 		assert.deepStrictEqual(
-			getDirsToDelete(allDirs, allDirsArray, [1, 2]),
+			getDirsToDelete([1, 2], allDirs, allDirsArray),
 			new Map([
 				[1, allDirs.get(1)],
 			])
@@ -43,7 +43,7 @@ test('dir delete validation', async (t) => {
 		]);
 
 		assert.deepStrictEqual(
-			getDirsToDelete(allDirs, allDirsArray, [3, 1]),
+			getDirsToDelete([3, 1], allDirs, allDirsArray),
 			new Map([
 				[3, allDirs.get(3)],
 				[1, allDirs.get(1)],
@@ -56,80 +56,3 @@ test('dir delete validation', async (t) => {
 		);
 	});
 });
-
-// test('dir editing success', async (t) => {
-// 	await t.test('renamed in root', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	await t.test('moved to root', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	await t.test('renamed in subdir', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	await t.test('moved to subdir', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	await t.test('file exists in chosen location', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	await t.test('different dir with same name in different dir', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-// });
-
-// test('file editing error', async (t) => {
-// 	await t.test('error nonexistent', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	// 239 remove check? should move files then delete, so moving to dirs being deleted should be allowed
-// 	await t.test('skips and moves deleted', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	await t.test('error target doesn\'t exist', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	await t.test('error file exists in chosen location', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	await t.test('error 2 files moved to same location', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-// });
-
-// test('file editing success', async (t) => {
-// 	await t.test('changed title', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	await t.test('changed alt', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	await t.test('changed name', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	await t.test('changed dir', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	await t.test('dir exists in chosen location', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-
-// 	await t.test('other file with same name in different dir', async (t) => {
-// 		assert.equal(1, 1);
-// 	});
-// });
-
-// 270 && 192 error if file/dir is edited and it wasn't in original

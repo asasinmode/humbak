@@ -5,11 +5,8 @@ import { db } from 'src/db';
 import { files } from 'src/db/schema/files';
 import { filesStoragePath } from 'src/helpers/files';
 
-export async function processDeletedFiles(
-	deletedFilesIds: number[],
-	modifiedFilesIds: Set<number>
-) {
-	if (!deletedFilesIds.length) {
+export async function processDeletedFiles(input: number[], modifiedFilesIds: Set<number>) {
+	if (!input.length) {
 		return;
 	}
 
@@ -19,12 +16,12 @@ export async function processDeletedFiles(
 			path: files.path,
 		})
 		.from(files)
-		.where(inArray(files.id, deletedFilesIds));
+		.where(inArray(files.id, input));
 
 	for (const file of originalFiles) {
 		modifiedFilesIds.add(file.id);
 		existsSync(`${filesStoragePath}${file.path}`) && await rm(`${filesStoragePath}${file.path}`);
 	}
 
-	await db.delete(files).where(inArray(files.id, deletedFilesIds));
+	await db.delete(files).where(inArray(files.id, input));
 }
