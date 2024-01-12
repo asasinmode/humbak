@@ -53,6 +53,12 @@ export async function getFilesToEdit(
 			continue;
 		}
 
+		const target = allDirs.has(file.directoryId);
+		if (file.directoryId !== null && !target) {
+			setError(i, 'directoryId', 'wybrany folder nie istnieje');
+			continue;
+		}
+
 		filesToEdit.push(file);
 	}
 
