@@ -6,10 +6,10 @@ import { files } from 'src/db/schema/files';
 import { filesStoragePath } from 'src/helpers/files';
 
 export async function processDeletedFiles(
-	deletedFileIds: number[],
+	deletedFilesIds: number[],
 	modifiedFilesIds: Set<number>
 ) {
-	if (!deletedFileIds.length) {
+	if (!deletedFilesIds.length) {
 		return;
 	}
 
@@ -19,12 +19,12 @@ export async function processDeletedFiles(
 			path: files.path,
 		})
 		.from(files)
-		.where(inArray(files.id, deletedFileIds));
+		.where(inArray(files.id, deletedFilesIds));
 
 	for (const file of originalFiles) {
 		modifiedFilesIds.add(file.id);
 		existsSync(`${filesStoragePath}${file.path}`) && await rm(`${filesStoragePath}${file.path}`);
 	}
 
-	await db.delete(files).where(inArray(files.id, deletedFileIds));
+	await db.delete(files).where(inArray(files.id, deletedFilesIds));
 }
