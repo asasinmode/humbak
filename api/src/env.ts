@@ -13,10 +13,7 @@ config({
 const schema = object({
 	NODE_ENV: picklist(['production', 'development', 'test']),
 	PORT: coerce(number([integer()]), Number),
-	DATABASE_HOST: string(),
-	DATABASE_USER: string(),
-	DATABASE_PASSWORD: string(),
-	DATABASE_DATABASE: string(),
+	DATABASE_URL: string(),
 	ADMIN_URL: string(),
 	FILES_PATH: string(),
 	STYLESHEETS_PATH: string(),
