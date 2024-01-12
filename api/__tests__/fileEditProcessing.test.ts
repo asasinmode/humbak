@@ -149,7 +149,7 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 		assert.deepStrictEqual(modifiedFileIds, new Set(createdFileIds));
 	});
 
-	await t.test('updates title', async () => {
+	await t.test('updates title and alt', async () => {
 		await mkdir(`${testFilesPath}/4`);
 		await writeFile(`${testFilesPath}/tmp8`, '');
 		await writeFile(`${testFilesPath}/4/tmp9`, '');
@@ -170,8 +170,8 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 		});
 
 		const input = createProcessedInputFiles(fileInsertId, createdDirs, createdFiles, [
-			{ directoryId: null, name: '1', title: 'one' },
-			{ directoryId: dirInsertId, name: '2', title: 'two' },
+			{ directoryId: null, name: '1', title: 'one', alt: 'one' },
+			{ directoryId: dirInsertId, name: '2', title: 'two', alt: 'two' },
 		]);
 		const modifiedFileIds = new Set<number>();
 
@@ -181,12 +181,12 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 
 		assert.deepStrictEqual(
 			filesSearchResult.find(d => d.id === fileInsertId),
-			{ ...createdFiles.get(fileInsertId), title: 'one' }
+			{ ...createdFiles.get(fileInsertId), title: 'one', alt: 'one' }
 		);
 		assert.strictEqual(existsSync(`${testFilesPath}/tmp8`), true);
 		assert.deepStrictEqual(
 			filesSearchResult.find(d => d.id === fileInsertId + 1),
-			{ ...createdFiles.get(fileInsertId + 1), title: 'two' }
+			{ ...createdFiles.get(fileInsertId + 1), title: 'two', alt: 'two' }
 		);
 		assert.strictEqual(existsSync(`${testFilesPath}/4/tmp9`), true);
 		assert.deepStrictEqual(modifiedFileIds, new Set(createdFileIds));
