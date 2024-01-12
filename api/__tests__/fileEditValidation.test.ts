@@ -31,7 +31,7 @@ test('file edit validation', { only: true }, async (t) => {
 		]);
 		const originalFiles = createOriginalFiles([]);
 
-		const result = await getFilesToEdit(allDirs, new Map(), [], originalFiles, [
+		const result = await getFilesToEdit(allDirs, [], originalFiles, [
 			createInputFile(1, null),
 		]);
 
@@ -49,7 +49,7 @@ test('file edit validation', { only: true }, async (t) => {
 			{ directoryId: null },
 		]);
 
-		const result = await getFilesToEdit(new Map(), new Map(), [], originalFiles, [
+		const result = await getFilesToEdit(new Map(), [], originalFiles, [
 			createInputFile(1, null, '1'),
 			createInputFile(2, null, '1'),
 		]);
@@ -72,7 +72,7 @@ test('file edit validation', { only: true }, async (t) => {
 			{ directoryId: null },
 		]);
 
-		const result = await getFilesToEdit(new Map(), new Map(), [], originalFiles, [
+		const result = await getFilesToEdit(new Map(), [], originalFiles, [
 			createInputFile(1, null, '1'),
 			createInputFile(2, null, '1'),
 			createInputFile(3, null, '1'),
@@ -98,7 +98,7 @@ test('file edit validation', { only: true }, async (t) => {
 			{ directoryId: null },
 		]);
 
-		const result = await getFilesToEdit(new Map(), new Map(), [], originalFiles, [
+		const result = await getFilesToEdit(new Map(), [], originalFiles, [
 			createInputFile(1, null),
 			createInputFile(1, null),
 		]);
@@ -124,7 +124,7 @@ test('file edit validation', { only: true }, async (t) => {
 			{ directoryId: null },
 		]);
 
-		const result = await getFilesToEdit(allDirs, new Map(), [1], originalFiles, [
+		const result = await getFilesToEdit(allDirs, [1], originalFiles, [
 			createInputFile(1, null),
 			createInputFile(2, 1, 'two'),
 		]);
@@ -144,7 +144,7 @@ test('file edit validation', { only: true }, async (t) => {
 			{ directoryId: null },
 		]);
 
-		const result = await getFilesToEdit(allDirs, new Map(), [], originalFiles, [
+		const result = await getFilesToEdit(allDirs, [], originalFiles, [
 			createInputFile(1, null),
 			createInputFile(2, 2),
 		]);
@@ -167,7 +167,7 @@ test('file edit validation', { only: true }, async (t) => {
 			{ directoryId: null },
 		]);
 
-		const result = await getFilesToEdit(new Map(), new Map(), [], originalFiles, [
+		const result = await getFilesToEdit(new Map(), [], originalFiles, [
 			createInputFile(1, null, 'tmp'),
 			createInputFile(2, null, 'two'),
 		], `${dirPath}/`);
@@ -182,11 +182,31 @@ test('file edit validation', { only: true }, async (t) => {
 		});
 	});
 
-	await t.test('errors file exists in chosen location (nested)', { todo: true }, async () => {
+	await t.test('errors file exists in chosen location (nested)', async () => {
+		await mkdir(`${testFilesPath}/1`);
+		await writeFile(`${testFilesPath}/1/tmp`, '');
 
-	});
+		const { allDirs } = createAllDirs([
+			{ parentId: null, path: `${dirPath}/1` },
+		]);
 
-	await t.test('accepts moved to deleted dirs', { todo: true }, async () => {
+		const originalFiles = createOriginalFiles([
+			{ directoryId: null },
+			{ directoryId: null },
+		]);
 
+		const result = await getFilesToEdit(allDirs, [], originalFiles, [
+			createInputFile(2, null, 'two'),
+			createInputFile(1, 1, 'tmp'),
+		], `${dirPath}/`);
+
+		assert.deepStrictEqual(result.filesToEdit, [
+			{ id: 2, directoryId: null, name: 'two', title: '2', alt: '2' },
+		]);
+		assert.deepStrictEqual(result.errors, {
+			1: {
+				name: 'plik o podanej nazwie istnieje w wybranej lokacji',
+			},
+		});
 	});
 });

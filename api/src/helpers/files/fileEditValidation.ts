@@ -10,7 +10,6 @@ export type IOriginalFile = Pick<InferSelectModel<typeof files>, 'id' | 'directo
 
 export async function getFilesToEdit(
 	allDirs: Map<number | null, IDir>,
-	deletedDirs: Map<number, IDir>,
 	deletedFileIds: number[],
 	originalFiles: Map<number, IOriginalFile>,
 	input: IEditedFile[],
