@@ -1,9 +1,30 @@
 import assert from 'node:assert';
-import test from 'node:test';
+import { existsSync } from 'node:fs';
+import { lstat, mkdir, rm } from 'node:fs/promises';
+import test, { after, before } from 'node:test';
 import { getFilesToEdit } from 'src/helpers/files/fileEditValidation';
+import { adminFilesPath } from 'src/helpers/files';
 import { createAllDirs, createInputFile, createOriginalFiles } from './helpers';
 
+const dirPath = '/__tests__/fileEditValidation';
+const testFilesPath = `${adminFilesPath}${dirPath}`;
+
 test('file edit validation', { only: true }, async (t) => {
+	before(async () => {
+		const exists = existsSync(testFilesPath);
+		if (exists) {
+			const stats = await lstat(testFilesPath);
+			if (stats.isDirectory()) {
+				throw new Error('test dir already exists');
+			}
+		}
+		await mkdir(testFilesPath, { recursive: true });
+	});
+
+	after(async () => {
+		await rm(testFilesPath, { recursive: true });
+	});
+
 	await t.test('errors nonexistent', async () => {
 		const { allDirs } = createAllDirs([
 			{ parentId: null },
@@ -115,12 +136,12 @@ test('file edit validation', { only: true }, async (t) => {
 	});
 
 	await t.test('errors nonexistent directoryId', async () => {
+		const { allDirs } = createAllDirs([
+			{ parentId: null },
+		]);
 		const originalFiles = createOriginalFiles([
 			{ directoryId: null },
 			{ directoryId: null },
-		]);
-		const { allDirs } = createAllDirs([
-			{ parentId: null },
 		]);
 
 		const result = await getFilesToEdit(allDirs, new Map(), [], originalFiles, [
