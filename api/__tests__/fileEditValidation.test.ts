@@ -1,7 +1,7 @@
 import assert from 'node:assert';
 import test from 'node:test';
 import { getFilesToEdit } from 'src/helpers/files/fileEditValidation';
-import { createInputFile, createOriginalFiles } from './helpers';
+import { createAllDirs, createInputFile, createOriginalFiles } from './helpers';
 
 test('file edit validation', { only: true }, async (t) => {
 	await t.test('errors nonexistent', async () => {
@@ -107,8 +107,28 @@ test('file edit validation', { only: true }, async (t) => {
 		assert.deepStrictEqual(result.errors, {});
 	});
 
-	await t.test('errors nonexistent directoryId', { todo: true }, async () => {
+	await t.test('errors nonexistent directoryId', async () => {
+		const originalFiles = createOriginalFiles([
+			{ directoryId: null },
+			{ directoryId: null },
+		]);
+		const deletedDirs = createAllDirs([
+			{ parentId: null },
+		]).allDirs;
 
+		const result = await getFilesToEdit(new Map(), deletedDirs, [], originalFiles, [
+			createInputFile(1, null),
+			createInputFile(2, 1),
+		]);
+
+		assert.deepStrictEqual(result.filesToEdit, [
+			{ id: 1, directoryId: null, name: 'one', title: '2', alt: '2' },
+		]);
+		assert.deepStrictEqual(result.errors, {
+			1: {
+				directoryId: 'wybrany folder nie istnieje',
+			},
+		});
 	});
 
 	await t.test('errors file exists in chosen location (root)', { todo: true }, async () => {
