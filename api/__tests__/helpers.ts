@@ -1,3 +1,7 @@
+import { inArray } from 'drizzle-orm';
+import { db } from 'src/db';
+import { files } from 'src/db/schema/files';
+import { directories } from 'src/db/schema/directories';
 import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
 import type { IOriginalFile } from 'src/helpers/files/fileEditValidation';
 
@@ -31,6 +35,7 @@ export function createOriginalFiles(files: { directoryId: number | null; name?: 
 		const file = {
 			id,
 			directoryId: tmp.directoryId,
+			path: `/${id}`,
 			name: tmp.name ?? `${id}`,
 		};
 		rv.set(id, file);
@@ -79,4 +84,43 @@ export function createDirectories(dirs: { parentId: number | null; path?: string
 		path: d.path ?? `/${i}`,
 		name: d.name ?? `${i}`,
 	}));
+}
+
+export async function getCreatedFiles({
+	fileInsertId,
+	fileCount,
+	dirInsertId: directoryInsertId,
+	dirCount: directoryCount,
+}: {
+	fileInsertId: number;
+	fileCount: number;
+	dirInsertId: number;
+	dirCount: number;
+}) {
+	const createdDirIds = Array.from({ length: directoryCount }, (_, i) => i + directoryInsertId);
+	const createdDirs: IDir[] = await db.select({
+		id: directories.id,
+		parentId: directories.parentId,
+		name: directories.name,
+		path: directories.path,
+	})
+		.from(directories)
+		.where(inArray(files.id, createdDirIds));
+
+	const createdFileIds = Array.from({ length: fileCount }, (_, i) => i + fileInsertId);
+	const createdFiles: IOriginalFile[] = await db.select({
+		id: files.id,
+		directoryId: files.directoryId,
+		path: files.path,
+		name: files.name,
+	})
+		.from(files)
+		.where(inArray(files.id, createdFileIds));
+
+	return {
+		createdDirs: new Map(createdDirs.map(d => [d.id, d])),
+		createdDirIds,
+		createdFiles: new Map(createdFiles.map(f => [f.id, f])),
+		createdFileIds,
+	};
 }

@@ -5,7 +5,7 @@ import type { InferSelectModel } from 'drizzle-orm';
 import type { files } from 'src/db/schema/files';
 import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
 
-export type IOriginalFile = Pick<InferSelectModel<typeof files>, 'id' | 'directoryId' | 'name'>;
+export type IOriginalFile = Pick<InferSelectModel<typeof files>, 'id' | 'directoryId' | 'path' | 'name'>;
 export type IEditedFile = IPutDirectoryInput['editedFiles'][number] & { targetDir?: IDir; originalFile: IOriginalFile; };
 
 export async function getFilesToEdit(
