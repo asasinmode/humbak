@@ -176,8 +176,8 @@ test('file edit validation', { only: true }, async (t) => {
 			{ id: 2, directoryId: null, name: 'two', title: '2', alt: '2' },
 		]);
 		assert.deepStrictEqual(result.errors, {
-			1: {
-				directoryId: 'plik o podanej nazwie istnieje w wybranej lokacji',
+			0: {
+				name: 'plik o podanej nazwie istnieje w wybranej lokacji',
 			},
 		});
 	});
