@@ -7,7 +7,7 @@ import { adminFilesPath } from 'src/helpers/files';
 const dirPath = '/__tests__/fileEditValidation';
 const testFilesPath = `${adminFilesPath}${dirPath}`;
 
-test('file edit validation', { only: true }, async (t) => {
+test('file edit validation', async (t) => {
 	before(async () => {
 		const exists = existsSync(testFilesPath);
 		if (exists) {
