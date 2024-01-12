@@ -52,3 +52,31 @@ export function createInputFile(
 		alt: `${id}`,
 	};
 }
+
+export function createFiles(
+	files: {
+		directoryId: number | null;
+		path?: string;
+		name?: string;
+		title?: string;
+		alt?: string;
+		mimetype?: string;
+	}[]
+) {
+	return files.map((f, i) => ({
+		directoryId: f.directoryId,
+		path: f.path ?? `/${i}`,
+		name: f.name ?? `${i}`,
+		title: f.title ?? `${i}`,
+		alt: f.alt ?? `${i}`,
+		mimetype: f.mimetype ?? `text/plain`,
+	}));
+}
+
+export function createDirectories(dirs: { parentId: number | null; path?: string; name?: string; }[]) {
+	return dirs.map((d, i) => ({
+		parentId: d.parentId,
+		path: d.path ?? `/${i}`,
+		name: d.name ?? `${i}`,
+	}));
+}
