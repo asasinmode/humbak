@@ -1,3 +1,6 @@
+import { existsSync } from 'node:fs';
+import { lstat } from 'node:fs/promises';
+import { adminFilesPath } from 'src/helpers/files';
 import type { InferSelectModel } from 'drizzle-orm';
 import type { files } from 'src/db/schema/files';
 import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
@@ -53,10 +56,28 @@ export async function getFilesToEdit(
 			continue;
 		}
 
-		const target = allDirs.has(file.directoryId);
+		const target = allDirs.get(file.directoryId);
 		if (file.directoryId !== null && !target) {
 			setError(i, 'directoryId', 'wybrany folder nie istnieje');
 			continue;
+		}
+
+		let targetDirPath = rootPath;
+		if (file.directoryId !== null) {
+			if (!target) {
+				throw new Error('target not found for dir moved to non-root');
+			}
+			targetDirPath = `${target.path}/`;
+		}
+
+		const newPath = `${adminFilesPath}${targetDirPath}${file.name}`;
+		const somethingExists = existsSync(newPath);
+		if (somethingExists) {
+			const stats = await lstat(newPath);
+			if (!stats.isDirectory()) {
+				setError(i, 'name', 'plik o podanej nazwie istnieje w wybranej lokacji');
+				continue;
+			}
 		}
 
 		filesToEdit.push(file);
