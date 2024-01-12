@@ -15,7 +15,6 @@ if (env.NODE_ENV !== 'test') {
 console.log('running test setup...');
 const setupStart = performance.now();
 
-// todo use pathname instead of fileurltopath
 const dirname = fileURLToPath(new URL('.', import.meta.url));
 
 await migrate(db, { migrationsFolder: `${dirname}/../src/db/migrations` });
