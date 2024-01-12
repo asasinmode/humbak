@@ -43,21 +43,40 @@ test('file edit validation', { concurrency: false, only: true }, async (t) => {
 			{ directoryId: null, path: `${dirPath}/tmp` },
 		]));
 
-		const ids = [insertId, insertId + 1];
+		const deletedFilesIds = [insertId, insertId + 1];
 		const modifiedFileIds = new Set<number>();
 
-		await processDeletedFiles(ids, modifiedFileIds);
+		await processDeletedFiles(deletedFilesIds, modifiedFileIds);
 
-		const filesSearchResult = await db.select({ id: files.id }).from(files).where(inArray(files.id, ids));
+		const filesSearchResult = await db
+			.select({ id: files.id })
+			.from(files)
+			.where(inArray(files.id, deletedFilesIds));
 
 		assert.deepStrictEqual(filesSearchResult, []);
-		assert.deepStrictEqual(modifiedFileIds, new Set(ids));
+		assert.deepStrictEqual(modifiedFileIds, new Set(deletedFilesIds));
 		assert.strictEqual(existsSync(`${testFilesPath}/1/tmp`), false);
 		assert.strictEqual(existsSync(`${testFilesPath}/tmp`), false);
 	});
 
-	await t.test('deletes when not in file system', { todo: true }, async () => {
-		assert.equal(1, 1);
+	await t.test('deletes when not in file system', async () => {
+		const [{ insertId }] = await db.insert(files).values(createFiles([
+			{ directoryId: null, path: `${dirPath}/tmp` },
+		]));
+
+		const deletedFilesIds = [insertId];
+		const modifiedFileIds = new Set<number>();
+
+		await processDeletedFiles(deletedFilesIds, modifiedFileIds);
+
+		const filesSearchResult = await db
+			.select({ id: files.id })
+			.from(files)
+			.where(inArray(files.id, deletedFilesIds));
+
+		assert.deepStrictEqual(filesSearchResult, []);
+		assert.deepStrictEqual(modifiedFileIds, new Set(deletedFilesIds));
+		assert.strictEqual(existsSync(`${testFilesPath}/tmp`), false);
 	});
 
 	await t.test('return associated pages\' ids', { todo: true }, async () => {
