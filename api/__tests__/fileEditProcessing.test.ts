@@ -31,7 +31,7 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 		await pool.end();
 	});
 
-	await t.test('edits files', async () => {
+	await t.test('renames files', async () => {
 		await mkdir(`${testFilesPath}/1`);
 		await writeFile(`${testFilesPath}/1/tmp1`, '');
 		await writeFile(`${testFilesPath}/tmp2`, '');
@@ -42,10 +42,10 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 			{ parentId: null, path: `${dirPath}/1` },
 		]));
 		const [{ insertId: fileInsertId }] = await db.insert(files).values(createFiles([
-			{ directoryId: 1, path: `${dirPath}/1/tmp1` },
+			{ directoryId: dirInsertId, path: `${dirPath}/1/tmp1` },
 			{ directoryId: null, path: `${dirPath}/tmp2` },
 			{ directoryId: null, path: `${dirPath}/tmp3` },
-			{ directoryId: 1, path: `${dirPath}/1/tmp4` },
+			{ directoryId: dirInsertId, path: `${dirPath}/1/tmp4` },
 		]));
 
 		const { createdDirs, createdFiles, createdFileIds } = await getCreatedFiles({
@@ -61,10 +61,23 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 				targetDir: createdDirs.get(dirInsertId),
 				originalFile: createdFiles.get(fileInsertId)!,
 			},
+			{
+				...createInputFile(fileInsertId + 1, null, 'tmpTwo'),
+				originalFile: createdFiles.get(fileInsertId + 1)!,
+			},
+			{
+				...createInputFile(fileInsertId + 2, null, 'tmpThree'),
+				originalFile: createdFiles.get(fileInsertId + 2)!,
+			},
+			{
+				...createInputFile(fileInsertId + 3, dirInsertId, 'tmpFour'),
+				targetDir: createdDirs.get(dirInsertId),
+				originalFile: createdFiles.get(fileInsertId + 3)!,
+			},
 		];
 		const modifiedFileIds = new Set<number>();
 
-		await processEditedFiles(editedFiles, modifiedFileIds);
+		await processEditedFiles(editedFiles, modifiedFileIds, `${dirPath}/`);
 
 		const filesSearchResult = await db
 			.select({
@@ -80,14 +93,29 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 
 		assert.deepStrictEqual(
 			filesSearchResult.find(d => d.id === fileInsertId),
-			{ ...createdFiles.get(fileInsertId), name: 'tmpOne', path: `${dirPath}/1/tmpOne` }
+			{ ...createdFiles.get(fileInsertId), directoryId: dirInsertId, name: 'tmpOne', path: `${dirPath}/1/tmpOne` }
 		);
-		assert.deepStrictEqual(modifiedFileIds, new Set([fileInsertId]));
 		assert.strictEqual(existsSync(`${testFilesPath}/1/tmp1`), false);
 		assert.strictEqual(existsSync(`${testFilesPath}/1/tmpOne`), true);
-		// assert.strictEqual(existsSync(`${testFilesPath}/tmp2`), false);
-		// assert.strictEqual(existsSync(`${testFilesPath}/tmp3`), false);
-		// assert.strictEqual(existsSync(`${testFilesPath}/1/tmp4`), false);
+		assert.deepStrictEqual(
+			filesSearchResult.find(d => d.id === fileInsertId + 1),
+			{ ...createdFiles.get(fileInsertId + 1), directoryId: null, name: 'tmpTwo', path: `${dirPath}/tmpTwo` }
+		);
+		assert.strictEqual(existsSync(`${testFilesPath}/tmp2`), false);
+		assert.strictEqual(existsSync(`${testFilesPath}/tmpTwo`), true);
+		assert.deepStrictEqual(
+			filesSearchResult.find(d => d.id === fileInsertId + 2),
+			{ ...createdFiles.get(fileInsertId + 2), directoryId: null, name: 'tmpThree', path: `${dirPath}/tmpThree` }
+		);
+		assert.strictEqual(existsSync(`${testFilesPath}/tmp3`), false);
+		assert.strictEqual(existsSync(`${testFilesPath}/tmpThree`), true);
+		assert.deepStrictEqual(
+			filesSearchResult.find(d => d.id === fileInsertId + 3),
+			{ ...createdFiles.get(fileInsertId + 3), directoryId: dirInsertId, name: 'tmpFour', path: `${dirPath}/1/tmpFour` }
+		);
+		assert.strictEqual(existsSync(`${testFilesPath}/1/tmp4`), false);
+		assert.strictEqual(existsSync(`${testFilesPath}/1/tmpFour`), true);
+		assert.deepStrictEqual(modifiedFileIds, new Set(createdFileIds));
 	});
 
 	await t.test('skips nonexistent old path', { todo: true }, async () => {
