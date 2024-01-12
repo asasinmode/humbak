@@ -93,13 +93,17 @@ test('file edit validation', { only: true }, async (t) => {
 	await t.test('skips deleted', async () => {
 		const originalFiles = createOriginalFiles([
 			{ directoryId: null },
+			{ directoryId: null },
 		]);
 
 		const result = await getFilesToEdit(new Map(), new Map(), [1], originalFiles, [
 			createInputFile(1, null),
+			createInputFile(2, 1, 'two'),
 		]);
 
-		assert.deepStrictEqual(result.filesToEdit, []);
+		assert.deepStrictEqual(result.filesToEdit, [
+			{ id: 2, directoryId: 1, name: 'two', title: '2', alt: '2' },
+		]);
 		assert.deepStrictEqual(result.errors, {});
 	});
 
