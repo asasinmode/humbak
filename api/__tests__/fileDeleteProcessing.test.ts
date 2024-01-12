@@ -35,11 +35,11 @@ test('file delete processing', { concurrency: false }, async (t) => {
 		await writeFile(`${testFilesPath}/1/tmp`, '');
 		await writeFile(`${testFilesPath}/tmp`, '');
 
-		await db.insert(directories).values(createDirectories([
+		const [{ insertId: dirInsertId }] = await db.insert(directories).values(createDirectories([
 			{ parentId: null, path: `${dirPath}/1` },
 		]));
 		const [{ insertId }] = await db.insert(files).values(createFiles([
-			{ directoryId: 1, path: `${dirPath}/1/tmp` },
+			{ directoryId: dirInsertId, path: `${dirPath}/1/tmp` },
 			{ directoryId: null, path: `${dirPath}/tmp` },
 		]));
 

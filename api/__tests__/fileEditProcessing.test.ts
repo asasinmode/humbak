@@ -8,8 +8,7 @@ import { directories } from 'src/db/schema/directories';
 import { files } from 'src/db/schema/files';
 import { inArray } from 'drizzle-orm';
 import { processEditedFiles } from 'src/helpers/files/fileEditProcessing';
-import type { IEditedFile } from 'src/helpers/files/fileEditValidation';
-import { createDirectories, createFiles, createInputFile, getCreatedFiles } from './helpers';
+import { createDirectories, createFiles, createProcessedInputFiles, getCreatedFiles } from './helpers';
 
 const dirPath = '/fileEditProcessing';
 const testFilesPath = `${filesStoragePath}${dirPath}`;
@@ -55,29 +54,15 @@ test('file edit processing', { concurrency: false, only: true }, async (t) => {
 			fileCount: 4,
 		});
 
-		const editedFiles: IEditedFile[] = [
-			{
-				...createInputFile(fileInsertId, dirInsertId, 'tmpOne'),
-				targetDir: createdDirs.get(dirInsertId),
-				originalFile: createdFiles.get(fileInsertId)!,
-			},
-			{
-				...createInputFile(fileInsertId + 1, null, 'tmpTwo'),
-				originalFile: createdFiles.get(fileInsertId + 1)!,
-			},
-			{
-				...createInputFile(fileInsertId + 2, null, 'tmpThree'),
-				originalFile: createdFiles.get(fileInsertId + 2)!,
-			},
-			{
-				...createInputFile(fileInsertId + 3, dirInsertId, 'tmpFour'),
-				targetDir: createdDirs.get(dirInsertId),
-				originalFile: createdFiles.get(fileInsertId + 3)!,
-			},
-		];
+		const input = createProcessedInputFiles(fileInsertId, createdDirs, createdFiles, [
+			{ directoryId: dirInsertId, name: 'tmpOne' },
+			{ directoryId: null, name: 'tmpTwo' },
+			{ directoryId: null, name: 'tmpThree' },
+			{ directoryId: dirInsertId, name: 'tmpFour' },
+		]);
 		const modifiedFileIds = new Set<number>();
 
-		await processEditedFiles(editedFiles, modifiedFileIds, `${dirPath}/`);
+		await processEditedFiles(input, modifiedFileIds, `${dirPath}/`);
 
 		const filesSearchResult = await db
 			.select({

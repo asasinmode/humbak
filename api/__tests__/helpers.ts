@@ -3,7 +3,7 @@ import { db } from 'src/db';
 import { files } from 'src/db/schema/files';
 import { directories } from 'src/db/schema/directories';
 import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
-import type { IOriginalFile } from 'src/helpers/files/fileEditValidation';
+import type { IEditedFile, IOriginalFile } from 'src/helpers/files/fileEditValidation';
 
 export function createAllDirs(dirs: { parentId: number | null; path?: string; }[]) {
 	const allDirs = new Map<number, IDir>();
@@ -58,15 +58,40 @@ export function createInputFile(
 	};
 }
 
+type IInputFile = {
+	directoryId: number | null;
+	name?: string;
+	title?: string;
+	alt?: string;
+};
+export function createProcessedInputFiles(
+	fileInsertId: number,
+	createdDirs: Map<number, IDir>,
+	createdFiles: Map<number, IOriginalFile>,
+	files: (IInputFile & { name: string; })[]
+) {
+	const rv: IEditedFile[] = [];
+
+	for (let i = 0; i < files.length; i++) {
+		const file = files[i];
+		const id = i + fileInsertId;
+		const index = i + 1;
+		rv.push({
+			id,
+			directoryId: file.directoryId,
+			name: file.name ?? `${index}`,
+			title: file.title ?? `${index}`,
+			alt: file.alt ?? `${index}`,
+			targetDir: createdDirs.get(file.directoryId!),
+			originalFile: createdFiles.get(id)!,
+		});
+	}
+
+	return rv;
+}
+
 export function createFiles(
-	files: {
-		directoryId: number | null;
-		path?: string;
-		name?: string;
-		title?: string;
-		alt?: string;
-		mimetype?: string;
-	}[]
+	files: (IInputFile & { path?: string; mimetype?: string; })[]
 ) {
 	return files.map((f, i) => {
 		const index = i + 1;
