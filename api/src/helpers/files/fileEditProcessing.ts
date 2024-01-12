@@ -6,19 +6,18 @@ import { files } from 'src/db/schema/files';
 import { filesStoragePath } from 'src/helpers/files';
 import type { IEditedFile } from './fileEditValidation';
 
-export async function processEditedFiles(input: IEditedFile[], modifiedFilesIds: Set<number>) {
+export async function processEditedFiles(input: IEditedFile[], modifiedFilesIds: Set<number>, rootPath = '/') {
 	if (!input.length) {
 		return;
 	}
 
 	for (const file of input) {
 		const { originalFile, targetDir } = file;
-		modifiedFilesIds.add(originalFile.id);
 
 		const hasMoved = originalFile.directoryId !== file.directoryId || file.name !== originalFile.name;
 		let path = originalFile.path;
 		if (hasMoved) {
-			let targetDirPath = '/';
+			let targetDirPath = rootPath;
 			if (file.directoryId !== null) {
 				if (!targetDir) {
 					throw new Error('target dir should\'ve been set by now');
@@ -42,6 +41,8 @@ export async function processEditedFiles(input: IEditedFile[], modifiedFilesIds:
 			await rename(oldPath, newPath);
 			path = `${targetDirPath}${file.name}`;
 		}
+
+		modifiedFilesIds.add(originalFile.id);
 
 		await db
 			.update(files)
