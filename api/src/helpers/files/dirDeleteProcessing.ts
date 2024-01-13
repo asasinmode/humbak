@@ -11,6 +11,7 @@ import { files } from 'src/db/schema/files';
 export async function processDeletedDirs(
 	input: Map<number, IDir>,
 	allDirs: Map<number, IDir>,
+	allDirsArray: IDir[],
 	modifiedPagesIds: Set<number>
 ) {
 	if (!input.size) {
@@ -24,6 +25,10 @@ export async function processDeletedDirs(
 		const path = `${filesStoragePath}${dir.path}`;
 		existsSync(path) && await rm(path, { recursive: true });
 		allDirs.delete(dir.id);
+		const index = allDirsArray.findIndex(d => d.id === dir.id);
+		if (index !== -1) {
+			allDirsArray.splice(index, 1);
+		}
 	}
 
 	const affectedPageIds = await db

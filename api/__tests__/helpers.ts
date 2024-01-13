@@ -149,6 +149,7 @@ export async function getCreatedFiles({
 
 	return {
 		createdDirs: new Map(createdDirs.map(d => [d.id, d])),
+		createdDirsArray: createdDirs,
 		createdDirIds,
 		createdFiles: new Map(createdFiles.map(f => [f.id, f])),
 		createdFileIds,

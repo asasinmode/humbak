@@ -15,7 +15,7 @@ import { createDirectories, createFiles, getCreatedFiles } from './helpers';
 const dirPath = '/dirDeleteProcessing';
 const testFilesPath = `${filesStoragePath}${dirPath}`;
 
-test('dir delete processing', async (t) => {
+test('dir delete processing', { only: true }, async (t) => {
 	before(async () => {
 		const exists = existsSync(testFilesPath);
 		if (exists) {
@@ -45,7 +45,7 @@ test('dir delete processing', async (t) => {
 			{ directoryId: dirInsertId, path: `${dirPath}/1/tmp` },
 		]));
 
-		const { createdDirs, createdDirIds, createdFileIds } = await getCreatedFiles({
+		const { createdDirs, createdDirsArray, createdDirIds, createdFileIds } = await getCreatedFiles({
 			fileInsertId,
 			fileCount: 1,
 			dirInsertId,
@@ -53,7 +53,7 @@ test('dir delete processing', async (t) => {
 		});
 		const allDirs = structuredClone(createdDirs);
 
-		await processDeletedDirs(createdDirs, allDirs, new Set());
+		await processDeletedDirs(createdDirs, allDirs, createdDirsArray, new Set());
 
 		const dirSearchResult = await db
 			.select({ id: directories.id })
@@ -67,6 +67,7 @@ test('dir delete processing', async (t) => {
 		assert.deepStrictEqual(filesSearchResult, []);
 		assert.deepStrictEqual(dirSearchResult, []);
 		assert.deepStrictEqual(allDirs, new Map());
+		assert.deepStrictEqual(createdDirsArray, []);
 		assert.strictEqual(existsSync(`${testFilesPath}/1`), false);
 	});
 
@@ -78,7 +79,7 @@ test('dir delete processing', async (t) => {
 			{ directoryId: dirInsertId, path: `${dirPath}/3/tmp` },
 		]));
 
-		const { createdDirs, createdDirIds, createdFileIds } = await getCreatedFiles({
+		const { createdDirs, createdDirsArray, createdDirIds, createdFileIds } = await getCreatedFiles({
 			fileInsertId,
 			fileCount: 1,
 			dirInsertId,
@@ -86,7 +87,7 @@ test('dir delete processing', async (t) => {
 		});
 		const allDirs = structuredClone(createdDirs);
 
-		await processDeletedDirs(createdDirs, allDirs, new Set());
+		await processDeletedDirs(createdDirs, allDirs, createdDirsArray, new Set());
 
 		const dirSearchResult = await db
 			.select({ id: directories.id })
@@ -100,6 +101,7 @@ test('dir delete processing', async (t) => {
 		assert.deepStrictEqual(filesSearchResult, []);
 		assert.deepStrictEqual(dirSearchResult, []);
 		assert.deepStrictEqual(allDirs, new Map());
+		assert.deepStrictEqual(createdDirsArray, []);
 	});
 
 	await t.test('updates modified pages\' ids', async () => {
@@ -118,12 +120,17 @@ test('dir delete processing', async (t) => {
 			{ pageId: pageInsertId, fileId: fileInsertId },
 		]);
 
-		const { createdDirs } = await getCreatedFiles({ fileInsertId, fileCount: 1, dirInsertId, dirCount: 2 });
+		const { createdDirs, createdDirsArray } = await getCreatedFiles({ fileInsertId, fileCount: 1, dirInsertId, dirCount: 2 });
 		const allDirs = structuredClone(createdDirs);
 
 		const modifiedPagesIds = new Set<number>();
 
-		await processDeletedDirs(new Map([[dirInsertId, createdDirs.get(dirInsertId)!]]), allDirs, modifiedPagesIds);
+		await processDeletedDirs(
+			new Map([[dirInsertId, createdDirs.get(dirInsertId)!]]),
+			allDirs,
+			createdDirsArray,
+			modifiedPagesIds
+		);
 
 		assert.deepStrictEqual(modifiedPagesIds, new Set([pageInsertId]));
 		assert.deepStrictEqual(allDirs, new Map([[dirInsertId + 1, createdDirs.get(dirInsertId + 1)]]));
