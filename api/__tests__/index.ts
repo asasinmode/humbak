@@ -36,6 +36,7 @@ const stream = run({
 		`${dirname}/fileEditValidation.test.ts`,
 		`${dirname}/fileDeleteProcessing.test.ts`,
 		`${dirname}/fileEditProcessing.test.ts`,
+		`${dirname}/dirDeleteProcessing.test.ts`,
 	],
 	only: process.argv.includes('--test-only'),
 	concurrency: true,
