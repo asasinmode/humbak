@@ -51,8 +51,9 @@ test('dir delete processing', { only: true }, async (t) => {
 			dirInsertId,
 			dirCount: 2,
 		});
+		const allDirs = structuredClone(createdDirs);
 
-		await processDeletedDirs(createdDirs, structuredClone(createdDirs), new Set());
+		await processDeletedDirs(createdDirs, allDirs, new Set());
 
 		const dirSearchResult = await db
 			.select({ id: directories.id })
@@ -65,6 +66,7 @@ test('dir delete processing', { only: true }, async (t) => {
 
 		assert.deepStrictEqual(filesSearchResult, []);
 		assert.deepStrictEqual(dirSearchResult, []);
+		assert.deepStrictEqual(allDirs, new Map());
 		assert.strictEqual(existsSync(`${testFilesPath}/1`), false);
 	});
 
@@ -82,8 +84,9 @@ test('dir delete processing', { only: true }, async (t) => {
 			dirInsertId,
 			dirCount: 1,
 		});
+		const allDirs = structuredClone(createdDirs);
 
-		await processDeletedDirs(createdDirs, structuredClone(createdDirs), new Set());
+		await processDeletedDirs(createdDirs, allDirs, new Set());
 
 		const dirSearchResult = await db
 			.select({ id: directories.id })
@@ -96,6 +99,7 @@ test('dir delete processing', { only: true }, async (t) => {
 
 		assert.deepStrictEqual(filesSearchResult, []);
 		assert.deepStrictEqual(dirSearchResult, []);
+		assert.deepStrictEqual(allDirs, new Map());
 	});
 
 	await t.test('updates modified pages\' ids', async () => {
@@ -121,24 +125,4 @@ test('dir delete processing', { only: true }, async (t) => {
 
 		assert.deepStrictEqual(modifiedPagesIds, new Set([pageInsertId]));
 	});
-
-	// 	await t.test('splices deleted from all', async (t) => {
-	// 		assert.equal(1, 1);
-	// 	});
-
-	// 	await t.test('deletes when not in file system', async (t) => {
-	// 		assert.equal(1, 1);
-	// 	});
-
-	// 	await t.test('deletes nested dirs', async (t) => {
-	// 		assert.equal(1, 1);
-	// 	});
-
-	// 	await t.test('deletes nested files', async (t) => {
-	// 		assert.equal(1, 1);
-	// 	});
-
-	// 	await t.test('returns associated pages\' ids', async (t) => {
-	// 		assert.equal(1, 1);
-	// 	});
 });
