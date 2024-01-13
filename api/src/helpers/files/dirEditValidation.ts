@@ -41,6 +41,9 @@ export async function getDirsToEdit(
 			} else if (dir.parentId === otherDir.parentId && dir.name === otherDir.name) {
 				setError(i, 'name', 'wiele folderów nie może być przeniesione w to samo miejsce');
 				continue outerLoop;
+			} else if (dir.parentId === otherDir.id && otherDir.parentId === dir.id) {
+				setError(i, 'parentId', 'foldery nie mogą być przeniesione do siebie nawzajem');
+				continue outerLoop;
 			}
 		}
 

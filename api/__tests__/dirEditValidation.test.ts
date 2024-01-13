@@ -90,6 +90,28 @@ test('dir edit validation', async (t) => {
 		});
 	});
 
+	await t.test('errors moved to each other', async () => {
+		const { allDirs, allDirsArray } = createAllDirs([
+			{ parentId: null },
+			{ parentId: null },
+		]);
+
+		const result = await getDirsToEdit([
+			{ id: 1, parentId: 2, name: '1' },
+			{ id: 2, parentId: 1, name: '2' },
+		], allDirs, allDirsArray, new Map());
+
+		assert.deepStrictEqual(result.dirsToEdit, []);
+		assert.deepStrictEqual(result.errors, {
+			0: {
+				parentId: 'foldery nie mogą być przeniesione do siebie nawzajem',
+			},
+			1: {
+				parentId: 'foldery nie mogą być przeniesione do siebie nawzajem',
+			},
+		});
+	});
+
 	await t.test('errors multiple of same', async () => {
 		const { allDirs, allDirsArray } = createAllDirs([
 			{ parentId: null },
