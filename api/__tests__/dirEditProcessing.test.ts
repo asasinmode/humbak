@@ -15,7 +15,7 @@ import { createFiles, getCreatedFiles } from './helpers';
 const dirPath = '/dirEditProcessing';
 const testFilesPath = `${filesStoragePath}${dirPath}`;
 
-test('dir edit processing', { only: true }, async (t) => {
+test('dir edit processing', async (t) => {
 	before(async () => {
 		const exists = existsSync(testFilesPath);
 		if (exists) {
