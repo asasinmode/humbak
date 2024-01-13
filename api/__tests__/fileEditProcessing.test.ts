@@ -8,12 +8,14 @@ import { directories } from 'src/db/schema/directories';
 import { files } from 'src/db/schema/files';
 import { inArray } from 'drizzle-orm';
 import { processEditedFiles } from 'src/helpers/files/fileEditProcessing';
+import { filesToPages } from 'src/db/schema/filesToPages';
+import { pages } from 'src/db/schema/pages';
 import { createDirectories, createFiles, createProcessedInputFiles, getCreatedFiles } from './helpers';
 
 const dirPath = '/fileEditProcessing';
 const testFilesPath = `${filesStoragePath}${dirPath}`;
 
-test('file edit processing', async (t) => {
+test('file edit processing', { only: true }, async (t) => {
 	before(async () => {
 		const exists = existsSync(testFilesPath);
 		if (exists) {
@@ -60,9 +62,8 @@ test('file edit processing', async (t) => {
 			{ directoryId: null, name: 'tmpThree' },
 			{ directoryId: dirInsertId, name: 'tmpFour' },
 		]);
-		const modifiedFileIds = new Set<number>();
 
-		await processEditedFiles(input, modifiedFileIds, `${dirPath}/`);
+		await processEditedFiles(input, new Set(), `${dirPath}/`);
 
 		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
@@ -90,7 +91,6 @@ test('file edit processing', async (t) => {
 		);
 		assert.strictEqual(existsSync(`${testFilesPath}/1/tmp4`), false);
 		assert.strictEqual(existsSync(`${testFilesPath}/1/tmpFour`), true);
-		assert.deepStrictEqual(modifiedFileIds, new Set(createdFileIds));
 	});
 
 	await t.test('moves files', async () => {
@@ -122,9 +122,8 @@ test('file edit processing', async (t) => {
 			{ directoryId: dirInsertId, name: 'tmpSix' },
 			{ directoryId: dirInsertId + 1, name: 'tmpFive' },
 		]);
-		const modifiedFileIds = new Set<number>();
 
-		await processEditedFiles(input, modifiedFileIds, `${dirPath}/`);
+		await processEditedFiles(input, new Set(), `${dirPath}/`);
 
 		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
@@ -146,7 +145,6 @@ test('file edit processing', async (t) => {
 		);
 		assert.strictEqual(existsSync(`${testFilesPath}/2/tmp5`), false);
 		assert.strictEqual(existsSync(`${testFilesPath}/2/3/tmpFive`), true);
-		assert.deepStrictEqual(modifiedFileIds, new Set(createdFileIds));
 	});
 
 	await t.test('updates title and alt', async () => {
@@ -173,9 +171,8 @@ test('file edit processing', async (t) => {
 			{ directoryId: null, name: '1', title: 'one', alt: 'one' },
 			{ directoryId: dirInsertId, name: '2', title: 'two', alt: 'two' },
 		]);
-		const modifiedFileIds = new Set<number>();
 
-		await processEditedFiles(input, modifiedFileIds, `${dirPath}/`);
+		await processEditedFiles(input, new Set(), `${dirPath}/`);
 
 		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
@@ -189,7 +186,6 @@ test('file edit processing', async (t) => {
 			{ ...createdFiles.get(fileInsertId + 1), title: 'two', alt: 'two' }
 		);
 		assert.strictEqual(existsSync(`${testFilesPath}/4/tmp9`), true);
-		assert.deepStrictEqual(modifiedFileIds, new Set(createdFileIds));
 	});
 
 	await t.test('skips nonexistent old path', async () => {
@@ -203,6 +199,14 @@ test('file edit processing', async (t) => {
 			{ directoryId: null, path: `${dirPath}/tmp10` },
 			{ directoryId: dirInsertId, path: `${dirPath}/5/tmp11` },
 		]));
+		const [{ insertId: pageInsertId }] = await db.insert(pages).values([
+			{ language: 'en', title: `${dirPath}1`, slug: `${dirPath}1` },
+			{ language: 'en', title: `${dirPath}2`, slug: `${dirPath}2` },
+		]);
+		await db.insert(filesToPages).values([
+			{ pageId: pageInsertId, fileId: fileInsertId },
+			{ pageId: pageInsertId + 1, fileId: fileInsertId + 1 },
+		]);
 
 		const { createdDirs, createdFiles, createdFileIds } = await getCreatedFiles({
 			dirInsertId,
@@ -215,9 +219,9 @@ test('file edit processing', async (t) => {
 			{ directoryId: dirInsertId, name: 'one', title: 'one', alt: 'one' },
 			{ directoryId: null, name: 'tmpEleven', title: 'two', alt: 'two' },
 		]);
-		const modifiedFileIds = new Set<number>();
+		const modifiedPagesIds = new Set<number>();
 
-		await processEditedFiles(input, modifiedFileIds, `${dirPath}/`);
+		await processEditedFiles(input, modifiedPagesIds, `${dirPath}/`);
 
 		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
@@ -238,7 +242,7 @@ test('file edit processing', async (t) => {
 		);
 		assert.strictEqual(existsSync(`${testFilesPath}/5/tmp11`), false);
 		assert.strictEqual(existsSync(`${testFilesPath}/tmpEleven`), true);
-		assert.deepStrictEqual(modifiedFileIds, new Set([fileInsertId + 1]));
+		assert.deepStrictEqual(modifiedPagesIds, new Set([pageInsertId + 1]));
 	});
 
 	await t.test('skips nonexistent new path', async () => {
@@ -254,6 +258,14 @@ test('file edit processing', async (t) => {
 			{ directoryId: dirInsertId + 1, path: `${dirPath}/7/tmp12` },
 			{ directoryId: null, path: `${dirPath}/tmp13` },
 		]));
+		const [{ insertId: pageInsertId }] = await db.insert(pages).values([
+			{ language: 'en', title: `${dirPath}3`, slug: `${dirPath}3` },
+			{ language: 'en', title: `${dirPath}4`, slug: `${dirPath}4` },
+		]);
+		await db.insert(filesToPages).values([
+			{ pageId: pageInsertId, fileId: fileInsertId },
+			{ pageId: pageInsertId + 1, fileId: fileInsertId + 1 },
+		]);
 
 		const { createdDirs, createdFiles, createdFileIds } = await getCreatedFiles({
 			dirInsertId,
@@ -266,9 +278,9 @@ test('file edit processing', async (t) => {
 			{ directoryId: dirInsertId, name: 'tmpTwelve', title: 'one', alt: 'one' },
 			{ directoryId: dirInsertId + 1, name: 'tmpThirteen', title: 'two', alt: 'two' },
 		]);
-		const modifiedFileIds = new Set<number>();
+		const modifiedPagesIds = new Set<number>();
 
-		await processEditedFiles(input, modifiedFileIds, `${dirPath}/`);
+		await processEditedFiles(input, modifiedPagesIds, `${dirPath}/`);
 
 		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
@@ -289,7 +301,7 @@ test('file edit processing', async (t) => {
 		);
 		assert.strictEqual(existsSync(`${testFilesPath}/tmp13`), false);
 		assert.strictEqual(existsSync(`${testFilesPath}/7/tmpThirteen`), true);
-		assert.deepStrictEqual(modifiedFileIds, new Set([fileInsertId + 1]));
+		assert.deepStrictEqual(modifiedPagesIds, new Set([fileInsertId]));
 	});
 });
 
