@@ -15,7 +15,7 @@ import { createDirectories, createFiles, createProcessedInputFiles, getCreatedFi
 const dirPath = '/fileEditProcessing';
 const testFilesPath = `${filesStoragePath}${dirPath}`;
 
-test('file edit processing', { only: true }, async (t) => {
+test('file edit processing', async (t) => {
 	before(async () => {
 		const exists = existsSync(testFilesPath);
 		if (exists) {
