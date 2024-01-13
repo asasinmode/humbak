@@ -8,12 +8,14 @@ import { db, pool } from 'src/db';
 import { directories } from 'src/db/schema/directories';
 import { files } from 'src/db/schema/files';
 import { inArray } from 'drizzle-orm';
-import { createDirectories, createFiles } from './helpers';
+import { pages } from 'src/db/schema/pages';
+import { filesToPages } from 'src/db/schema/filesToPages';
+import { createDirectories, createFiles, getCreatedFiles } from './helpers';
 
 const dirPath = '/fileDeleteProcessing';
 const testFilesPath = `${filesStoragePath}${dirPath}`;
 
-test('file delete processing', async (t) => {
+test('file delete processing', { only: true }, async (t) => {
 	before(async () => {
 		const exists = existsSync(testFilesPath);
 		if (exists) {
@@ -44,9 +46,8 @@ test('file delete processing', async (t) => {
 		]));
 
 		const deletedFilesIds = [insertId, insertId + 1];
-		const modifiedFileIds = new Set<number>();
 
-		await processDeletedFiles(deletedFilesIds, modifiedFileIds);
+		await processDeletedFiles(deletedFilesIds, new Set());
 
 		const filesSearchResult = await db
 			.select({ id: files.id })
@@ -54,7 +55,6 @@ test('file delete processing', async (t) => {
 			.where(inArray(files.id, deletedFilesIds));
 
 		assert.deepStrictEqual(filesSearchResult, []);
-		assert.deepStrictEqual(modifiedFileIds, new Set(deletedFilesIds));
 		assert.strictEqual(existsSync(`${testFilesPath}/1/tmp`), false);
 		assert.strictEqual(existsSync(`${testFilesPath}/tmp`), false);
 	});
@@ -65,9 +65,8 @@ test('file delete processing', async (t) => {
 		]));
 
 		const deletedFilesIds = [insertId];
-		const modifiedFileIds = new Set<number>();
 
-		await processDeletedFiles(deletedFilesIds, modifiedFileIds);
+		await processDeletedFiles(deletedFilesIds, new Set());
 
 		const filesSearchResult = await db
 			.select({ id: files.id })
@@ -75,7 +74,31 @@ test('file delete processing', async (t) => {
 			.where(inArray(files.id, deletedFilesIds));
 
 		assert.deepStrictEqual(filesSearchResult, []);
-		assert.deepStrictEqual(modifiedFileIds, new Set(deletedFilesIds));
-		assert.strictEqual(existsSync(`${testFilesPath}/tmp`), false);
+	});
+
+	await t.test('updates modified pages\' ids', async () => {
+		const [{ insertId: dirInsertId }] = await db.insert(directories).values(createDirectories([
+			{ parentId: null, path: `${dirPath}/2` },
+		]));
+		const [{ insertId: fileInsertId }] = await db.insert(files).values(createFiles([
+			{ directoryId: dirInsertId, path: `${dirPath}/2/tmp` },
+			{ directoryId: null, path: `${dirPath}/tmp` },
+		]));
+		const [{ insertId: pageInsertId }] = await db.insert(pages).values([
+			{ language: 'en', title: `${dirPath}1`, slug: `${dirPath}1` },
+			{ language: 'en', title: `${dirPath}2`, slug: `${dirPath}2` },
+		]);
+		await db.insert(filesToPages).values([
+			{ pageId: pageInsertId, fileId: fileInsertId },
+			{ pageId: pageInsertId + 1, fileId: fileInsertId + 1 },
+		]);
+
+		const { createdFileIds } = await getCreatedFiles({ dirInsertId, dirCount: 1, fileInsertId, fileCount: 2 });
+
+		const modifiedPagesIds = new Set<number>();
+
+		await processDeletedFiles(createdFileIds, modifiedPagesIds);
+
+		assert.deepStrictEqual(modifiedPagesIds, new Set([pageInsertId, pageInsertId + 1]));
 	});
 });
