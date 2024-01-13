@@ -16,7 +16,7 @@ export const app = new Hono()
 				text: menuLinks.text,
 				parentId: menuLinks.parentId,
 				position: menuLinks.position,
-				href: sql<string>`pages.slug`,
+				href: sql<string>`${pages.slug}`,
 			})
 			.from(menuLinks)
 			.leftJoin(pages, eq(menuLinks.pageId, pages.id))
