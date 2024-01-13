@@ -133,15 +133,17 @@ export const app = new Hono<{
 				dirsToDelete
 			);
 
-			const originalFilesArray: IOriginalFile[] = await db
-				.select({
-					id: files.id,
-					directoryId: files.directoryId,
-					path: files.path,
-					name: files.name,
-				})
-				.from(files)
-				.where(inArray(files.id, input.editedFiles.map(f => f.id)));
+			const originalFilesArray: IOriginalFile[] = input.editedFiles.length
+				? await db
+					.select({
+						id: files.id,
+						directoryId: files.directoryId,
+						path: files.path,
+						name: files.name,
+					})
+					.from(files)
+					.where(inArray(files.id, input.editedFiles.map(f => f.id)))
+				: [];
 			const originalFiles = new Map(originalFilesArray.map(f => [f.id, f]));
 
 			const { filesToEdit, errors: editedFilesErrors } = await getFilesToEdit(
