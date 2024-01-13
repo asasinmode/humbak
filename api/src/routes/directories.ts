@@ -1,16 +1,24 @@
 import { existsSync } from 'node:fs';
-import { lstat, mkdir, rename, rm, writeFile } from 'node:fs/promises';
+import { lstat, mkdir, writeFile } from 'node:fs/promises';
 import { Hono, type MiddlewareHandler } from 'hono';
 import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { type Input, array, custom, null_, number, object, string, transform, union } from 'valibot';
+import { processDeletedDirs } from 'src/helpers/files/dirDeleteProcessing';
 import { parsePageHtml } from '../helpers/pages';
+import { db } from '../db';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
 import { files, insertFileSchema } from '../db/schema/files';
-import { filesToPages } from '../db/schema/filesToPages';
 import { contents } from '../db/schema/contents';
 import { wrap } from '../helpers';
 import { filesStoragePath } from '../helpers/files';
-import { db } from '../db';
+import { getDirsToDelete } from '../helpers/files/dirDeleteValidation';
+import { getDirsToEdit } from '../helpers/files/dirEditValidation';
+import { getFilesToEdit } from '../helpers/files/fileEditValidation';
+import { processDeletedFiles } from '../helpers/files/fileDeleteProcessing';
+import { processEditedFiles } from '../helpers/files/fileEditProcessing';
+import { processEditedDirs } from '../helpers/files/dirEditProcessing';
+import type { IEditedFile, IOriginalFile } from '../helpers/files/fileEditValidation';
+import type { IEditedDir } from '../helpers/files/dirEditValidation';
 
 const dirIdParamValidation = wrap('param', transform(object({
 	id: string([
@@ -50,11 +58,11 @@ export type IDir = Pick<InferSelectModel<typeof directories>, 'id' | 'name' | 'p
 export const app = new Hono<{
 	Variables: {
 		targetDir?: Pick<InferSelectModel<typeof directories>, 'path'>;
-		dirs?: IDir[];
-		dirsToDelete?: IDir[];
-		dirsToEdit?: IPutDirectoryInput['editedDirs'];
-		filesToEdit?: IPutDirectoryInput['editedFiles'];
-		allDirsBeingDeleted?: IDir[];
+		allDirs: Map<number, IDir>;
+		allDirsArray: IDir[];
+		dirsToDelete: Map<number, IDir>;
+		filesToEdit: IEditedFile[];
+		dirsToEdit: IEditedDir[];
 	};
 }>()
 	.get('/', async (c) => {
@@ -106,187 +114,42 @@ export const app = new Hono<{
 		wrap('json', putDirectoryInput),
 		async (c, next) => {
 			const input = c.req.valid('json');
-			const dirs: IDir[] = await db.select({
+			const allDirsArray: IDir[] = await db.select({
 				path: directories.path,
 				id: directories.id,
 				name: directories.name,
 				parentId: directories.parentId,
 			}).from(directories);
-			c.set('dirs', dirs);
-			const dirsToDelete = dirs.filter(dir => input.deletedDirIds.includes(dir.id));
+			const allDirs: Map<number, IDir> = new Map(allDirsArray.map(d => [d.id, d]));
+			c.set('allDirs', allDirs);
+			c.set('allDirsArray', allDirsArray);
+
+			const dirsToDelete = getDirsToDelete(input.deletedDirIds, allDirs, allDirsArray);
 			c.set('dirsToDelete', dirsToDelete);
-			const allDirsBeingDeleted = getAllDirsToDelete(dirs, dirsToDelete);
-			c.set('dirsToDeleteAll', []);
+			const { dirsToEdit, errors: editedDirsErrors } = await getDirsToEdit(
+				input.editedDirs,
+				allDirs,
+				allDirsArray,
+				dirsToDelete
+			);
 
-			type IEditedDir = IPutDirectoryInput['editedDirs'][number];
-			const dirsToEdit: IEditedDir[] = [];
-			const editedDirsErrors: Record<string | number, Record<string, string>> = {};
-			function setEditedDirsError(index: number, key: keyof IEditedDir, value: string) {
-				editedDirsErrors[index] ||= {};
-				editedDirsErrors[index][key] = value;
-			};
-
-			// eslint-disable-next-line no-restricted-syntax
-			outerDirLoop: for (let i = 0; i < input.editedDirs.length; i++) {
-				const dir = input.editedDirs[i];
-				const originalDir = dirs.find(d => d.id === dir.id);
-				if (!originalDir) {
-					setEditedDirsError(i, 'id', 'folder nie istnieje');
-					continue;
-				}
-				const isDeleted = allDirsBeingDeleted!.some(d => d.id === dir.id || d.id === dir.parentId);
-				if (isDeleted) {
-					continue;
-				}
-
-				const hasMoved = dir.parentId !== originalDir.parentId || dir.name !== originalDir.name;
-				if (!hasMoved) {
-					continue;
-				}
-
-				const target = dirs.find(d => d.id === dir.parentId);
-				if (dir.parentId !== null) {
-					if (!target) {
-						setEditedDirsError(i, 'parentId', 'wybrany folder nie istnieje');
-						continue;
-					}
-
-					// moved to itself
-					if (dir.id === target.id) {
-						continue;
-					}
-
-					let parent: IDir | undefined = target;
-					while (parent) {
-						if (parent.parentId === dir.id) {
-							setEditedDirsError(i, 'parentId', 'folder nie może być przeniesiony do swojego podfolderu');
-
-							continue outerDirLoop;
-						}
-						parent = dirs.find(d => d.id === parent!.parentId);
-					}
-				}
-
-				let targetDirPath = '/';
-				if (dir.parentId !== null) {
-					if (!target) {
-						throw new Error('target should\'ve been set by now');
-					}
-					targetDirPath = `${target.path}/`;
-				}
-
-				const newPath = `${filesStoragePath}${targetDirPath}${dir.name}`;
-				const somethingExists = existsSync(newPath);
-				if (somethingExists) {
-					const stats = await lstat(newPath);
-					if (stats.isDirectory()) {
-						setEditedDirsError(i, 'name', 'folder o podanej nazwie istnieje w wybranej lokacji');
-						continue;
-					}
-				}
-
-				dirsToEdit.push(dir);
-			}
-
-			for (let i = 0; i < input.editedDirs.length; i++) {
-				const dir = input.editedDirs[i];
-				if (!dirsToEdit.some(d => d.id === dir.id)) {
-					continue;
-				}
-
-				for (const otherDir of dirsToEdit) {
-					if (otherDir.id === dir.id) {
-						continue;
-					}
-					const sameParent = dir.parentId === otherDir.parentId;
-					if (!sameParent) {
-						continue;
-					}
-					const sameName = dir.name === otherDir.name;
-					if (sameName) {
-						setEditedDirsError(i, 'name', 'dwa foldery nie mogą mieć tej samej nazwy');
-						break;
-					}
-				}
-			}
-
-			type IEditedFile = (typeof input)['editedFiles'][number];
-			const filesToEdit: IEditedFile[] = [];
-			const editedFilesErrors: Record<string | number, Record<string, string>> = {};
-			function setEditedFilesError(index: number, key: keyof IEditedFile, value: string) {
-				editedFilesErrors[index] ||= {};
-				editedFilesErrors[index][key] = value;
-			};
-			const originalFiles = input.editedFiles.length
-				? await
-				db.select({
+			const originalFilesArray: IOriginalFile[] = await db
+				.select({
 					id: files.id,
 					directoryId: files.directoryId,
+					path: files.path,
 					name: files.name,
 				})
-					.from(files)
-					.where(inArray(files.id, input.editedFiles.map(f => f.id)))
-				: [];
+				.from(files)
+				.where(inArray(files.id, input.editedFiles.map(f => f.id)));
+			const originalFiles = new Map(originalFilesArray.map(f => [f.id, f]));
 
-			for (let i = 0; i < input.editedFiles.length; i++) {
-				const file = input.editedFiles[i];
-
-				const originalFile = originalFiles.find(f => f.id === file.id);
-				if (!originalFile) {
-					setEditedFilesError(i, 'id', 'plik nie istnieje');
-					continue;
-				}
-
-				const isDeleted = allDirsBeingDeleted!.some(dir => file.directoryId === null || file.directoryId === dir.id);
-				if (isDeleted) {
-					continue;
-				}
-
-				let targetDirPath = '/';
-				if (file.directoryId !== null) {
-					const targetDir = dirs.find(d => d.id === file.directoryId);
-					if (!targetDir) {
-						setEditedFilesError(i, 'directoryId', 'wybrany rodzic nie istnieje');
-						continue;
-					}
-					targetDirPath = `${targetDir.path}/`;
-				}
-
-				const newPath = `${filesStoragePath}${targetDirPath}/${file.name}`;
-				const hasMoved = file.directoryId !== originalFile.directoryId || file.name !== originalFile.name;
-				const somethingExists = hasMoved && existsSync(newPath);
-				if (somethingExists) {
-					const stats = await lstat(newPath);
-					if (!stats.isDirectory()) {
-						setEditedFilesError(i, 'name', 'plik o podanej nazwie istnieje w wybranej lokacji');
-						continue;
-					}
-				}
-
-				filesToEdit.push(file);
-			}
-
-			for (let i = 0; i < input.editedFiles.length; i++) {
-				const file = input.editedFiles[i];
-				if (!filesToEdit.some(f => f.id === file.id)) {
-					continue;
-				}
-
-				for (const otherFile of filesToEdit) {
-					if (otherFile.id === file.id) {
-						continue;
-					}
-					const sameParent = file.directoryId === otherFile.directoryId;
-					if (!sameParent) {
-						continue;
-					}
-					const sameName = file.name === otherFile.name;
-					if (sameName) {
-						setEditedFilesError(i, 'directoryId', 'dwa pliki nie mogą mieć tej samej nazwy');
-						break;
-					}
-				}
-			}
+			const { filesToEdit, errors: editedFilesErrors } = await getFilesToEdit(
+				input.editedFiles,
+				allDirs,
+				input.deletedFileIds,
+				originalFiles
+			);
 
 			const anyDirErrors = Object.keys(editedDirsErrors).length;
 			const anyFileErrors = Object.keys(editedFilesErrors).length;
@@ -304,171 +167,42 @@ export const app = new Hono<{
 		async (c) => {
 			const input = c.req.valid('json');
 
-			const dirs = c.get('dirs');
-			if (!dirs) {
-				throw new Error('dirs from middleware not found');
+			const allDirs = c.get('allDirs');
+			if (!allDirs) {
+				throw new Error('all dirs from middleware undefined');
 			}
-			const dirsToDelete = c.get('dirsToDelete');
-			if (!dirsToDelete) {
-				throw new Error('dirs to delete from middleware not found');
-			}
-			const dirsToEdit = c.get('dirsToEdit');
-			if (!dirsToEdit) {
-				throw new Error('dirs to edit from middleware not found');
+			const allDirsArray = c.get('allDirsArray');
+			if (!allDirsArray) {
+				throw new Error('all dirs array from middleware undefined');
 			}
 			const filesToEdit = c.get('filesToEdit');
 			if (!filesToEdit) {
-				throw new Error('files to edit from middleware not found');
+				throw new Error('files to edit from middleware undefined');
+			}
+			const dirsToDelete = c.get('dirsToDelete');
+			if (!dirsToDelete) {
+				throw new Error('dirs to delete from middleware undefined');
+			}
+			const dirsToEdit = c.get('dirsToEdit');
+			if (!dirsToEdit) {
+				throw new Error('dirs to edit from middleware undefined');
 			}
 
-			// todo select all page ids of deleted files then use them in contents to update
-			if (input.deletedFileIds.length) {
-				const deletedFilePaths = await db
-					.select({ path: files.path })
-					.from(files)
-					.where(inArray(files.id, input.deletedFileIds));
+			const modifiedPagesIds = new Set<number>();
 
-				await db.delete(files).where(inArray(files.id, input.deletedFileIds));
-				for (const { path } of deletedFilePaths) {
-					existsSync(`${filesStoragePath}/${path}`) && await rm(`${filesStoragePath}/${path}`);
-				}
-			}
+			await processDeletedFiles(input.deletedFileIds, modifiedPagesIds);
+			await processEditedFiles(filesToEdit, modifiedPagesIds);
+			await processDeletedDirs(dirsToDelete, allDirs, allDirsArray, modifiedPagesIds);
+			await processEditedDirs(dirsToEdit, allDirs, allDirsArray, modifiedPagesIds);
 
-			const updatedFilesIds: number[] = [];
-
-			if (filesToEdit.length) {
-				const originalFiles = await db
-					.select({
-						id: files.id,
-						directoryId: files.directoryId,
-						name: files.name,
-						path: files.path,
-					})
-					.from(files)
-					.where(inArray(files.id, filesToEdit.map(f => f.id)));
-
-				for (const file of filesToEdit) {
-					const originalFile = originalFiles.find(f => f.id === file.id);
-					if (!originalFile) {
-						console.error('FILE to edit not found in db');
-						continue;
-					}
-
-					if (!updatedFilesIds.includes(originalFile.id)) {
-						updatedFilesIds.push(originalFile.id);
-					}
-
-					const hasMoved = originalFile.directoryId !== file.directoryId || file.name !== originalFile.name;
-					let path = originalFile.path;
-					if (hasMoved) {
-						let targetDirPath = '/';
-						if (file.directoryId !== null) {
-							const targetDir = dirs.find(d => d.id === file.directoryId);
-							if (!targetDir) {
-								console.error('FILE to edit parent dir not found');
-								continue;
-							}
-							targetDirPath = `${targetDir.path}/`;
-						}
-
-						const oldPath = `${filesStoragePath}${originalFile.path}`;
-						const oldPathExists = existsSync(oldPath);
-						const newPathExists = existsSync(`${filesStoragePath}${targetDirPath}`);
-						if (!oldPathExists) {
-							console.error('FILE to edit OLD path doesn\'t exist');
-							continue;
-						}
-						if (!newPathExists) {
-							console.error('FILE to edit NEW path doesn\'t exist');
-							continue;
-						}
-
-						const newPath = `${filesStoragePath}${targetDirPath}/${file.name}`;
-						await rename(oldPath, newPath);
-						path = `${targetDirPath}${file.name}`;
-					}
-
-					await db
-						.update(files)
-						.set({
-							name: file.name,
-							title: file.title,
-							alt: file.alt,
-							directoryId: file.directoryId,
-							path,
-							updatedAt: new Date(),
-						})
-						.where(eq(files.id, file.id));
-				}
-			}
-
-			// todo collect file ids to update pages
-			if (dirsToDelete.length) {
-				const dirsToDeleteIds = dirsToDelete.map(dir => dir.id);
-				await db.delete(directories).where(inArray(directories.id, dirsToDeleteIds));
-
-				for (const dir of dirsToDelete) {
-					const path = `${filesStoragePath}${dir.path}`;
-					existsSync(path) && await rm(path, { recursive: true });
-					const index = dirs.findIndex(d => d.id === dir.id);
-					if (index !== -1) {
-						dirs.splice(index, 1);
-					}
-				}
-			}
-
-			const updatedDirIds: number[] = [];
-
-			while (dirsToEdit.length) {
-				const dirsToGoThrough: (typeof dirsToEdit)[number][] = [];
-
-				for (let i = 0; i < dirsToEdit.length; i++) {
-					const { parentId } = dirsToEdit[i];
-					const parentIds: number[] = [];
-					let parent = dirs.find(d => d.id === parentId);
-					while (parent) {
-						parentIds.push(parent.id);
-						parent = dirs.find(d => d.id === parent!.parentId);
-					}
-
-					const isParentBeingEdited = parentIds.some(id =>
-						dirsToGoThrough.some(dir => dir.id === id) || dirsToEdit.some(dir => dir.id === id)
-					);
-					if (!isParentBeingEdited) {
-						const [dir] = dirsToEdit.splice(i, 1);
-						dirsToGoThrough.push(dir);
-						i--;
-					}
-				}
-
-				for (const dir of dirsToGoThrough) {
-					const dirIds = await updateDir(dirs, dir);
-					if (dirIds) {
-						for (const id of dirIds) {
-							!updatedDirIds.includes(id) && updatedDirIds.push(id);
-						}
-					}
-				}
-			}
-
-			if (updatedDirIds.length) {
-				const dirUpdatedFiles = await db.selectDistinct({ id: files.id }).from(files).where(inArray(files.directoryId, updatedDirIds));
-				for (const { id } of dirUpdatedFiles) {
-					!updatedFilesIds.includes(id) && updatedFilesIds.push(id);
-				}
-			}
-
-			console.log('updated', updatedFilesIds);
-			if (updatedFilesIds.length) {
+			if (modifiedPagesIds.size) {
 				const contentsToUpdate = await db
 					.selectDistinct({
 						pageId: contents.pageId,
 						rawHtml: contents.rawHtml,
 					})
 					.from(contents)
-					.leftJoin(filesToPages, eq(contents.pageId, filesToPages.pageId))
-					.where(inArray(filesToPages.fileId, updatedFilesIds));
-				console.log('contents', contentsToUpdate);
+					.where(inArray(contents.pageId, Array.from(modifiedPagesIds)));
 				for (const { pageId, rawHtml } of contentsToUpdate) {
 					const { value } = await parsePageHtml(rawHtml);
 					await db.update(contents).set({ parsedHtml: value }).where(eq(contents.pageId, pageId));
@@ -688,94 +422,4 @@ async function dirData(id: number | null, returnAllDirs: boolean) {
 		directories: foundDirectories,
 		files: foundFiles,
 	};
-}
-
-function getAllDirsToDelete(allDirs: IDir[], dirsToDelete: IDir[], acc: IDir[] = []) {
-	for (const dir of dirsToDelete) {
-		acc.push(dir);
-		const childrenToDelete = allDirs.filter(child => child.parentId === dir.id);
-		for (const child of getAllDirsToDelete(allDirs, childrenToDelete)) {
-			acc.push(child);
-		}
-	}
-	return acc;
-}
-
-async function updateDir(dirs: IDir[], dir: Omit<IDir, 'path'>) {
-	const originalDirIndex = dirs.findIndex(d => d.id === dir.id);
-	if (originalDirIndex === -1) {
-		console.error('DIR to edit not found');
-		return;
-	}
-	const originalDir = dirs[originalDirIndex];
-
-	let targetDirPath = '/';
-	if (dir.parentId !== null) {
-		const targetDir = dirs.find(d => d.id === dir.parentId);
-		if (!targetDir) {
-			console.error('DIR to edit parent dir not found');
-			return;
-		}
-		targetDirPath = `${targetDir.path}/`;
-	}
-
-	const oldPath = `${filesStoragePath}${originalDir.path}`;
-	const oldPathExists = existsSync(oldPath);
-	const newPathExists = existsSync(`${filesStoragePath}${targetDirPath}`);
-	if (!oldPathExists) {
-		console.error('DIR to edit OLD path doesn\'t exist');
-		return;
-	}
-	if (!newPathExists) {
-		console.error('DIR to edit NEW path doesn\'t exist');
-		return;
-	}
-
-	const path = `${targetDirPath}${dir.name}`;
-	const newPath = `${filesStoragePath}${path}`;
-	await rename(oldPath, newPath);
-
-	console.log('updating dir', dir);
-
-	await db
-		.update(directories)
-		.set({
-			name: dir.name,
-			parentId: dir.parentId,
-			path,
-			updatedAt: new Date(),
-		})
-		.where(eq(directories.id, dir.id));
-	await db.execute(sql`UPDATE files JOIN directories ON files.directoryId = directories.id SET files.path = CONCAT(directories.path, '/', files.name) WHERE directories.id = ${dir.id}`);
-
-	dirs[originalDirIndex] = {
-		path,
-		id: dir.id,
-		parentId: dir.parentId,
-		name: dir.name,
-	};
-
-	const changedIds: number[] = [];
-	await updateDirAssociations(dirs, dirs[originalDirIndex], changedIds);
-	return changedIds;
-}
-
-async function updateDirAssociations(dirs: IDir[], dir: IDir, changedIds: number[]) {
-	!changedIds.includes(dir.id) && changedIds.push(dir.id);
-
-	const children: IDir[] = [];
-	for (let i = 0; i < dirs.length; i++) {
-		const originalChildDir = dirs[i];
-		if (originalChildDir.parentId === dir.id) {
-			dirs[i].path = `${dir.path}/${originalChildDir.name}`;
-			children.push(dirs[i]);
-		}
-	}
-
-	await db.execute(sql`UPDATE directories JOIN directories as parentDirectories ON directories.parentId = parentDirectories.id SET directories.path = CONCAT(parentDirectories.path, '/', directories.name) WHERE directories.parentId = ${dir.id}; `);
-	await db.execute(sql`UPDATE files JOIN directories ON files.directoryId = directories.id SET files.path = CONCAT(directories.path, '/', files.name) WHERE directories.id = ${dir.id}`);
-
-	for (const child of children) {
-		await updateDirAssociations(dirs, child, changedIds);
-	}
 }
