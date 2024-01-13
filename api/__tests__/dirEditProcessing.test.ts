@@ -8,6 +8,8 @@ import { directories } from 'src/db/schema/directories';
 import { files } from 'src/db/schema/files';
 import { inArray } from 'drizzle-orm';
 import { processEditedDirs } from 'src/helpers/files/dirEditProcessing';
+import { pages } from 'src/db/schema/pages';
+import { filesToPages } from 'src/db/schema/filesToPages';
 import { createFiles, getCreatedFiles } from './helpers';
 
 const dirPath = '/dirEditProcessing';
@@ -156,13 +158,104 @@ test('dir edit processing', { only: true }, async (t) => {
 		assert.strictEqual(existsSync(`${testFilesPath}/five/tmp5`), true);
 	});
 
-	// 	await t.test('skips not found in all', async (t) => {
-	// 		assert.equal(1, 1);
-	// 	});
+	await t.test('skips not found in all', async () => {
+		await mkdir(`${testFilesPath}/7`);
+		await mkdir(`${testFilesPath}/7/8`);
+		await writeFile(`${testFilesPath}/7/8/tmp6`, '');
+		await writeFile(`${testFilesPath}/7/tmp7`, '');
 
-	// 	await t.test('skips not found in all array', async (t) => {
-	// 		assert.equal(1, 1);
-	// 	});
+		const [{ insertId: dirInsertId }] = await db.insert(directories).values([
+			{ parentId: null, name: '7', path: `${dirPath}/7` },
+		]);
+		await db.insert(directories).values({ parentId: dirInsertId, name: '8', path: `${dirPath}/7/8` });
+		const [{ insertId: fileInsertId }] = await db.insert(files).values(createFiles([
+			{ directoryId: dirInsertId + 1, path: `${dirPath}/7/8/tmp6`, name: 'tmp6' },
+			{ directoryId: dirInsertId, path: `${dirPath}/7/tmp7`, name: 'tmp7' },
+		]));
+		const [{ insertId: pageInsertId }] = await db.insert(pages).values([
+			{ language: 'en', title: `${dirPath}1`, slug: `${dirPath}1` },
+			{ language: 'en', title: `${dirPath}2`, slug: `${dirPath}2` },
+		]);
+		await db.insert(filesToPages).values([
+			{ pageId: pageInsertId, fileId: fileInsertId },
+			{ pageId: pageInsertId + 1, fileId: fileInsertId + 1 },
+		]);
+
+		const { createdDirs, createdDirsArray } = await getCreatedFiles({
+			dirInsertId,
+			dirCount: 2,
+			fileInsertId,
+			fileCount: 2,
+		});
+		createdDirs.delete(dirInsertId + 1);
+
+		const modifiedPagesIds = new Set<number>();
+
+		await processEditedDirs([
+			{ id: dirInsertId, parentId: null, name: 'seven', originalIndex: 0 },
+			{ id: dirInsertId + 1, parentId: dirInsertId, name: 'eight', originalIndex: 1 },
+		], createdDirs, createdDirsArray, modifiedPagesIds, `${dirPath}/`);
+
+		const dirsSearchResult = await getUpdatedDirs([dirInsertId + 1]);
+
+		assert.deepStrictEqual(
+			dirsSearchResult[0],
+			{ id: dirInsertId + 1, parentId: dirInsertId, name: '8', path: `${dirPath}/seven/8` }
+		);
+		assert.deepStrictEqual(modifiedPagesIds, new Set([pageInsertId + 1]));
+	});
+
+	await t.test('skips not found in all array', async () => {
+		await mkdir(`${testFilesPath}/9`);
+		await mkdir(`${testFilesPath}/9/10`);
+		await writeFile(`${testFilesPath}/9/tmp8`, '');
+		await writeFile(`${testFilesPath}/9/10/tmp9`, '');
+
+		const [{ insertId: dirInsertId }] = await db.insert(directories).values([
+			{ parentId: null, name: '9', path: `${dirPath}/9` },
+		]);
+		await db.insert(directories).values({ parentId: dirInsertId, name: '10', path: `${dirPath}/9/10` });
+		const [{ insertId: fileInsertId }] = await db.insert(files).values(createFiles([
+			{ directoryId: dirInsertId, path: `${dirPath}/9/tmp8`, name: 'tmp8' },
+			{ directoryId: dirInsertId + 1, path: `${dirPath}/9/10/tmp9`, name: 'tmp9' },
+		]));
+		const [{ insertId: pageInsertId }] = await db.insert(pages).values([
+			{ language: 'en', title: `${dirPath}3`, slug: `${dirPath}3` },
+			{ language: 'en', title: `${dirPath}4`, slug: `${dirPath}4` },
+		]);
+		await db.insert(filesToPages).values([
+			{ pageId: pageInsertId, fileId: fileInsertId + 1 },
+			{ pageId: pageInsertId + 1, fileId: fileInsertId },
+		]);
+
+		const { createdDirs, createdDirsArray } = await getCreatedFiles({
+			dirInsertId,
+			dirCount: 2,
+			fileInsertId,
+			fileCount: 2,
+		});
+
+		const modifiedPagesIds = new Set<number>();
+
+		await processEditedDirs(
+			[
+				{ id: dirInsertId + 1, parentId: dirInsertId, name: 'ten', originalIndex: 0 },
+				{ id: dirInsertId, parentId: null, name: 'nine', originalIndex: 1 },
+			],
+			createdDirs,
+			createdDirsArray.filter(d => d.id !== dirInsertId),
+			modifiedPagesIds,
+			`${dirPath}/`
+		);
+
+		const dirsSearchResult = await getUpdatedDirs([dirInsertId]);
+
+		assert.deepStrictEqual(
+			dirsSearchResult[0],
+			{ id: dirInsertId, parentId: null, name: '9', path: `${dirPath}/9` }
+		);
+		assert.deepStrictEqual(modifiedPagesIds, new Set([pageInsertId]));
+	});
 
 	// 	await t.test('skips nonexistent old path', async (t) => {
 	// 		assert.equal(1, 1);
