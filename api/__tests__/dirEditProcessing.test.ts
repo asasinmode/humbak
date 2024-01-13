@@ -8,7 +8,7 @@ import { directories } from 'src/db/schema/directories';
 import { files } from 'src/db/schema/files';
 import { inArray } from 'drizzle-orm';
 import { processEditedDirs } from 'src/helpers/files/dirEditProcessing';
-import { createDirectories, createFiles, getCreatedFiles } from './helpers';
+import { createFiles, getCreatedFiles } from './helpers';
 
 const dirPath = '/dirEditProcessing';
 const testFilesPath = `${filesStoragePath}${dirPath}`;
@@ -36,15 +36,15 @@ test('dir edit processing', { only: true }, async (t) => {
 		await writeFile(`${testFilesPath}/1/tmp1`, '');
 		await writeFile(`${testFilesPath}/1/2/tmp2`, '');
 
-		const [{ insertId: dirInsertId }] = await db.insert(directories).values(createDirectories([
-			{ parentId: null, path: `${dirPath}/1` },
-		]));
-		await db.insert(directories).values(createDirectories([
-			{ parentId: dirInsertId, path: `${dirPath}/1/2` },
-		]));
+		const [{ insertId: dirInsertId }] = await db.insert(directories).values([
+			{ parentId: null, name: '1', path: `${dirPath}/1` },
+		]);
+		await db.insert(directories).values([
+			{ parentId: dirInsertId, name: '2', path: `${dirPath}/1/2` },
+		]);
 		const [{ insertId: fileInsertId }] = await db.insert(files).values(createFiles([
-			{ directoryId: dirInsertId, path: `${dirPath}/1/tmp1` },
-			{ directoryId: dirInsertId + 1, path: `${dirPath}/1/2/tmp2` },
+			{ directoryId: dirInsertId, path: `${dirPath}/1/tmp1`, name: 'tmp1' },
+			{ directoryId: dirInsertId + 1, path: `${dirPath}/1/2/tmp2`, name: 'tmp2' },
 		]));
 
 		const { createdDirs, createdDirsArray, createdDirIds, createdFiles, createdFileIds } = await getCreatedFiles({
@@ -53,27 +53,39 @@ test('dir edit processing', { only: true }, async (t) => {
 			fileInsertId,
 			fileCount: 2,
 		});
-		const allDirs = structuredClone(createdDirs);
 
 		await processEditedDirs([
 			{ id: dirInsertId, parentId: null, name: 'one', originalIndex: 0 },
-		], allDirs, createdDirsArray, new Set(), `${dirPath}/`);
+			{ id: dirInsertId + 1, parentId: dirInsertId, name: 'two', originalIndex: 1 },
+		], createdDirs, createdDirsArray, new Set(), `${dirPath}/`);
 
 		const dirsSearchResult = await getUpdatedDirs(createdDirIds);
 		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
-		assert.deepStrictEqual(
-			dirsSearchResult.find(d => d.id === dirInsertId),
-			{ ...createdDirs.get(dirInsertId), parentId: null, name: 'one', path: `${dirPath}/one` }
-		);
+		const updatedDir1 = { id: dirInsertId, parentId: null, name: 'one', path: `${dirPath}/one` };
+		assert.deepStrictEqual(dirsSearchResult.find(d => d.id === dirInsertId), updatedDir1);
+		assert.deepStrictEqual(createdDirs.get(dirInsertId), updatedDir1);
+		assert.deepStrictEqual(createdDirsArray.find(d => d.id === dirInsertId), updatedDir1);
 		assert.strictEqual(existsSync(`${testFilesPath}/1`), false);
 		assert.strictEqual(existsSync(`${testFilesPath}/one`), true);
-		// assert.deepStrictEqual(
-		// 	filesSearchResult.find(f => f.id === fileInsertId),
-		// 	{ ...createdFiles.get(fileInsertId), directoryId: dirInsertId, name: 'tmpOne', path: `${dirPath}/1/tmpOne` }
-		// );
-		// assert.strictEqual(existsSync(`${testFilesPath}/1/tmp1`), false);
-		// assert.strictEqual(existsSync(`${testFilesPath}/1/tmpOne`), true);
+
+		const updatedDir2 = { id: dirInsertId + 1, parentId: dirInsertId, name: 'two', path: `${dirPath}/one/two` };
+		assert.deepStrictEqual(dirsSearchResult.find(d => d.id === dirInsertId + 1), updatedDir2);
+		assert.deepStrictEqual(createdDirs.get(dirInsertId + 1), updatedDir2);
+		assert.deepStrictEqual(createdDirsArray.find(d => d.id === dirInsertId + 1), updatedDir2);
+		assert.strictEqual(existsSync(`${testFilesPath}/one/2`), false);
+		assert.strictEqual(existsSync(`${testFilesPath}/one/two`), true);
+
+		assert.deepStrictEqual(
+			filesSearchResult.find(f => f.id === fileInsertId),
+			{ ...createdFiles.get(fileInsertId), path: `${dirPath}/one/tmp1` }
+		);
+		assert.strictEqual(existsSync(`${testFilesPath}/one/tmp1`), true);
+		assert.deepStrictEqual(
+			filesSearchResult.find(f => f.id === fileInsertId + 1),
+			{ ...createdFiles.get(fileInsertId + 1), path: `${dirPath}/one/two/tmp2` }
+		);
+		assert.strictEqual(existsSync(`${testFilesPath}/one/two/tmp2`), true);
 	});
 
 	// 	await t.test('skips nonexistent old path', async (t) => {
