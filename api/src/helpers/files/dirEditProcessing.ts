@@ -143,10 +143,15 @@ async function updateDirAssociations(
 	const children: IDir[] = [];
 	for (let i = 0; i < allDirsArray.length; i++) {
 		const originalChildDir = allDirsArray[i];
+		const allDirsOriginalChild = allDirs.get(originalChildDir.id);
+		if (!allDirsOriginalChild) {
+			continue;
+		}
+
 		if (originalChildDir.parentId === dir.id) {
 			const path = `${dir.path}/${originalChildDir.name}`;
 			allDirsArray[i].path = path;
-			allDirs.get(originalChildDir.id)!.path = path;
+			allDirsOriginalChild.path = path;
 			children.push(allDirsArray[i]);
 		}
 	}
