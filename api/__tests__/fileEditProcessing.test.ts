@@ -301,7 +301,7 @@ test('file edit processing', { only: true }, async (t) => {
 		);
 		assert.strictEqual(existsSync(`${testFilesPath}/tmp13`), false);
 		assert.strictEqual(existsSync(`${testFilesPath}/7/tmpThirteen`), true);
-		assert.deepStrictEqual(modifiedPagesIds, new Set([fileInsertId]));
+		assert.deepStrictEqual(modifiedPagesIds, new Set([pageInsertId + 1]));
 	});
 });
 
