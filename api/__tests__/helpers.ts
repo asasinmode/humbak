@@ -136,16 +136,18 @@ export async function getCreatedFiles({
 		.where(inArray(directories.id, createdDirIds));
 
 	const createdFileIds = Array.from({ length: fileCount }, (_, i) => i + fileInsertId);
-	const createdFiles: IOriginalFile[] = await db.select({
-		id: files.id,
-		directoryId: files.directoryId,
-		path: files.path,
-		name: files.name,
-		title: files.title,
-		alt: files.alt,
-	})
-		.from(files)
-		.where(inArray(files.id, createdFileIds));
+	const createdFiles: IOriginalFile[] = createdFileIds.length
+		? await db.select({
+			id: files.id,
+			directoryId: files.directoryId,
+			path: files.path,
+			name: files.name,
+			title: files.title,
+			alt: files.alt,
+		})
+			.from(files)
+			.where(inArray(files.id, createdFileIds))
+		: [];
 
 	return {
 		createdDirs: new Map(createdDirs.map(d => [d.id, d])),

@@ -257,13 +257,68 @@ test('dir edit processing', { only: true }, async (t) => {
 		assert.deepStrictEqual(modifiedPagesIds, new Set([pageInsertId]));
 	});
 
-	// 	await t.test('skips nonexistent old path', async (t) => {
-	// 		assert.equal(1, 1);
-	// 	});
+	await t.test('skips nonexistent old path', async () => {
+		const [{ insertId: dirInsertId }] = await db.insert(directories).values([
+			{ parentId: null, name: '11', path: `${dirPath}/11` },
+		]);
 
-	// 	await t.test('skips nonexistent new path', async (t) => {
-	// 		assert.equal(1, 1);
-	// 	});
+		const { createdDirs, createdDirsArray, createdDirIds } = await getCreatedFiles({
+			dirInsertId,
+			dirCount: 1,
+			fileInsertId: 0,
+			fileCount: 0,
+		});
+
+		await processEditedDirs(
+			[
+				{ id: dirInsertId, parentId: null, name: 'eleven', originalIndex: 0 },
+			],
+			createdDirs,
+			createdDirsArray,
+			new Set(),
+			`${dirPath}/`
+		);
+
+		const dirsSearchResult = await getUpdatedDirs(createdDirIds);
+
+		assert.deepStrictEqual(
+			dirsSearchResult[0],
+			{ id: dirInsertId, parentId: null, name: '11', path: `${dirPath}/11` }
+		);
+	});
+
+	await t.test('skips nonexistent new path', async () => {
+		await mkdir(`${testFilesPath}/12`);
+
+		const [{ insertId: dirInsertId }] = await db.insert(directories).values([
+			{ parentId: null, name: '12', path: `${dirPath}/12` },
+			{ parentId: null, name: '13', path: `${dirPath}/13` },
+		]);
+
+		const { createdDirs, createdDirsArray } = await getCreatedFiles({
+			dirInsertId,
+			dirCount: 2,
+			fileInsertId: 0,
+			fileCount: 0,
+		});
+
+		await processEditedDirs(
+			[
+				{ id: dirInsertId, parentId: dirInsertId + 1, name: 'twelve', originalIndex: 0 },
+			],
+			createdDirs,
+			createdDirsArray,
+			new Set(),
+			`${dirPath}/`
+		);
+
+		const dirsSearchResult = await getUpdatedDirs([dirInsertId]);
+
+		assert.deepStrictEqual(
+			dirsSearchResult[0],
+			{ id: dirInsertId, parentId: null, name: '12', path: `${dirPath}/12` }
+		);
+	});
 });
 
 function getUpdatedFiles(ids: number[]) {
