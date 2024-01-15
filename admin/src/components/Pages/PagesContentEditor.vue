@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import VEditor from '~/components/V/VEditor.vue';
 import type { IDialogFile, IUpsertPageInput } from '~/composables/useApi';
+import { getPathWithoutExtension } from '~/helpers';
 
 const editor = ref<InstanceType<typeof VEditor>>();
 const container = ref<HTMLDivElement>();
@@ -240,6 +241,13 @@ function replaceTempWithImage(temp: ITempFileElement, file: IDialogFile) {
 	element.src = `files${file.path}`;
 	element.title = file.title;
 	element.alt = file.alt;
+
+	if (file.mimetype !== 'image/gif') {
+		const pathWithoutExtension = getPathWithoutExtension(`files${file.path}`);
+		element.srcset = `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1000.webp 1000w`;
+		element.sizes = `(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px`;
+	}
+
 	for (const attribute of temp.attributes) {
 		if (attribute.name !== 'fid') {
 			element.setAttribute(attribute.name, attribute.value);
