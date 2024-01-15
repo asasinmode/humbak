@@ -36,9 +36,9 @@ export async function renameFile(path: string, newPath: string, mimetype: string
 
 	const pathWithoutExtension = getPathWithoutExtension(path);
 	const newPathWithoutExtension = getPathWithoutExtension(newPath);
-	await rename(`${pathWithoutExtension}_500.webp`, `${newPathWithoutExtension}_500.webp`);
-	await rename(`${pathWithoutExtension}_800.webp`, `${newPathWithoutExtension}_800.webp`);
-	await rename(`${pathWithoutExtension}_1000.webp`, `${newPathWithoutExtension}_1000.webp`);
+	existsSync(`${pathWithoutExtension}_500.webp`) && await rename(`${pathWithoutExtension}_500.webp`, `${newPathWithoutExtension}_500.webp`);
+	existsSync(`${pathWithoutExtension}_800.webp`) && await rename(`${pathWithoutExtension}_800.webp`, `${newPathWithoutExtension}_800.webp`);
+	existsSync(`${pathWithoutExtension}_1000.webp`) && await rename(`${pathWithoutExtension}_1000.webp`, `${newPathWithoutExtension}_1000.webp`);
 }
 
 export async function deleteFile(path: string, mimetype: string) {
