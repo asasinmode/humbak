@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { knownMimetypeExtensions } from '~/helpers';
+import { getPathWithoutExtension, knownMimetypeExtensions } from '~/helpers';
 import type { IFile } from '~/composables/useApi';
 import type { IFilesGrabbedItem, ILocalFile, INewFile } from '~/types';
 
@@ -47,6 +47,19 @@ function cancelMove() {
 	file.value.movedToId = undefined;
 	clearErrors('directoryId', 'name');
 }
+
+const srcSet = computed(() => {
+	if (!isNew.value && file.value.mimetype !== 'image/gif') {
+		const pathWithoutExtension = getPathWithoutExtension(path.value);
+		return `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1000.webp 1000w`;
+	}
+});
+
+const sizes = computed(() => {
+	if (!isNew.value && file.value.mimetype !== 'image/gif') {
+		return `(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px`;
+	}
+});
 </script>
 
 <template>
@@ -60,8 +73,10 @@ function cancelMove() {
 				:src="path"
 				:title="file.title"
 				:alt="file.alt"
-				class="h-full w-full object-cover"
 				:class="disableInteractions ? 'grayscale-100 brightness-60' : ''"
+				:srcSet="srcSet"
+				:sizes="sizes"
+				class="h-full w-full object-cover"
 			>
 			<span
 				v-else
