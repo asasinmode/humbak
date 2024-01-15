@@ -2,6 +2,11 @@
 import { getPathWithoutExtension, knownMimetypeExtensions } from '~/helpers';
 import type { IDialogFile } from '~/composables/useApi';
 
+withDefaults(
+	defineProps<{ iconClass?: string; }>(),
+	{ iconClass: 'w-5 h-5' }
+);
+
 const api = useApi();
 const { toast } = useToast();
 
@@ -110,7 +115,7 @@ async function copy(file: IDialogFile) {
 
 <template>
 	<VDialog
-		class="mt-2 h-8 w-8 p-0 neon-indigo"
+		class="neon-indigo"
 		title="pliki"
 		class-container="flex flex-col"
 		class-close-button="mx-auto w-fit mt-5"
@@ -120,7 +125,7 @@ async function copy(file: IDialogFile) {
 	>
 		<template #button>
 			<span class="visually-hidden">pliki</span>
-			<div class="i-fluent-image-24-regular group absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
+			<div class="i-fluent-image-24-regular group absolute left-1/2 top-1/2 translate-center" :class="iconClass" />
 		</template>
 
 		<h3 class="text-center text-5 font-600 mb-3">

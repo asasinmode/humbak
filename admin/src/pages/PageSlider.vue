@@ -324,6 +324,7 @@ function revertAspectRatioIfUnsaved() {
 				</template>
 			</VCombobox>
 			<div class="flex gap-3">
+				<PagesFilesDialog class="h-9 w-9 neon-blue" icon-class="w-[1.375rem] h-[1.375rem]" />
 				<VDialog
 					ref="configurationDialog"
 					class="h-9 w-9 neon-blue"
