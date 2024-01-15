@@ -39,7 +39,6 @@ export function useErrors<T extends Record<string, unknown>>(form: T) {
 		let toastInvisibleError = true;
 
 		for (const key in error.data) {
-			// @ts-expect-error key is valid
 			const value = error.data[key];
 			// @ts-expect-error key is valid
 			if (!(key in errors.value)) {

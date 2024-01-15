@@ -2,7 +2,8 @@ import { inArray } from 'drizzle-orm';
 import { db } from '../../db';
 import { files } from '../../db/schema/files';
 import { filesToPages } from '../../db/schema/filesToPages';
-import { deleteFile, filesStoragePath } from '.';
+import { deleteFile } from './image';
+import { filesStoragePath } from '.';
 
 export async function processDeletedFiles(input: number[], modifiedPagesIds: Set<number>) {
 	if (!input.length) {
