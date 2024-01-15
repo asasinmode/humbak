@@ -2,6 +2,7 @@ import { existsSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 import { pool } from '..';
 import { filesStoragePath } from '../../helpers/files';
+import { deleteFile } from '../../helpers/files/image';
 import { getTableNames, promptProdContinue } from '../../helpers';
 
 await promptProdContinue();
@@ -13,9 +14,9 @@ for (const { path } of rawDirectories as unknown as { path: string; }[]) {
 	existsSync(`${filesStoragePath}/${path}`) && await rm(`${filesStoragePath}/${path}`, { recursive: true });
 }
 
-const [rawFiles] = await pool.execute('SELECT `path` FROM `files` WHERE `directoryId` IS NULL');
-for (const { path } of rawFiles as unknown as { path: string; }[]) {
-	existsSync(`${filesStoragePath}/${path}`) && await rm(`${filesStoragePath}/${path}`);
+const [rawFiles] = await pool.execute('SELECT `path`, `mimetype` FROM `files` WHERE `directoryId` IS NULL');
+for (const { path, mimetype } of rawFiles as unknown as { path: string; mimetype: string; }[]) {
+	await deleteFile(`${filesStoragePath}/${path}`, mimetype);
 }
 
 await pool.execute('SET FOREIGN_KEY_CHECKS = 0');

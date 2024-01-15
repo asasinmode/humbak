@@ -3,6 +3,7 @@ import { Buffer } from 'node:buffer';
 import { db, pool } from '..';
 import { promptProdContinue } from '../../helpers';
 import { filesStoragePath, stylesheetsStoragePath } from '../../helpers/files';
+import { createImageSizes } from '../../helpers/files/image';
 import { pages } from '../schema/pages';
 import { slides } from '../schema/slides';
 import { contents } from '../schema/contents';
@@ -356,6 +357,7 @@ for (let dirId = 0; dirId <= 6; dirId++) {
 		});
 
 		await writeFile(`${filesStoragePath}${path}`, await getFile());
+		await createImageSizes(`${filesStoragePath}${path}`, mimetype);
 	}
 }
 

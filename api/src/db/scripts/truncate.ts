@@ -3,6 +3,7 @@ import { rm } from 'node:fs/promises';
 import { filesStoragePath } from '../../helpers/files';
 import { pool } from '..';
 import { getTableNames, promptProdContinue } from '../../helpers';
+import { deleteFile } from '../../helpers/files/image';
 
 await promptProdContinue();
 
@@ -16,9 +17,9 @@ for (const { path } of rawDirectories as unknown as { path: string; }[]) {
 	existsSync(`${filesStoragePath}/${path}`) && await rm(`${filesStoragePath}/${path}`, { recursive: true });
 }
 
-const [rawFiles] = await pool.execute('SELECT `path` FROM `files` WHERE `directoryId` IS NULL');
-for (const { path } of rawFiles as unknown as { path: string; }[]) {
-	existsSync(`${filesStoragePath}/${path}`) && await rm(`${filesStoragePath}/${path}`);
+const [rawFiles] = await pool.execute('SELECT `path`, `mimetype` FROM `files` WHERE `directoryId` IS NULL');
+for (const { path, mimetype } of rawFiles as unknown as { path: string; mimetype: string; }[]) {
+	await deleteFile(`${filesStoragePath}/${path}`, mimetype);
 }
 
 for (const { table_name } of tables) {
