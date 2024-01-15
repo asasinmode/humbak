@@ -330,6 +330,7 @@ function getUpdatedFiles(ids: number[]) {
 			name: files.name,
 			title: files.title,
 			alt: files.alt,
+			mimetype: files.mimetype,
 		})
 		.from(files)
 		.where(inArray(files.id, ids));

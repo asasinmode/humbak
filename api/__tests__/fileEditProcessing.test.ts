@@ -238,6 +238,7 @@ test('file edit processing', async (t) => {
 				name: 'tmpEleven',
 				title: 'two',
 				alt: 'two',
+				mimetype: 'text/plain',
 			}
 		);
 		assert.strictEqual(existsSync(`${testFilesPath}/5/tmp11`), false);
@@ -297,6 +298,7 @@ test('file edit processing', async (t) => {
 				name: 'tmpThirteen',
 				title: 'two',
 				alt: 'two',
+				mimetype: 'text/plain',
 			}
 		);
 		assert.strictEqual(existsSync(`${testFilesPath}/tmp13`), false);
@@ -314,6 +316,7 @@ function getUpdatedFiles(ids: number[]) {
 			name: files.name,
 			title: files.title,
 			alt: files.alt,
+			mimetype: files.mimetype,
 		})
 		.from(files)
 		.where(inArray(files.id, ids));
