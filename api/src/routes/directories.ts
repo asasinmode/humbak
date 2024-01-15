@@ -4,6 +4,7 @@ import { Hono, type MiddlewareHandler } from 'hono';
 import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { type Input, array, custom, null_, number, object, string, transform, union } from 'valibot';
 import { processDeletedDirs } from 'src/helpers/files/dirDeleteProcessing';
+import { createImageSizes } from 'src/helpers/files/image';
 import { parsePageHtml } from '../helpers/pages';
 import { db } from '../db';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
@@ -364,6 +365,7 @@ export const app = new Hono<{
 			}
 			for (const file of filesToSave) {
 				await writeFile(`${filesStoragePath}${file.path}`, file.file);
+				await createImageSizes(`${filesStoragePath}${file.path}`, file.mimetype);
 			}
 
 			return c.json(await dirData(id, true));

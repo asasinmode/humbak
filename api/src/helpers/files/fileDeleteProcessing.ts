@@ -1,10 +1,9 @@
-import { existsSync } from 'node:fs';
-import { rm } from 'node:fs/promises';
 import { inArray } from 'drizzle-orm';
 import { db } from 'src/db';
 import { files } from 'src/db/schema/files';
 import { filesStoragePath } from 'src/helpers/files';
 import { filesToPages } from 'src/db/schema/filesToPages';
+import { deleteFile } from 'src/helpers/files/image';
 
 export async function processDeletedFiles(input: number[], modifiedPagesIds: Set<number>) {
 	if (!input.length) {
@@ -15,12 +14,13 @@ export async function processDeletedFiles(input: number[], modifiedPagesIds: Set
 		.select({
 			id: files.id,
 			path: files.path,
+			mimetype: files.mimetype,
 		})
 		.from(files)
 		.where(inArray(files.id, input));
 
 	for (const file of originalFiles) {
-		existsSync(`${filesStoragePath}${file.path}`) && await rm(`${filesStoragePath}${file.path}`);
+		await deleteFile(`${filesStoragePath}${file.path}`, file.mimetype);
 	}
 
 	const affectedPageIds = await db
