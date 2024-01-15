@@ -5,7 +5,7 @@ import sharp from 'sharp';
 sharp.cache(false);
 
 export async function createImageSizes(path: string, mimetype: string) {
-	if (mimetype.slice(0, 5) !== 'image') {
+	if (mimetype.slice(0, 5) !== 'image' || mimetype === 'image/gif') {
 		return;
 	}
 
@@ -30,7 +30,7 @@ export async function createImageSizes(path: string, mimetype: string) {
 
 export async function renameFile(path: string, newPath: string, mimetype: string) {
 	await rename(path, newPath);
-	if (mimetype.slice(0, 5) !== 'image') {
+	if (mimetype.slice(0, 5) !== 'image' || mimetype === 'image/gif') {
 		return;
 	}
 
@@ -43,7 +43,7 @@ export async function renameFile(path: string, newPath: string, mimetype: string
 
 export async function deleteFile(path: string, mimetype: string) {
 	existsSync(path) && await rm(path);
-	if (mimetype.slice(0, 5) !== 'image') {
+	if (mimetype.slice(0, 5) !== 'image' || mimetype === 'image/gif') {
 		return;
 	}
 
