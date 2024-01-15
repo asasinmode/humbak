@@ -53,7 +53,7 @@ export async function deleteFile(path: string, mimetype: string) {
 	existsSync(`${pathWithoutExtension}_1000.webp`) && await rm(`${pathWithoutExtension}_1000.webp`);
 }
 
-function getPathWithoutExtension(path: string) {
+export function getPathWithoutExtension(path: string) {
 	const pathDotIndex = path.lastIndexOf('.');
 	return path.slice(0, pathDotIndex !== -1 ? pathDotIndex : undefined);
 }

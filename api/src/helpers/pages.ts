@@ -3,6 +3,7 @@ import { load } from 'cheerio';
 import { inArray } from 'drizzle-orm';
 import { db } from '../db';
 import { files } from '../db/schema/files';
+import { getPathWithoutExtension } from './files/image';
 
 export async function parsePageHtml(html?: string): Promise<{ value?: string; fileIds: number[]; }> {
 	if (html === undefined) {
@@ -64,6 +65,13 @@ export async function parsePageHtml(html?: string): Promise<{ value?: string; fi
 		image.attr('src', `files${file.path}`);
 		image.attr('title', file.title);
 		image.attr('alt', file.alt);
+
+		if (file.mimetype !== 'image/gif') {
+			const pathWithoutExtension = getPathWithoutExtension(`files${file.path}`);
+			image.attr('srcset', `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1000.webp 1000w`);
+			image.attr('sizes', '(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px');
+		}
+
 		for (const attribute of element.attributes) {
 			if (attribute.name !== 'fid') {
 				image.attr(attribute.name, attribute.value);
