@@ -245,7 +245,7 @@ function replaceTempWithImage(temp: ITempFileElement, file: IDialogFile) {
 	if (file.mimetype !== 'image/gif') {
 		const pathWithoutExtension = getPathWithoutExtension(`files${file.path}`);
 		element.srcset = `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1000.webp 1000w`;
-		element.sizes = `(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px`;
+		element.sizes = '(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px';
 	}
 
 	for (const attribute of temp.attributes) {

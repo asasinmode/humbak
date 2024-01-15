@@ -85,7 +85,7 @@ function srcSet(path: string, mimetype: string, isImage: boolean) {
 }
 function sizes(mimetype: string, isImage: boolean) {
 	if (isImage && mimetype !== 'image/gif') {
-		return `(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px`;
+		return '(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px';
 	}
 }
 
@@ -156,7 +156,7 @@ async function copy(file: IDialogFile) {
 				:src="`files${file.path}`"
 				:title="file.title"
 				:alt="file.alt"
-				:srcSet="srcSet(`files${file.path}`, file.mimetype, isImage(file.mimetype))"
+				:srcset="srcSet(`files${file.path}`, file.mimetype, isImage(file.mimetype))"
 				:sizes="sizes(file.mimetype, isImage(file.mimetype))"
 				class="object-cover col-span-full h-18 w-full max-w-1/2 justify-self-center lg:row-span-full lg:col-span-1 lg:h-25 lg:max-w-none lg:self-center"
 			>

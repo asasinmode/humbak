@@ -57,7 +57,7 @@ const srcSet = computed(() => {
 
 const sizes = computed(() => {
 	if (!isNew.value && file.value.mimetype !== 'image/gif') {
-		return `(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px`;
+		return '(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px';
 	}
 });
 </script>
@@ -74,7 +74,7 @@ const sizes = computed(() => {
 				:title="file.title"
 				:alt="file.alt"
 				:class="disableInteractions ? 'grayscale-100 brightness-60' : ''"
-				:srcSet="srcSet"
+				:srcset="srcSet"
 				:sizes="sizes"
 				class="h-full w-full object-cover"
 			>
