@@ -1,12 +1,12 @@
 import { existsSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 import { eq, inArray } from 'drizzle-orm';
-import { db } from 'src/db';
-import { filesStoragePath } from 'src/helpers/files';
-import type { IDir } from 'src/routes/directories';
-import { directories } from 'src/db/schema/directories';
-import { filesToPages } from 'src/db/schema/filesToPages';
-import { files } from 'src/db/schema/files';
+import { db } from '../../db';
+import type { IDir } from '../../routes/directories';
+import { directories } from '../../db/schema/directories';
+import { filesToPages } from '../../db/schema/filesToPages';
+import { files } from '../../db/schema/files';
+import { filesStoragePath } from '.';
 
 export async function processDeletedDirs(
 	input: Map<number, IDir>,

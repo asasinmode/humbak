@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs';
 import { lstat } from 'node:fs/promises';
-import { filesStoragePath } from 'src/helpers/files';
-import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
+import type { IDir, IPutDirectoryInput } from '../../routes/directories';
 import { recursiveDirChildren } from './dirDeleteValidation';
+import { filesStoragePath } from '.';
 
 export type IEditedDir = IPutDirectoryInput['editedDirs'][number] & { originalIndex: number; };
 

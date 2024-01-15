@@ -1,4 +1,4 @@
-import type { IDir, IPutDirectoryInput } from 'src/routes/directories.ts';
+import type { IDir, IPutDirectoryInput } from '../../routes/directories.ts';
 
 export function getDirsToDelete(
 	input: IPutDirectoryInput['deletedDirIds'],
