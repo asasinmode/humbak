@@ -1,10 +1,10 @@
 import { existsSync } from 'node:fs';
-import { rename } from 'node:fs/promises';
 import { eq, inArray } from 'drizzle-orm';
 import { db } from '../../db';
 import { files } from '../../db/schema/files';
 import { filesToPages } from '../../db/schema/filesToPages';
 import type { IEditedFile } from './fileEditValidation';
+import { renameFile } from './image';
 import { filesStoragePath } from '.';
 
 export async function processEditedFiles(input: IEditedFile[], modifiedPagesIds: Set<number>, rootPath = '/') {
@@ -40,7 +40,7 @@ export async function processEditedFiles(input: IEditedFile[], modifiedPagesIds:
 			}
 
 			const newPath = `${filesStoragePath}${targetDirPath}/${file.name}`;
-			await rename(oldPath, newPath);
+			await renameFile(oldPath, newPath, originalFile.mimetype);
 			path = `${targetDirPath}${file.name}`;
 		}
 

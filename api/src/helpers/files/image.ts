@@ -1,6 +1,8 @@
 import { existsSync } from 'node:fs';
-import { rm } from 'node:fs/promises';
+import { rename, rm } from 'node:fs/promises';
 import sharp from 'sharp';
+
+sharp.cache(false);
 
 export async function createImageSizes(path: string, mimetype: string) {
 	if (mimetype.slice(0, 5) !== 'image') {
@@ -20,10 +22,23 @@ export async function createImageSizes(path: string, mimetype: string) {
 		propertyToResize = metadata.width >= metadata.height ? 'width' : 'height';
 	}
 
-	const pathWithoutExtension = path.slice(0, path.lastIndexOf('.'));
-	await image.resize({ [propertyToResize]: 500, fit: 'inside' }).jpeg().toFile(`${pathWithoutExtension}_500.jpeg`);
-	await image.resize({ [propertyToResize]: 800, fit: 'inside' }).jpeg().toFile(`${pathWithoutExtension}_800.jpeg`);
-	await image.resize({ [propertyToResize]: 1000, fit: 'inside' }).jpeg().toFile(`${pathWithoutExtension}_1000.jpeg`);
+	const pathWithoutExtension = getPathWithoutExtension(path);
+	await image.resize({ [propertyToResize]: 500, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_500.webp`);
+	await image.resize({ [propertyToResize]: 800, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_800.webp`);
+	await image.resize({ [propertyToResize]: 1000, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_1000.webp`);
+}
+
+export async function renameFile(path: string, newPath: string, mimetype: string) {
+	await rename(path, newPath);
+	if (mimetype.slice(0, 5) !== 'image') {
+		return;
+	}
+
+	const pathWithoutExtension = getPathWithoutExtension(path);
+	const newPathWithoutExtension = getPathWithoutExtension(newPath);
+	await rename(`${pathWithoutExtension}_500.webp`, `${newPathWithoutExtension}_500.webp`);
+	await rename(`${pathWithoutExtension}_800.webp`, `${newPathWithoutExtension}_800.webp`);
+	await rename(`${pathWithoutExtension}_1000.webp`, `${newPathWithoutExtension}_1000.webp`);
 }
 
 export async function deleteFile(path: string, mimetype: string) {
@@ -32,8 +47,13 @@ export async function deleteFile(path: string, mimetype: string) {
 		return;
 	}
 
-	const pathWithoutExtension = path.slice(0, path.lastIndexOf('.'));
-	existsSync(`${pathWithoutExtension}_500.jpeg`) && await rm(`${pathWithoutExtension}_500.jpeg`);
-	existsSync(`${pathWithoutExtension}_800.jpeg`) && await rm(`${pathWithoutExtension}_800.jpeg`);
-	existsSync(`${pathWithoutExtension}_1000.jpeg`) && await rm(`${pathWithoutExtension}_1000.jpeg`);
+	const pathWithoutExtension = getPathWithoutExtension(path);
+	existsSync(`${pathWithoutExtension}_500.webp`) && await rm(`${pathWithoutExtension}_500.webp`);
+	existsSync(`${pathWithoutExtension}_800.webp`) && await rm(`${pathWithoutExtension}_800.webp`);
+	existsSync(`${pathWithoutExtension}_1000.webp`) && await rm(`${pathWithoutExtension}_1000.webp`);
+}
+
+function getPathWithoutExtension(path: string) {
+	const pathDotIndex = path.lastIndexOf('.');
+	return path.slice(0, pathDotIndex !== -1 ? pathDotIndex : undefined);
 }

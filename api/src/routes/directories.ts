@@ -141,6 +141,7 @@ export const app = new Hono<{
 						directoryId: files.directoryId,
 						path: files.path,
 						name: files.name,
+						mimetype: files.mimetype,
 					})
 					.from(files)
 					.where(inArray(files.id, input.editedFiles.map(f => f.id)))

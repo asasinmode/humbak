@@ -5,7 +5,7 @@ import type { files } from '../../db/schema/files';
 import type { IDir, IPutDirectoryInput } from '../../routes/directories';
 import { filesStoragePath } from '.';
 
-export type IOriginalFile = Pick<InferSelectModel<typeof files>, 'id' | 'directoryId' | 'path' | 'name'>;
+export type IOriginalFile = Pick<InferSelectModel<typeof files>, 'id' | 'directoryId' | 'path' | 'name' | 'mimetype'>;
 export type IEditedFile = IPutDirectoryInput['editedFiles'][number] & { targetDir?: IDir; originalFile: IOriginalFile; };
 
 export async function getFilesToEdit(

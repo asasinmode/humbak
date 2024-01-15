@@ -37,6 +37,7 @@ export function createOriginalFiles(files: { directoryId: number | null; name?: 
 			directoryId: tmp.directoryId,
 			path: `/${id}`,
 			name: tmp.name ?? `${id}`,
+			mimetype: 'text/plain',
 		};
 		rv.set(id, file);
 	}
