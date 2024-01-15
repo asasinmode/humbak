@@ -13,6 +13,7 @@ useGlobalPagesStylesheet();
 const api = useApi();
 const { confirm } = useConfirm();
 const { toast, toastGenericError } = useToast();
+const { parsedContent, updateParsedContent } = useHumbakFiles();
 
 const theSlider = ref<InstanceType<typeof TheSlider>>();
 const resetButton = ref<InstanceType<typeof VButton>>();
@@ -179,6 +180,7 @@ async function clearFormAndEditor() {
 
 function updateContent(value: string) {
 	content.value = value;
+	updateParsedContent(value);
 	errors.value.content = '';
 }
 
@@ -428,7 +430,7 @@ function revertAspectRatioIfUnsaved() {
 			aria-hidden="true"
 			tabindex="-1"
 		>
-			<div class="absolute inset-0" v-html="content" />
+			<div class="absolute inset-0" v-html="parsedContent" />
 		</article>
 
 		<TheSlider ref="theSlider" class="col-span-full" :language="selectedLanguage" :aspect-ratio="aspectRatio" />
