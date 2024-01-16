@@ -290,7 +290,7 @@ function revertAspectRatioIfUnsaved() {
 
 <template>
 	<main id="content" class="px-container grid grid-cols-[min-content_min-content_1fr] mx-auto max-w-256 w-full gap-x-3 gap-y-5 pb-4 pt-[1.125rem] sm:grid-cols-[auto_auto_auto_1fr]">
-		<div id="slidePageControls" class="grid col-span-full grid-cols-[min-content_1fr_max-content] w-full gap-x-3 gap-y-5 md:flex">
+		<div id="slidePageControls" class="grid col-span-full items-end grid-cols-[min-content_1fr_max-content] w-full gap-x-3 gap-y-5 md:flex">
 			<VCombobox
 				id="languageSelect"
 				ref="languageSelect"
@@ -325,11 +325,11 @@ function revertAspectRatioIfUnsaved() {
 					{{ itemProps.text }}
 				</template>
 			</VCombobox>
-			<div class="flex gap-3">
+			<div class="flex gap-2 md:gap-3 relative pt-12 md:pt-0">
 				<PagesFilesDialog class="h-9 w-9 neon-blue" icon-class="w-[1.375rem] h-[1.375rem]" />
 				<VDialog
 					ref="configurationDialog"
-					class="h-9 w-9 neon-blue"
+					class="h-9 w-9 neon-blue !absolute top-0 md:!relative"
 					class-container="grid grid-cols-2 gap-x-2 gap-y-3"
 					class-close-button="justify-self-end"
 					close-button-text="zamknij"
