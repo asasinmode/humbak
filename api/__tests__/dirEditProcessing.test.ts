@@ -10,6 +10,8 @@ import { inArray } from 'drizzle-orm';
 import { processEditedDirs } from 'src/helpers/files/dirEditProcessing';
 import { pages } from 'src/db/schema/pages';
 import { filesToPages } from 'src/db/schema/filesToPages';
+import { slides } from 'src/db/schema/slides';
+import { filesToSlides } from 'src/db/schema/filesToSlides';
 import { createFiles, getCreatedFiles } from './helpers';
 
 const dirPath = '/dirEditProcessing';
@@ -59,7 +61,7 @@ test('dir edit processing', async (t) => {
 		await processEditedDirs([
 			{ id: dirInsertId, parentId: null, name: 'one', originalIndex: 0 },
 			{ id: dirInsertId + 1, parentId: dirInsertId, name: 'two', originalIndex: 1 },
-		], createdDirs, createdDirsArray, new Set(), `${dirPath}/`);
+		], createdDirs, createdDirsArray, new Set(), new Set(), `${dirPath}/`);
 
 		const dirsSearchResult = await getUpdatedDirs(createdDirIds);
 		const filesSearchResult = await getUpdatedFiles(createdFileIds);
@@ -120,7 +122,7 @@ test('dir edit processing', async (t) => {
 			{ id: dirInsertId + 3, parentId: dirInsertId + 1, name: 'six', originalIndex: 0 },
 			{ id: dirInsertId + 1, parentId: dirInsertId, name: 'four', originalIndex: 1 },
 			{ id: dirInsertId + 2, parentId: null, name: 'five', originalIndex: 2 },
-		], createdDirs, createdDirsArray, new Set(), `${dirPath}/`);
+		], createdDirs, createdDirsArray, new Set(), new Set(), `${dirPath}/`);
 
 		const dirsSearchResult = await getUpdatedDirs(createdDirIds);
 		const filesSearchResult = await getUpdatedFiles(createdFileIds);
@@ -194,7 +196,7 @@ test('dir edit processing', async (t) => {
 		await processEditedDirs([
 			{ id: dirInsertId, parentId: null, name: 'seven', originalIndex: 0 },
 			{ id: dirInsertId + 1, parentId: dirInsertId, name: 'eight', originalIndex: 1 },
-		], createdDirs, createdDirsArray, modifiedPagesIds, `${dirPath}/`);
+		], createdDirs, createdDirsArray, modifiedPagesIds, new Set(), `${dirPath}/`);
 
 		const dirsSearchResult = await getUpdatedDirs([dirInsertId + 1]);
 
@@ -245,6 +247,7 @@ test('dir edit processing', async (t) => {
 			createdDirs,
 			createdDirsArray.filter(d => d.id !== dirInsertId),
 			modifiedPagesIds,
+			new Set(),
 			`${dirPath}/`
 		);
 
@@ -258,24 +261,42 @@ test('dir edit processing', async (t) => {
 	});
 
 	await t.test('skips nonexistent old path', async () => {
+		await mkdir(`${testFilesPath}/12`);
+		await writeFile(`${testFilesPath}/12/tmp9`, '');
+
 		const [{ insertId: dirInsertId }] = await db.insert(directories).values([
 			{ parentId: null, name: '11', path: `${dirPath}/11` },
+			{ parentId: null, name: '12', path: `${dirPath}/12` },
+		]);
+		const [{ insertId: fileInsertId }] = await db.insert(files).values(createFiles([
+			{ directoryId: dirInsertId + 1, path: `${dirPath}/12/tmp9`, name: 'tmp9' },
+		]));
+		const [{ insertId: slideInsertId }] = await db.insert(slides).values([
+			{ language: 'en', name: `${dirPath}1` },
+			{ language: 'en', name: `${dirPath}2` },
+		]);
+		await db.insert(filesToSlides).values([
+			{ slideId: slideInsertId + 1, fileId: fileInsertId },
 		]);
 
 		const { createdDirs, createdDirsArray, createdDirIds } = await getCreatedFiles({
 			dirInsertId,
-			dirCount: 1,
+			dirCount: 2,
 			fileInsertId: 0,
 			fileCount: 0,
 		});
 
+		const modifiedSlidesIds = new Set<number>();
+
 		await processEditedDirs(
 			[
 				{ id: dirInsertId, parentId: null, name: 'eleven', originalIndex: 0 },
+				{ id: dirInsertId + 1, parentId: null, name: 'twelve', originalIndex: 1 },
 			],
 			createdDirs,
 			createdDirsArray,
 			new Set(),
+			modifiedSlidesIds,
 			`${dirPath}/`
 		);
 
@@ -285,14 +306,15 @@ test('dir edit processing', async (t) => {
 			dirsSearchResult[0],
 			{ id: dirInsertId, parentId: null, name: '11', path: `${dirPath}/11` }
 		);
+		assert.deepStrictEqual(modifiedSlidesIds, new Set([slideInsertId + 1]));
 	});
 
 	await t.test('skips nonexistent new path', async () => {
-		await mkdir(`${testFilesPath}/12`);
+		await mkdir(`${testFilesPath}/13`);
 
 		const [{ insertId: dirInsertId }] = await db.insert(directories).values([
-			{ parentId: null, name: '12', path: `${dirPath}/12` },
 			{ parentId: null, name: '13', path: `${dirPath}/13` },
+			{ parentId: null, name: '14', path: `${dirPath}/14` },
 		]);
 
 		const { createdDirs, createdDirsArray } = await getCreatedFiles({
@@ -304,10 +326,11 @@ test('dir edit processing', async (t) => {
 
 		await processEditedDirs(
 			[
-				{ id: dirInsertId, parentId: dirInsertId + 1, name: 'twelve', originalIndex: 0 },
+				{ id: dirInsertId, parentId: dirInsertId + 1, name: 'thirteen', originalIndex: 0 },
 			],
 			createdDirs,
 			createdDirsArray,
+			new Set(),
 			new Set(),
 			`${dirPath}/`
 		);
@@ -316,7 +339,7 @@ test('dir edit processing', async (t) => {
 
 		assert.deepStrictEqual(
 			dirsSearchResult[0],
-			{ id: dirInsertId, parentId: null, name: '12', path: `${dirPath}/12` }
+			{ id: dirInsertId, parentId: null, name: '13', path: `${dirPath}/13` }
 		);
 	});
 });

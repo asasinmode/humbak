@@ -6,6 +6,7 @@ import type { IDir } from '../../routes/directories';
 import { directories } from '../../db/schema/directories';
 import { files } from '../../db/schema/files';
 import { filesToPages } from '../../db/schema/filesToPages';
+import { filesToSlides } from '../../db/schema/filesToSlides';
 import type { IEditedDir } from './dirEditValidation';
 import { filesStoragePath } from '.';
 
@@ -14,6 +15,7 @@ export async function processEditedDirs(
 	allDirs: Map<number, IDir>,
 	allDirsArray: IDir[],
 	modifiedPagesIds: Set<number>,
+	modifiedSlidesIds: Set<number>,
 	rootPath = '/'
 ) {
 	if (!input.length) {
@@ -52,6 +54,7 @@ export async function processEditedDirs(
 	if (!updatedDirIds.size) {
 		return;
 	}
+	const updatedDirIdsArray = Array.from(updatedDirIds);
 
 	const affectedPageIds = await db
 		.selectDistinct({
@@ -59,10 +62,22 @@ export async function processEditedDirs(
 		})
 		.from(filesToPages)
 		.leftJoin(files, eq(files.id, filesToPages.fileId))
-		.where(inArray(files.directoryId, Array.from(updatedDirIds)));
+		.where(inArray(files.directoryId, Array.from(updatedDirIdsArray)));
 
 	for (const { pageId } of affectedPageIds) {
 		modifiedPagesIds.add(pageId);
+	}
+
+	const affectedSlideIds = await db
+		.selectDistinct({
+			slideId: filesToSlides.slideId,
+		})
+		.from(filesToSlides)
+		.leftJoin(files, eq(files.id, filesToSlides.fileId))
+		.where(inArray(files.directoryId, Array.from(updatedDirIdsArray)));
+
+	for (const { slideId } of affectedSlideIds) {
+		modifiedSlidesIds.add(slideId);
 	}
 }
 
