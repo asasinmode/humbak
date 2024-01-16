@@ -35,16 +35,18 @@ export async function parsePageHtml(html?: string): Promise<{ value?: string; fi
 		humbakFiles.push({ id: parsedId, element });
 	}
 
-	const fileItems = await db.select({
-		id: files.id,
-		path: files.path,
-		title: files.title,
-		alt: files.alt,
-		name: files.name,
-		mimetype: files.mimetype,
-	})
-		.from(files)
-		.where(inArray(files.id, allFileIds));
+	const fileItems = allFileIds.length
+		? await db.select({
+			id: files.id,
+			path: files.path,
+			title: files.title,
+			alt: files.alt,
+			name: files.name,
+			mimetype: files.mimetype,
+		})
+			.from(files)
+			.where(inArray(files.id, allFileIds))
+		: [];
 
 	const filesById: Record<number, typeof fileItems[number]> = fileItems.reduce((p, c) => ({
 		...p,
