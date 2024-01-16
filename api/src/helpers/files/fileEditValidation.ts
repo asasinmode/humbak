@@ -69,13 +69,16 @@ export async function getFilesToEdit(
 			targetDirPath = `${targetDir.path}/`;
 		}
 
-		const newPath = `${filesStoragePath}${targetDirPath}${file.name}`;
-		const somethingExists = existsSync(newPath);
-		if (somethingExists) {
-			const stats = await lstat(newPath);
-			if (!stats.isDirectory()) {
-				setError(i, 'name', 'plik o podanej nazwie istnieje w wybranej lokacji');
-				continue;
+		const hasMoved = originalFile.directoryId !== file.directoryId || file.name !== originalFile.name;
+		if (hasMoved) {
+			const newPath = `${filesStoragePath}${targetDirPath}${file.name}`;
+			const somethingExists = existsSync(newPath);
+			if (somethingExists) {
+				const stats = await lstat(newPath);
+				if (!stats.isDirectory()) {
+					setError(i, 'name', 'plik o podanej nazwie istnieje w wybranej lokacji');
+					continue;
+				}
 			}
 		}
 

@@ -61,6 +61,9 @@ const {
 
 		const slideIndex = availableSlides.value.findIndex(item => item.id === slide.id);
 
+		updateValues(slide);
+		editor.value?.updateModelValue(0, slide.content);
+
 		if (slide.language !== selectedLanguage.value) {
 			selectedLanguage.value = slide.language;
 			previousSelectedLanguage = slide.language;
@@ -76,18 +79,15 @@ const {
 			});
 			selectedSlideId.value = slide.id;
 			previousSelectedSlideId.value = slide.id;
-			theSlider.value?.handleSlide(slide);
+			theSlider.value?.handleSlide(slide, parsedContent.value);
 		} else {
 			availableSlides.value[slideIndex] = {
 				name: slide.name,
 				id: slide.id,
 				isHidden: slide.isHidden,
 			};
-			theSlider.value?.handleSlide(slide);
+			theSlider.value?.handleSlide(slide, parsedContent.value);
 		}
-
-		updateValues(slide);
-		editor.value?.updateModelValue(0, slide.content);
 	},
 	saveButton.value?.element
 );
@@ -238,7 +238,7 @@ async function deleteSlide() {
 	isLoadingSlides.value = true;
 	try {
 		await api.slides[':id'].$delete({ param: { id: selectedSlideId.value.toString() } });
-		selectedLanguage.value && theSlider.value?.handleSlide({ id: selectedSlideId.value, isHidden: true, content: '', name: '', language: selectedLanguage.value });
+		selectedLanguage.value && theSlider.value?.handleSlide({ id: selectedSlideId.value, isHidden: true, content: '', name: '', language: selectedLanguage.value }, '');
 
 		const slideIndex = availableSlides.value.findIndex(slide => slide.id === selectedSlideId.value);
 		selectedSlideId.value = undefined;

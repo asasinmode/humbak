@@ -225,7 +225,7 @@ export const app = new Hono<{
 					.where(inArray(slides.id, Array.from(modifiedSlidesIds)));
 				for (const { id, rawContent } of contentsToUpdate) {
 					const { value } = await parsePageHtml(rawContent);
-					await db.update(slides).set({ parsedContent: value }).where(eq(contents.pageId, id));
+					await db.update(slides).set({ parsedContent: value }).where(eq(slides.id, id));
 				}
 			}
 

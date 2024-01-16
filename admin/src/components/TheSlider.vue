@@ -30,7 +30,7 @@ watch(() => props.language, (value) => {
 	loadSlides(value);
 }, { immediate: true });
 
-function handleSlide({ id, content, isHidden, language }: ISlide) {
+function handleSlide({ id, isHidden, language }: ISlide, content: string) {
 	if (language !== props.language) {
 		return;
 	}
