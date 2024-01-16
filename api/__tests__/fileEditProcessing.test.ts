@@ -177,8 +177,8 @@ test('file edit processing', { only: true }, async (t) => {
 		});
 
 		const input = createProcessedInputFiles(fileInsertId, createdDirs, createdFiles, [
-			{ directoryId: null, name: '1', title: 'one', alt: 'one' },
-			{ directoryId: dirInsertId, name: '2', title: 'two', alt: 'two' },
+			{ directoryId: null, name: 'changed8', title: 'temp8', alt: 'temp8' },
+			{ directoryId: dirInsertId, name: 'tmp9', title: 'temp9', alt: 'temp9' },
 		]);
 		const modifiedSlidesIds = new Set<number>();
 
@@ -188,12 +188,12 @@ test('file edit processing', { only: true }, async (t) => {
 
 		assert.deepStrictEqual(
 			filesSearchResult.find(d => d.id === fileInsertId),
-			{ ...createdFiles.get(fileInsertId), title: 'one', alt: 'one' }
+			{ ...createdFiles.get(fileInsertId), name: 'changed8', title: 'temp8', alt: 'temp8', path: `${dirPath}/changed8` }
 		);
-		assert.strictEqual(existsSync(`${testFilesPath}/tmp8`), true);
+		assert.strictEqual(existsSync(`${testFilesPath}/changed8`), true);
 		assert.deepStrictEqual(
 			filesSearchResult.find(d => d.id === fileInsertId + 1),
-			{ ...createdFiles.get(fileInsertId + 1), title: 'two', alt: 'two' }
+			{ ...createdFiles.get(fileInsertId + 1), name: 'tmp9', title: 'temp9', alt: 'temp9' }
 		);
 		assert.strictEqual(existsSync(`${testFilesPath}/4/tmp9`), true);
 		assert.deepStrictEqual(modifiedSlidesIds, new Set([slideInsertId + 1]));
