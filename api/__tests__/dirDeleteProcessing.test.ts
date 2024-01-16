@@ -10,12 +10,14 @@ import { inArray } from 'drizzle-orm';
 import { processDeletedDirs } from 'src/helpers/files/dirDeleteProcessing';
 import { filesToPages } from 'src/db/schema/filesToPages';
 import { pages } from 'src/db/schema/pages';
+import { slides } from 'src/db/schema/slides';
+import { filesToSlides } from 'src/db/schema/filesToSlides';
 import { createDirectories, createFiles, getCreatedFiles } from './helpers';
 
 const dirPath = '/dirDeleteProcessing';
 const testFilesPath = `${filesStoragePath}${dirPath}`;
 
-test('dir delete processing', async (t) => {
+test('dir delete processing', { only: true }, async (t) => {
 	before(async () => {
 		const exists = existsSync(testFilesPath);
 		if (exists) {
@@ -53,7 +55,7 @@ test('dir delete processing', async (t) => {
 		});
 		const allDirs = structuredClone(createdDirs);
 
-		await processDeletedDirs(createdDirs, allDirs, createdDirsArray, new Set());
+		await processDeletedDirs(createdDirs, allDirs, createdDirsArray, new Set(), new Set());
 
 		const dirSearchResult = await db
 			.select({ id: directories.id })
@@ -87,7 +89,7 @@ test('dir delete processing', async (t) => {
 		});
 		const allDirs = structuredClone(createdDirs);
 
-		await processDeletedDirs(createdDirs, allDirs, createdDirsArray, new Set());
+		await processDeletedDirs(createdDirs, allDirs, createdDirsArray, new Set(), new Set());
 
 		const dirSearchResult = await db
 			.select({ id: directories.id })
@@ -129,10 +131,43 @@ test('dir delete processing', async (t) => {
 			new Map([[dirInsertId, createdDirs.get(dirInsertId)!]]),
 			allDirs,
 			createdDirsArray,
-			modifiedPagesIds
+			modifiedPagesIds,
+			new Set()
 		);
 
 		assert.deepStrictEqual(modifiedPagesIds, new Set([pageInsertId]));
+		assert.deepStrictEqual(allDirs, new Map([[dirInsertId + 1, createdDirs.get(dirInsertId + 1)]]));
+	});
+
+	await t.test('updates modified slides\' ids', async () => {
+		const [{ insertId: dirInsertId }] = await db.insert(directories).values(createDirectories([
+			{ parentId: null, path: `${dirPath}/4` },
+			{ parentId: null, path: `${dirPath}/5` },
+		]));
+		const [{ insertId: fileInsertId }] = await db.insert(files).values(createFiles([
+			{ directoryId: dirInsertId, path: `${dirPath}/4/tmp` },
+		]));
+		const [{ insertId: slideInsertId }] = await db.insert(slides).values([
+			{ language: 'en', name: `${dirPath}2` },
+		]);
+		await db.insert(filesToSlides).values([
+			{ slideId: slideInsertId, fileId: fileInsertId },
+		]);
+
+		const { createdDirs, createdDirsArray } = await getCreatedFiles({ fileInsertId, fileCount: 1, dirInsertId, dirCount: 2 });
+		const allDirs = structuredClone(createdDirs);
+
+		const modifiedSlidesIds = new Set<number>();
+
+		await processDeletedDirs(
+			new Map([[dirInsertId, createdDirs.get(dirInsertId)!]]),
+			allDirs,
+			createdDirsArray,
+			new Set(),
+			modifiedSlidesIds
+		);
+
+		assert.deepStrictEqual(modifiedSlidesIds, new Set([slideInsertId]));
 		assert.deepStrictEqual(allDirs, new Map([[dirInsertId + 1, createdDirs.get(dirInsertId + 1)]]));
 	});
 });
