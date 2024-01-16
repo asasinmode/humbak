@@ -3,11 +3,17 @@ import { eq, inArray } from 'drizzle-orm';
 import { db } from '../../db';
 import { files } from '../../db/schema/files';
 import { filesToPages } from '../../db/schema/filesToPages';
+import { filesToSlides } from '../../db/schema/filesToSlides';
 import type { IEditedFile } from './fileEditValidation';
 import { renameFile } from './image';
 import { filesStoragePath } from '.';
 
-export async function processEditedFiles(input: IEditedFile[], modifiedPagesIds: Set<number>, rootPath = '/') {
+export async function processEditedFiles(
+	input: IEditedFile[],
+	modifiedPagesIds: Set<number>,
+	modifiedSlidesIds: Set<number>,
+	rootPath = '/'
+) {
 	if (!input.length) {
 		return;
 	}
@@ -59,6 +65,10 @@ export async function processEditedFiles(input: IEditedFile[], modifiedPagesIds:
 			.where(eq(files.id, file.id));
 	}
 
+	if (!modifiedFilesIds.length) {
+		return;
+	}
+
 	const affectedPageIds = await db
 		.selectDistinct({
 			pageId: filesToPages.pageId,
@@ -68,5 +78,16 @@ export async function processEditedFiles(input: IEditedFile[], modifiedPagesIds:
 
 	for (const { pageId } of affectedPageIds) {
 		modifiedPagesIds.add(pageId);
+	}
+
+	const affectedSlideIds = await db
+		.selectDistinct({
+			slideId: filesToSlides.slideId,
+		})
+		.from(filesToSlides)
+		.where(inArray(filesToSlides.fileId, modifiedFilesIds));
+
+	for (const { slideId } of affectedSlideIds) {
+		modifiedSlidesIds.add(slideId);
 	}
 }

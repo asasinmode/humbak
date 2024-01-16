@@ -7,15 +7,17 @@ import { db, pool } from 'src/db';
 import { directories } from 'src/db/schema/directories';
 import { files } from 'src/db/schema/files';
 import { inArray } from 'drizzle-orm';
+import { filesToSlides } from 'src/db/schema/filesToSlides';
 import { processEditedFiles } from 'src/helpers/files/fileEditProcessing';
 import { filesToPages } from 'src/db/schema/filesToPages';
 import { pages } from 'src/db/schema/pages';
+import { slides } from 'src/db/schema/slides';
 import { createDirectories, createFiles, createProcessedInputFiles, getCreatedFiles } from './helpers';
 
 const dirPath = '/fileEditProcessing';
 const testFilesPath = `${filesStoragePath}${dirPath}`;
 
-test('file edit processing', async (t) => {
+test('file edit processing', { only: true }, async (t) => {
 	before(async () => {
 		const exists = existsSync(testFilesPath);
 		if (exists) {
@@ -63,7 +65,7 @@ test('file edit processing', async (t) => {
 			{ directoryId: dirInsertId, name: 'tmpFour' },
 		]);
 
-		await processEditedFiles(input, new Set(), `${dirPath}/`);
+		await processEditedFiles(input, new Set(), new Set(), `${dirPath}/`);
 
 		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
@@ -123,7 +125,7 @@ test('file edit processing', async (t) => {
 			{ directoryId: dirInsertId + 1, name: 'tmpFive' },
 		]);
 
-		await processEditedFiles(input, new Set(), `${dirPath}/`);
+		await processEditedFiles(input, new Set(), new Set(), `${dirPath}/`);
 
 		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
@@ -159,6 +161,13 @@ test('file edit processing', async (t) => {
 			{ directoryId: null, path: `${dirPath}/tmp8` },
 			{ directoryId: dirInsertId, path: `${dirPath}/4/tmp9` },
 		]));
+		const [{ insertId: slideInsertId }] = await db.insert(slides).values([
+			{ language: 'en', name: `${dirPath}1` },
+			{ language: 'en', name: `${dirPath}2` },
+		]);
+		await db.insert(filesToSlides).values([
+			{ slideId: slideInsertId + 1, fileId: fileInsertId },
+		]);
 
 		const { createdDirs, createdFiles, createdFileIds } = await getCreatedFiles({
 			dirInsertId,
@@ -171,8 +180,9 @@ test('file edit processing', async (t) => {
 			{ directoryId: null, name: '1', title: 'one', alt: 'one' },
 			{ directoryId: dirInsertId, name: '2', title: 'two', alt: 'two' },
 		]);
+		const modifiedSlidesIds = new Set<number>();
 
-		await processEditedFiles(input, new Set(), `${dirPath}/`);
+		await processEditedFiles(input, new Set(), modifiedSlidesIds, `${dirPath}/`);
 
 		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
@@ -186,6 +196,7 @@ test('file edit processing', async (t) => {
 			{ ...createdFiles.get(fileInsertId + 1), title: 'two', alt: 'two' }
 		);
 		assert.strictEqual(existsSync(`${testFilesPath}/4/tmp9`), true);
+		assert.deepStrictEqual(modifiedSlidesIds, new Set([slideInsertId + 1]));
 	});
 
 	await t.test('skips nonexistent old path', async () => {
@@ -221,7 +232,7 @@ test('file edit processing', async (t) => {
 		]);
 		const modifiedPagesIds = new Set<number>();
 
-		await processEditedFiles(input, modifiedPagesIds, `${dirPath}/`);
+		await processEditedFiles(input, modifiedPagesIds, new Set(), `${dirPath}/`);
 
 		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
@@ -281,7 +292,7 @@ test('file edit processing', async (t) => {
 		]);
 		const modifiedPagesIds = new Set<number>();
 
-		await processEditedFiles(input, modifiedPagesIds, `${dirPath}/`);
+		await processEditedFiles(input, modifiedPagesIds, new Set(), `${dirPath}/`);
 
 		const filesSearchResult = await getUpdatedFiles(createdFileIds);
 
