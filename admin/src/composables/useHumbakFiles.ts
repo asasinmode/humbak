@@ -10,7 +10,7 @@ type ITempFileElement = {
 	attributes: NamedNodeMap;
 };
 
-const loadedFiles: Record<number, IDialogFile> = {};
+let loadedFiles: Record<number, IDialogFile> = {};
 
 export function useHumbakFiles() {
 	const parser = new DOMParser();
@@ -154,5 +154,8 @@ export function useHumbakFiles() {
 	return {
 		parsedContent,
 		updateParsedContent,
+		clearLoadedFiles() {
+			loadedFiles = {};
+		},
 	};
 }

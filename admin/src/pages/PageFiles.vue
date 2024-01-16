@@ -10,6 +10,7 @@ const api = useApi();
 const route = useRoute();
 const router = useRouter();
 const { confirm } = useConfirm();
+const { clearLoadedFiles } = useHumbakFiles();
 const { toast, toastGenericError } = useToast();
 
 const isTiles = ref(true);
@@ -627,6 +628,7 @@ async function saveChanges() {
 			});
 
 			if (responseReturnsData) {
+				clearLoadedFiles();
 				handlePutResponse(await response.json() as IGetDirectoryResponse);
 			}
 
@@ -686,6 +688,7 @@ async function saveChanges() {
 				});
 			}).then(r => r.json());
 			handlePutResponse(response);
+			clearLoadedFiles();
 			newFiles.value = [];
 			toast('zuploadowano pliki');
 		} catch (e) {
