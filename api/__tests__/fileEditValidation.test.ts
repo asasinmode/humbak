@@ -241,4 +241,34 @@ test('file edit validation', async (t) => {
 			},
 		});
 	});
+
+	await t.test('accepts only alt/title changed', async () => {
+		await writeFile(`${testFilesPath}/tmp3`, '');
+
+		const originalFiles = createOriginalFiles([
+			{ directoryId: null, name: 'tmp3' },
+		]);
+
+		const result = await getFilesToEdit([
+			{
+				id: 1,
+				directoryId: null,
+				name: 'tmp3',
+				alt: 'changed',
+				title: 'changed',
+			},
+		], new Map(), [], originalFiles, `${dirPath}/`);
+
+		assert.deepStrictEqual(result.filesToEdit, [
+			{
+				id: 1,
+				directoryId: null,
+				name: 'tmp3',
+				alt: 'changed',
+				title: 'changed',
+				targetDir: undefined,
+				originalFile: originalFiles.get(1),
+			},
+		]);
+	});
 });
