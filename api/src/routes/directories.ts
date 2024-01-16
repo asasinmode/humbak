@@ -9,6 +9,7 @@ import { parsePageHtml } from '../helpers/pages';
 import { db } from '../db';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
 import { files, insertFileSchema } from '../db/schema/files';
+import { slides } from '../db/schema/slides';
 import { contents } from '../db/schema/contents';
 import { wrap } from '../helpers';
 import { filesStoragePath } from '../helpers/files';
@@ -193,11 +194,12 @@ export const app = new Hono<{
 			}
 
 			const modifiedPagesIds = new Set<number>();
+			const modifiedSlidesIds = new Set<number>();
 
-			await processDeletedFiles(input.deletedFileIds, modifiedPagesIds);
-			await processEditedFiles(filesToEdit, modifiedPagesIds);
-			await processDeletedDirs(dirsToDelete, allDirs, allDirsArray, modifiedPagesIds);
-			await processEditedDirs(dirsToEdit, allDirs, allDirsArray, modifiedPagesIds);
+			await processDeletedFiles(input.deletedFileIds, modifiedPagesIds, modifiedSlidesIds);
+			await processEditedFiles(filesToEdit, modifiedPagesIds, modifiedSlidesIds);
+			await processDeletedDirs(dirsToDelete, allDirs, allDirsArray, modifiedPagesIds, modifiedSlidesIds);
+			await processEditedDirs(dirsToEdit, allDirs, allDirsArray, modifiedPagesIds, modifiedSlidesIds);
 
 			if (modifiedPagesIds.size) {
 				const contentsToUpdate = await db
@@ -210,6 +212,20 @@ export const app = new Hono<{
 				for (const { pageId, rawHtml } of contentsToUpdate) {
 					const { value } = await parsePageHtml(rawHtml);
 					await db.update(contents).set({ parsedHtml: value }).where(eq(contents.pageId, pageId));
+				}
+			}
+
+			if (modifiedSlidesIds.size) {
+				const contentsToUpdate = await db
+					.selectDistinct({
+						id: slides.id,
+						rawContent: slides.rawContent,
+					})
+					.from(slides)
+					.where(inArray(slides.id, Array.from(modifiedSlidesIds)));
+				for (const { id, rawContent } of contentsToUpdate) {
+					const { value } = await parsePageHtml(rawContent);
+					await db.update(slides).set({ parsedContent: value }).where(eq(contents.pageId, id));
 				}
 			}
 
