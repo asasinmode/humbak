@@ -7,15 +7,17 @@ import { processDeletedFiles } from 'src/helpers/files/fileDeleteProcessing';
 import { db, pool } from 'src/db';
 import { directories } from 'src/db/schema/directories';
 import { files } from 'src/db/schema/files';
+import { slides } from 'src/db/schema/slides';
 import { inArray } from 'drizzle-orm';
 import { pages } from 'src/db/schema/pages';
 import { filesToPages } from 'src/db/schema/filesToPages';
+import { filesToSlides } from 'src/db/schema/filesToSlides';
 import { createDirectories, createFiles, getCreatedFiles } from './helpers';
 
 const dirPath = '/fileDeleteProcessing';
 const testFilesPath = `${filesStoragePath}${dirPath}`;
 
-test('file delete processing', async (t) => {
+test('file delete processing', { only: true }, async (t) => {
 	before(async () => {
 		const exists = existsSync(testFilesPath);
 		if (exists) {
@@ -47,7 +49,7 @@ test('file delete processing', async (t) => {
 
 		const deletedFilesIds = [insertId, insertId + 1];
 
-		await processDeletedFiles(deletedFilesIds, new Set());
+		await processDeletedFiles(deletedFilesIds, new Set(), new Set());
 
 		const filesSearchResult = await db
 			.select({ id: files.id })
@@ -66,7 +68,7 @@ test('file delete processing', async (t) => {
 
 		const deletedFilesIds = [insertId];
 
-		await processDeletedFiles(deletedFilesIds, new Set());
+		await processDeletedFiles(deletedFilesIds, new Set(), new Set());
 
 		const filesSearchResult = await db
 			.select({ id: files.id })
@@ -97,8 +99,32 @@ test('file delete processing', async (t) => {
 
 		const modifiedPagesIds = new Set<number>();
 
-		await processDeletedFiles(createdFileIds, modifiedPagesIds);
+		await processDeletedFiles(createdFileIds, modifiedPagesIds, new Set());
 
 		assert.deepStrictEqual(modifiedPagesIds, new Set([pageInsertId, pageInsertId + 1]));
+	});
+
+	await t.test('updates modified slides\' ids', async () => {
+		const [{ insertId: dirInsertId }] = await db.insert(directories).values(createDirectories([
+			{ parentId: null, path: `${dirPath}/3` },
+		]));
+		const [{ insertId: fileInsertId }] = await db.insert(files).values(createFiles([
+			{ directoryId: dirInsertId, path: `${dirPath}/3/tmp` },
+			{ directoryId: null, path: `${dirPath}/tmp` },
+		]));
+		const [{ insertId: slideInsertId }] = await db.insert(slides).values([
+			{ language: 'en', name: `${dirPath}1` },
+			{ language: 'en', name: `${dirPath}2` },
+		]);
+		await db.insert(filesToSlides).values([
+			{ slideId: slideInsertId, fileId: fileInsertId },
+			{ slideId: slideInsertId + 1, fileId: fileInsertId + 1 },
+		]);
+
+		const modifiedSlidesIds = new Set<number>();
+
+		await processDeletedFiles([fileInsertId], new Set(), modifiedSlidesIds);
+
+		assert.deepStrictEqual(modifiedSlidesIds, new Set([slideInsertId]));
 	});
 });
