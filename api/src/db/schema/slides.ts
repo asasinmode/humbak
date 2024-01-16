@@ -10,7 +10,8 @@ const defaultContent = `<div>
 export const slides = mysqlTable('slides', {
 	id: int('id').primaryKey().autoincrement(),
 	name: varchar('name', { length: 256 }).notNull(),
-	content: text('content').notNull().default(defaultContent),
+	rawContent: text('rawContent').notNull().default(defaultContent),
+	parsedContent: text('parsedContent').notNull().default(defaultContent),
 	isHidden: boolean('isHidden').notNull().default(false),
 	language: varchar('language', { length: 32 }).notNull(),
 	createdAt: datetime('createdAt').notNull().default(sql`NOW()`),

@@ -5,6 +5,8 @@ import { db } from '../db';
 import { idParamValidationMiddleware, languageQueryValidation, nonEmptyMaxLengthString, wrap } from '../helpers';
 import { insertSlideSchema, slides } from '../db/schema/slides';
 import { slideAspectRatio } from '../db/schema/slideAspectRatio';
+import { filesToSlides } from '../db/schema/filesToSlides';
+import { parsePageHtml } from '../helpers/pages';
 
 export const app = new Hono()
 	.get('/', wrap('query', languageQueryValidation), async (c) => {
@@ -23,24 +25,37 @@ export const app = new Hono()
 		return c.json(result);
 	})
 	.post('/', wrap('json', insertSlideSchema), async (c) => {
-		const input = c.req.valid('json');
+		const { content, ...input } = c.req.valid('json');
+
+		const { value: parsedContent, fileIds: associatedFilesIds } = await parsePageHtml(content);
 
 		const [{ insertId: slideId }] = await db
 			.insert(slides)
-			.values(input)
+			.values({
+				...input,
+				rawContent: content,
+				parsedContent,
+			})
 			.onDuplicateKeyUpdate({
 				set: {
 					...input,
+					rawContent: content,
+					parsedContent,
 					id: undefined,
 					updatedAt: new Date(),
 				},
 			});
 
+		await db.delete(filesToSlides).where(eq(filesToSlides.slideId, slideId));
+		if (associatedFilesIds.length) {
+			await db.insert(filesToSlides).values(associatedFilesIds.map(fileId => ({ slideId, fileId })));
+		}
+
 		const [result] = await db
 			.select({
 				id: slides.id,
 				name: slides.name,
-				content: slides.content,
+				content: slides.rawContent,
 				isHidden: slides.isHidden,
 				language: slides.language,
 			})
@@ -55,7 +70,7 @@ export const app = new Hono()
 		const result = await db
 			.select({
 				id: slides.id,
-				content: slides.content,
+				content: slides.parsedContent,
 			})
 			.from(slides)
 			.orderBy(slides.createdAt)
@@ -88,7 +103,7 @@ export const app = new Hono()
 			.select({
 				id: slides.id,
 				name: slides.name,
-				content: slides.content,
+				content: slides.rawContent,
 				isHidden: slides.isHidden,
 				language: slides.language,
 			})

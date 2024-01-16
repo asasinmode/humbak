@@ -276,7 +276,7 @@ for (const { name, content, isHidden, language } of [
 </div>`,
 	},
 ]) {
-	await db.insert(slides).values({ name, content, isHidden, language });
+	await db.insert(slides).values({ name, rawContent: content, parsedContent: content, isHidden, language });
 }
 
 await db.insert(slideAspectRatio).values({ value: '1 / 2' });
