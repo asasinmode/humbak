@@ -52,7 +52,7 @@ export async function parsePageHtml(html?: string): Promise<{ value?: string; fi
 		...p,
 		[c.id]: c,
 	}), {});
-	const fileIds: number[] = [];
+	const fileIds = new Set<number>();
 
 	for (const { id, element } of humbakFiles) {
 		const file = filesById[id];
@@ -61,7 +61,7 @@ export async function parsePageHtml(html?: string): Promise<{ value?: string; fi
 			continue;
 		}
 
-		!fileIds.includes(id) && fileIds.push(id);
+		fileIds.add(id);
 
 		const image = dom('<img>');
 		image.attr('src', `files${file.path}`);
@@ -82,7 +82,7 @@ export async function parsePageHtml(html?: string): Promise<{ value?: string; fi
 		dom(element).replaceWith(image);
 	}
 
-	return { value: dom.html(), fileIds };
+	return { value: dom.html(), fileIds: Array.from(fileIds) };
 }
 
 function replaceWithError(message: string, element: Element, dom: CheerioAPI) {
