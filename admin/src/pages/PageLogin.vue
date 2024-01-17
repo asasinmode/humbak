@@ -28,7 +28,7 @@ const {
 
 <template>
 	<main id="content" class="flex-center min-h-screen">
-		<form class="flex flex-col gap-5 my-8 items-center" @submit.prevent="sendForm()">
+		<form class="flex flex-col gap-5 py-8 px-2 items-center" @submit.prevent="sendForm()">
 			<VInput
 				id="username"
 				v-model="username"
