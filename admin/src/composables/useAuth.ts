@@ -1,7 +1,7 @@
 const username = ref('');
 const jwt = ref('');
-const loggedIn = ref(false);
+const isLoggedIn = ref(false);
 
 export function useAuth() {
-	return { username, jwt, loggedIn };
+	return { username, jwt, loggedIn: isLoggedIn };
 }

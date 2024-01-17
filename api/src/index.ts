@@ -6,6 +6,7 @@ import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { env } from './env';
 import { filesStoragePath, stylesheetsStoragePath } from './helpers/files';
+import { app as authApp } from './routes/auth';
 import { app as pagesApp } from './routes/pages';
 import { app as filesApp } from './routes/files';
 import { app as slidesApp } from './routes/slides';
@@ -34,6 +35,7 @@ app.use('/public/*', serveStatic({
 }));
 
 const typedApp = app
+	.route('auth', authApp)
 	.route('/footerContents', footerContentsApp)
 	.route('/globalCss', globalCssApp)
 	.route('/languages', languagesApp)

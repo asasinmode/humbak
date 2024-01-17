@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import PageHome from '~/pages/PageHome.vue';
 import PageLogin from '~/pages/PageLogin.vue';
 import LayoutNavigationless from '~/layouts/LayoutNavigationless.vue';
+
+const { loggedIn } = useAuth();
 
 export const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,7 +10,7 @@ export const router = createRouter({
 		{
 			path: '/',
 			name: 'pages',
-			component: PageHome,
+			component: () => import('~/pages/PageHome.vue'),
 		},
 		{
 			path: '/menu',
@@ -59,14 +60,18 @@ export const router = createRouter({
 				layout: LayoutNavigationless,
 				noAuth: true,
 			},
+			beforeEnter() {
+				if (loggedIn.value) {
+					return { name: 'pages' };
+				}
+			},
 		},
 	],
 });
 
 const routes = router.getRoutes();
-const { loggedIn } = useAuth();
 
-router.beforeEach((to, _from) => {
+router.beforeEach((to) => {
 	if (!routes.some(route => route.path === to.path)) {
 		return { name: 'notFound' };
 	}
