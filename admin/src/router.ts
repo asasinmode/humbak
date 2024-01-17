@@ -1,12 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import PageHome from '~/pages/PageHome.vue';
-import PageMenu from '~/pages/PageMenu.vue';
-import PageFiles from '~/pages/PageFiles.vue';
-import PageCss from '~/pages/PageCss.vue';
-import PageSlider from '~/pages/PageSlider.vue';
-import PageFooter from '~/pages/PageFooter.vue';
-import PageSettings from '~/pages/PageSettings.vue';
-import PageError from '~/pages/PageError.vue';
+import PageLogin from '~/pages/PageLogin.vue';
 import LayoutNavigationless from '~/layouts/LayoutNavigationless.vue';
 
 export const router = createRouter({
@@ -20,49 +14,65 @@ export const router = createRouter({
 		{
 			path: '/menu',
 			name: 'menu',
-			component: PageMenu,
+			component: () => import('~/pages/PageMenu.vue'),
 		},
 		{
 			path: '/pliki',
 			name: 'Files',
-			component: PageFiles,
+			component: () => import('~/pages/PageFiles.vue'),
 		},
 		{
 			path: '/css',
 			name: 'Css',
-			component: PageCss,
+			component: () => import('~/pages/PageCss.vue'),
 		},
 		{
 			path: '/slider',
 			name: 'Slider',
-			component: PageSlider,
+			component: () => import('~/pages/PageSlider.vue'),
 		},
 		{
 			path: '/stopka',
 			name: 'Footer',
-			component: PageFooter,
+			component: () => import('~/pages/PageFooter.vue'),
 		},
 		{
 			path: '/ustawienia',
-			component: PageSettings,
+			component: () => import('~/pages/PageSettings.vue'),
 			name: 'Settings',
 		},
 		{
 			path: '/404',
 			name: 'notFound',
-			component: PageError,
+			component: () => import('~/pages/PageError.vue'),
 			props: { status: 404, message: 'page not found' },
 			meta: {
 				layout: LayoutNavigationless,
+				noAuth: true,
+			},
+		},
+		{
+			path: '/login',
+			name: 'login',
+			component: PageLogin,
+			meta: {
+				layout: LayoutNavigationless,
+				noAuth: true,
 			},
 		},
 	],
 });
 
 const routes = router.getRoutes();
+const { loggedIn } = useAuth();
 
 router.beforeEach((to, _from) => {
 	if (!routes.some(route => route.path === to.path)) {
-		return router.push({ name: 'notFound' });
+		return { name: 'notFound' };
+	}
+
+	const noAuth = to.meta.noAuth ?? false;
+	if (!noAuth && !loggedIn.value) {
+		return { name: 'login' };
 	}
 });
