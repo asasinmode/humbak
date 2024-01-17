@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { db } from '../db';
 import { languageQueryValidation, wrap } from '../helpers';
+import { jwt } from '../helpers/jwt';
 import { pages } from '../db/schema/pages';
 import { footerContents, insertFooterContentSchema } from '../db/schema/footerContents';
 
@@ -55,7 +56,7 @@ export const app = new Hono<{
 			return c.json(result);
 		}
 	)
-	.post('/', wrap('json', insertFooterContentSchema), async (c) => {
+	.post('/', jwt, wrap('json', insertFooterContentSchema), async (c) => {
 		const input = c.req.valid('json');
 
 		await db
