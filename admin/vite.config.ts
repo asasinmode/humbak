@@ -12,11 +12,7 @@ export default defineConfig({
 		},
 	},
 	plugins: [
-		Vue({
-			script: {
-				defineModel: true,
-			},
-		}),
+		Vue(),
 		Unocss(),
 		Components({
 			dts: './src/types/components.d.ts',
