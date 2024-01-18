@@ -1,6 +1,7 @@
 const username = ref('');
 const jwt = ref('');
 const isLoggedIn = ref(false);
+const isVerifying = ref(false);
 
 export function useAuth() {
 	function login(user: string, token: string) {
@@ -25,6 +26,7 @@ export function useAuth() {
 		username,
 		jwt,
 		isLoggedIn,
+		isVerifying,
 		login,
 		logout,
 	};

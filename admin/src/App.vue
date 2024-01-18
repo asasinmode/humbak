@@ -4,23 +4,24 @@ import LayoutDefault from '~/layouts/LayoutDefault.vue';
 const router = useRouter();
 const api = useApi();
 const { TheConfirm } = useConfirm();
-const { logout, login } = useAuth(router);
-
-const isVerifying = ref(false);
+const { logout, login, username, jwt, isVerifying } = useAuth();
 
 onMounted(async () => {
 	const storedUsername = localStorage.getItem('username');
 	const storedJwt = localStorage.getItem('jwt');
-	if (!storedUsername || !storedJwt) {
+	if (!storedUsername || !storedJwt || router.currentRoute.value.name === 'notFound') {
 		return;
 	}
 
+	username.value = storedUsername;
+	jwt.value = storedJwt;
 	isVerifying.value = true;
+
 	try {
-		await new Promise(resolve => setTimeout(resolve, 2000));
 		// @ts-expect-error idk why types are wrong
 		await api.auth.verify.$get();
 		login(storedUsername, storedJwt);
+		router.push('/');
 	} catch (error) {
 		console.error(error);
 		logout();
@@ -31,8 +32,7 @@ onMounted(async () => {
 </script>
 
 <template>
-	<VLoading v-if="isVerifying" class="absolute inset-0 flex-center" :size="30" />
-	<component :is="$route.meta.layout ?? LayoutDefault" v-else>
+	<component :is="$route.meta.layout ?? LayoutDefault">
 		<slot />
 	</component>
 	<TheConfirm />

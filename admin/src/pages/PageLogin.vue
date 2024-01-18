@@ -2,7 +2,7 @@
 import VButton from '~/components/V/VButton.vue';
 
 const api = useApi();
-const { login } = useAuth();
+const { login, isVerifying } = useAuth();
 const router = useRouter();
 
 const saveButton = ref<InstanceType<typeof VButton>>();
@@ -30,11 +30,13 @@ const {
 
 <template>
 	<main id="content" class="flex-center min-h-screen">
+		<VLoading v-if="isVerifying" class="absolute inset-0 flex-center" :size="30" />
 		<form id="loginForm" class="flex flex-col gap-5 py-8 px-2 items-center text-lg" @submit.prevent="sendForm(false)">
 			<VInput
 				id="username"
 				v-model="username"
 				label="nazwa użytkownika"
+				:disabled="isVerifying"
 				:error="errors.username"
 				@update:model-value="errors.username = ''"
 			/>
@@ -42,10 +44,11 @@ const {
 				id="password"
 				v-model="password"
 				label="hasło"
+				:disabled="isVerifying"
 				:error="errors.password"
 				@update:model-value="errors.password = ''"
 			/>
-			<VButton ref="saveButton" class="neon-green mt-3" :is-loading="isSaving">
+			<VButton ref="saveButton" class="neon-green mt-3" :is-loading="isSaving" :disabled="isVerifying">
 				zaloguj się
 			</VButton>
 		</form>
