@@ -31,12 +31,12 @@ export const app = new Hono()
 				.where(eq(users.username, username));
 
 			if (!user) {
-				return c.text('Unauthorized', 401);
+				return c.text('użytkownik nie istnieje', 401);
 			}
 
 			const isPasswordValid = await comparePassword(user.password, password);
 			if (!isPasswordValid) {
-				return c.text('Unauthorized', 401);
+				return c.text('nieprawidłowe hasło', 401);
 			}
 
 			const token = await sign({ id: user.id, exp: Date.now() + TWO_HOURS_IN_MS }, env.JWT_SECRET);
