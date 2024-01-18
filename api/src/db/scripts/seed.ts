@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { Buffer } from 'node:buffer';
+import { hashPassword } from 'src/helpers/auth';
 import { db, pool } from '..';
 import { promptProdContinue } from '../../helpers';
 import { filesStoragePath, stylesheetsStoragePath } from '../../helpers/files';
@@ -12,6 +13,7 @@ import { directories } from '../schema/directories';
 import { footerContents } from '../schema/footerContents';
 import { slideAspectRatio } from '../schema/slideAspectRatio';
 import { files } from '../schema/files';
+import { users } from '../schema/users';
 
 await promptProdContinue();
 
@@ -360,5 +362,11 @@ for (let dirId = 0; dirId <= 6; dirId++) {
 		await createImageSizes(`${filesStoragePath}${path}`, mimetype);
 	}
 }
+
+await db.insert(users).values({
+	id: 'test',
+	username: 'test',
+	password: await hashPassword('test'),
+});
 
 await pool.end();
