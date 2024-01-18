@@ -17,6 +17,8 @@
 		"db:drop:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/drop.ts",
 		"db:truncate": "tsx ./src/db/scripts/truncate.ts",
 		"db:truncate:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/truncate.ts",
+		"db:create-user": "tsx ./src/db/scripts/createUser.ts",
+		"db:create-user:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/createUser.ts",
 		"type-check": "tsc",
 		"test": "set NODE_ENV=test&&node --import tsx ./__tests__/index.ts"
 	},
