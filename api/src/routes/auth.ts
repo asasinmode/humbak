@@ -9,7 +9,7 @@ import { db } from '../db';
 import { users } from '../db/schema/users';
 import { nonEmptyMaxLengthString, wrap } from '../helpers';
 
-const TWO_HOURS_IN_MS = 1000 * 60 * 60 * 2;
+const TWO_HOURS_IN_S = 60 * 60 * 2;
 
 export const app = new Hono()
 	.post(
@@ -38,10 +38,11 @@ export const app = new Hono()
 				return c.text('nieprawidłowe hasło', 401);
 			}
 
-			const token = await sign({ id: user.id, exp: Date.now() + TWO_HOURS_IN_MS }, env.JWT_SECRET);
+			const token = await sign({ id: user.id, exp: Date.now() / 1000 + TWO_HOURS_IN_S }, env.JWT_SECRET);
 			return c.text(token);
 		}
 	)
 	.get('/verify', jwt, async (c) => {
+		console.log('got', c.get('jwtPayload'));
 		return c.body(null, 204);
 	});
