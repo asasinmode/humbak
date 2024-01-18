@@ -30,7 +30,7 @@ const {
 
 <template>
 	<main id="content" class="flex-center min-h-screen">
-		<form class="flex flex-col gap-5 py-8 px-2 items-center" @submit.prevent="sendForm(false)">
+		<form id="loginForm" class="flex flex-col gap-5 py-8 px-2 items-center text-lg" @submit.prevent="sendForm(false)">
 			<VInput
 				id="username"
 				v-model="username"
@@ -51,3 +51,17 @@ const {
 		</form>
 	</main>
 </template>
+
+<style>
+@media (min-height: 22.5rem){
+	#loginForm {
+		@apply pt-6
+	}
+}
+
+@media (min-height: 32.5rem){
+	#loginForm {
+		@apply pt-4
+	}
+}
+</style>
