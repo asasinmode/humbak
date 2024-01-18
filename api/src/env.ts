@@ -22,6 +22,7 @@ const schema = object({
 	FOOTER_PHONE: string(),
 	FOOTER_LOCATION: string(),
 	FOOTER_FACEBOOK: string(),
+	JWT_SECRET: string(),
 });
 
 export const env = parse(schema, process.env);

@@ -1,6 +1,8 @@
 import { Hono } from 'hono';
 import { object } from 'valibot';
-import { jwt } from 'src/helpers/jwt';
+import { sign } from 'hono/jwt';
+import { env } from '../env';
+import { jwt } from '../helpers/jwt';
 import { nonEmptyMaxLengthString, wrap } from '../helpers';
 
 export const app = new Hono()
@@ -11,7 +13,8 @@ export const app = new Hono()
 			password: nonEmptyMaxLengthString(1024),
 		})),
 		async (c) => {
-			return c.text('token');
+			const token = await sign({ testData: 'value' }, env.JWT_SECRET);
+			return c.text(token);
 		}
 	)
 	.get('/verify', jwt, async (c) => {
