@@ -2,7 +2,8 @@
 import VButton from '~/components/V/VButton.vue';
 
 const api = useApi();
-const { username: storedUsername, jwt, isLoggedIn } = useAuth();
+const { login } = useAuth();
+const router = useRouter();
 
 const saveButton = ref<InstanceType<typeof VButton>>();
 
@@ -15,12 +16,13 @@ const {
 } = useForm(
 	{ username: '', password: '' },
 	async () => {
-		console.log('sending', { username: username.value, password: password.value });
-
 		// @ts-expect-error idk why type is wrong
-		const serverJwt = await api.auth.login.$post({ json: { username: username.value, password: password.value } }).then(r => r.text());
+		const serverJwt = await api.auth.login.$post({
+			json: { username: username.value, password: password.value },
+		}).then((r: Response) => r.text());
 
-		console.log('got', serverJwt);
+		login(username.value, serverJwt);
+		router.push('/');
 	},
 	saveButton.value?.element
 );

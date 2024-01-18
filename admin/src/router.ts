@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import PageLogin from '~/pages/PageLogin.vue';
 import LayoutNavigationless from '~/layouts/LayoutNavigationless.vue';
 
-const { loggedIn } = useAuth();
+const { isLoggedIn } = useAuth();
 
 export const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -61,7 +61,7 @@ export const router = createRouter({
 				noAuth: true,
 			},
 			beforeEnter() {
-				if (loggedIn.value) {
+				if (isLoggedIn.value) {
 					return { name: 'pages' };
 				}
 			},
@@ -77,7 +77,7 @@ router.beforeEach((to) => {
 	}
 
 	const noAuth = to.meta.noAuth ?? false;
-	if (!noAuth && !loggedIn.value) {
+	if (!noAuth && !isLoggedIn.value) {
 		return { name: 'login' };
 	}
 });
