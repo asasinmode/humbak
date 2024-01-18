@@ -2,13 +2,11 @@
 import LayoutDefault from '~/layouts/LayoutDefault.vue';
 
 const router = useRouter();
-const route = useRoute();
 const api = useApi();
 const { TheConfirm } = useConfirm();
 const { logout, login, username, jwt, isVerifying, isLoggedIn } = useAuth();
 
 onMounted(async () => {
-	console.log('mounted');
 	const storedUsername = localStorage.getItem('username');
 	const storedJwt = localStorage.getItem('jwt');
 	if (!storedUsername || !storedJwt) {
@@ -29,7 +27,6 @@ onMounted(async () => {
 	} catch (error) {
 		console.error(error);
 		logout();
-		console.log('route', route);
 		await router.push('/login');
 	} finally {
 		isVerifying.value = false;
