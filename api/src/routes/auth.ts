@@ -1,10 +1,9 @@
-import { randomBytes, scrypt, timingSafeEqual } from 'node:crypto';
-import { Buffer } from 'node:buffer';
 import { Hono } from 'hono';
 import { object } from 'valibot';
 import { sign } from 'hono/jwt';
 import { eq } from 'drizzle-orm';
 import { env } from '../env';
+import { comparePassword } from '../helpers/auth';
 import { jwt } from '../helpers/jwt';
 import { db } from '../db';
 import { users } from '../db/schema/users';
@@ -46,26 +45,3 @@ export const app = new Hono()
 	.get('/verify', jwt, async (c) => {
 		return c.body(null, 204);
 	});
-
-async function hashPassword(password: string) {
-	const salt = randomBytes(16).toString('hex');
-	const buffer = await asyncScrypt(password, salt);
-
-	return `${buffer.toString('hex')}:${salt}`;
-}
-
-async function comparePassword(hashedPassword: string, passwordToCompare: string) {
-	const [hash, salt] = hashedPassword.split(':');
-	const hashBuffer = Buffer.from(hash, 'hex');
-	const bufferToTest = await asyncScrypt(passwordToCompare, salt);
-	return timingSafeEqual(hashBuffer, bufferToTest);
-}
-
-function asyncScrypt(password: string, salt: string) {
-	return new Promise<Buffer>((resolve, reject) => scrypt(password, salt, 64, (err, buff) => {
-		if (err) {
-			reject(err);
-		}
-		resolve(buff);
-	}));
-}
