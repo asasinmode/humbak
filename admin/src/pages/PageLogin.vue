@@ -44,6 +44,7 @@ const {
 				id="password"
 				v-model="password"
 				label="hasło"
+				type="password"
 				:disabled="isVerifying"
 				:error="errors.password"
 				@update:model-value="errors.password = ''"
