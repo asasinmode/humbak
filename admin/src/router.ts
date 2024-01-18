@@ -2,8 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import PageLogin from '~/pages/PageLogin.vue';
 import LayoutNavigationless from '~/layouts/LayoutNavigationless.vue';
 
-const { isLoggedIn } = useAuth();
-
 export const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes: [
@@ -60,24 +58,6 @@ export const router = createRouter({
 				layout: LayoutNavigationless,
 				noAuth: true,
 			},
-			beforeEnter() {
-				if (isLoggedIn.value) {
-					return { name: 'pages' };
-				}
-			},
 		},
 	],
-});
-
-const routes = router.getRoutes();
-
-router.beforeEach((to) => {
-	if (!routes.some(route => route.path === to.path)) {
-		return { name: 'notFound' };
-	}
-
-	const noAuth = to.meta.noAuth ?? false;
-	if (!noAuth && !isLoggedIn.value) {
-		return { name: 'login' };
-	}
 });
