@@ -3,7 +3,7 @@ import { object } from 'valibot';
 import { sign } from 'hono/jwt';
 import { and, eq, not } from 'drizzle-orm';
 import { env } from '../env';
-import { comparePassword } from '../helpers/auth';
+import { comparePassword, hashPassword } from '../helpers/auth';
 import { jwt } from '../helpers/jwt';
 import { db } from '../db';
 import { users } from '../db/schema/users';
@@ -43,13 +43,12 @@ export const app = new Hono()
 		}
 	)
 	.get('/verify', jwt, async (c) => {
-		const data = c.get('jwtPayload');
-
-		if (!data.id) {
+		const jwtPayload = c.get('jwtPayload');
+		if (!jwtPayload.id) {
 			throw new Error('no id in jwt payload');
 		}
 
-		const [user] = await db.select({ id: users.id }).from(users).where(eq(users.id, data.id));
+		const [user] = await db.select({ id: users.id }).from(users).where(eq(users.id, jwtPayload.id));
 		if (!user) {
 			return c.body('użytkownik nie istnieje', 401);
 		}
@@ -63,12 +62,12 @@ export const app = new Hono()
 			username: nonEmptyMaxLengthString(),
 		})),
 		async (c) => {
-			const { username } = c.req.valid('json');
-			const data = c.get('jwtPayload');
-
-			if (!data.id) {
+			const jwtPayload = c.get('jwtPayload');
+			if (!jwtPayload.id) {
 				throw new Error('no id in jwt payload');
 			}
+
+			const { username } = c.req.valid('json');
 
 			const [user] = await db
 				.select({
@@ -76,7 +75,7 @@ export const app = new Hono()
 					password: users.password,
 				})
 				.from(users)
-				.where(eq(users.id, data.id));
+				.where(eq(users.id, jwtPayload.id));
 			if (!user) {
 				return c.text('użytkownik nie istnieje', 401);
 			}
@@ -88,6 +87,43 @@ export const app = new Hono()
 			if (userWithSameName) {
 				return c.text('użytkownik o podanej nazwie istnieje', 403);
 			}
+
+			return c.body(null, 204);
+		}
+	)
+	.post(
+		'/changePassword',
+		jwt,
+		wrap('json', object({
+			oldPassword: nonEmptyMaxLengthString(1024),
+			newPassword: nonEmptyMaxLengthString(1024),
+		})),
+		async (c) => {
+			const jwtPayload = c.get('jwtPayload');
+			if (!jwtPayload.id) {
+				throw new Error('no id in jwt payload');
+			}
+
+			const { oldPassword, newPassword } = c.req.valid('json');
+
+			const [user] = await db
+				.select({
+					password: users.password,
+				})
+				.from(users)
+				.where(eq(users.id, jwtPayload.id));
+
+			if (!user) {
+				return c.text('użytkownik nie istnieje', 401);
+			}
+
+			const isPasswordValid = await comparePassword(user.password, oldPassword);
+			if (!isPasswordValid) {
+				return c.text('nieprawidłowe hasło', 401);
+			}
+
+			const newHashedPassword = await hashPassword(newPassword);
+			await db.update(users).set({ password: newHashedPassword }).where(eq(users.id, jwtPayload.id));
 
 			return c.body(null, 204);
 		}

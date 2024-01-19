@@ -12,26 +12,41 @@ const {
 	username,
 	errors: usernameErrors,
 	sendForm: sendUsernameForm,
+	updateValues: updateUsernameValues,
 	isSaving: isUsernameSaving,
 } = useForm(
 	{ username: '' },
 	async () => {
+		// @ts-expect-error idk why types are wrong
 		await api.auth.changeUsername.$post({ json: { username: username.value } });
 		loggedInUsername.value = username.value;
-		username.value = '';
+		updateUsernameValues({
+			username: username.value,
+		});
 	}
 );
 
 const {
 	oldPassword,
 	newPassword,
+	updateValues: updatePasswordValues,
 	errors: passwordErrors,
 	sendForm: sendPasswordForm,
 	isSaving: isPasswordSaving,
 } = useForm(
 	{ oldPassword: '', newPassword: '' },
 	async () => {
-		console.log('saving password', oldPassword.value, newPassword.value);
+		// @ts-expect-error idk why types are wrong
+		await api.auth.changePassword.$post({
+			json: {
+				oldPassword: oldPassword.value,
+				newPassword: newPassword.value,
+			},
+		});
+		updatePasswordValues({
+			oldPassword: '',
+			newPassword: '',
+		});
 	}
 );
 </script>
@@ -71,15 +86,17 @@ const {
 					</legend>
 					<VInput
 						id="settingsOldPassword"
-						v-model="newPassword"
+						v-model="oldPassword"
 						label="stare hasło"
+						type="password"
 						:error="passwordErrors.oldPassword"
 						@update:model-value="passwordErrors.oldPassword = ''"
 					/>
 					<VInput
 						id="settingsNewPassword"
-						v-model="oldPassword"
+						v-model="newPassword"
 						label="nowe hasło"
+						type="password"
 						:error="passwordErrors.newPassword"
 						@update:model-value="passwordErrors.newPassword = ''"
 					/>
