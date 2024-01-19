@@ -42,7 +42,7 @@ const {
 			</VButton>
 		</div>
 
-		<div class="mx-auto max-w-360 w-full px-container">
+		<div class="mx-auto max-w-360 w-full flex flex-wrap gap-5 md:gap-10 justify-center px-container">
 			<form class="flex flex-col items-center" @submit.prevent="sendUsernameForm()">
 				<fieldset class="flex w-fit gap-5 flex-col border-2 rounded-lg shadow border-neutral p-4">
 					<legend class="text-lg">
