@@ -7,10 +7,28 @@ function logout() {
 	router.push('/login');
 }
 
-const { username, errors, sendForm, isSaving } = useForm(
+const {
+	username,
+	errors: usernameErrors,
+	sendForm: sendUsernameForm,
+	isSaving: isUsernameSaving,
+} = useForm(
 	{ username: '' },
 	async () => {
 		console.log('changing username', username.value);
+	}
+);
+
+const {
+	oldPassword,
+	newPassword,
+	errors: passwordErrors,
+	sendForm: sendPasswordForm,
+	isSaving: isPasswordSaving,
+} = useForm(
+	{ oldPassword: '', newPassword: '' },
+	async () => {
+		console.log('saving password', oldPassword.value, newPassword.value);
 	}
 );
 </script>
@@ -24,22 +42,49 @@ const { username, errors, sendForm, isSaving } = useForm(
 			</VButton>
 		</div>
 
-		<form class="mx-auto items-center max-w-360 w-full flex flex-col px-container flex-wrap" @submit.prevent="sendForm()">
-			<fieldset class="flex w-fit gap-5 flex-col border-2 rounded-lg shadow border-neutral p-4">
-				<legend class="text-lg">
-					zmiana nazwy użytkownika
-				</legend>
-				<VInput
-					id="settingsUsername"
-					v-model="username"
-					label="nazwa"
-					:error="errors.username"
-					@update:model-value="errors.username = ''"
-				/>
-				<VButton class="neon-green w-fit ml-auto" :is-loading="isSaving">
-					zapisz
-				</VButton>
-			</fieldset>
-		</form>
+		<div class="mx-auto max-w-360 w-full px-container">
+			<form class="flex flex-col items-center" @submit.prevent="sendUsernameForm()">
+				<fieldset class="flex w-fit gap-5 flex-col border-2 rounded-lg shadow border-neutral p-4">
+					<legend class="text-lg">
+						zmiana nazwy użytkownika
+					</legend>
+					<VInput
+						id="settingsUsername"
+						v-model="username"
+						label="nazwa"
+						:error="usernameErrors.username"
+						@update:model-value="usernameErrors.username = ''"
+					/>
+					<VButton class="neon-green w-fit ml-auto" :is-loading="isUsernameSaving">
+						zapisz
+					</VButton>
+				</fieldset>
+			</form>
+
+			<form class="flex flex-col items-center" @submit.prevent="sendPasswordForm()">
+				<fieldset class="flex w-fit gap-5 flex-col border-2 rounded-lg shadow border-neutral p-4">
+					<legend class="text-lg">
+						zmiana hasła
+					</legend>
+					<VInput
+						id="settingsOldPassword"
+						v-model="newPassword"
+						label="stare hasło"
+						:error="passwordErrors.oldPassword"
+						@update:model-value="passwordErrors.oldPassword = ''"
+					/>
+					<VInput
+						id="settingsNewPassword"
+						v-model="oldPassword"
+						label="nowe hasło"
+						:error="passwordErrors.newPassword"
+						@update:model-value="passwordErrors.newPassword = ''"
+					/>
+					<VButton class="neon-green w-fit ml-auto" :is-loading="isPasswordSaving">
+						zapisz
+					</VButton>
+				</fieldset>
+			</form>
+		</div>
 	</main>
 </template>
