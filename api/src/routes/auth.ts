@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { object } from 'valibot';
 import { sign } from 'hono/jwt';
-import { eq } from 'drizzle-orm';
+import { and, eq, not } from 'drizzle-orm';
 import { env } from '../env';
 import { comparePassword } from '../helpers/auth';
 import { jwt } from '../helpers/jwt';
@@ -43,6 +43,52 @@ export const app = new Hono()
 		}
 	)
 	.get('/verify', jwt, async (c) => {
-		console.log('got', c.get('jwtPayload'));
+		const data = c.get('jwtPayload');
+
+		if (!data.id) {
+			throw new Error('no id in jwt payload');
+		}
+
+		const [user] = await db.select({ id: users.id }).from(users).where(eq(users.id, data.id));
+		if (!user) {
+			return c.body('użytkownik nie istnieje', 401);
+		}
+
 		return c.body(null, 204);
-	});
+	})
+	.post(
+		'/changeUsername',
+		jwt,
+		wrap('json', object({
+			username: nonEmptyMaxLengthString(),
+		})),
+		async (c) => {
+			const { username } = c.req.valid('json');
+			const data = c.get('jwtPayload');
+
+			if (!data.id) {
+				throw new Error('no id in jwt payload');
+			}
+
+			const [user] = await db
+				.select({
+					id: users.id,
+					password: users.password,
+				})
+				.from(users)
+				.where(eq(users.id, data.id));
+			if (!user) {
+				return c.text('użytkownik nie istnieje', 401);
+			}
+
+			const [userWithSameName] = await db
+				.select({ id: users.id })
+				.from(users)
+				.where(and(eq(users.username, username), not(eq(users.id, user.id))));
+			if (userWithSameName) {
+				return c.text('użytkownik o podanej nazwie istnieje', 403);
+			}
+
+			return c.body(null, 204);
+		}
+	);

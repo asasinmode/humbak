@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const router = useRouter();
-const { logout: authLogout } = useAuth();
+const { logout: authLogout, username: loggedInUsername } = useAuth();
+const api = useApi();
 
 function logout() {
 	authLogout();
@@ -15,7 +16,9 @@ const {
 } = useForm(
 	{ username: '' },
 	async () => {
-		console.log('changing username', username.value);
+		await api.auth.changeUsername.$post({ json: { username: username.value } });
+		loggedInUsername.value = username.value;
+		username.value = '';
 	}
 );
 
@@ -46,7 +49,7 @@ const {
 			<form class="flex flex-col items-center" @submit.prevent="sendUsernameForm()">
 				<fieldset class="flex w-fit gap-5 flex-col border-2 rounded-lg shadow border-neutral p-4">
 					<legend class="text-lg">
-						zmiana nazwy użytkownika
+						zmiana nazwy użytkownika ({{ loggedInUsername }})
 					</legend>
 					<VInput
 						id="settingsUsername"
