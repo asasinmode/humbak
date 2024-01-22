@@ -46,7 +46,7 @@ const {
 		locationValueModelValue.value = '';
 		saveKey.value += 1;
 	},
-	saveButton.value?.element
+	() => saveButton.value?.element
 );
 
 onMounted(async () => {

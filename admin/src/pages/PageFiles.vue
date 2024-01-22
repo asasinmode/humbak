@@ -2,6 +2,7 @@
 import { knownMimetypeExtensions } from '~/helpers';
 import VDialog from '~/components/V/VDialog.vue';
 import { env } from '~/env';
+import VButton from '~/components/V/VButton.vue';
 import { FetchError } from '~/composables/useErrors';
 import type { IDirectory, IFile, IGetDirectoryResponse, IPutDirectoriesInput } from '~/composables/useApi';
 import type { IFilesGrabbedItem, ILocalDirectory, ILocalFile, INewFile } from '~/types';
@@ -25,6 +26,7 @@ const classContainer = computed(() => {
 });
 
 const isLoading = ref(false);
+const saveButton = ref<InstanceType<typeof VButton>>();
 const allDirectories = ref<IDirectory[]>([]);
 
 const currentDirDirs = ref<ILocalDirectory[]>([]);
@@ -630,9 +632,8 @@ async function saveChanges() {
 			if (responseReturnsData) {
 				clearLoadedFiles();
 				handlePutResponse(await response.json() as IGetDirectoryResponse);
+				toast('zapisano zmiany');
 			}
-
-			toast('zapisano zmiany');
 		} catch (e) {
 			handleError(e);
 			// map error keys from array positions to file/dir ids
@@ -646,56 +647,59 @@ async function saveChanges() {
 					return [editedDirs[+key].id, value];
 				})
 			);
+			useShake(saveButton.value?.element);
 			return;
 		} finally {
-			if (responseReturnsData) {
-				isSaving.value = false;
-			}
+			isSaving.value = false;
 		}
 	} else if (!newFiles.value.length) {
 		toast('zapisano zmiany');
 		isSaving.value = false;
 	}
 
-	if (newFiles.value.length) {
-		const formdata = new FormData();
-		for (let i = 0; i < newFiles.value.length; i++) {
-			const file = newFiles.value[i];
-			formdata.append(`file[${i}]`, file.file, file.name);
-			formdata.append(`title[${i}]`, file.title);
-			formdata.append(`alt[${i}]`, file.alt);
-			const directoryId = `${file.movedToId !== undefined ? file.movedToId : currentDirId.value}`;
-			formdata.append(`directoryId[${i}]`, directoryId);
-		}
+	if (!newFiles.value.length) {
+		return;
+	}
 
-		try {
-			const response: IGetDirectoryResponse = await fetch(
+	isSaving.value = true;
+	const formdata = new FormData();
+	for (let i = 0; i < newFiles.value.length; i++) {
+		const file = newFiles.value[i];
+		formdata.append(`file[${i}]`, file.file, file.name);
+		formdata.append(`title[${i}]`, file.title);
+		formdata.append(`alt[${i}]`, file.alt);
+		const directoryId = `${file.movedToId !== undefined ? file.movedToId : currentDirId.value}`;
+		formdata.append(`directoryId[${i}]`, directoryId);
+	}
+
+	try {
+		const response: IGetDirectoryResponse = await fetch(
 				`${env.VITE_API_URL}/directories/${currentDirId.value}`,
 				{ method: 'post', body: formdata }
-			).then(async (r) => {
-				if (r.ok) {
-					return r;
-				}
-				const contentType = r.headers.get('content-type');
-				if (contentType && contentType.slice(0, 16) === 'application/json') {
-					return r.json().then((v) => {
-						throw new FetchError(v, r.status);
-					});
-				}
-
-				return r.text().then((v) => {
+		).then(async (r) => {
+			if (r.ok) {
+				return r;
+			}
+			const contentType = r.headers.get('content-type');
+			if (contentType && contentType.slice(0, 16) === 'application/json') {
+				return r.json().then((v) => {
 					throw new FetchError(v, r.status);
 				});
-			}).then(r => r.json());
-			handlePutResponse(response);
-			clearLoadedFiles();
-			newFiles.value = [];
-			toast('zuploadowano pliki');
-		} catch (e) {
-			handleNewFilesError(e);
-		} finally {
-			isSaving.value = false;
-		}
+			}
+
+			return r.text().then((v) => {
+				throw new FetchError(v, r.status);
+			});
+		}).then(r => r.json());
+		handlePutResponse(response);
+		clearLoadedFiles();
+		newFiles.value = [];
+		toast('zuploadowano pliki');
+	} catch (e) {
+		handleNewFilesError(e);
+		useShake(saveButton.value?.element);
+	} finally {
+		isSaving.value = false;
 	}
 }
 
@@ -768,6 +772,7 @@ async function goToDir(id: number | null, event: MouseEvent) {
 			</VButton>
 
 			<VButton
+				ref="saveButton"
 				class="mr-12 h-fit md:mr-container neon-green"
 				:is-loading="isSaving"
 				:disabled="isLoading"

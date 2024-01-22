@@ -1,13 +1,17 @@
 <script setup lang="ts">
+import VButton from '~/components/V/VButton.vue';
 import VEditor from '~/components/V/VEditor.vue';
 
 const api = useApi();
 const { toast } = useToast();
+
 const editor = ref<InstanceType<typeof VEditor>>();
+const saveButton = ref<InstanceType<typeof VButton>>();
+const isSaving = ref(false);
+
 const { value, isLoading, initValue, updateValue } = useGlobalPagesStylesheet(
 	(value: string) => editor.value?.updateModelValue(0, value)
 );
-const isSaving = ref(false);
 
 async function saveChanges() {
 	isSaving.value = true;
@@ -19,6 +23,7 @@ async function saveChanges() {
 		toast('zapisano zmiany');
 	} catch (e) {
 		toast('błąd przy zapisywaniu stylów', 'error');
+		useShake(saveButton.value?.element);
 		console.error(e);
 	} finally {
 		isSaving.value = false;

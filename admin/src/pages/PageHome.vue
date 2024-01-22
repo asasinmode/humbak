@@ -71,7 +71,7 @@ const {
 
 		toast('zapisano zmiany');
 	},
-	saveButton.value?.element,
+	() => saveButton.value?.element,
 	() => Object.keys(contentEditor.value?.getChangedFields() || {}).length > 0
 );
 

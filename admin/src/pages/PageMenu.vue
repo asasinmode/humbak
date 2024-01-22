@@ -426,6 +426,7 @@ async function saveChanges() {
 		toast('zapisano zmiany');
 	} catch (e) {
 		handleError(e);
+		useShake(saveButton.value?.element);
 	} finally {
 		isSaving.value = false;
 	}

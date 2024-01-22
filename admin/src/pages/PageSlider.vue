@@ -89,7 +89,7 @@ const {
 			theSlider.value?.handleSlide(slide, parsedContent.value);
 		}
 	},
-	saveButton.value?.element
+	() => saveButton.value?.element
 );
 
 const aspectRatio = ref('');

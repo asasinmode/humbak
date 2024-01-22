@@ -3,7 +3,6 @@ import type { MaybeRef } from 'vue';
 // todo use shake when validation errors
 export async function useShake(element?: MaybeRef<HTMLElement | undefined>) {
 	const target = toValue(element);
-
 	if (!element || !target) {
 		return;
 	}

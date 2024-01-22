@@ -6,7 +6,7 @@ const { toast } = useToast();
 export function useForm<T extends Record<string, unknown>>(
 	form: T,
 	saveCallback: () => Promise<unknown>,
-	elementToShake?: Parameters<typeof useShake>[0],
+	elementToShake?: () => Parameters<typeof useShake>[0],
 	checkForExternalHasChanged = () => false
 ) {
 	const isSaving = ref(false);
@@ -52,7 +52,7 @@ export function useForm<T extends Record<string, unknown>>(
 			toastSuccess && toast('zapisano zmiany');
 		} catch (e) {
 			handleError(e);
-			await useShake(elementToShake);
+			useShake(elementToShake?.());
 		} finally {
 			isSaving.value = false;
 		}
