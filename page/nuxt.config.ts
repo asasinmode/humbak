@@ -1,5 +1,8 @@
 export default defineNuxtConfig({
 	devtools: { enabled: true },
+	devServer: {
+		port: 5174,
+	},
 	modules: [
 		'@unocss/nuxt',
 	],
