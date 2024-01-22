@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ComponentExposed } from 'vue-component-type-helpers';
 
+import { FetchError } from '~/composables/useErrors';
 import PagesContentEditor from '~/components/Pages/PagesContentEditor.vue';
 import PagesTable from '~/components/Pages/PagesTable.vue';
 import VButton from '~/components/V/VButton.vue';
@@ -8,7 +9,7 @@ import type { IUniqueLanguage } from '~/composables/useApi';
 
 const api = useApi();
 const { confirm } = useConfirm();
-const { toast } = useToast();
+const { toast, toastGenericError } = useToast();
 useGlobalPagesStylesheet();
 
 const table = ref<ComponentExposed<typeof PagesTable>>();
@@ -134,7 +135,12 @@ async function deletePage(id: number, button: HTMLButtonElement) {
 		}
 		await Promise.all([table.value?.callGetItems(), getLanguages()]);
 	} catch (e) {
-		toast('błąd przy usuwaniu strony', 'error');
+		if (!(e instanceof FetchError) || e.status !== 400) {
+			toastGenericError();
+			console.error(e);
+			return;
+		}
+		toast(e.data, 'error');
 		console.error(e);
 	} finally {
 		loadingPageId.value = undefined;

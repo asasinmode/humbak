@@ -142,6 +142,18 @@ export const app = new Hono()
 	.delete('/:id', idParamValidationMiddleware, async (c) => {
 		const { id } = c.req.valid('param');
 
+		const [page] = await db.select({
+			slug: pages.slug,
+			language: pages.language,
+		}).from(pages).where(eq(pages.id, id));
+
+		if (!page) {
+			return c.body(null, 204);
+		}
+		if (page.slug === '' && page.language === 'pl') {
+			return c.text('home strona dla języka pl nie może być usunięta', 400);
+		}
+
 		await Promise.all([
 			db.delete(pages).where(eq(pages.id, id)),
 			db
