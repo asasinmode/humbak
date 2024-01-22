@@ -1,4 +1,4 @@
-import { and, eq, not, sql } from 'drizzle-orm';
+import { and, desc, eq, isNull, not, or, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { db } from '../db';
 import { languageQueryValidation, wrap } from '../helpers';
@@ -7,6 +7,16 @@ import { slides } from '../db/schema/slides';
 import { menuLinks } from '../db/schema/menuLinks';
 
 export const app = new Hono()
+	.get('/languages', async (c) => {
+		const result = await db
+			.selectDistinct({ language: pages.language })
+			.from(pages)
+			.leftJoin(menuLinks, eq(pages.id, menuLinks.pageId))
+			.where(or(not(eq(menuLinks.parentId, -1)), isNull(menuLinks.parentId)))
+			.orderBy(desc(pages.language));
+
+		return c.json(result.map(item => item.language));
+	})
 	.get('/menuLinks', wrap('query', languageQueryValidation), async (c) => {
 		const { language } = c.req.valid('query');
 
