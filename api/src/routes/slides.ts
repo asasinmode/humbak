@@ -64,23 +64,6 @@ export const app = new Hono()
 
 		return c.json(result);
 	})
-	.get('/public', wrap('query', languageQueryValidation), async (c) => {
-		const { language } = c.req.valid('query');
-
-		const result = await db
-			.select({
-				id: slides.id,
-				content: slides.parsedContent,
-			})
-			.from(slides)
-			.orderBy(slides.createdAt)
-			.where(and(
-				eq(slides.language, language),
-				eq(slides.isHidden, false)
-			));
-
-		return c.json(result);
-	})
 	.get('/aspectRatio', async (c) => {
 		const [result] = await db
 			.select({

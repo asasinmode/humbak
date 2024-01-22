@@ -44,13 +44,11 @@ const typedApp = app
 	.route('/pages', pagesApp)
 	.route('/slides', slidesApp)
 	.route('/directories', directoriesApp)
-	.route('/files', filesApp);
-
-const publicTypedApp = app.route('/public', publicApp);
+	.route('/files', filesApp)
+	.route('/public', publicApp);
 
 serve({ port: env.PORT, fetch: app.fetch }, (info) => {
 	console.log(`server listening on\x1B[36m http://localhost:${info.port}/ \x1B[0m`);
 });
 
 export type AppType = typeof typedApp;
-export type PublicApp = typeof publicTypedApp;
