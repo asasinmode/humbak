@@ -1,5 +1,8 @@
 <script setup lang="ts">
-console.log('stuff', { ...useRuntimeConfig() });
+const { public: { apiUrl } } = useRuntimeConfig();
+
+const { data } = await useFetch(`${apiUrl}/public/menuLinks?language=pl`);
+console.log('data', data);
 </script>
 
 <template>

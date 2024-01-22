@@ -20,10 +20,7 @@ export const app = new Hono()
 			})
 			.from(menuLinks)
 			.leftJoin(pages, eq(menuLinks.pageId, pages.id))
-			.where(language
-				? and(eq(pages.language, language), not(eq(pages.slug, '')))
-				: not(eq(pages.slug, ''))
-			);
+			.where(and(eq(pages.language, language), not(eq(pages.slug, ''))));
 
 		return c.json(result);
 	})
@@ -37,4 +34,20 @@ export const app = new Hono()
 		));
 
 		return c.body(null, 204);
+	})
+	.get('/public', wrap('query', languageQueryValidation), async (c) => {
+		const { language } = c.req.valid('query');
+
+		const result = await db
+			.select({
+				text: menuLinks.text,
+				parentId: menuLinks.parentId,
+				position: menuLinks.position,
+				href: sql<string>`${pages.slug}`,
+			})
+			.from(menuLinks)
+			.leftJoin(pages, eq(menuLinks.pageId, pages.id))
+			.where(and(eq(pages.language, language), not(eq(menuLinks.parentId, -1)), not(eq(pages.slug, ''))));
+
+		return c.json(result);
 	});

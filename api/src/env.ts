@@ -16,6 +16,7 @@ const schema = object({
 	DATABASE_URL: string(),
 	DATABASE_NAME: string(),
 	ADMIN_URL: string(),
+	PAGE_URL: string(),
 	FILES_PATH: string(),
 	STYLESHEETS_PATH: string(),
 	FOOTER_EMAIL: string(),

@@ -10,6 +10,7 @@ import { app as authApp } from './routes/auth';
 import { app as pagesApp } from './routes/pages';
 import { app as filesApp } from './routes/files';
 import { app as slidesApp } from './routes/slides';
+import { app as publicApp } from './routes/public';
 import { app as globalCssApp } from './routes/globalCss';
 import { app as languagesApp } from './routes/languages';
 import { app as menuLinksApp } from './routes/menuLinks';
@@ -23,7 +24,7 @@ import { app as footerContentsApp } from './routes/footerContents';
 const app = new Hono();
 
 app.use('/*', cors({
-	origin: env.ADMIN_URL,
+	origin: [env.ADMIN_URL, env.PAGE_URL],
 }));
 
 app.get('/', (c) => {
@@ -35,7 +36,7 @@ app.use('/public/*', serveStatic({
 }));
 
 const typedApp = app
-	.route('auth', authApp)
+	.route('/auth', authApp)
 	.route('/footerContents', footerContentsApp)
 	.route('/globalCss', globalCssApp)
 	.route('/languages', languagesApp)
@@ -45,8 +46,11 @@ const typedApp = app
 	.route('/directories', directoriesApp)
 	.route('/files', filesApp);
 
+const publicTypedApp = app.route('/public', publicApp);
+
 serve({ port: env.PORT, fetch: app.fetch }, (info) => {
 	console.log(`server listening on\x1B[36m http://localhost:${info.port}/ \x1B[0m`);
 });
 
 export type AppType = typeof typedApp;
+export type PublicApp = typeof publicTypedApp;
