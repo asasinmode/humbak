@@ -26,6 +26,7 @@ export default defineConfig({
 		{
 			'flex-center': 'flex justify-center items-center',
 			'translate-center': 'translate-x--1/2 translate-y--1/2',
+			'text-link': 'op-75 hoverable:(underline op-100)',
 		},
 	],
 	rules: [

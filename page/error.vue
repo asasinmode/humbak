@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
 	error?: {
 		statusCode: string;
 		message: string;
@@ -7,20 +7,20 @@ defineProps<{
 }>();
 
 useHead({
-	title: 'error',
+	title: `Błąd ${props.error?.statusCode} - Humbak`,
 });
 </script>
 
 <template>
-	<main class="col-span-full row-span-full flex-center flex-col gap-4">
-		<h1 class="text-6xl font-bold">
+	<main class="min-h-screen flex-center flex-col gap-4">
+		<h1 class="text-6xl font-bold text-humbak-6">
 			{{ error?.statusCode }}
 		</h1>
 		<h2 class="text-center text-3xl">
 			{{ error?.message }}
 		</h2>
 		<NuxtLink to="/" class="text-xl text-link" @click="clearError">
-			go back
+			wróć
 		</NuxtLink>
 	</main>
 </template>
