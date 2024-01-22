@@ -1,0 +1,27 @@
+*, *::before, *::after {
+	transition: all 100ms ease;
+	-webkit-tap-highlight-color: transparent;
+}
+
+*:focus-visible {
+	z-index: 5;
+}
+
+:is(input, select):focus-visible {
+	outline: unset;
+}
+
+
+html, body , #__nuxt{
+	min-height: 100vh;
+}
+
+html{
+	@apply font-sans;
+	color: #121212;
+}
+
+html.dark {
+	background: #121212;
+	color: white;
+}
