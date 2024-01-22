@@ -2,8 +2,8 @@
 	"name": "admin",
 	"type": "module",
 	"private": true,
-	"description": "Vue 3 starter for new projects",
-	"author": "asasinmode",
+	"description": "humbak admin",
+	"author": "asasinmode <skin9470@gmail.com> (https://github.com/asasinmode/)",
 	"license": "MIT",
 	"scripts": {
 		"dev": "vite --host",
@@ -19,7 +19,6 @@
 		"@types/node": "^20.11.5",
 		"blaze-slider": "^1.9.3",
 		"hono": "^3.11.3",
-		"pinia": "^2.1.7",
 		"valibot": "^0.22.0",
 		"vue": "^3.4.14",
 		"vue-router": "^4.2.5"
