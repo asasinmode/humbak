@@ -21,4 +21,9 @@ document.documentElement.classList.toggle('dark', true)`,
 			}],
 		},
 	},
+	runtimeConfig: {
+		public: {
+			apiUrl: '',
+		},
+	},
 });
