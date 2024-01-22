@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, not, sql } from 'drizzle-orm';
 import { array, object, omit } from 'valibot';
 import { Hono } from 'hono';
 import { db } from '../db';
@@ -20,7 +20,10 @@ export const app = new Hono()
 			})
 			.from(menuLinks)
 			.leftJoin(pages, eq(menuLinks.pageId, pages.id))
-			.where(language ? eq(pages.language, language) : undefined);
+			.where(language
+				? and(eq(pages.language, language), not(eq(pages.slug, '')))
+				: not(eq(pages.slug, ''))
+			);
 
 		return c.json(result);
 	})
