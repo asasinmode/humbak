@@ -19,8 +19,8 @@ useHead({
 		<h2 class="text-center text-3xl">
 			{{ error?.message }}
 		</h2>
-		<NuxtLink to="/pl" class="text-xl text-link" @click="clearError">
+		<a href="/pl" class="text-xl text-link" @click.prevent="clearError({ redirect: '/pl' })">
 			wróć
-		</NuxtLink>
+		</a>
 	</main>
 </template>
