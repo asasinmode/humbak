@@ -21,6 +21,7 @@ const route = useRoute();
 const { language } = route.params;
 
 if (typeof language !== 'string') {
+	console.error('language param is an array');
 	throw createError({ message: 'server error', statusCode: 500 });
 }
 
@@ -33,8 +34,6 @@ if (languagesError.value || !languageData.value) {
 	console.error(languageDataError.value);
 	throw createError({ statusCode: 500, message: 'błąd przy ładowaniu danych strony' });
 }
-
-console.log('language data', languageData.value);
 </script>
 
 <template>

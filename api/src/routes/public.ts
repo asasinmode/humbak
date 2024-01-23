@@ -1,6 +1,6 @@
 import { and, desc, eq, isNull, not, or, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
-import { custom, object, string, transform } from 'valibot';
+import { custom, object, optional, string, transform } from 'valibot';
 import { footerContents } from 'src/db/schema/footerContents';
 import { db } from '../db';
 import { languageExistsMiddleware, wrap } from '../helpers';
@@ -21,17 +21,23 @@ export const app = new Hono()
 		return c.json(result.map(item => item.language));
 	})
 	.get(
-		'/pages/:id',
+		'/pages/:slug',
 		wrap('param', object({
-			id: string(),
+			slug: string(),
+		})),
+		wrap('query', object({
+			isLanguage: optional(string()),
 		})),
 		async (c) => {
-			const { id } = c.req.valid('param');
-			const parsedId = Number.parseInt(id);
+			const { slug } = c.req.valid('param');
+			const isLanguage = c.req.valid('query').isLanguage === 'true';
 
-			const [page] = await db.select({ id: pages.id }).from(pages).where(
-				Number.isNaN(parsedId) ? and(eq(pages.language, id), eq(pages.slug, '')) : eq(pages.id, parsedId)
-			);
+			const [page] = await db
+				.select({ id: pages.id })
+				.from(pages)
+				.where(
+					isLanguage ? and(eq(pages.language, slug), eq(pages.slug, '')) : eq(pages.slug, slug)
+				);
 			if (!page) {
 				return c.notFound();
 			}
