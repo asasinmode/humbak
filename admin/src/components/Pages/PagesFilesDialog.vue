@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getPathWithoutExtension, knownMimetypeExtensions } from '~/helpers';
+import { env } from '~/env';
 import type { IDialogFile } from '~/composables/useApi';
 
 withDefaults(
@@ -158,10 +159,10 @@ async function copy(file: IDialogFile) {
 		>
 			<img
 				v-if="isImage(file.mimetype)"
-				:src="`files${file.path}`"
+				:src="`${env.VITE_PAGE_URL}/files${file.path}`"
 				:title="file.title"
 				:alt="file.alt"
-				:srcset="srcSet(`files${file.path}`, file.mimetype, isImage(file.mimetype))"
+				:srcset="srcSet(`${env.VITE_PAGE_URL}/files${file.path}`, file.mimetype, isImage(file.mimetype))"
 				:sizes="sizes(file.mimetype, isImage(file.mimetype))"
 				class="object-cover col-span-full h-18 w-full max-w-1/2 justify-self-center lg:row-span-full lg:col-span-1 lg:h-25 lg:max-w-none lg:self-center"
 			>

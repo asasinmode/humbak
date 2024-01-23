@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getPathWithoutExtension, knownMimetypeExtensions } from '~/helpers';
+import { env } from '~/env';
 import type { IFile } from '~/composables/useApi';
 import type { IFilesGrabbedItem, ILocalFile, INewFile } from '~/types';
 
@@ -40,7 +41,7 @@ const hasChanged = computed(() =>
 	|| props.originalFile.name !== file.value.name
 );
 const isImage = computed(() => file.value.mimetype.slice(0, 5) === 'image');
-const path = computed(() => isNew.value ? file.value.path : `files${file.value.path}`);
+const path = computed(() => isNew.value ? file.value.path : `${env.VITE_PAGE_URL}/files${file.value.path}`);
 const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype] || file.value.mimetype);
 
 function cancelMove() {
