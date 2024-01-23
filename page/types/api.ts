@@ -1,12 +1,33 @@
-import type { InferResponseType, hc } from 'hono/client';
-import type { AppType } from '@humbak/api/src';
+// inferred types barely handle admin so here I just typed them out
+export type ILanguagePageData = {
+	menuLinks: {
+		text: string;
+		parentId: number | null;
+		position: number;
+		href: string;
+	}[];
+	slides: {
+		id: number;
+		content: string;
+	}[];
+	footerContents: {
+		emails: string[];
+		phoneNumbers: string[];
+		location: {
+			text: string;
+			value: string;
+		};
+		socials: {
+			type: 'facebook' | 'youtube' | 'instagram' | 'twitter';
+			value: string;
+		}[];
+	};
+};
 
-type Client = ReturnType<typeof hc<AppType>>;
-
-// had to do it like that because types from public route for it are any
-type IFooterContents = Omit<InferResponseType<Client['footerContents']['$get']>, 'language'>;
-export type ILanguagePageData = Omit<InferResponseType<Client['public'][':language']['$get']>, 'footerContents'>
-	& { footerContents: IFooterContents; };
-
-export type ISlide = ILanguagePageData['slides'][number];
-export type IMenuLink = ILanguagePageData['menuLinks'][number];
+export type IPageData = {
+	id: number;
+	title: string;
+	slug: string;
+	html: string;
+	meta: string;
+};

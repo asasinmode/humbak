@@ -157,9 +157,6 @@ importers:
 
   page:
     devDependencies:
-      '@humbak/api':
-        specifier: workspace:^
-        version: link:../api
       '@nuxt/devtools':
         specifier: ^1.0.8
         version: 1.0.8(nuxt@3.9.3)(vite@5.0.11)
@@ -169,9 +166,6 @@ importers:
       '@unocss/reset':
         specifier: ^0.58.3
         version: 0.58.3
-      hono:
-        specifier: 3.11.3
-        version: 3.11.3
       nuxt:
         specifier: ^3.9.3
         version: 3.9.3(eslint@8.56.0)(typescript@5.3.3)(vite@5.0.11)(vue-tsc@1.8.27)
@@ -5770,6 +5764,7 @@ packages:
   /hono@3.11.3:
     resolution: {integrity: sha512-MWYBcIS4dZJo9e/852Zwl+gqBiUSRknMOZ/MbW7kW8JiWixTJ58pzXVIeBq7jnvFq3AZ9uQ35QyVpzV05sdNFw==}
     engines: {node: '>=16.0.0'}
+    dev: false
 
   /hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
