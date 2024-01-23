@@ -39,7 +39,11 @@ console.log('language data', languageData.value);
 
 <template>
 	<main>
-		hello {{ languageData }}
+		{{ languageData!.menuLinks }} <br>
+		{{ languageData!.slides }} <br>
+		<br>
 		<NuxtPage />
+		<br>
+		{{ languageData!.footerContents }}
 	</main>
 </template>

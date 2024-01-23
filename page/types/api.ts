@@ -3,7 +3,10 @@ import type { AppType } from '@humbak/api/src';
 
 type Client = ReturnType<typeof hc<AppType>>;
 
-export type ILanguagePageData = InferResponseType<Client['public'][':language']['$get']>;
+// had to do it like that because types from public route for it are any
+type IFooterContents = Omit<InferResponseType<Client['footerContents']['$get']>, 'language'>;
+export type ILanguagePageData = Omit<InferResponseType<Client['public'][':language']['$get']>, 'footerContents'>
+	& { footerContents: IFooterContents; };
 
-export type ISlide = ILanguageResponse['slides'][number];
-export type IMenuLink = ILanguageResponse['menuLinks'][number];
+export type ISlide = ILanguagePageData['slides'][number];
+export type IMenuLink = ILanguagePageData['menuLinks'][number];
