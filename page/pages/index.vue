@@ -1,12 +1,16 @@
 <script setup lang="ts">
 const { public: { apiUrl } } = useRuntimeConfig();
 
-const { data } = await useFetch(`${apiUrl}/public/menuLinks?language=pl`);
-console.log('data', data);
+const { data: languages, error: languagesError } = await useFetch<string[]>(`${apiUrl}/public/languages`);
+
+if (!languages.value || languagesError.value) {
+	console.error(languagesError.value);
+	throw createError({ message: 'server error', statusCode: 500 });
+}
 </script>
 
 <template>
 	<main>
-		hello
+		hello {{ languages }}
 	</main>
 </template>
