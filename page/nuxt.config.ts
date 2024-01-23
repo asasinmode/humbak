@@ -1,7 +1,9 @@
+import process from 'node:process';
+
 export default defineNuxtConfig({
 	devtools: { enabled: true },
 	devServer: {
-		port: 5174,
+		port: Number.parseInt(process.env.PORT || '5174'),
 	},
 	modules: [
 		'@unocss/nuxt',
@@ -10,6 +12,18 @@ export default defineNuxtConfig({
 		'@unocss/reset/tailwind.css',
 		'assets/index.css',
 	],
+	routeRules: {
+		'/stylesheets/**': {
+			headers: {
+				'access-control-allow-origin': process.env.NUXT_PUBLIC_ADMIN_URL,
+			},
+		},
+	},
+	vite: {
+		server: {
+			cors: true,
+		},
+	},
 	app: {
 		head: {
 			link: [{ rel: 'icon', href: '/favicon.ico' }],
@@ -24,6 +38,7 @@ document.documentElement.classList.toggle('dark', true)`,
 	runtimeConfig: {
 		public: {
 			apiUrl: '',
+			adminUrl: '',
 		},
 	},
 });

@@ -16,7 +16,7 @@ const { data: pageData, error: pageDataError } = await useFetch<IPageData>(
 );
 if (pageDataError.value || !pageData.value) {
 	console.error(pageDataError.value);
-	throw createError({ statusCode: 500, message: 'błąd przy ładowaniu strony' });
+	throw createError({ statusCode: 404, message: 'strona nieznaleziona' });
 }
 </script>
 

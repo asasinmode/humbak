@@ -34,6 +34,13 @@ if (languagesError.value || !languageData.value) {
 	console.error(languageDataError.value);
 	throw createError({ statusCode: 500, message: 'błąd przy ładowaniu danych strony' });
 }
+
+useHead({
+	htmlAttrs: { lang: language },
+	link: [
+		{ rel: 'stylesheet', type: 'text/css', href: `/files/stylesheets/global.css` },
+	],
+});
 </script>
 
 <template>

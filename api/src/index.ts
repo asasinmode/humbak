@@ -19,7 +19,11 @@ import { app as footerContentsApp } from './routes/footerContents';
 
 !existsSync(filesStoragePath) && await mkdir(filesStoragePath, { recursive: true });
 !existsSync(stylesheetsStoragePath) && await mkdir(stylesheetsStoragePath, { recursive: true });
-!existsSync(`${stylesheetsStoragePath}/global.css`) && await writeFile(`${stylesheetsStoragePath}/global.css`, '');
+!existsSync(`${stylesheetsStoragePath}/global.css`) && await writeFile(`${stylesheetsStoragePath}/global.css`, `.image-fill {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}`);
 
 const app = new Hono();
 
