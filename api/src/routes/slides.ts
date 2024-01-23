@@ -73,11 +73,28 @@ export const app = new Hono()
 
 		return c.json(result.value);
 	})
-	.put('aspectRatio', wrap('json', object({ value: nonEmptyMaxLengthString() })), async (c) => {
+	.put('/aspectRatio', wrap('json', object({ value: nonEmptyMaxLengthString() })), async (c) => {
 		const { value } = c.req.valid('json');
 		await db.update(slideAspectRatio).set({ value, updatedAt: new Date() });
 
 		return c.body(null, 204);
+	})
+	.get('/public', wrap('query', languageQueryValidation), async (c) => {
+		const { language } = c.req.valid('query');
+
+		const result = await db
+			.select({
+				id: slides.id,
+				content: slides.parsedContent,
+			})
+			.from(slides)
+			.orderBy(slides.createdAt)
+			.where(and(
+				eq(slides.language, language),
+				eq(slides.isHidden, false)
+			));
+
+		return c.json(result);
 	})
 	.get('/:id', idParamValidationMiddleware, async (c) => {
 		const { id } = c.req.valid('param');
