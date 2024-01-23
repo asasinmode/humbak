@@ -422,6 +422,14 @@ async function saveChanges() {
 	isSaving.value = true;
 	try {
 		await api.menuLinks.$put({ json: { menuLinks: actuallyChanged } });
+
+		for (const changedLink of actuallyChanged) {
+			const originalIndex = originalMenuLinks.findIndex(l => l.pageId === changedLink.pageId);
+			if (originalIndex !== -1) {
+				originalMenuLinks[originalIndex].parentId = changedLink.parentId;
+				originalMenuLinks[originalIndex].position = changedLink.position;
+			}
+		}
 		changedLinks = [];
 		toast('zapisano zmiany');
 	} catch (e) {
