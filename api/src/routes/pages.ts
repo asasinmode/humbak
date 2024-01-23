@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { readFile, rm, writeFile } from 'node:fs/promises';
 import { Hono } from 'hono';
-import { eq, isNull, like, or, sql } from 'drizzle-orm';
+import { and, eq, isNull, like, or, sql } from 'drizzle-orm';
 import { merge, object, optional, pick, string } from 'valibot';
 import { stylesheetsStoragePath } from '../helpers/files';
 import { idParamValidationMiddleware, paginationQueryValidation, wrap } from '../helpers';
@@ -92,7 +92,8 @@ export const app = new Hono()
 		const [{ count: position }] = await db
 			.select({ count: sql<number>`COUNT(*)` })
 			.from(menuLinks)
-			.where(isNull(menuLinks.parentId));
+			.leftJoin(pages, eq(pages.id, menuLinks.pageId))
+			.where(and(isNull(menuLinks.parentId), eq(pages.language, pageFields.language)));
 
 		await Promise.all([
 			db.insert(menuLinks).values({ pageId, position, text: menuText }).onDuplicateKeyUpdate({
