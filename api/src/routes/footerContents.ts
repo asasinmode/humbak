@@ -1,32 +1,17 @@
 import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { db } from '../db';
-import { languageQueryValidation, wrap } from '../helpers';
+import { languageExistsMiddleware, languageQueryValidation, wrap } from '../helpers';
 import { jwt } from '../helpers/jwt';
-import { pages } from '../db/schema/pages';
 import { footerContents, insertFooterContentSchema } from '../db/schema/footerContents';
 
-export const app = new Hono<{
-	Variables: {
-		language: string;
-	};
-}>()
+export const app = new Hono()
 	.get(
 		'/',
 		wrap('query', languageQueryValidation),
-		async (c, next) => {
-			const { language } = c.req.valid('query');
-
-			const [languageResult] = await db.selectDistinct({ language: pages.language }).from(pages).where(eq(pages.language, language));
-			if (!languageResult) {
-				return c.notFound();
-			}
-
-			c.set('language', language);
-			await next();
-		},
+		languageExistsMiddleware('query'),
 		async (c) => {
-			const language = c.get('language');
+			const { language } = c.req.valid('query');
 
 			const [result] = await db
 				.select({

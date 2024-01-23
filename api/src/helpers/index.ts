@@ -3,9 +3,11 @@ import { confirm } from '@clack/prompts';
 import { maxLength, minLength, object, optional, safeParse, string, transform } from 'valibot';
 import type { Env, MiddlewareHandler, ValidationTargets } from 'hono';
 import type { BaseSchema, Input, Output, SchemaWithTransform } from 'valibot';
+import { eq } from 'drizzle-orm';
 import { validator } from 'hono/validator';
+import { db, pool } from '../db';
+import { pages } from '../db/schema/pages';
 import { env } from '../env';
-import { pool } from '../db';
 
 export async function promptProdContinue() {
 	let shouldContinue = true;
@@ -45,6 +47,23 @@ export const idParamValidationMiddleware = wrap('param', transform(object({
 }), ({ id }) => ({
 	id: Number.parseInt(id),
 })));
+
+export function languageExistsMiddleware(location: 'query' | 'param'): MiddlewareHandler {
+	return async (c, next) => {
+		const { language } = (c.req as any).valid(location);
+
+		const [languageResult] = await db
+			.selectDistinct({ language: pages.language })
+			.from(pages)
+			.where(eq(pages.language, language))
+			.limit(1);
+		if (!languageResult) {
+			return c.notFound();
+		}
+
+		await next();
+	};
+}
 
 export function nonEmptyMaxLengthString(length = 256) {
 	return string([minLength(1, 'nie może być puste'), maxLength(length, `maksymalna długość: ${length}`)]);

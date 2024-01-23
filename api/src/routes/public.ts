@@ -2,7 +2,7 @@ import { and, desc, eq, isNull, not, or, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { object, string } from 'valibot';
 import { db } from '../db';
-import { wrap } from '../helpers';
+import { languageExistsMiddleware, wrap } from '../helpers';
 import { pages } from '../db/schema/pages';
 import { slides } from '../db/schema/slides';
 import { menuLinks } from '../db/schema/menuLinks';
@@ -21,6 +21,7 @@ export const app = new Hono()
 	.get(
 		'/:language',
 		wrap('param', object({ language: string() })),
+		languageExistsMiddleware('param'),
 		async (c) => {
 			const { language } = c.req.valid('param');
 
