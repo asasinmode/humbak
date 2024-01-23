@@ -32,6 +32,8 @@ export default await antfu({
 		'api/**/*',
 		'admin/**/*',
 		'admin/**/*.vue',
+		'page/**/*',
+		'page/**/*.vue',
 	],
 	vue: true,
 	typescript: true,
@@ -39,6 +41,7 @@ export default await antfu({
 	files: ['api/**/*'],
 	rules: {
 		'no-console': 'off',
+		'test/no-import-node-test': 'off',
 	},
 }, {
 	ignores: ['api/src/db/migrations/**/*'],
