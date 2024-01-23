@@ -1,5 +1,7 @@
 <script setup lang="ts">
-console.log('slug setup');
+const route = useRoute();
+const { slug } = route.params;
+console.log('slug setup', slug, route.params);
 </script>
 
 <template>

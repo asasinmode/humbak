@@ -1,12 +1,13 @@
 import { and, desc, eq, isNull, not, or, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
-import { object, string } from 'valibot';
+import { custom, object, string, transform } from 'valibot';
 import { footerContents } from 'src/db/schema/footerContents';
 import { db } from '../db';
 import { languageExistsMiddleware, wrap } from '../helpers';
 import { pages } from '../db/schema/pages';
 import { slides } from '../db/schema/slides';
 import { menuLinks } from '../db/schema/menuLinks';
+import { contents } from '../db/schema/contents';
 
 export const app = new Hono()
 	.get('/languages', async (c) => {
@@ -19,6 +20,38 @@ export const app = new Hono()
 
 		return c.json(result.map(item => item.language));
 	})
+	.get(
+		'/pages/:id',
+		wrap('param', object({
+			id: string(),
+		})),
+		async (c) => {
+			const { id } = c.req.valid('param');
+			const parsedId = Number.parseInt(id);
+
+			const [page] = await db.select({ id: pages.id }).from(pages).where(
+				Number.isNaN(parsedId) ? and(eq(pages.language, id), eq(pages.slug, '')) : eq(pages.id, parsedId)
+			);
+			if (!page) {
+				return c.notFound();
+			}
+
+			const [pageData] = await db
+				.select({
+					id: pages.id,
+					title: pages.title,
+					slug: pages.slug,
+					html: sql<string>`${contents.rawHtml}`,
+					meta: sql<string>`${contents.meta}`,
+				})
+				.from(pages)
+				.leftJoin(menuLinks, eq(menuLinks.pageId, pages.id))
+				.leftJoin(contents, eq(contents.pageId, pages.id))
+				.where(eq(pages.id, page.id));
+
+			return c.json(pageData);
+		}
+	)
 	.get(
 		'/:language',
 		wrap('param', object({ language: string() })),

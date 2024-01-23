@@ -1,6 +1,6 @@
 import { exit } from 'node:process';
 import { confirm } from '@clack/prompts';
-import { maxLength, minLength, object, optional, safeParse, string, transform } from 'valibot';
+import { custom, maxLength, minLength, object, optional, safeParse, string, transform } from 'valibot';
 import type { Env, MiddlewareHandler, ValidationTargets } from 'hono';
 import type { BaseSchema, Input, Output, SchemaWithTransform } from 'valibot';
 import { eq } from 'drizzle-orm';
@@ -43,7 +43,14 @@ export const languageQueryValidation = object({
 });
 
 export const idParamValidationMiddleware = wrap('param', transform(object({
-	id: string(),
+	id: string([
+		custom((v) => {
+			if (Number.isNaN(Number.parseInt(v))) {
+				return false;
+			}
+			return true;
+		}, 'musi być liczbą'),
+	]),
 }), ({ id }) => ({
 	id: Number.parseInt(id),
 })));
