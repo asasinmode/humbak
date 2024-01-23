@@ -5,7 +5,6 @@ import { FetchError } from '~/composables/useErrors';
 import PagesContentEditor from '~/components/Pages/PagesContentEditor.vue';
 import PagesTable from '~/components/Pages/PagesTable.vue';
 import VButton from '~/components/V/VButton.vue';
-import type { IUniqueLanguage } from '~/composables/useApi';
 
 const api = useApi();
 const { confirm } = useConfirm();
@@ -21,7 +20,7 @@ const loadingPageId = ref<number | undefined>();
 const loadedPageId = ref<number | undefined>();
 
 const isLoading = ref(false);
-const languages = ref<IUniqueLanguage[]>([]);
+const languages = ref<string[]>([]);
 
 onMounted(() => getLanguages());
 

@@ -3,4 +3,4 @@ import type { AppType } from '@humbak/api/src';
 
 type Client = ReturnType<typeof hc<AppType>>;
 
-export type ISlide = InferResponseType<Client['public']['slides']['$get']>[number];
+export type ILanguageResponse = InferResponseType<Client['public'][':language']['$get']>;

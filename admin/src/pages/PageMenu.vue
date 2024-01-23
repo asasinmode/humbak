@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import VButton from '~/components/V/VButton.vue';
 import MenuHiddenLinksWidget from '~/components/Menu/MenuHiddenLinksWidget.vue';
-import type { IMenuLink, IUniqueLanguage } from '~/composables/useApi';
+import type { IMenuLink } from '~/composables/useApi';
 import type { IMenuTreeItem } from '~/types';
 
 const api = useApi();
@@ -12,7 +12,7 @@ const isLoading = ref(false);
 const isLoadingLanguages = ref(false);
 const selectedLanguage = ref<string>();
 let previousSelectedLanguage: string | undefined;
-const languages = ref<IUniqueLanguage[]>([]);
+const languages = ref<string[]>([]);
 const transformedHiddenMenuLinks = ref<IMenuTreeItem[]>([]);
 const transformedMenuLinks = ref<IMenuTreeItem[]>([]);
 const saveButton = ref<InstanceType<typeof VButton>>();

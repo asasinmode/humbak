@@ -7,7 +7,7 @@ import VDialog from '~/components/V/VDialog.vue';
 import TheSlider from '~/components/TheSlider.vue';
 import VCombobox from '~/components/V/VCombobox.vue';
 
-import type { IListedSlide, IUniqueLanguage } from '~/composables/useApi';
+import type { IListedSlide } from '~/composables/useApi';
 
 useGlobalPagesStylesheet();
 const api = useApi();
@@ -31,7 +31,7 @@ const availableSlides = ref<IListedSlide[]>([]);
 const selectedSlideId = ref<number>();
 const previousSelectedSlideId = ref<number>();
 
-const languages = ref<IUniqueLanguage[]>([]);
+const languages = ref<string[]>([]);
 const selectedLanguage = ref<string>();
 let previousSelectedLanguage: string | undefined;
 

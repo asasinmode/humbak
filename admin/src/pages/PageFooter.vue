@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import VButton from '~/components/V/VButton.vue';
-import type { IFooterContents, IUniqueLanguage } from '~/composables/useApi';
+import type { IFooterContents } from '~/composables/useApi';
 
 const { toast, toastGenericError } = useToast();
 const api = useApi();
@@ -8,7 +8,7 @@ const api = useApi();
 const saveButton = ref<InstanceType<typeof VButton>>();
 
 const isLoadingLanguages = ref(false);
-const languages = ref<IUniqueLanguage[]>([]);
+const languages = ref<string[]>([]);
 let previousSelectedLanguage: string | undefined;
 
 const locationTextModelValue = ref('');
