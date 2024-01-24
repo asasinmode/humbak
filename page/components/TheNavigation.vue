@@ -21,6 +21,15 @@ function isMenuToTheLeft(indexOnLevel: number) {
 				<span class="visually-hidden">język</span>
 				<div class="i-ph-translate-bold pointer-events-none w-6 h-6" />
 			</button>
+
+			<a
+				id="skipContent"
+				href="#content"
+				class="fixed col-span-2 w-fit border border-black rounded-full bg-black px-3 py-1 text-5 text-white shadow transition-transform -translate-y-full focus-visible:translate-y-2 focus:translate-y-2 md:(-translate-y-[calc(100%_+_5rem)] left-1/2 -translate-x-1/2 focus-visible:translate-y-1 focus:translate-y-1)"
+			>
+				pomiń nawigację
+			</a>
+
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
@@ -90,4 +99,9 @@ function isMenuToTheLeft(indexOnLevel: number) {
 .hoverable-child-menu-visible:focus-within > menu {
 	display: block;
 }
+/* @media (max-width: 767px){ */
+/* 	#skipContent:focus + a, #skipContent:focus-visible + a { */
+/* 		margin-top: 3.125rem; */
+/* 	} */
+/* } */
 </style>
