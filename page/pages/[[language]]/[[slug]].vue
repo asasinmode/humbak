@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { test } from '@humbak/shared';
 import type { IPageData } from '~/types/api';
 
 const { public: { apiUrl } } = useRuntimeConfig();
@@ -30,6 +29,5 @@ useHead({
 <template>
 	<div>
 		{{ pageData }}
-		{{ test }}
 	</div>
 </template>

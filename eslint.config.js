@@ -34,6 +34,7 @@ export default await antfu({
 		'admin/**/*.vue',
 		'page/**/*',
 		'page/**/*.vue',
+		'shared/**/*',
 	],
 	vue: true,
 	typescript: true,

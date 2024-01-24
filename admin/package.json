@@ -15,6 +15,7 @@
 		"type-check": "vue-tsc --noEmit -p tsconfig.app.json --composite false"
 	},
 	"dependencies": {
+		"@humbak/shared": "workspace:^",
 		"@monaco-editor/loader": "^1.4.0",
 		"@types/node": "^20.11.5",
 		"blaze-slider": "^1.9.3",

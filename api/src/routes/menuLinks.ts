@@ -1,3 +1,4 @@
+import type { IMenuLink } from '@humbak/shared';
 import { and, eq, not, sql } from 'drizzle-orm';
 import { array, object, omit } from 'valibot';
 import { Hono } from 'hono';
@@ -10,7 +11,7 @@ export const app = new Hono()
 	.get('/', wrap('query', languageQueryValidation), async (c) => {
 		const { language } = c.req.valid('query');
 
-		const result = await db
+		const result: IMenuLink[] = await db
 			.select({
 				pageId: menuLinks.pageId,
 				text: menuLinks.text,

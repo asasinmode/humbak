@@ -26,6 +26,9 @@ importers:
 
   admin:
     dependencies:
+      '@humbak/shared':
+        specifier: workspace:^
+        version: link:../shared
       '@monaco-editor/loader':
         specifier: ^1.4.0
         version: 1.4.0(monaco-editor@0.45.0)
@@ -142,6 +145,9 @@ importers:
       '@clack/prompts':
         specifier: ^0.7.0
         version: 0.7.0
+      '@humbak/shared':
+        specifier: workspace:^
+        version: link:../shared
       '@types/node':
         specifier: ^20.11.5
         version: 20.11.5

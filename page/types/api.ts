@@ -1,11 +1,8 @@
+import type { IMenuLink } from '@humbak/shared';
+
 // inferred types barely handle admin so here I just typed them out
 export type ILanguagePageData = {
-	menuLinks: {
-		text: string;
-		parentId: number | null;
-		position: number;
-		href: string;
-	}[];
+	menuLinks: IMenuLink[];
 	slides: {
 		id: number;
 		content: string;

@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import type { IMenuLink } from '@humbak/shared';
+import { extractWithParentId, transformMenuLinks } from '@humbak/shared';
 import VButton from '~/components/V/VButton.vue';
 import MenuHiddenLinksWidget from '~/components/Menu/MenuHiddenLinksWidget.vue';
-import type { IMenuLink } from '~/composables/useApi';
 import type { IMenuTreeItem } from '~/types';
 
 const api = useApi();
@@ -66,50 +67,13 @@ async function getMenuLinks() {
 		previousSelectedLanguage = selectedLanguage.value;
 
 		transformedHiddenMenuLinks.value = extractWithParentId(menuLinks, -1);
-		transformedMenuLinks.value = extractWithParentId(menuLinks, null);
-		for (const child of transformedMenuLinks.value) {
-			child.children = extractWithParentId(menuLinks, child.pageId);
-			for (const grandchild of child.children) {
-				grandchild.children = extractWithParentId(menuLinks, grandchild.pageId);
-			}
-		}
+		transformedMenuLinks.value = transformMenuLinks(menuLinks);
 	} catch (e) {
 		toast('błąd przy ładowaniu menu', 'error');
 		console.error(e);
 	} finally {
 		isLoading.value = false;
 	}
-}
-
-function extractWithParentId(menuLinks: IMenuLink[], parentId: null | number): IMenuTreeItem[] {
-	const rv: IMenuTreeItem[] = [];
-	let index = 0;
-	while (index < menuLinks.length) {
-		let currentLink = menuLinks[index];
-
-		if (currentLink.parentId === parentId) {
-			let indexInDestination = 0;
-			for (const { position } of rv) {
-				if (position < currentLink.position) {
-					indexInDestination += 1;
-				}
-			}
-
-			currentLink = menuLinks.splice(index, 1)[0];
-
-			rv.splice(indexInDestination, 0, {
-				pageId: currentLink.pageId,
-				text: currentLink.text,
-				href: currentLink.href,
-				position: currentLink.position,
-				children: [],
-			});
-
-			index -= 1;
-		}
-		index += 1;
-	}
-	return rv;
 }
 
 const nav = ref<HTMLElement>();

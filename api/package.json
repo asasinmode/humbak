@@ -35,6 +35,7 @@
 	},
 	"devDependencies": {
 		"@clack/prompts": "^0.7.0",
+		"@humbak/shared": "workspace:^",
 		"@types/node": "^20.11.5",
 		"drizzle-kit": "^0.20.13",
 		"esbuild": "^0.19.11",

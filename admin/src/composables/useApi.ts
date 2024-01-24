@@ -32,7 +32,6 @@ export const useApi = () => client;
 
 type Client = typeof client;
 
-export type IMenuLink = InferResponseType<Client['menuLinks']['$get']>[number];
 export type IListedPage = InferResponseType<Client['pages']['$get']>['items'][number];
 export type IPublicListedSlide = InferResponseType<Client['slides']['public']['$get']>[number];
 export type IListedSlide = InferResponseType<Client['slides']['$get']>[number];
