@@ -15,7 +15,7 @@ defineEmits<{
 
 <template>
 	<button
-		class="relative h-full w-full p-2"
+		class="relative h-full w-full p-3"
 		:class="path.length <= 1 ? 'truncate' : ''"
 		@mousedown="$emit('mousedown', $event, item as IMenuTreeItem, path)"
 		@mouseenter="$emit('mouseenter', $event, path)"

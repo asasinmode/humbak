@@ -442,7 +442,7 @@ function getActuallyChanged() {
 		>
 			zapisz
 		</VButton>
-		<nav ref="nav" class="relative col-span-full hidden max-w-360 min-h-10 w-full bg-humbak shadow lg:block">
+		<nav ref="nav" class="relative col-span-full shadow hidden max-w-360 min-h-12 w-full bg-humbak lg:block">
 			<menu
 				class="flex flex-row text-black"
 				@mouseleave="dropTarget?.element.classList.remove('drop-indicator-start', 'drop-indicator-end')"
