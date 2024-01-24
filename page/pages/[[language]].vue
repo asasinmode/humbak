@@ -38,7 +38,7 @@ if (languagesError.value || !languageData.value) {
 useHead({
 	htmlAttrs: { lang: language },
 	link: [
-		{ rel: 'stylesheet', type: 'text/css', href: `/stylesheets/global.css` },
+		{ rel: 'stylesheet', type: 'text/css', href: '/stylesheets/global.css' },
 	],
 });
 </script>

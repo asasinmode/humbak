@@ -18,6 +18,12 @@ if (pageDataError.value || !pageData.value) {
 	console.error(pageDataError.value);
 	throw createError({ statusCode: 404, message: 'strona nieznaleziona' });
 }
+
+useHead({
+	link: [
+		{ rel: 'stylesheet', type: 'text/css', href: `/stylesheets/${pageData.value.id}.css` },
+	],
+});
 </script>
 
 <template>
