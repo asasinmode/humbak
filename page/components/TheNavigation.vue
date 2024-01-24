@@ -11,7 +11,7 @@ function isMenuToTheLeft(indexOnLevel: number) {
 </script>
 
 <template>
-	<nav class="min-h-12 w-full bg-humbak shadow sticky top-0">
+	<nav class="min-h-12 w-full bg-humbak drop-shadow sticky top-0">
 		<menu class="flex relative max-w-360 h-full flex-row text-black mx-auto">
 			<button class="w-12 h-12 absolute left-0 -translate-x-full flex-center hoverable:bg-humbak-5" title="home">
 				<span class="visually-hidden">home</span>
@@ -43,7 +43,7 @@ function isMenuToTheLeft(indexOnLevel: number) {
 						:key="secondLevelLink.pageId"
 						class="hoverable-child-menu-visible vertical relative list-none focus-within:bg-humbak-6 hover:bg-humbak-6"
 					>
-						<button class="relative h-full w-full p-2">
+						<button class="relative h-full w-full p-3">
 							{{ secondLevelLink.text }}
 							<div
 								v-if="secondLevelLink.children.length"
@@ -69,7 +69,7 @@ function isMenuToTheLeft(indexOnLevel: number) {
 								:key="thirdLevelLink.pageId"
 								class="vertical relative list-none focus-within:bg-humbak-7 hover:bg-humbak-7"
 							>
-								<button class="relative h-full w-full p-2">
+								<button class="relative h-full w-full p-3">
 									{{ thirdLevelLink.text }}
 								</button>
 							</li>
