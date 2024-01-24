@@ -16,13 +16,10 @@ export type IMenuTreeItem = {
 
 export function transformMenuLinks(menuLinks: IMenuLink[]) {
 	const rv = extractWithParentId(menuLinks, null);
-	console.log('extracted for null', rv);
 	for (const child of rv) {
 		child.children = extractWithParentId(menuLinks, child.pageId);
-		console.log('extracted for child', child, child.children);
 		for (const grandchild of child.children) {
 			grandchild.children = extractWithParentId(menuLinks, grandchild.pageId);
-			console.log('extracted for grandchild', grandchild, grandchild.children);
 		}
 	}
 	return rv;
