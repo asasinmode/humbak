@@ -67,6 +67,7 @@ export const app = new Hono()
 
 			const [menuLinksResult, slidesResult, [footerContentsResult]] = await Promise.all([
 				db.select({
+					pageId: menuLinks.pageId,
 					text: menuLinks.text,
 					parentId: menuLinks.parentId,
 					position: menuLinks.position,
@@ -74,7 +75,11 @@ export const app = new Hono()
 				})
 					.from(menuLinks)
 					.leftJoin(pages, eq(menuLinks.pageId, pages.id))
-					.where(and(eq(pages.language, language), not(eq(menuLinks.parentId, -1)), not(eq(pages.slug, '')))),
+					.where(and(
+						eq(pages.language, language),
+						or(not(eq(menuLinks.parentId, -1)), isNull(menuLinks.parentId)),
+						not(eq(pages.slug, ''))
+					)),
 				db.select({
 					id: slides.id,
 					content: slides.parsedContent,

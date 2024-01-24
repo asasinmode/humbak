@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { transformMenuLinks } from '@humbak/shared';
 import type { ILanguagePageData } from '~/types/api';
 
 definePageMeta({
@@ -41,11 +42,17 @@ useHead({
 		{ rel: 'stylesheet', type: 'text/css', href: '/stylesheets/global.css' },
 	],
 });
+
+const transformedMenuLinks = transformMenuLinks(languageData.value.menuLinks.slice());
 </script>
 
 <template>
 	<main>
-		{{ languageData!.menuLinks }} <br>
+		<pre>
+			<code>
+				{{ transformedMenuLinks }} <br>
+			</code>
+		</pre>
 		{{ languageData!.slides }} <br>
 		<br>
 		<NuxtPage />
