@@ -169,6 +169,12 @@ importers:
       '@humbak/shared':
         specifier: workspace:^
         version: link:../shared
+      '@iconify-json/ph':
+        specifier: ^1.1.10
+        version: 1.1.10
+      '@iconify-json/solar':
+        specifier: ^1.1.9
+        version: 1.1.9
       '@nuxt/devtools':
         specifier: ^1.0.8
         version: 1.0.8(nuxt@3.9.3)(vite@5.0.11)

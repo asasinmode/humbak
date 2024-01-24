@@ -17,6 +17,8 @@
 	},
 	"devDependencies": {
 		"@humbak/shared": "workspace:^",
+		"@iconify-json/ph": "^1.1.10",
+		"@iconify-json/solar": "^1.1.9",
 		"@nuxt/devtools": "^1.0.8",
 		"@unocss/nuxt": "^0.58.3",
 		"@unocss/reset": "^0.58.3",

@@ -12,7 +12,15 @@ function isMenuToTheLeft(indexOnLevel: number) {
 
 <template>
 	<nav class="min-h-12 w-full bg-humbak shadow sticky top-0">
-		<menu class="flex max-w-360 h-full flex-row text-black mx-auto">
+		<menu class="flex relative max-w-360 h-full flex-row text-black mx-auto">
+			<button class="w-12 h-12 absolute left-0 -translate-x-full flex-center hoverable:bg-humbak-5" title="home">
+				<span class="visually-hidden">home</span>
+				<div class="i-ph-house-fill pointer-events-none w-6 h-6" />
+			</button>
+			<button class="w-12 h-12 absolute right-0 translate-x-full flex-center hoverable:bg-humbak-5" title="język">
+				<span class="visually-hidden">język</span>
+				<div class="i-ph-translate-bold pointer-events-none w-6 h-6" />
+			</button>
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
