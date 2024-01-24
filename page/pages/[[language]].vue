@@ -48,11 +48,9 @@ const transformedMenuLinks = transformMenuLinks(languageData.value.menuLinks.sli
 
 <template>
 	<TheNavigation :menu-links="transformedMenuLinks" />
-	<main>
-		{{ languageData!.slides }} <br>
-		<br>
-		<NuxtPage />
-		<br>
-		{{ languageData!.footerContents }}
-	</main>
+	{{ languageData!.slides }} <br>
+	<br>
+	<NuxtPage />
+	<br>
+	{{ languageData!.footerContents }}
 </template>

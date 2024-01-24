@@ -11,16 +11,14 @@ function isMenuToTheLeft(indexOnLevel: number) {
 </script>
 
 <template>
-	<nav class="relative col-span-full hidden max-w-360 min-h-10 w-full bg-humbak shadow lg:block">
-		<menu
-			class="flex flex-row text-black"
-		>
+	<nav class="min-h-12 w-full bg-humbak shadow sticky top-0">
+		<menu class="flex max-w-360 h-full flex-row text-black mx-auto">
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
-				class="hoverable-child-menu-visible horizontal relative min-w-0 flex-center flex-1 flex-col list-none focus-within:bg-humbak-5 hover:bg-humbak-5"
+				class="hoverable-child-menu-visible h-full horizontal relative min-w-0 flex-center flex-1 flex-col list-none focus-within:bg-humbak-5 hover:bg-humbak-5"
 			>
-				<button class="relative h-full w-full p-2 truncate">
+				<button class="relative h-full w-full p-3 truncate">
 					{{ firstLevelLink.text }}
 					<div
 						v-if="firstLevelLink.children.length"
