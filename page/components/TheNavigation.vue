@@ -16,16 +16,13 @@ const menu = ref<HTMLMenuElement>();
 let secondToLastMenuLink: HTMLElement;
 
 const expandedMenuLinkId = ref<number>();
-// let hasJustFocused = false;
 
 function toggleMenuLinkExpanded(id: number, parentId?: number) {
-	// if (hasJustFocused) {
-	// 	hasJustFocused = false;
-	// 	return;
-	// }
-
 	if (parentId === undefined && expandedMenuLinkId.value !== undefined) {
 		for (const menuLink of props.menuLinks) {
+			if (menuLink.pageId !== id) {
+				continue;
+			}
 			for (const child of menuLink.children) {
 				if (child.pageId === expandedMenuLinkId.value) {
 					expandedMenuLinkId.value = undefined;
@@ -45,7 +42,6 @@ function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parent
 			}
 		}
 	}
-	// hasJustFocused = true;
 	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
 }
 
