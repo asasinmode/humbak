@@ -130,7 +130,7 @@ function closeMenuAndSetExpanded(id?: number) {
 				? 'bg-opacity-40 top-0 right-0 w-screen h-screen p-[1.375rem] cursor-default is-expanded'
 				: 'bg-opacity-0 top-3 right-3 w-10 h-10 p-[0.625rem] rounded-full',
 		]"
-		@click="toggleMenu(!isExpanded)"
+		@click.left="toggleMenu(!isExpanded)"
 		@focusin="toggleButtonFocusIn"
 		@focusout="toggleButtonFocusOut"
 	>
@@ -140,13 +140,13 @@ function closeMenuAndSetExpanded(id?: number) {
 
 	<nav
 		id="mainNav"
-		class="fixed w-full max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-white of-auto z-102 drop-shadow transition-transform lg:(bg-humbak sticky top-0 h-12 translate-y-0 of-visible)"
+		class="fixed w-full max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-white of-y-auto of-x-hidden z-102 drop-shadow transition-transform lg:(bg-humbak sticky top-0 h-12 translate-y-0 of-visible)"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<menu ref="menu" class="flex flex-col relative max-w-384 h-full text-black lg:(px-12 flex-row mx-auto)">
 			<button
 				ref="firstFocusableNavElement"
-				class="w-12 h-12 absolute right-0 flex-center hoverable:bg-humbak-5 z-10"
+				class="w-12 h-12 absolute hidden lg:flex right-0 flex-center hoverable:bg-humbak-5 z-10"
 				title="język"
 			>
 				<span class="visually-hidden">język</span>
@@ -154,10 +154,10 @@ function closeMenuAndSetExpanded(id?: number) {
 			</button>
 
 			<NuxtLink
-				class="w-12 h-12 absolute left-0 flex-center hoverable:bg-humbak-5 z-10"
+				class="w-12 h-12 hidden lg:flex absolute left-0 flex-center hoverable:bg-humbak-5 z-10"
 				title="home"
 				:to="`/${language}`"
-				@click="closeMenuAndSetExpanded()"
+				@click.left="closeMenuAndSetExpanded()"
 			>
 				<span class="visually-hidden">home</span>
 				<div class="i-ph-house-fill pointer-events-none w-6 h-6" />
@@ -181,24 +181,24 @@ function closeMenuAndSetExpanded(id?: number) {
 					:class="firstLevelLink.children.length ? 'hidden' : 'block'"
 					:title="firstLevelLink.text"
 					:to="`/${language}/${firstLevelLink.href}`"
-					@click="closeMenuAndSetExpanded(firstLevelLink.pageId)"
+					@click.left="closeMenuAndSetExpanded(firstLevelLink.pageId)"
 					@focus="expandedMenuLinkId = firstLevelLink.pageId"
 				>
 					{{ firstLevelLink.text }}
 				</NuxtLink>
 
 				<button
-					class="relative w-full p-3 lg:(h-full truncate)"
+					class="relative p-3 w-full lg:(h-full truncate)"
 					:class="firstLevelLink.children.length ? '' : 'hidden'"
 					:title="`rozwiń ${firstLevelLink.text}`"
-					@mousedown.prevent="toggleMenuLinkExpanded(firstLevelLink.pageId)"
+					@mousedown.left.prevent="toggleMenuLinkExpanded(firstLevelLink.pageId)"
 					@focus="expandIfChildNotExpanded(firstLevelLink.pageId, firstLevelLink.children)"
 				>
 					<span class="visually-hidden">rozwiń</span>
 					{{ firstLevelLink.text }}
 					<div
 						v-if="firstLevelLink.children.length"
-						class="i-ph-caret-down-bold inline-block pointer-events-none h-3 w-3 lg:(block absolute bottom-[0.125rem] left-1/2 -translate-x-1/2 rotate-0)"
+						class="i-ph-caret-down-bold text-humbak-8 inline-block pointer-events-none h-3 w-3 lg:(block absolute bottom-[0.125rem] left-1/2 -translate-x-1/2 rotate-0 text-inherit)"
 						:class="isMenuExpanded(firstLevelLink.pageId) ? 'rotate-180' : ''"
 					/>
 				</button>
@@ -219,7 +219,7 @@ function closeMenuAndSetExpanded(id?: number) {
 							@focus="expandedMenuLinkId = firstLevelLink.pageId"
 						>
 							{{ firstLevelLink.text }}
-							<span class="i-fa6-solid-arrow-up-right-from-square inline-block w-3 h-3 text-dark-3 ml-[0.125rem] align-baseline" />
+							<span class="i-fa6-solid-arrow-up-right-from-square text-humbak-8 inline-block w-3 h-3 text-dark-3 ml-[0.125rem] align-baseline" />
 						</NuxtLink>
 					</li>
 
@@ -233,7 +233,7 @@ function closeMenuAndSetExpanded(id?: number) {
 							:class="secondLevelLink.children.length ? 'hidden' : 'block'"
 							:title="secondLevelLink.text"
 							:to="`/${language}/${secondLevelLink.href}`"
-							@click="closeMenuAndSetExpanded(secondLevelLink.pageId)"
+							@click.left="closeMenuAndSetExpanded(secondLevelLink.pageId)"
 							@focus="expandedMenuLinkId = secondLevelLink.pageId"
 						>
 							{{ secondLevelLink.text }}
@@ -243,7 +243,7 @@ function closeMenuAndSetExpanded(id?: number) {
 							class="relative w-full p-3 lg:h-full"
 							:class="secondLevelLink.children.length ? '' : 'hidden'"
 							:title="`rozwiń ${secondLevelLink.text}`"
-							@mousedown.prevent="toggleMenuLinkExpanded(secondLevelLink.pageId, firstLevelLink.pageId)"
+							@mousedown.left.prevent="toggleMenuLinkExpanded(secondLevelLink.pageId, firstLevelLink.pageId)"
 							@focus="expandIfChildNotExpanded(secondLevelLink.pageId, undefined, firstLevelLink.pageId)"
 						>
 							<span class="visually-hidden">rozwiń</span>
@@ -275,7 +275,7 @@ function closeMenuAndSetExpanded(id?: number) {
 									class="w-full p-3 text-center block"
 									:to="`/${language}/${secondLevelLink.href}`"
 									:title="secondLevelLink.text"
-									@click="closeMenuAndSetExpanded(secondLevelLink.pageId)"
+									@click.left="closeMenuAndSetExpanded(secondLevelLink.pageId)"
 									@focus="expandedMenuLinkId = secondLevelLink.pageId"
 								>
 									{{ secondLevelLink.text }}
@@ -293,7 +293,7 @@ function closeMenuAndSetExpanded(id?: number) {
 									:to="`/${language}/${thirdLevelLink.href}`"
 									:title="thirdLevelLink.text"
 									@focus="expandedMenuLinkId = thirdLevelLink.pageId"
-									@click="closeMenuAndSetExpanded(secondLevelLink.pageId)"
+									@click.left="closeMenuAndSetExpanded(secondLevelLink.pageId)"
 								>
 									{{ thirdLevelLink.text }}
 								</NuxtLink>
