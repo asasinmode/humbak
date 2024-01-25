@@ -13,7 +13,7 @@ function isMenuToTheLeft(indexOnLevel: number) {
 
 const firstFocusableNavElement = ref<HTMLButtonElement>();
 const menu = ref<HTMLMenuElement>();
-let secondToLastMenuLink: HTMLButtonElement;
+let secondToLastMenuLink: HTMLElement;
 
 const expandedMenuLinkId = ref<number>();
 let hasJustFocused = false;
@@ -84,7 +84,7 @@ const {
 
 let previousWindowWidth = 0;
 onMounted(() => {
-	window.addEventListener('resize', onWindowResize);
+	window.addEventListener('resize', onWindowResize, { passive: true });
 	previousWindowWidth = window.innerWidth;
 
 	if (!menu.value) {
@@ -92,7 +92,7 @@ onMounted(() => {
 		return;
 	}
 
-	const buttons = menu.value.getElementsByTagName('button');
+	const buttons = menu.value.querySelectorAll<HTMLElement>('button:not(.hidden), a:not(.hidden)');
 
 	secondToLastMenuLink = buttons.item(buttons.length - 2)!;
 
