@@ -11,7 +11,8 @@ function isMenuToTheLeft(indexOnLevel: number) {
 }
 
 const firstFocusableNavElement = ref<HTMLButtonElement>();
-const secondToLastFocusableNavElement = ref<HTMLAnchorElement>();
+const menu = ref<HTMLMenuElement>();
+let secondToLastMenuLink: HTMLButtonElement;
 
 const {
 	isExpanded,
@@ -21,9 +22,25 @@ const {
 	lastElementFocusIn,
 	lastElementFocusOut,
 } = useMobileMenu(
+	1024,
 	() => firstFocusableNavElement.value!,
-	() => secondToLastFocusableNavElement.value!
+	() => secondToLastMenuLink
 );
+
+onMounted(() => {
+	if (!menu.value) {
+		console.error('menu ref not found');
+		return;
+	}
+
+	const buttons = menu.value.getElementsByTagName('button');
+
+	secondToLastMenuLink = buttons.item(buttons.length - 2)!;
+
+	const lastMenuLink = buttons.item(buttons.length - 1)!;
+	lastMenuLink.addEventListener('focusin', lastElementFocusIn);
+	lastMenuLink.addEventListener('focusout', lastElementFocusOut);
+});
 </script>
 
 <template>
@@ -49,7 +66,7 @@ const {
 		class="fixed w-full max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-humbak of-auto z-102 drop-shadow transition-transform lg:(sticky top-0 h-12 translate-y-0 of-visible)"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
-		<menu class="flex flex-col relative max-w-384 h-full text-black lg:(px-12 flex-row mx-auto)">
+		<menu ref="menu" class="flex flex-col relative max-w-384 h-full text-black lg:(px-12 flex-row mx-auto)">
 			<button
 				ref="firstFocusableNavElement"
 				class="w-12 h-12 absolute right-0 flex-center hoverable:bg-humbak-5"

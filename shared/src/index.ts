@@ -58,7 +58,11 @@ export function extractWithParentId(menuLinks: IMenuLink[], parentId: null | num
 	return rv;
 }
 
-export function useMobileMenu(firstFocusableElement: () => Element, secondToLastFocusableElement: () => Element) {
+export function useMobileMenu(
+	windowWidth: number,
+	firstFocusableElement: () => Element,
+	secondToLastFocusableElement: () => Element
+) {
 	const isExpanded = ref(false);
 
 	function toggleMenu(isOpen: boolean) {
@@ -89,14 +93,14 @@ export function useMobileMenu(firstFocusableElement: () => Element, secondToLast
 	}
 
 	function lastElementFocusIn(event: FocusEvent) {
-		if (window.innerWidth >= 768 || event.relatedTarget === secondToLastFocusableElement()) {
+		if (window.innerWidth >= windowWidth || event.relatedTarget === secondToLastFocusableElement()) {
 			return;
 		}
 		toggleMenu(true);
 	}
 
 	function lastElementFocusOut(event: FocusEvent) {
-		if (window.innerWidth >= 768 || event.relatedTarget === secondToLastFocusableElement()) {
+		if (window.innerWidth >= windowWidth || event.relatedTarget === secondToLastFocusableElement()) {
 			return;
 		}
 		toggleMenu(false);

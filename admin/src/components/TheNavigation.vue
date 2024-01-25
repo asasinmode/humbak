@@ -14,6 +14,7 @@ const {
 	lastElementFocusIn,
 	lastElementFocusOut,
 } = useMobileMenu(
+	768,
 	() => firstFocusableNavElement.value!.$el,
 	() => (secondToLastFocusableNavElement.value!.element as HTMLButtonElement)
 );
