@@ -1,5 +1,8 @@
 {
 	"name": "@humbak/shared",
 	"type": "module",
-	"main": "src/index.ts"
+	"main": "src/index.ts",
+	"dependencies": {
+		"vue": "^3.4.15"
+	}
 }

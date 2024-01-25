@@ -1,51 +1,22 @@
 <script setup lang="ts">
 import type { ComponentPublicInstance } from 'vue';
+import { useMobileMenu } from '@humbak/shared';
 import TheThemeToggle from '~/components/TheThemeToggle.vue';
 
-const isExpanded = ref(false);
 const firstFocusableNavElement = ref<ComponentPublicInstance>();
 const secondToLastFocusableNavElement = ref<InstanceType<typeof TheThemeToggle>>();
 
-function toggleMenu(isOpen: boolean) {
-	isExpanded.value = isOpen;
-	document.body.style.overflow = isOpen ? 'hidden' : '';
-}
-
-function toggleButtonFocusIn(event: FocusEvent) {
-	if (event.relatedTarget === firstFocusableNavElement.value?.$el) {
-		toggleMenu(false);
-		return;
-	}
-	if (event.relatedTarget !== null && event.relatedTarget !== document.documentElement) {
-		return;
-	}
-	toggleMenu(true);
-}
-
-function toggleButtonFocusOut(event: FocusEvent) {
-	if (event.relatedTarget === firstFocusableNavElement.value?.$el) {
-		toggleMenu(true);
-		return;
-	}
-	if (event.relatedTarget !== null && event.relatedTarget !== document.documentElement) {
-		return;
-	}
-	toggleMenu(false);
-}
-
-function lastElementFocusIn(event: FocusEvent) {
-	if (window.innerWidth >= 768 || event.relatedTarget === secondToLastFocusableNavElement.value?.element) {
-		return;
-	}
-	toggleMenu(true);
-}
-
-function lastElementFocusOut(event: FocusEvent) {
-	if (window.innerWidth >= 768 || event.relatedTarget === secondToLastFocusableNavElement.value?.element) {
-		return;
-	}
-	toggleMenu(false);
-}
+const {
+	isExpanded,
+	toggleMenu,
+	toggleButtonFocusIn,
+	toggleButtonFocusOut,
+	lastElementFocusIn,
+	lastElementFocusOut,
+} = useMobileMenu(
+	() => firstFocusableNavElement.value!.$el,
+	() => (secondToLastFocusableNavElement.value!.element as HTMLButtonElement)
+);
 </script>
 
 <template>

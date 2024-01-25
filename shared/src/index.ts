@@ -1,3 +1,5 @@
+import { ref } from 'vue';
+
 export type IMenuLink = {
 	pageId: number;
 	text: string;
@@ -54,4 +56,58 @@ export function extractWithParentId(menuLinks: IMenuLink[], parentId: null | num
 		index += 1;
 	}
 	return rv;
+}
+
+export function useMobileMenu(firstFocusableElement: () => Element, secondToLastFocusableElement: () => Element) {
+	const isExpanded = ref(false);
+
+	function toggleMenu(isOpen: boolean) {
+		isExpanded.value = isOpen;
+		document.body.style.overflow = isOpen ? 'hidden' : '';
+	}
+
+	function toggleButtonFocusIn(event: FocusEvent) {
+		if (event.relatedTarget === firstFocusableElement()) {
+			toggleMenu(false);
+			return;
+		}
+		if (event.relatedTarget !== null && event.relatedTarget !== document.documentElement) {
+			return;
+		}
+		toggleMenu(true);
+	}
+
+	function toggleButtonFocusOut(event: FocusEvent) {
+		if (event.relatedTarget === firstFocusableElement()) {
+			toggleMenu(true);
+			return;
+		}
+		if (event.relatedTarget !== null && event.relatedTarget !== document.documentElement) {
+			return;
+		}
+		toggleMenu(false);
+	}
+
+	function lastElementFocusIn(event: FocusEvent) {
+		if (window.innerWidth >= 768 || event.relatedTarget === secondToLastFocusableElement()) {
+			return;
+		}
+		toggleMenu(true);
+	}
+
+	function lastElementFocusOut(event: FocusEvent) {
+		if (window.innerWidth >= 768 || event.relatedTarget === secondToLastFocusableElement()) {
+			return;
+		}
+		toggleMenu(false);
+	}
+
+	return {
+		isExpanded,
+		toggleMenu,
+		toggleButtonFocusIn,
+		toggleButtonFocusOut,
+		lastElementFocusIn,
+		lastElementFocusOut,
+	};
 }
