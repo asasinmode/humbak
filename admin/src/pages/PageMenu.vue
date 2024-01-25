@@ -523,7 +523,7 @@ function getActuallyChanged() {
 								>
 									<MenuLinkButton
 										:path="[firstLevelIndex, secondLevelIndex, 0]"
-										class="min-h-10"
+										class="min-h-12"
 										@mouseenter="handleDropIndicator"
 										@mousemove="handleDropIndicator"
 									>
@@ -538,7 +538,7 @@ function getActuallyChanged() {
 							data-menu-drop-placeholder
 						>
 							<MenuLinkButton
-								class="min-h-10"
+								class="min-h-12"
 								:path="[firstLevelIndex, 0]"
 								@mouseenter="handleDropIndicator"
 								@mousemove="handleDropIndicator"
@@ -554,7 +554,7 @@ function getActuallyChanged() {
 					data-menu-drop-placeholder
 				>
 					<MenuLinkButton
-						class="min-h-10"
+						class="min-h-12"
 						:path="[0]"
 						@mouseenter="handleDropIndicator"
 						@mousemove="handleDropIndicator"
