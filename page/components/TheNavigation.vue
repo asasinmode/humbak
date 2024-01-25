@@ -205,7 +205,7 @@ function closeMenuAndSetExpanded(id?: number) {
 
 				<menu
 					v-if="firstLevelLink.children.length"
-					class="w-full lg:(absolute bottom-0 translate-y-full max-h-unset of-visible)"
+					class="w-full lg:(absolute bg-humbak-5 bottom-0 translate-y-full max-h-unset of-visible)"
 					:class="isMenuExpanded(firstLevelLink.pageId)
 						? 'max-h-unset' : 'max-h-0 of-hidden'
 					"
@@ -262,7 +262,7 @@ function closeMenuAndSetExpanded(id?: number) {
 
 						<menu
 							v-if="secondLevelLink.children.length"
-							class="w-full lg:(absolute top-0 max-h-unset of-visible)"
+							class="w-full lg:(absolute bg-humbak-6 top-0 max-h-unset of-visible)"
 							:class="[
 								isMenuToTheLeft(firstLevelIndex)
 									? 'lg:(left-0 -translate-x-full)' : 'lg:(right-0 translate-x-full)',
