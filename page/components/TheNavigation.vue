@@ -140,7 +140,7 @@ function closeMenuAndSetExpanded(id?: number) {
 
 	<nav
 		id="mainNav"
-		class="fixed w-full max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-humbak of-auto z-102 drop-shadow transition-transform lg:(sticky top-0 h-12 translate-y-0 of-visible)"
+		class="fixed w-full max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-white of-auto z-102 drop-shadow transition-transform lg:(bg-humbak sticky top-0 h-12 translate-y-0 of-visible)"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<menu ref="menu" class="flex flex-col relative max-w-384 h-full text-black lg:(px-12 flex-row mx-auto)">
@@ -205,7 +205,7 @@ function closeMenuAndSetExpanded(id?: number) {
 
 				<menu
 					v-if="firstLevelLink.children.length"
-					class="bg-humbak-5 w-full lg:(absolute bottom-0 translate-y-full max-h-unset of-visible)"
+					class="w-full lg:(absolute bottom-0 translate-y-full max-h-unset of-visible)"
 					:class="isMenuExpanded(firstLevelLink.pageId)
 						? 'max-h-unset' : 'max-h-0 of-hidden'
 					"
@@ -262,7 +262,7 @@ function closeMenuAndSetExpanded(id?: number) {
 
 						<menu
 							v-if="secondLevelLink.children.length"
-							class="bg-humbak-6 w-full lg:(absolute top-0 max-h-unset of-visible)"
+							class="w-full lg:(absolute top-0 max-h-unset of-visible)"
 							:class="[
 								isMenuToTheLeft(firstLevelIndex)
 									? 'lg:(left-0 -translate-x-full)' : 'lg:(right-0 translate-x-full)',
