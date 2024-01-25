@@ -16,13 +16,13 @@ const menu = ref<HTMLMenuElement>();
 let secondToLastMenuLink: HTMLElement;
 
 const expandedMenuLinkId = ref<number>();
-let hasJustFocused = false;
+// let hasJustFocused = false;
 
 function toggleMenuLinkExpanded(id: number, parentId?: number) {
-	if (hasJustFocused) {
-		hasJustFocused = false;
-		return;
-	}
+	// if (hasJustFocused) {
+	// 	hasJustFocused = false;
+	// 	return;
+	// }
 
 	if (parentId === undefined && expandedMenuLinkId.value !== undefined) {
 		for (const menuLink of props.menuLinks) {
@@ -45,28 +45,33 @@ function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parent
 			}
 		}
 	}
-	hasJustFocused = true;
+	// hasJustFocused = true;
 	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
 }
 
-function isMenuExpanded(id: number, children: IMenuTreeItem[]) {
-	if (expandedMenuLinkId.value === id) {
-		return true;
-	}
-
-	for (const child of children) {
-		if (child.pageId === expandedMenuLinkId.value) {
-			return true;
+const expandedMenuIds = computed(() => {
+	for (const menuLink of props.menuLinks) {
+		if (menuLink.pageId === expandedMenuLinkId.value) {
+			return [menuLink.pageId];
 		}
 
-		for (const grandChild of child.children) {
-			if (grandChild.pageId === expandedMenuLinkId.value) {
-				return true;
+		for (const child of menuLink.children) {
+			if (child.pageId === expandedMenuLinkId.value) {
+				return [menuLink.pageId, child.pageId];
+			}
+
+			for (const grandChild of child.children) {
+				if (grandChild.pageId === expandedMenuLinkId.value) {
+					return [menuLink.pageId, child.pageId, grandChild.pageId];
+				}
 			}
 		}
 	}
+	return [];
+});
 
-	return false;
+function isMenuExpanded(id: number) {
+	return expandedMenuIds.value.includes(id);
 }
 
 const {
@@ -190,7 +195,7 @@ function closeMenuAndSetExpanded(id?: number) {
 					class="relative w-full p-3 lg:(h-full truncate)"
 					:class="firstLevelLink.children.length ? '' : 'hidden'"
 					:title="`rozwiń ${firstLevelLink.text}`"
-					@click="toggleMenuLinkExpanded(firstLevelLink.pageId)"
+					@mousedown.prevent="toggleMenuLinkExpanded(firstLevelLink.pageId)"
 					@focus="expandIfChildNotExpanded(firstLevelLink.pageId, firstLevelLink.children)"
 				>
 					<span class="visually-hidden">rozwiń</span>
@@ -198,13 +203,14 @@ function closeMenuAndSetExpanded(id?: number) {
 					<div
 						v-if="firstLevelLink.children.length"
 						class="i-ph-caret-down-bold inline-block pointer-events-none h-3 w-3 lg:(block absolute bottom-[0.125rem] left-1/2 -translate-x-1/2)"
+						:class="isMenuExpanded(firstLevelLink.pageId) ? 'rotate-180' : ''"
 					/>
 				</button>
 
 				<menu
 					v-if="firstLevelLink.children.length"
 					class="bg-humbak-5 w-full lg:(absolute bottom-0 translate-y-full max-h-unset of-visible)"
-					:class="isMenuExpanded(firstLevelLink.pageId, firstLevelLink.children)
+					:class="isMenuExpanded(firstLevelLink.pageId)
 						? 'max-h-unset' : 'max-h-0 of-hidden'
 					"
 				>
@@ -241,7 +247,7 @@ function closeMenuAndSetExpanded(id?: number) {
 							class="relative w-full p-3 lg:h-full"
 							:class="secondLevelLink.children.length ? '' : 'hidden'"
 							:title="`rozwiń ${secondLevelLink.text}`"
-							@click="toggleMenuLinkExpanded(secondLevelLink.pageId, firstLevelLink.pageId)"
+							@mousedown.prevent="toggleMenuLinkExpanded(secondLevelLink.pageId, firstLevelLink.pageId)"
 							@focus="expandIfChildNotExpanded(secondLevelLink.pageId, undefined, firstLevelLink.pageId)"
 						>
 							<span class="visually-hidden">rozwiń</span>
@@ -249,11 +255,12 @@ function closeMenuAndSetExpanded(id?: number) {
 							<div
 								v-if="secondLevelLink.children.length"
 								class="pointer-events-none h-3 w-3 inline-block i-ph-caret-down-bold lg:(absolute block top-1/2 -translate-y-1/2)"
-								:class="
+								:class="[
+									isMenuExpanded(secondLevelLink.pageId) ? 'rotate-180 lg:rotate-0' : '',
 									isMenuToTheLeft(firstLevelIndex)
 										? 'lg:(left-[0.125rem] i-ph-caret-left-bold)'
-										: 'lg:(right-[0.125rem] i-ph-caret-right-bold)'
-								"
+										: 'lg:(right-[0.125rem] i-ph-caret-right-bold)',
+								]"
 							/>
 						</button>
 
@@ -263,7 +270,7 @@ function closeMenuAndSetExpanded(id?: number) {
 							:class="[
 								isMenuToTheLeft(firstLevelIndex)
 									? 'lg:(left-0 -translate-x-full)' : 'lg:(right-0 translate-x-full)',
-								isMenuExpanded(secondLevelLink.pageId, secondLevelLink.children)
+								isMenuExpanded(secondLevelLink.pageId)
 									? 'max-h-unset' : 'max-h-0 of-hidden',
 							]"
 						>
