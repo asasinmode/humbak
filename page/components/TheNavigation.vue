@@ -166,6 +166,7 @@ function onWindowResize() {
 				class="hoverable-child-menu-visible relative min-w-0 flex-center flex-col list-none lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
 			>
 				<button
+					v-if="firstLevelLink.children.length"
 					class="relative w-full p-3 lg:(h-full truncate)"
 					@click="toggleMenuLinkExpanded(firstLevelLink.pageId)"
 					@focus="expandIfChildNotExpanded(firstLevelLink.pageId, firstLevelLink.children)"
@@ -176,6 +177,14 @@ function onWindowResize() {
 						class="i-solar-alt-arrow-down-linear inline-block pointer-events-none h-3 w-3 lg:(block absolute bottom-0 left-1/2 -translate-x-1/2)"
 					/>
 				</button>
+				<NuxtLink
+					v-else
+					class="relative w-full p-3 lg:h-full block text-center"
+					:to="`/${language}/${firstLevelLink.href}`"
+					@click="toggleMenu(false)"
+				>
+					{{ firstLevelLink.text }}
+				</NuxtLink>
 
 				<menu
 					v-if="firstLevelLink.children.length"
