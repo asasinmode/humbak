@@ -140,7 +140,7 @@ function onWindowResize() {
 		<menu ref="menu" class="flex flex-col relative max-w-384 h-full text-black lg:(px-12 flex-row mx-auto)">
 			<button
 				ref="firstFocusableNavElement"
-				class="w-12 h-12 absolute right-0 flex-center hoverable:bg-humbak-5"
+				class="w-12 h-12 absolute right-0 flex-center hoverable:bg-humbak-5 z-10"
 				title="język"
 			>
 				<span class="visually-hidden">język</span>
@@ -150,12 +150,12 @@ function onWindowResize() {
 			<a
 				id="skipContent"
 				href="#content"
-				class="fixed col-span-2 w-fit border border-black rounded-full bg-black px-3 py-1 text-5 text-white shadow transition-transform -translate-y-full focus-visible:translate-y-2 focus:translate-y-2 lg:(-translate-y-[calc(100%_+_5rem)] left-1/2 -translate-x-1/2 focus-visible:translate-y-1 focus:translate-y-1)"
+				class="fixed col-span-2 w-fit z-10 border border-black rounded-full bg-black px-3 py-1 text-5 text-white shadow transition-transform -translate-y-full focus-visible:translate-y-2 focus:translate-y-2 lg:(-translate-y-[calc(100%_+_5rem)] left-1/2 -translate-x-1/2 focus-visible:translate-y-1 focus:translate-y-1)"
 			>
 				pomiń nawigację
 			</a>
 
-			<button class="w-12 h-12 absolute left-0 flex-center hoverable:bg-humbak-5" title="home">
+			<button class="w-12 h-12 absolute left-0 flex-center hoverable:bg-humbak-5 z-10" title="home">
 				<span class="visually-hidden">home</span>
 				<div class="i-ph-house-fill pointer-events-none w-6 h-6" />
 			</button>
