@@ -461,7 +461,7 @@ function getActuallyChanged() {
 					>
 						<div
 							v-if="firstLevelLink.children.length"
-							class="i-solar-alt-arrow-down-linear pointer-events-none absolute bottom-0 left-1/2 h-3 w-3 -translate-x-1/2"
+							class="i-ph-caret-down-bold pointer-events-none absolute bottom-[0.125rem] left-1/2 h-3 w-3 -translate-x-1/2"
 						/>
 					</MenuLinkButton>
 
@@ -487,8 +487,8 @@ function getActuallyChanged() {
 									class="pointer-events-none absolute top-1/2 h-3 w-3 -translate-y-1/2"
 									:class="
 										isMenuToTheLeft(firstLevelIndex)
-											? 'left-0 i-solar-alt-arrow-left-linear'
-											: 'right-0 i-solar-alt-arrow-right-linear'
+											? 'left-[0.125rem] i-ph-caret-left-bold'
+											: 'right-[0.125rem] i-ph-caret-right-bold'
 									"
 								/>
 							</MenuLinkButton>
