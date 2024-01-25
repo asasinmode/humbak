@@ -37,7 +37,7 @@ function toggleMenuLinkExpanded(id: number, parentId?: number) {
 	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
 }
 
-function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[]) {
+function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parentId?: number) {
 	if (children) {
 		for (const child of children) {
 			if (child.pageId === expandedMenuLinkId.value) {
@@ -46,7 +46,7 @@ function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[]) {
 		}
 	}
 	hasJustFocused = true;
-	expandedMenuLinkId.value = id;
+	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
 }
 
 function isMenuExpanded(id: number, children: IMenuTreeItem[]) {
@@ -112,6 +112,11 @@ function onWindowResize() {
 	}
 	previousWindowWidth = window.innerWidth;
 }
+
+function closeMenuAndSetExpanded(id: number) {
+	toggleMenu(false);
+	expandedMenuLinkId.value = id;
+}
 </script>
 
 <template>
@@ -147,6 +152,11 @@ function onWindowResize() {
 				<div class="i-ph-translate-bold pointer-events-none w-6 h-6" />
 			</button>
 
+			<button class="w-12 h-12 absolute left-0 flex-center hoverable:bg-humbak-5 z-10" title="home">
+				<span class="visually-hidden">home</span>
+				<div class="i-ph-house-fill pointer-events-none w-6 h-6" />
+			</button>
+
 			<a
 				id="skipContent"
 				href="#content"
@@ -155,19 +165,24 @@ function onWindowResize() {
 				pomiń nawigację
 			</a>
 
-			<button class="w-12 h-12 absolute left-0 flex-center hoverable:bg-humbak-5 z-10" title="home">
-				<span class="visually-hidden">home</span>
-				<div class="i-ph-house-fill pointer-events-none w-6 h-6" />
-			</button>
-
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
 				class="hoverable-child-menu-visible relative min-w-0 flex-center flex-col list-none lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
 			>
+				<NuxtLink
+					class="relative w-full p-3 lg:h-full text-center"
+					:class="firstLevelLink.children.length ? 'hidden' : 'block'"
+					:to="`/${language}/${firstLevelLink.href}`"
+					@click="closeMenuAndSetExpanded(firstLevelLink.pageId)"
+					@focus="expandedMenuLinkId = firstLevelLink.pageId"
+				>
+					{{ firstLevelLink.text }}
+				</NuxtLink>
+
 				<button
-					v-if="firstLevelLink.children.length"
 					class="relative w-full p-3 lg:(h-full truncate)"
+					:class="firstLevelLink.children.length ? '' : 'hidden'"
 					@click="toggleMenuLinkExpanded(firstLevelLink.pageId)"
 					@focus="expandIfChildNotExpanded(firstLevelLink.pageId, firstLevelLink.children)"
 				>
@@ -177,14 +192,6 @@ function onWindowResize() {
 						class="i-solar-alt-arrow-down-linear inline-block pointer-events-none h-3 w-3 lg:(block absolute bottom-0 left-1/2 -translate-x-1/2)"
 					/>
 				</button>
-				<NuxtLink
-					v-else
-					class="relative w-full p-3 lg:h-full block text-center"
-					:to="`/${language}/${firstLevelLink.href}`"
-					@click="toggleMenu(false)"
-				>
-					{{ firstLevelLink.text }}
-				</NuxtLink>
 
 				<menu
 					v-if="firstLevelLink.children.length"
@@ -198,10 +205,21 @@ function onWindowResize() {
 						:key="secondLevelLink.pageId"
 						class="hoverable-child-menu-visible relative list-none lg:(focus-within:bg-humbak-6 hover:bg-humbak-6)"
 					>
+						<NuxtLink
+							class="relative w-full p-3 lg:h-full text-center"
+							:class="secondLevelLink.children.length ? 'hidden' : 'block'"
+							:to="`/${language}/${secondLevelLink.href}`"
+							@click="closeMenuAndSetExpanded(secondLevelLink.pageId)"
+							@focus="expandedMenuLinkId = secondLevelLink.pageId"
+						>
+							{{ secondLevelLink.text }}
+						</NuxtLink>
+
 						<button
 							class="relative w-full p-3 lg:h-full"
+							:class="secondLevelLink.children.length ? '' : 'hidden'"
 							@click="toggleMenuLinkExpanded(secondLevelLink.pageId, firstLevelLink.pageId)"
-							@focus="expandIfChildNotExpanded(secondLevelLink.pageId)"
+							@focus="expandIfChildNotExpanded(secondLevelLink.pageId, undefined, firstLevelLink.pageId)"
 						>
 							{{ secondLevelLink.text }}
 							<div
@@ -234,7 +252,7 @@ function onWindowResize() {
 									class="relative w-full p-3 lg:h-full block text-center"
 									:to="`/${language}/${thirdLevelLink.href}`"
 									@focus="expandedMenuLinkId = secondLevelLink.pageId"
-									@click="toggleMenu(false)"
+									@click="closeMenuAndSetExpanded(secondLevelLink.pageId)"
 								>
 									{{ thirdLevelLink.text }}
 								</NuxtLink>
