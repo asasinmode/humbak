@@ -3,6 +3,7 @@ import { useMobileMenu } from '@humbak/shared';
 import type { IMenuTreeItem } from '@humbak/shared';
 
 const props = defineProps<{
+	language: string;
 	menuLinks: IMenuTreeItem[];
 }>();
 
@@ -86,7 +87,11 @@ const {
 	}
 );
 
+let previousWindowWidth = 0;
 onMounted(() => {
+	window.addEventListener('resize', onWindowResize);
+	previousWindowWidth = window.innerWidth;
+
 	if (!menu.value) {
 		console.error('menu ref not found');
 		return;
@@ -100,13 +105,25 @@ onMounted(() => {
 	lastMenuLink.addEventListener('focusin', lastElementFocusIn);
 	lastMenuLink.addEventListener('focusout', lastElementFocusOut);
 });
+
+onBeforeUnmount(() => {
+	window.removeEventListener('resize', onWindowResize);
+});
+
+function onWindowResize() {
+	if (previousWindowWidth > window.innerWidth && previousWindowWidth >= 1024 && window.innerWidth < 1024) {
+		expandedMenuLinkId.value = undefined;
+		toggleMenu(false);
+	}
+	previousWindowWidth = window.innerWidth;
+}
 </script>
 
 <template>
 	<button
 		id="menuToggle"
 		title="menu"
-		class="fixed z-100 flex items-start justify-end bg-black md:hidden"
+		class="fixed z-100 flex items-start justify-end bg-black lg:hidden"
 		:class="[
 			isExpanded
 				? 'bg-opacity-40 top-0 right-0 w-screen h-screen p-5 cursor-default is-expanded'
@@ -122,7 +139,7 @@ onMounted(() => {
 
 	<nav
 		id="mainNav"
-		class="fixed w-full max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-humbak of-auto z-102 drop-shadow transition-transform lg:(sticky top-0 h-12 translate-y-0 of-visible)"
+		class="fixed w-full max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-humbak of-auto z-102 drop-shadow transition-transform lg:(sticky top-0 h-12 translate-y-0 of-visible drop-shadow-none)"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<menu ref="menu" class="flex flex-col relative max-w-384 h-full text-black lg:(px-12 flex-row mx-auto)">
@@ -138,7 +155,7 @@ onMounted(() => {
 			<a
 				id="skipContent"
 				href="#content"
-				class="fixed col-span-2 w-fit border border-black rounded-full bg-black px-3 py-1 text-5 text-white shadow transition-transform -translate-y-full focus-visible:translate-y-2 focus:translate-y-2 md:(-translate-y-[calc(100%_+_5rem)] left-1/2 -translate-x-1/2 focus-visible:translate-y-1 focus:translate-y-1)"
+				class="fixed col-span-2 w-fit border border-black rounded-full bg-black px-3 py-1 text-5 text-white shadow transition-transform -translate-y-full focus-visible:translate-y-2 focus:translate-y-2 lg:(-translate-y-[calc(100%_+_5rem)] left-1/2 -translate-x-1/2 focus-visible:translate-y-1 focus:translate-y-1)"
 			>
 				pomiń nawigację
 			</a>
@@ -209,12 +226,13 @@ onMounted(() => {
 								:key="thirdLevelLink.pageId"
 								class="relative list-none focus-within:bg-humbak-7 hover:bg-humbak-7"
 							>
-								<button
-									class="relative w-full p-3 lg:h-full"
+								<NuxtLink
+									class="relative w-full p-3 lg:h-full block text-center"
+									:to="`/${language}/${thirdLevelLink.href}`"
 									@focus="expandedMenuLinkId = secondLevelLink.pageId"
 								>
 									{{ thirdLevelLink.text }}
-								</button>
+								</NuxtLink>
 							</li>
 						</menu>
 					</li>
