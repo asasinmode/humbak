@@ -15,8 +15,14 @@ const menu = ref<HTMLMenuElement>();
 let secondToLastMenuLink: HTMLButtonElement;
 
 const expandedMenuLinkId = ref<number>();
+let hasJustFocused = false;
 
 function toggleMenuLinkExpanded(id: number, parentId?: number) {
+	if (hasJustFocused) {
+		hasJustFocused = false;
+		return;
+	}
+
 	if (parentId === undefined && expandedMenuLinkId.value !== undefined) {
 		for (const menuLink of props.menuLinks) {
 			for (const child of menuLink.children) {
@@ -27,8 +33,19 @@ function toggleMenuLinkExpanded(id: number, parentId?: number) {
 			}
 		}
 	}
-
 	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
+}
+
+function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[]) {
+	if (children) {
+		for (const child of children) {
+			if (child.pageId === expandedMenuLinkId.value) {
+				return;
+			}
+		}
+	}
+	hasJustFocused = true;
+	expandedMenuLinkId.value = id;
 }
 
 function isMenuExpanded(id: number, children: IMenuTreeItem[]) {
@@ -139,11 +156,12 @@ onMounted(() => {
 				<button
 					class="relative w-full p-3 lg:(h-full truncate)"
 					@click="toggleMenuLinkExpanded(firstLevelLink.pageId)"
+					@focus="expandIfChildNotExpanded(firstLevelLink.pageId, firstLevelLink.children)"
 				>
 					{{ firstLevelLink.text }}
 					<div
 						v-if="firstLevelLink.children.length"
-						class="i-solar-alt-arrow-down-linear pointer-events-none absolute bottom-0 left-1/2 h-3 w-3 -translate-x-1/2"
+						class="i-solar-alt-arrow-down-linear inline-block pointer-events-none h-3 w-3 lg:(block absolute bottom-0 left-1/2 -translate-x-1/2)"
 					/>
 				</button>
 
@@ -162,11 +180,12 @@ onMounted(() => {
 						<button
 							class="relative w-full p-3 lg:h-full"
 							@click="toggleMenuLinkExpanded(secondLevelLink.pageId, firstLevelLink.pageId)"
+							@focus="expandIfChildNotExpanded(secondLevelLink.pageId)"
 						>
 							{{ secondLevelLink.text }}
 							<div
 								v-if="secondLevelLink.children.length"
-								class="pointer-events-none absolute top-1/2 h-3 w-3 -translate-y-1/2"
+								class="pointer-events-none h-3 w-3 inline-block i-solar-alt-arrow-down-linear lg:(absolute block top-1/2 -translate-y-1/2)"
 								:class="
 									isMenuToTheLeft(firstLevelIndex)
 										? 'lg:(left-0 i-solar-alt-arrow-left-linear)'
@@ -190,7 +209,10 @@ onMounted(() => {
 								:key="thirdLevelLink.pageId"
 								class="relative list-none focus-within:bg-humbak-7 hover:bg-humbak-7"
 							>
-								<button class="relative w-full p-3 lg:h-full">
+								<button
+									class="relative w-full p-3 lg:h-full"
+									@focus="expandedMenuLinkId = secondLevelLink.pageId"
+								>
 									{{ thirdLevelLink.text }}
 								</button>
 							</li>
