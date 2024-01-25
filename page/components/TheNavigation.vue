@@ -253,6 +253,16 @@ function closeMenuAndSetExpanded(id: number) {
 									? 'max-h-unset' : 'max-h-0 of-hidden',
 							]"
 						>
+							<li class="lg:hidden">
+								<NuxtLink
+									class="w-full p-3 text-center block"
+									:to="`/${language}/${secondLevelLink.href}`"
+									@click="closeMenuAndSetExpanded(secondLevelLink.pageId)"
+								>
+									Przejdź do: {{ secondLevelLink.text }}
+								</NuxtLink>
+							</li>
+
 							<li
 								v-for="thirdLevelLink in secondLevelLink.children"
 								:key="thirdLevelLink.pageId"
