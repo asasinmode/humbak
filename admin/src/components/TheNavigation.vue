@@ -128,7 +128,7 @@ const {
 	transition: background var(--nav-transition-duration) ease;
 }
 
-@media (max-width: 767px){
+@media (max-width: 767px) {
 	#skipContent:focus + a, #skipContent:focus-visible + a {
 		margin-top: 3.125rem;
 	}

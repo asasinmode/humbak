@@ -92,7 +92,7 @@ onMounted(() => {
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
-				class="hoverable-child-menu-visible horizontal relative min-w-0 flex-center flex-col list-none focus-within:bg-humbak-5 hover:bg-humbak-5 lg:(flex-1 h-full)"
+				class="hoverable-child-menu-visible relative min-w-0 flex-center flex-col list-none focus-within:bg-humbak-5 hover:bg-humbak-5 lg:(flex-1 h-full)"
 			>
 				<button class="relative w-full p-3 truncate lg:h-full">
 					{{ firstLevelLink.text }}
@@ -104,12 +104,12 @@ onMounted(() => {
 
 				<menu
 					v-if="firstLevelLink.children.length"
-					class="absolute bottom-0 w-full translate-y-full bg-humbak-5"
+					class="bg-humbak-5 w-full lg:(absolute bottom-0 translate-y-full)"
 				>
 					<li
 						v-for="secondLevelLink in firstLevelLink.children"
 						:key="secondLevelLink.pageId"
-						class="hoverable-child-menu-visible vertical relative list-none focus-within:bg-humbak-6 hover:bg-humbak-6"
+						class="hoverable-child-menu-visible relative list-none focus-within:bg-humbak-6 hover:bg-humbak-6"
 					>
 						<button class="relative w-full p-3 lg:h-full">
 							{{ secondLevelLink.text }}
@@ -118,24 +118,24 @@ onMounted(() => {
 								class="pointer-events-none absolute top-1/2 h-3 w-3 -translate-y-1/2"
 								:class="
 									isMenuToTheLeft(firstLevelIndex)
-										? 'left-0 i-solar-alt-arrow-left-linear'
-										: 'right-0 i-solar-alt-arrow-right-linear'
+										? 'lg:(left-0 i-solar-alt-arrow-left-linear)'
+										: 'lg:(right-0 i-solar-alt-arrow-right-linear)'
 								"
 							/>
 						</button>
 
 						<menu
 							v-if="secondLevelLink.children.length"
-							class="absolute top-0 w-full bg-humbak-6"
+							class="bg-humbak-6 w-full lg:(absolute top-0)"
 							:class="
 								isMenuToTheLeft(firstLevelIndex)
-									? 'left-0 -translate-x-full' : 'right-0 translate-x-full'
+									? 'lg:(left-0 -translate-x-full)' : 'lg:(right-0 translate-x-full)'
 							"
 						>
 							<li
 								v-for="thirdLevelLink in secondLevelLink.children"
 								:key="thirdLevelLink.pageId"
-								class="vertical relative list-none focus-within:bg-humbak-7 hover:bg-humbak-7"
+								class="relative list-none focus-within:bg-humbak-7 hover:bg-humbak-7"
 							>
 								<button class="relative w-full p-3 lg:h-full">
 									{{ thirdLevelLink.text }}
@@ -164,13 +164,33 @@ onMounted(() => {
 	transition: background var(--nav-transition-duration) ease;
 }
 
+.hoverable-child-menu-visible {
+	overflow: hidden;
+}
+
 .hoverable-child-menu-visible > menu {
-	display: none;
+	max-height: 0;
 }
 
 .hoverable-child-menu-visible:hover > menu,
 .hoverable-child-menu-visible:focus-within > menu {
-	display: block;
+	max-height: unset;
+}
+
+@media (min-width: 1024px) {
+	.hoverable-child-menu-visible {
+		overflow: visible;
+	}
+
+	.hoverable-child-menu-visible > menu {
+		max-height: unset;
+		display: none;
+	}
+
+	.hoverable-child-menu-visible:hover > menu,
+	.hoverable-child-menu-visible:focus-within > menu {
+		display: block;
+	}
 }
 
 /* @media (max-width: 767px){ */
