@@ -198,7 +198,7 @@ function closeMenuAndSetExpanded(id?: number) {
 					{{ firstLevelLink.text }}
 					<div
 						v-if="firstLevelLink.children.length"
-						class="i-ph-caret-down-bold inline-block pointer-events-none h-3 w-3 lg:(block absolute bottom-[0.125rem] left-1/2 -translate-x-1/2)"
+						class="i-ph-caret-down-bold inline-block pointer-events-none h-3 w-3 lg:(block absolute bottom-[0.125rem] left-1/2 -translate-x-1/2 rotate-0)"
 						:class="isMenuExpanded(firstLevelLink.pageId) ? 'rotate-180' : ''"
 					/>
 				</button>
@@ -250,9 +250,9 @@ function closeMenuAndSetExpanded(id?: number) {
 							{{ secondLevelLink.text }}
 							<div
 								v-if="secondLevelLink.children.length"
-								class="pointer-events-none h-3 w-3 inline-block i-ph-caret-down-bold lg:(absolute block top-1/2 -translate-y-1/2)"
+								class="pointer-events-none h-3 w-3 inline-block i-ph-caret-down-bold lg:(absolute block top-1/2 -translate-y-1/2 rotate-0)"
 								:class="[
-									isMenuExpanded(secondLevelLink.pageId) ? 'rotate-180 lg:rotate-0' : '',
+									isMenuExpanded(secondLevelLink.pageId) ? 'rotate-180' : '',
 									isMenuToTheLeft(firstLevelIndex)
 										? 'lg:(left-[0.125rem] i-ph-caret-left-bold)'
 										: 'lg:(right-[0.125rem] i-ph-caret-right-bold)',
