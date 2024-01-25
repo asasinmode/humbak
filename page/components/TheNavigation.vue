@@ -168,7 +168,7 @@ function closeMenuAndSetExpanded(id: number) {
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
-				class="hoverable-child-menu-visible min-w-0 flex-center flex-col lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
+				class="hoverable-child-menu-visible relative min-w-0 flex-center flex-col lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
 			>
 				<NuxtLink
 					class="w-full p-3 lg:h-full text-center"
@@ -213,7 +213,7 @@ function closeMenuAndSetExpanded(id: number) {
 					<li
 						v-for="secondLevelLink in firstLevelLink.children"
 						:key="secondLevelLink.pageId"
-						class="hoverable-child-menu-visible lg:(focus-within:bg-humbak-6 hover:bg-humbak-6)"
+						class="hoverable-child-menu-visible relative lg:(focus-within:bg-humbak-6 hover:bg-humbak-6)"
 					>
 						<NuxtLink
 							class="w-full p-3 lg:h-full text-center"
