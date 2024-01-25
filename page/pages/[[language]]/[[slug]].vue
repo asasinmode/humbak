@@ -20,6 +20,7 @@ if (pageDataError.value || !pageData.value) {
 }
 
 useHead({
+	title: `${pageData.value.title} - Humbak`,
 	link: [
 		{ rel: 'stylesheet', type: 'text/css', href: `/stylesheets/${pageData.value.id}.css` },
 	],
