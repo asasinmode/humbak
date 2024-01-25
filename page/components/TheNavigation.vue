@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useMobileMenu } from '@humbak/shared';
 import type { IMenuTreeItem } from '@humbak/shared';
 
 const props = defineProps<{
@@ -8,16 +9,52 @@ const props = defineProps<{
 function isMenuToTheLeft(indexOnLevel: number) {
 	return indexOnLevel + 1 > Math.ceil(props.menuLinks.length / 2);
 }
+
+const firstFocusableNavElement = ref<HTMLButtonElement>();
+const secondToLastFocusableNavElement = ref<HTMLAnchorElement>();
+
+const {
+	isExpanded,
+	toggleMenu,
+	toggleButtonFocusIn,
+	toggleButtonFocusOut,
+	lastElementFocusIn,
+	lastElementFocusOut,
+} = useMobileMenu(
+	() => firstFocusableNavElement.value!,
+	() => secondToLastFocusableNavElement.value!
+);
 </script>
 
 <template>
-	<nav class="min-h-12 w-full bg-humbak drop-shadow sticky top-0">
-		<menu class="flex relative max-w-384 px-12 h-full flex-row text-black mx-auto">
-			<button class="w-12 h-12 absolute left-0 flex-center hoverable:bg-humbak-5" title="home">
-				<span class="visually-hidden">home</span>
-				<div class="i-ph-house-fill pointer-events-none w-6 h-6" />
-			</button>
-			<button class="w-12 h-12 absolute right-0 flex-center hoverable:bg-humbak-5" title="język">
+	<button
+		id="menuToggle"
+		title="menu"
+		class="fixed z-100 flex items-start justify-end bg-black md:hidden"
+		:class="[
+			isExpanded
+				? 'bg-opacity-40 top-0 right-0 w-screen h-screen p-5 cursor-default is-expanded'
+				: 'bg-opacity-0 top-3 right-3 w-12 h-12 p-2',
+		]"
+		@click="toggleMenu(!isExpanded)"
+		@focusin="toggleButtonFocusIn"
+		@focusout="toggleButtonFocusOut"
+	>
+		<span class="visually-hidden">menu</span>
+		<div class="i-fa6-solid-bars h-8 w-8" />
+	</button>
+
+	<nav
+		id="mainNav"
+		class="fixed w-full max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-humbak of-auto z-102 drop-shadow transition-transform lg:(sticky top-0 h-12 translate-y-0 of-visible)"
+		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
+	>
+		<menu class="flex flex-col relative max-w-384 h-full text-black lg:(px-12 flex-row mx-auto)">
+			<button
+				ref="firstFocusableNavElement"
+				class="w-12 h-12 absolute right-0 flex-center hoverable:bg-humbak-5"
+				title="język"
+			>
 				<span class="visually-hidden">język</span>
 				<div class="i-ph-translate-bold pointer-events-none w-6 h-6" />
 			</button>
@@ -30,12 +67,17 @@ function isMenuToTheLeft(indexOnLevel: number) {
 				pomiń nawigację
 			</a>
 
+			<button class="w-12 h-12 absolute left-0 flex-center hoverable:bg-humbak-5" title="home">
+				<span class="visually-hidden">home</span>
+				<div class="i-ph-house-fill pointer-events-none w-6 h-6" />
+			</button>
+
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
-				class="hoverable-child-menu-visible h-full horizontal relative min-w-0 flex-center flex-1 flex-col list-none focus-within:bg-humbak-5 hover:bg-humbak-5"
+				class="hoverable-child-menu-visible horizontal relative min-w-0 flex-center flex-col list-none focus-within:bg-humbak-5 hover:bg-humbak-5 lg:(flex-1 h-full)"
 			>
-				<button class="relative h-full w-full p-3 truncate">
+				<button class="relative w-full p-3 truncate lg:h-full">
 					{{ firstLevelLink.text }}
 					<div
 						v-if="firstLevelLink.children.length"
@@ -52,7 +94,7 @@ function isMenuToTheLeft(indexOnLevel: number) {
 						:key="secondLevelLink.pageId"
 						class="hoverable-child-menu-visible vertical relative list-none focus-within:bg-humbak-6 hover:bg-humbak-6"
 					>
-						<button class="relative h-full w-full p-3">
+						<button class="relative w-full p-3 lg:h-full">
 							{{ secondLevelLink.text }}
 							<div
 								v-if="secondLevelLink.children.length"
@@ -78,7 +120,7 @@ function isMenuToTheLeft(indexOnLevel: number) {
 								:key="thirdLevelLink.pageId"
 								class="vertical relative list-none focus-within:bg-humbak-7 hover:bg-humbak-7"
 							>
-								<button class="relative h-full w-full p-3">
+								<button class="relative w-full p-3 lg:h-full">
 									{{ thirdLevelLink.text }}
 								</button>
 							</li>
@@ -91,6 +133,20 @@ function isMenuToTheLeft(indexOnLevel: number) {
 </template>
 
 <style>
+#menuToggle {
+	--nav-transition-duration: 150ms;
+
+	transition: background var(--nav-transition-duration) ease,
+		width 0ms ease var(--nav-transition-duration),
+		height 0ms ease var(--nav-transition-duration),
+		right 0ms ease var(--nav-transition-duration),
+		top 0ms ease var(--nav-transition-duration),
+		padding 0ms ease var(--nav-transition-duration);
+}
+#menuToggle.is-expanded {
+	transition: background var(--nav-transition-duration) ease;
+}
+
 .hoverable-child-menu-visible > menu {
 	display: none;
 }
@@ -99,6 +155,7 @@ function isMenuToTheLeft(indexOnLevel: number) {
 .hoverable-child-menu-visible:focus-within > menu {
 	display: block;
 }
+
 /* @media (max-width: 767px){ */
 /* 	#skipContent:focus + a, #skipContent:focus-visible + a { */
 /* 		margin-top: 3.125rem; */
