@@ -14,34 +14,6 @@ const firstFocusableNavElement = ref<HTMLButtonElement>();
 const menu = ref<HTMLMenuElement>();
 let secondToLastMenuLink: HTMLButtonElement;
 
-const {
-	isExpanded,
-	toggleMenu,
-	toggleButtonFocusIn,
-	toggleButtonFocusOut,
-	lastElementFocusIn,
-	lastElementFocusOut,
-} = useMobileMenu(
-	1024,
-	() => firstFocusableNavElement.value!,
-	() => secondToLastMenuLink
-);
-
-onMounted(() => {
-	if (!menu.value) {
-		console.error('menu ref not found');
-		return;
-	}
-
-	const buttons = menu.value.getElementsByTagName('button');
-
-	secondToLastMenuLink = buttons.item(buttons.length - 2)!;
-
-	const lastMenuLink = buttons.item(buttons.length - 1)!;
-	lastMenuLink.addEventListener('focusin', lastElementFocusIn);
-	lastMenuLink.addEventListener('focusout', lastElementFocusOut);
-});
-
 const expandedMenuLinkId = ref<number>();
 
 function toggleMenuLinkExpanded(id: number, parentId?: number) {
@@ -78,6 +50,39 @@ function isMenuExpanded(id: number, children: IMenuTreeItem[]) {
 
 	return false;
 }
+
+const {
+	isExpanded,
+	toggleMenu,
+	toggleButtonFocusIn,
+	toggleButtonFocusOut,
+	lastElementFocusIn,
+	lastElementFocusOut,
+} = useMobileMenu(
+	1024,
+	() => firstFocusableNavElement.value!,
+	() => secondToLastMenuLink,
+	(isOpen) => {
+		if (!isOpen) {
+			expandedMenuLinkId.value = undefined;
+		}
+	}
+);
+
+onMounted(() => {
+	if (!menu.value) {
+		console.error('menu ref not found');
+		return;
+	}
+
+	const buttons = menu.value.getElementsByTagName('button');
+
+	secondToLastMenuLink = buttons.item(buttons.length - 2)!;
+
+	const lastMenuLink = buttons.item(buttons.length - 1)!;
+	lastMenuLink.addEventListener('focusin', lastElementFocusIn);
+	lastMenuLink.addEventListener('focusout', lastElementFocusOut);
+});
 </script>
 
 <template>
