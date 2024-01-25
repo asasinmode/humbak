@@ -113,7 +113,7 @@ function onWindowResize() {
 	previousWindowWidth = window.innerWidth;
 }
 
-function closeMenuAndSetExpanded(id: number) {
+function closeMenuAndSetExpanded(id?: number) {
 	toggleMenu(false);
 	expandedMenuLinkId.value = id;
 }
@@ -152,10 +152,15 @@ function closeMenuAndSetExpanded(id: number) {
 				<div class="i-ph-translate-bold pointer-events-none w-6 h-6" />
 			</button>
 
-			<button class="w-12 h-12 absolute left-0 flex-center hoverable:bg-humbak-5 z-10" title="home">
+			<NuxtLink
+				class="w-12 h-12 absolute left-0 flex-center hoverable:bg-humbak-5 z-10"
+				title="home"
+				:to="`/${language}`"
+				@click="closeMenuAndSetExpanded()"
+			>
 				<span class="visually-hidden">home</span>
 				<div class="i-ph-house-fill pointer-events-none w-6 h-6" />
-			</button>
+			</NuxtLink>
 
 			<a
 				id="skipContent"
