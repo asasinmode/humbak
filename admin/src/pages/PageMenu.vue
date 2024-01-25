@@ -450,7 +450,7 @@ function getActuallyChanged() {
 				<li
 					v-for="(firstLevelLink, firstLevelIndex) in transformedMenuLinks"
 					:key="firstLevelLink.pageId"
-					class="hoverable-child-menu-visible horizontal relative min-w-0 flex-center flex-1 flex-col list-none focus-within:bg-humbak-5 hover:bg-humbak-5"
+					class="hoverable-child-menu-visible horizontal relative min-w-0 flex-center flex-1 flex-col focus-within:bg-humbak-5 hover:bg-humbak-5"
 				>
 					<MenuLinkButton
 						:item="firstLevelLink"
@@ -473,7 +473,7 @@ function getActuallyChanged() {
 						<li
 							v-for="(secondLevelLink, secondLevelIndex) in firstLevelLink.children"
 							:key="secondLevelLink.pageId"
-							class="hoverable-child-menu-visible vertical relative list-none focus-within:bg-humbak-6 hover:bg-humbak-6"
+							class="hoverable-child-menu-visible vertical relative focus-within:bg-humbak-6 hover:bg-humbak-6"
 						>
 							<MenuLinkButton
 								:item="secondLevelLink"
@@ -505,7 +505,7 @@ function getActuallyChanged() {
 								<li
 									v-for="(thirdLevelLink, thirdLevelIndex) in secondLevelLink.children"
 									:key="thirdLevelLink.pageId"
-									class="vertical relative list-none focus-within:bg-humbak-7 hover:bg-humbak-7"
+									class="vertical relative focus-within:bg-humbak-7 hover:bg-humbak-7"
 								>
 									<MenuLinkButton
 										:item="thirdLevelLink"
@@ -517,7 +517,7 @@ function getActuallyChanged() {
 								</li>
 								<li
 									v-if="currentlyGrabbedLink && !secondLevelLink.children.length"
-									class="horizontal relative list-none focus-within:bg-humbak-7 hover:bg-humbak-7"
+									class="horizontal relative focus-within:bg-humbak-7 hover:bg-humbak-7"
 									data-menu-drop-placeholder
 									:data-indicator-on-start="isMenuToTheLeft(firstLevelIndex)"
 								>
@@ -534,7 +534,7 @@ function getActuallyChanged() {
 						</li>
 						<li
 							v-if="currentlyGrabbedLink && !firstLevelLink.children.length"
-							class="vertical relative list-none focus-within:bg-humbak-6 hover:bg-humbak-6"
+							class="vertical relative focus-within:bg-humbak-6 hover:bg-humbak-6"
 							data-menu-drop-placeholder
 						>
 							<MenuLinkButton
@@ -550,7 +550,7 @@ function getActuallyChanged() {
 				</li>
 				<li
 					v-if="currentlyGrabbedLink && !transformedMenuLinks.length"
-					class="horizontal relative w-full list-none focus-within:bg-humbak-5 hover:bg-humbak-5"
+					class="horizontal relative w-full focus-within:bg-humbak-5 hover:bg-humbak-5"
 					data-menu-drop-placeholder
 				>
 					<MenuLinkButton

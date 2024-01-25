@@ -168,10 +168,10 @@ function closeMenuAndSetExpanded(id: number) {
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
-				class="hoverable-child-menu-visible relative min-w-0 flex-center flex-col list-none lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
+				class="hoverable-child-menu-visible min-w-0 flex-center flex-col lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
 			>
 				<NuxtLink
-					class="relative w-full p-3 lg:h-full text-center"
+					class="w-full p-3 lg:h-full text-center"
 					:class="firstLevelLink.children.length ? 'hidden' : 'block'"
 					:to="`/${language}/${firstLevelLink.href}`"
 					@click="closeMenuAndSetExpanded(firstLevelLink.pageId)"
@@ -200,13 +200,23 @@ function closeMenuAndSetExpanded(id: number) {
 						? 'max-h-unset' : 'max-h-0 of-hidden'
 					"
 				>
+					<li class="lg:hidden">
+						<NuxtLink
+							class="w-full p-3 text-center block"
+							:to="`/${language}/${firstLevelLink.href}`"
+							@click="closeMenuAndSetExpanded(firstLevelLink.pageId)"
+						>
+							Przejdź do: {{ firstLevelLink.text }}
+						</NuxtLink>
+					</li>
+
 					<li
 						v-for="secondLevelLink in firstLevelLink.children"
 						:key="secondLevelLink.pageId"
-						class="hoverable-child-menu-visible relative list-none lg:(focus-within:bg-humbak-6 hover:bg-humbak-6)"
+						class="hoverable-child-menu-visible lg:(focus-within:bg-humbak-6 hover:bg-humbak-6)"
 					>
 						<NuxtLink
-							class="relative w-full p-3 lg:h-full text-center"
+							class="w-full p-3 lg:h-full text-center"
 							:class="secondLevelLink.children.length ? 'hidden' : 'block'"
 							:to="`/${language}/${secondLevelLink.href}`"
 							@click="closeMenuAndSetExpanded(secondLevelLink.pageId)"
@@ -246,10 +256,10 @@ function closeMenuAndSetExpanded(id: number) {
 							<li
 								v-for="thirdLevelLink in secondLevelLink.children"
 								:key="thirdLevelLink.pageId"
-								class="relative list-none lg:(focus-within:bg-humbak-7 hover:bg-humbak-7)"
+								class="lg:(focus-within:bg-humbak-7 hover:bg-humbak-7)"
 							>
 								<NuxtLink
-									class="relative w-full p-3 lg:h-full block text-center"
+									class="w-full p-3 lg:h-full block text-center"
 									:to="`/${language}/${thirdLevelLink.href}`"
 									@focus="expandedMenuLinkId = secondLevelLink.pageId"
 									@click="closeMenuAndSetExpanded(secondLevelLink.pageId)"
