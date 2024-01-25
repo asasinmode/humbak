@@ -41,6 +41,43 @@ onMounted(() => {
 	lastMenuLink.addEventListener('focusin', lastElementFocusIn);
 	lastMenuLink.addEventListener('focusout', lastElementFocusOut);
 });
+
+const expandedMenuLinkId = ref<number>();
+
+function toggleMenuLinkExpanded(id: number, parentId?: number) {
+	if (parentId === undefined && expandedMenuLinkId.value !== undefined) {
+		for (const menuLink of props.menuLinks) {
+			for (const child of menuLink.children) {
+				if (child.pageId === expandedMenuLinkId.value) {
+					expandedMenuLinkId.value = undefined;
+					return;
+				}
+			}
+		}
+	}
+
+	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
+}
+
+function isMenuExpanded(id: number, children: IMenuTreeItem[]) {
+	if (expandedMenuLinkId.value === id) {
+		return true;
+	}
+
+	for (const child of children) {
+		if (child.pageId === expandedMenuLinkId.value) {
+			return true;
+		}
+
+		for (const grandChild of child.children) {
+			if (grandChild.pageId === expandedMenuLinkId.value) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
 </script>
 
 <template>
@@ -94,7 +131,10 @@ onMounted(() => {
 				:key="firstLevelLink.pageId"
 				class="hoverable-child-menu-visible relative min-w-0 flex-center flex-col list-none focus-within:bg-humbak-5 hover:bg-humbak-5 lg:(flex-1 h-full)"
 			>
-				<button class="relative w-full p-3 truncate lg:h-full">
+				<button
+					class="relative w-full p-3 lg:(h-full truncate)"
+					@click="toggleMenuLinkExpanded(firstLevelLink.pageId)"
+				>
 					{{ firstLevelLink.text }}
 					<div
 						v-if="firstLevelLink.children.length"
@@ -104,14 +144,20 @@ onMounted(() => {
 
 				<menu
 					v-if="firstLevelLink.children.length"
-					class="bg-humbak-5 w-full lg:(absolute bottom-0 translate-y-full)"
+					class="bg-humbak-5 w-full lg:(absolute bottom-0 translate-y-full max-h-unset of-visible)"
+					:class="isMenuExpanded(firstLevelLink.pageId, firstLevelLink.children)
+						? 'max-h-unset' : 'max-h-0 of-hidden'
+					"
 				>
 					<li
 						v-for="secondLevelLink in firstLevelLink.children"
 						:key="secondLevelLink.pageId"
 						class="hoverable-child-menu-visible relative list-none focus-within:bg-humbak-6 hover:bg-humbak-6"
 					>
-						<button class="relative w-full p-3 lg:h-full">
+						<button
+							class="relative w-full p-3 lg:h-full"
+							@click="toggleMenuLinkExpanded(secondLevelLink.pageId, firstLevelLink.pageId)"
+						>
 							{{ secondLevelLink.text }}
 							<div
 								v-if="secondLevelLink.children.length"
@@ -126,11 +172,13 @@ onMounted(() => {
 
 						<menu
 							v-if="secondLevelLink.children.length"
-							class="bg-humbak-6 w-full lg:(absolute top-0)"
-							:class="
+							class="bg-humbak-6 w-full lg:(absolute top-0 max-h-unset of-visible)"
+							:class="[
 								isMenuToTheLeft(firstLevelIndex)
-									? 'lg:(left-0 -translate-x-full)' : 'lg:(right-0 translate-x-full)'
-							"
+									? 'lg:(left-0 -translate-x-full)' : 'lg:(right-0 translate-x-full)',
+								isMenuExpanded(secondLevelLink.pageId, secondLevelLink.children)
+									? 'max-h-unset' : 'max-h-0 of-hidden',
+							]"
 						>
 							<li
 								v-for="thirdLevelLink in secondLevelLink.children"
@@ -164,26 +212,8 @@ onMounted(() => {
 	transition: background var(--nav-transition-duration) ease;
 }
 
-.hoverable-child-menu-visible {
-	overflow: hidden;
-}
-
-.hoverable-child-menu-visible > menu {
-	max-height: 0;
-}
-
-.hoverable-child-menu-visible:hover > menu,
-.hoverable-child-menu-visible:focus-within > menu {
-	max-height: unset;
-}
-
 @media (min-width: 1024px) {
-	.hoverable-child-menu-visible {
-		overflow: visible;
-	}
-
 	.hoverable-child-menu-visible > menu {
-		max-height: unset;
 		display: none;
 	}
 
