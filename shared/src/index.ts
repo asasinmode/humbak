@@ -61,15 +61,13 @@ export function extractWithParentId(menuLinks: IMenuLink[], parentId: null | num
 export function useMobileMenu(
 	windowWidth: number,
 	firstFocusableElement: () => Element,
-	secondToLastFocusableElement: () => Element,
-	toggleCallback?: (value: boolean) => void
+	secondToLastFocusableElement: () => Element
 ) {
 	const isExpanded = ref(false);
 
 	function toggleMenu(isOpen: boolean) {
 		isExpanded.value = isOpen;
 		document.body.style.overflow = isOpen ? 'hidden' : '';
-		toggleCallback?.(isOpen);
 	}
 
 	function toggleButtonFocusIn(event: FocusEvent) {

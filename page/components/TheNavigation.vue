@@ -79,12 +79,7 @@ const {
 } = useMobileMenu(
 	1024,
 	() => firstFocusableNavElement.value!,
-	() => secondToLastMenuLink,
-	(isOpen) => {
-		if (!isOpen) {
-			expandedMenuLinkId.value = undefined;
-		}
-	}
+	() => secondToLastMenuLink
 );
 
 let previousWindowWidth = 0;
@@ -168,7 +163,7 @@ function onWindowResize() {
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
-				class="hoverable-child-menu-visible relative min-w-0 flex-center flex-col list-none focus-within:bg-humbak-5 hover:bg-humbak-5 lg:(flex-1 h-full)"
+				class="hoverable-child-menu-visible relative min-w-0 flex-center flex-col list-none lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
 			>
 				<button
 					class="relative w-full p-3 lg:(h-full truncate)"
@@ -192,7 +187,7 @@ function onWindowResize() {
 					<li
 						v-for="secondLevelLink in firstLevelLink.children"
 						:key="secondLevelLink.pageId"
-						class="hoverable-child-menu-visible relative list-none focus-within:bg-humbak-6 hover:bg-humbak-6"
+						class="hoverable-child-menu-visible relative list-none lg:(focus-within:bg-humbak-6 hover:bg-humbak-6)"
 					>
 						<button
 							class="relative w-full p-3 lg:h-full"
@@ -224,12 +219,13 @@ function onWindowResize() {
 							<li
 								v-for="thirdLevelLink in secondLevelLink.children"
 								:key="thirdLevelLink.pageId"
-								class="relative list-none focus-within:bg-humbak-7 hover:bg-humbak-7"
+								class="relative list-none lg:(focus-within:bg-humbak-7 hover:bg-humbak-7)"
 							>
 								<NuxtLink
 									class="relative w-full p-3 lg:h-full block text-center"
 									:to="`/${language}/${thirdLevelLink.href}`"
 									@focus="expandedMenuLinkId = secondLevelLink.pageId"
+									@click="toggleMenu(false)"
 								>
 									{{ thirdLevelLink.text }}
 								</NuxtLink>
