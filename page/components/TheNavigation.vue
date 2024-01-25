@@ -214,8 +214,8 @@ function closeMenuAndSetExpanded(id?: number) {
 							:title="firstLevelLink.text"
 							:to="`/${language}/${firstLevelLink.href}`"
 							@click="closeMenuAndSetExpanded(firstLevelLink.pageId)"
+							@focus="expandedMenuLinkId = firstLevelLink.pageId"
 						>
-							<span class="visually-hidden">Przejdź do:</span>
 							{{ firstLevelLink.text }}
 							<span class="i-fa6-solid-arrow-up-right-from-square inline-block w-3 h-3 text-dark-3 ml-[0.125rem] align-baseline" />
 						</NuxtLink>
@@ -273,8 +273,10 @@ function closeMenuAndSetExpanded(id?: number) {
 									:to="`/${language}/${secondLevelLink.href}`"
 									:title="secondLevelLink.text"
 									@click="closeMenuAndSetExpanded(secondLevelLink.pageId)"
+									@focus="expandedMenuLinkId = secondLevelLink.pageId"
 								>
-									Przejdź do: {{ secondLevelLink.text }}
+									{{ secondLevelLink.text }}
+									<span class="i-fa6-solid-arrow-up-right-from-square inline-block w-3 h-3 text-dark-3 ml-[0.125rem] align-baseline" />
 								</NuxtLink>
 							</li>
 
@@ -287,7 +289,7 @@ function closeMenuAndSetExpanded(id?: number) {
 									class="w-full p-3 lg:h-full block text-center"
 									:to="`/${language}/${thirdLevelLink.href}`"
 									:title="thirdLevelLink.text"
-									@focus="expandedMenuLinkId = secondLevelLink.pageId"
+									@focus="expandedMenuLinkId = thirdLevelLink.pageId"
 									@click="closeMenuAndSetExpanded(secondLevelLink.pageId)"
 								>
 									{{ thirdLevelLink.text }}
