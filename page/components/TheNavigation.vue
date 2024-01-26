@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useMobileMenu } from '@humbak/shared';
 import type { IMenuTreeItem } from '@humbak/shared';
+import type { ComponentPublicInstance } from 'vue';
 
 const props = defineProps<{
 	language: string;
@@ -11,7 +12,7 @@ function isMenuToTheLeft(indexOnLevel: number) {
 	return indexOnLevel + 1 > Math.ceil(props.menuLinks.length / 2);
 }
 
-const firstFocusableNavElement = ref<HTMLButtonElement>();
+const secondFocusableNavElement = ref<ComponentPublicInstance>();
 const menu = ref<HTMLMenuElement>();
 let secondToLastMenuLink: HTMLElement;
 
@@ -96,13 +97,13 @@ function isMenuExpanded(id: number) {
 const {
 	isExpanded,
 	toggleMenu,
-	toggleButtonFocusIn,
-	toggleButtonFocusOut,
+	firstElementFocusIn,
+	firstElementFocusOut,
 	lastElementFocusIn,
 	lastElementFocusOut,
 } = useMobileMenu(
 	1024,
-	() => firstFocusableNavElement.value!,
+	() => secondFocusableNavElement.value!.$el,
 	() => secondToLastMenuLink
 );
 
@@ -159,8 +160,6 @@ function closeMenuAndSetExpanded(id?: number) {
 				: 'bg-opacity-0 top-3 right-3 w-10 h-10 p-[0.625rem] rounded-full',
 		]"
 		@click.left="toggleMenu(!isExpanded)"
-		@focusin="toggleButtonFocusIn"
-		@focusout="toggleButtonFocusOut"
 	>
 		<span class="visually-hidden">menu</span>
 		<div class="i-fa6-solid-bars h-5 w-5" />
@@ -168,20 +167,23 @@ function closeMenuAndSetExpanded(id?: number) {
 
 	<nav
 		id="mainNav"
+		tabindex="-1"
 		class="fixed w-full max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-white of-y-auto of-x-hidden z-102 drop-shadow transition-transform lg:(bg-humbak sticky top-0 h-12 translate-y-0 of-visible)"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<menu ref="menu" class="grid grid-cols-2 relative max-w-384 h-full text-black lg:(px-12 flex flex-row mx-auto)">
 			<button
-				ref="firstFocusableNavElement"
 				class="w-12 h-12 col-start-2 row-start-1 ml-2 my-2 hoverable:text-humbak-8 flex-center lg:(m-0 absolute right-0 hoverable:bg-humbak-5 z-10)"
 				title="język"
+				@focusin="firstElementFocusIn"
+				@focusout="firstElementFocusOut"
 			>
 				<span class="visually-hidden">język</span>
 				<div class="i-ph-translate-bold pointer-events-none w-6 h-6" />
 			</button>
 
 			<NuxtLink
+				ref="secondFocusableNavElement"
 				class="w-12 h-12 col-start-1 row-start-1 my-2 hoverable:text-humbak-8 justify-self-end mr-2 flex-center lg:(m-0 absolute left-0 hoverable:bg-humbak-5 hoverable:text-inherit z-10)"
 				title="home"
 				:to="`/${language}`"
