@@ -21,3 +21,9 @@ body {
 	height: 1px;
 	white-space: nowrap;
 }
+
+#__nuxt {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
