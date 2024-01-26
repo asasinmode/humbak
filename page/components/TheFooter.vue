@@ -7,7 +7,7 @@ const props = defineProps<{
 
 const { emails, phoneNumbers, socials, location } = toRefs(props.data);
 
-const maxElementsInColumn = computed(() => Math.max(emails.value.length + 1, phoneNumbers.value.length + 1, 1));
+const maxElementsInColumn = computed(() => Math.max(emails.value.length, phoneNumbers.value.length, 1));
 
 const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> = {
 	facebook: 'i-logos-facebook',
@@ -24,11 +24,12 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 				<div
 					class="md:footer-row-span i-fa6-solid-envelope h-6 w-6 justify-self-end md:col-start-1"
 					aria-hidden="true"
-					:style="`--f-row-start: ${index};`"
+					:style="`--f-row-start: ${index + 1};`"
 				/>
 				<a
 					:href="`mailto:${email}`"
 					class="md:footer-row-span h-fit w-fit md:col-start-2 hoverable:underline"
+					:style="`--f-row-start: ${index + 1};`"
 				>
 					{{ email }}
 				</a>
@@ -38,9 +39,12 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 				<div
 					class="md:footer-row-span i-fa6-solid-phone h-6 w-6 justify-self-end md:col-start-3 -mr-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)]"
 					aria-hidden="true"
-					:style="`--f-row-start: ${index};`"
+					:style="`--f-row-start: ${index + 1};`"
 				/>
-				<p class="md:footer-row-span ml-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)] h-fit w-fit md:col-start-4">
+				<p
+					class="md:footer-row-span ml-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)] h-fit w-fit md:col-start-4"
+					:style="`--f-row-start: ${index + 1};`"
+				>
 					{{ phoneNumber }}
 				</p>
 			</template>
@@ -79,3 +83,11 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 		</section>
 	</footer>
 </template>
+
+<style>
+@media (min-width: 768px){
+	.md\:footer-row-span {
+		grid-row: var(--f-row-start, 1) / span var(--f-row-span, 1);
+	}
+}
+</style>

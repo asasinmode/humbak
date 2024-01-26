@@ -193,7 +193,7 @@ function addSocial() {
 		</div>
 		<div class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-4 bg-humbak pb-4 pt-6 text-black lg:px-8 md:px-[clamp(2rem,_-12.25rem_+_29.6875vw,_6.75rem)]">
 			<section class="grid grid-cols-[min-content_max-content] max-w-360 gap-x-3 gap-y-4 lg:grid-cols-[repeat(3,_1fr_2fr)] md:grid-cols-[min-content_6fr_4fr_6fr_4fr_max-content] md:w-full">
-				<template v-for="index in emails.length" :key="`emails${index}`">
+				<template v-for="index in emails.length" :key="`email${index}`">
 					<div
 						class="md:footer-row-span i-fa6-solid-envelope h-6 w-6 justify-self-end md:col-start-1"
 						aria-hidden="true"
@@ -219,7 +219,7 @@ function addSocial() {
 					dodaj email
 				</button>
 
-				<template v-for="index in phoneNumbers.length" :key="`phones${index}`">
+				<template v-for="index in phoneNumbers.length" :key="`phone${index}`">
 					<div
 						class="md:footer-row-span i-fa6-solid-phone h-6 w-6 justify-self-end md:col-start-3 -mr-[clamp(0.25rem,_-5.75rem_+_7.5vw,_1rem)]"
 						aria-hidden="true"
