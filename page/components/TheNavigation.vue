@@ -207,7 +207,7 @@ function closeMenuAndSetExpanded(id?: number) {
 				class="hoverable-child-menu-visible col-span-full relative min-w-0 flex-center flex-col lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
 			>
 				<NuxtLink
-					class="w-full p-3 lg:h-full text-center"
+					class="w-full p-3 text-center lg:(h-full block)"
 					:class="firstLevelLink.children.length ? 'hidden' : 'block'"
 					:title="firstLevelLink.text"
 					:to="`/${language}/${firstLevelLink.href}`"
@@ -215,10 +215,14 @@ function closeMenuAndSetExpanded(id?: number) {
 					@focus="expandedMenuLinkId = firstLevelLink.pageId"
 				>
 					{{ firstLevelLink.text }}
+					<div
+						v-if="firstLevelLink.children.length"
+						class="i-ph-caret-down-bold hidden pointer-events-none h-3 w-3 absolute bottom-[0.125rem] left-1/2 -translate-x-1/2 lg:block"
+					/>
 				</NuxtLink>
 
 				<button
-					class="relative text-center z-0 p-3 w-full before:(content-empty transition-transform origin-bottom -z-1 absolute w-full h-full bg-gray-1 top-0 left-0) lg:(h-full truncate before:hidden)"
+					class="relative text-center z-0 p-3 w-full before:(content-empty transition-transform origin-bottom -z-1 absolute w-full h-full bg-gray-1 top-0 left-0) lg:(hidden h-full truncate before:hidden)"
 					:class="[
 						firstLevelLink.children.length ? '' : 'hidden',
 						isMenuExpanded(firstLevelLink.pageId) ? 'before:scale-y-full' : 'before:scale-y-0',
@@ -250,7 +254,7 @@ function closeMenuAndSetExpanded(id?: number) {
 						class="hoverable-child-menu-visible relative lg:(focus-within:bg-humbak-6 hover:bg-humbak-6)"
 					>
 						<NuxtLink
-							class="w-full p-3 lg:h-full text-center"
+							class="w-full p-3 lg:h-full text-center lg:block"
 							:class="secondLevelLink.children.length ? 'hidden' : 'block'"
 							:title="secondLevelLink.text"
 							:to="`/${language}/${secondLevelLink.href}`"
@@ -258,10 +262,19 @@ function closeMenuAndSetExpanded(id?: number) {
 							@focus="expandedMenuLinkId = secondLevelLink.pageId"
 						>
 							{{ secondLevelLink.text }}
+							<div
+								v-if="secondLevelLink.children.length"
+								class="pointer-events-none h-3 w-3 i-ph-caret-down-bold absolute block top-1/2 -translate-y-1/2 hidden lg:block"
+								:class="
+									isMenuToTheLeft(firstLevelIndex)
+										? 'left-[0.125rem] i-ph-caret-left-bold'
+										: 'right-[0.125rem] i-ph-caret-right-bold'
+								"
+							/>
 						</NuxtLink>
 
 						<button
-							class="relative z-0 text-center p-3 w-full before:(content-empty transition-transform origin-bottom -z-1 absolute w-full h-full bg-gray-2 top-0 left-0) lg:(h-full before:hidden)"
+							class="relative z-0 text-center p-3 w-full before:(content-empty transition-transform origin-bottom -z-1 absolute w-full h-full bg-gray-2 top-0 left-0) lg:(hidden h-full before:hidden)"
 							:class="[
 								secondLevelLink.children.length ? '' : 'hidden',
 								isMenuExpanded(secondLevelLink.pageId) ? 'before:scale-y-full' : 'before:scale-y-0',
