@@ -190,11 +190,11 @@ function closeMenuAndSetExpanded(id?: number) {
 				<button
 					class="relative p-3 w-full lg:(h-full truncate)"
 					:class="firstLevelLink.children.length ? '' : 'hidden'"
-					:title="`rozwiń ${firstLevelLink.text}`"
+					:title="firstLevelLink.text"
 					@mousedown.left.prevent="toggleMenuLinkExpanded(firstLevelLink.pageId)"
 					@focus="expandIfChildNotExpanded(firstLevelLink.pageId, firstLevelLink.children)"
 				>
-					<span class="visually-hidden">rozwiń</span>
+					<span class="visually-hidden lg:hidden">rozwiń</span>
 					{{ firstLevelLink.text }}
 					<div
 						v-if="firstLevelLink.children.length"
@@ -242,11 +242,11 @@ function closeMenuAndSetExpanded(id?: number) {
 						<button
 							class="relative w-full p-3 lg:h-full"
 							:class="secondLevelLink.children.length ? '' : 'hidden'"
-							:title="`rozwiń ${secondLevelLink.text}`"
+							:title="secondLevelLink.text"
 							@mousedown.left.prevent="toggleMenuLinkExpanded(secondLevelLink.pageId, firstLevelLink.pageId)"
 							@focus="expandIfChildNotExpanded(secondLevelLink.pageId, undefined, firstLevelLink.pageId)"
 						>
-							<span class="visually-hidden">rozwiń</span>
+							<span class="visually-hidden lg:hidden">rozwiń</span>
 							{{ secondLevelLink.text }}
 							<div
 								v-if="secondLevelLink.children.length"
