@@ -15,9 +15,17 @@ const firstFocusableNavElement = ref<HTMLButtonElement>();
 const menu = ref<HTMLMenuElement>();
 let secondToLastMenuLink: HTMLElement;
 
+let previousTopLevelExpandedId: number | undefined;
 const expandedMenuLinkId = ref<number>();
 
-function toggleMenuLinkExpanded(id: number, parentId?: number) {
+function toggleMenuLinkExpanded(id: number, event: MouseEvent, parentId?: number) {
+	if (parentId !== undefined) {
+		previousTopLevelExpandedId = parentId;
+	}
+
+	const parentMenu = (event.target as HTMLElement)?.closest('menu');
+	const targetMenu = (event.target as HTMLElement)?.nextSibling as HTMLElement | null;
+
 	if (parentId === undefined && expandedMenuLinkId.value !== undefined) {
 		for (const menuLink of props.menuLinks) {
 			if (menuLink.pageId !== id) {
@@ -25,16 +33,30 @@ function toggleMenuLinkExpanded(id: number, parentId?: number) {
 			}
 			for (const child of menuLink.children) {
 				if (child.pageId === expandedMenuLinkId.value) {
+					targetMenu?.style.setProperty('--nested-scroll-height', `0px`);
 					expandedMenuLinkId.value = undefined;
 					return;
 				}
 			}
 		}
 	}
-	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
+
+	const isToggling = expandedMenuLinkId.value === id;
+	if (parentId !== undefined) {
+		parentMenu?.style.setProperty(
+			'--nested-scroll-height',
+			`${isToggling ? 0 : targetMenu?.scrollHeight || 0}px`
+		);
+	} else if (!isToggling) {
+		const previousToCollapse = previousTopLevelExpandedId !== undefined ? document.getElementById(`menu${previousTopLevelExpandedId}`) : undefined;
+		previousToCollapse?.style.setProperty('--nested-scroll-height', '0px');
+		previousTopLevelExpandedId = undefined;
+	}
+
+	expandedMenuLinkId.value = isToggling ? parentId : id;
 }
 
-function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parentId?: number) {
+function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parentId?: number, event?: FocusEvent) {
 	if (children) {
 		for (const child of children) {
 			if (child.pageId === expandedMenuLinkId.value) {
@@ -42,6 +64,7 @@ function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parent
 			}
 		}
 	}
+	previousTopLevelExpandedId = parentId;
 	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
 }
 
@@ -104,7 +127,6 @@ onMounted(() => {
 	const menus = menu.value.getElementsByTagName('menu');
 	for (const menu of menus) {
 		menu.style.setProperty('--scroll-height', `${menu.scrollHeight}px`);
-		console.log('menu thing', menu.scrollHeight, menu);
 	}
 });
 
@@ -197,38 +219,26 @@ function closeMenuAndSetExpanded(id?: number) {
 					class="relative p-3 w-full lg:(h-full truncate)"
 					:class="firstLevelLink.children.length ? '' : 'hidden'"
 					:title="firstLevelLink.text"
-					@mousedown.left.prevent="toggleMenuLinkExpanded(firstLevelLink.pageId)"
+					@mousedown.left.prevent="toggleMenuLinkExpanded(firstLevelLink.pageId, $event)"
 					@focus="expandIfChildNotExpanded(firstLevelLink.pageId, firstLevelLink.children)"
 				>
 					<span class="visually-hidden lg:hidden">rozwiń</span>
 					{{ firstLevelLink.text }}
 					<div
 						v-if="firstLevelLink.children.length"
-						class="i-ph-caret-down-bold text-humbak-8 inline-block pointer-events-none h-3 w-3 lg:(block absolute bottom-[0.125rem] left-1/2 -translate-x-1/2 rotate-0 text-inherit)"
-						:class="isMenuExpanded(firstLevelLink.pageId) ? 'rotate-180' : ''"
+						class="i-ph-caret-down-bold transition-transform text-humbak-8 inline-block pointer-events-none h-3 w-3 lg:(block absolute bottom-[0.125rem] left-1/2 -translate-x-1/2 rotate-0 text-inherit)"
+						:class="isMenuExpanded(firstLevelLink.pageId) ? '-rotate-180' : ''"
 					/>
 				</button>
 
 				<menu
 					v-if="firstLevelLink.children.length"
+					:id="`menu${firstLevelLink.pageId}`"
 					class="w-full transition-height of-hidden lg:(absolute bg-humbak-5 bottom-0 translate-y-full h-auto of-visible)"
 					:class="isMenuExpanded(firstLevelLink.pageId)
-						? 'h-[var(--scroll-height)]' : 'h-0'
+						? 'h-[calc(var(--scroll-height,_auto)_+_var(--nested-scroll-height,_0px))]' : 'h-0'
 					"
 				>
-					<li class="lg:hidden">
-						<NuxtLink
-							class="w-full p-3 text-center block"
-							:title="firstLevelLink.text"
-							:to="`/${language}/${firstLevelLink.href}`"
-							@click="closeMenuAndSetExpanded(firstLevelLink.pageId)"
-							@focus="expandedMenuLinkId = firstLevelLink.pageId"
-						>
-							{{ firstLevelLink.text }}
-							<span class="i-fa6-solid-arrow-up-right-from-square text-humbak-8 inline-block w-3 h-3 text-dark-3 ml-[0.125rem] align-baseline" />
-						</NuxtLink>
-					</li>
-
 					<li
 						v-for="secondLevelLink in firstLevelLink.children"
 						:key="secondLevelLink.pageId"
@@ -249,16 +259,16 @@ function closeMenuAndSetExpanded(id?: number) {
 							class="relative w-full p-3 lg:h-full"
 							:class="secondLevelLink.children.length ? '' : 'hidden'"
 							:title="secondLevelLink.text"
-							@mousedown.left.prevent="toggleMenuLinkExpanded(secondLevelLink.pageId, firstLevelLink.pageId)"
-							@focus="expandIfChildNotExpanded(secondLevelLink.pageId, undefined, firstLevelLink.pageId)"
+							@mousedown.left.prevent="toggleMenuLinkExpanded(secondLevelLink.pageId, $event, firstLevelLink.pageId)"
+							@focus="expandIfChildNotExpanded(secondLevelLink.pageId, undefined, firstLevelLink.pageId, $event)"
 						>
 							<span class="visually-hidden lg:hidden">rozwiń</span>
 							{{ secondLevelLink.text }}
 							<div
 								v-if="secondLevelLink.children.length"
-								class="pointer-events-none h-3 w-3 inline-block i-ph-caret-down-bold lg:(absolute block top-1/2 -translate-y-1/2 rotate-0)"
+								class="pointer-events-none h-3 w-3 transition-transform inline-block i-ph-caret-down-bold lg:(absolute block top-1/2 -translate-y-1/2 rotate-0)"
 								:class="[
-									isMenuExpanded(secondLevelLink.pageId) ? 'rotate-180' : '',
+									isMenuExpanded(secondLevelLink.pageId) ? '-rotate-180' : '',
 									isMenuToTheLeft(firstLevelIndex)
 										? 'lg:(left-[0.125rem] i-ph-caret-left-bold)'
 										: 'lg:(right-[0.125rem] i-ph-caret-right-bold)',
@@ -276,19 +286,6 @@ function closeMenuAndSetExpanded(id?: number) {
 									? 'h-[var(--scroll-height)]' : 'h-0',
 							]"
 						>
-							<li class="lg:hidden">
-								<NuxtLink
-									class="w-full p-3 text-center block"
-									:to="`/${language}/${secondLevelLink.href}`"
-									:title="secondLevelLink.text"
-									@click.left="closeMenuAndSetExpanded(secondLevelLink.pageId)"
-									@focus="expandedMenuLinkId = secondLevelLink.pageId"
-								>
-									{{ secondLevelLink.text }}
-									<span class="i-fa6-solid-arrow-up-right-from-square inline-block w-3 h-3 text-dark-3 ml-[0.125rem] align-baseline" />
-								</NuxtLink>
-							</li>
-
 							<li
 								v-for="thirdLevelLink in secondLevelLink.children"
 								:key="thirdLevelLink.pageId"
