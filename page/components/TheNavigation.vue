@@ -100,6 +100,12 @@ onMounted(() => {
 	const lastMenuLink = buttons.item(buttons.length - 1)!;
 	lastMenuLink.addEventListener('focusin', lastElementFocusIn);
 	lastMenuLink.addEventListener('focusout', lastElementFocusOut);
+
+	const menus = menu.value.getElementsByTagName('menu');
+	for (const menu of menus) {
+		menu.style.setProperty('--scroll-height', `${menu.scrollHeight}px`);
+		console.log('menu thing', menu.scrollHeight, menu);
+	}
 });
 
 onBeforeUnmount(() => {
@@ -205,9 +211,9 @@ function closeMenuAndSetExpanded(id?: number) {
 
 				<menu
 					v-if="firstLevelLink.children.length"
-					class="w-full lg:(absolute bg-humbak-5 bottom-0 translate-y-full max-h-unset of-visible)"
+					class="w-full transition-height of-hidden lg:(absolute bg-humbak-5 bottom-0 translate-y-full h-auto of-visible)"
 					:class="isMenuExpanded(firstLevelLink.pageId)
-						? 'max-h-unset' : 'max-h-0 of-hidden'
+						? 'h-[var(--scroll-height)]' : 'h-0'
 					"
 				>
 					<li class="lg:hidden">
@@ -262,12 +268,12 @@ function closeMenuAndSetExpanded(id?: number) {
 
 						<menu
 							v-if="secondLevelLink.children.length"
-							class="w-full lg:(absolute bg-humbak-6 top-0 max-h-unset of-visible)"
+							class="w-full transition-height of-hidden lg:(absolute bg-humbak-6 top-0 h-auto of-visible)"
 							:class="[
 								isMenuToTheLeft(firstLevelIndex)
 									? 'lg:(left-0 -translate-x-full)' : 'lg:(right-0 translate-x-full)',
 								isMenuExpanded(secondLevelLink.pageId)
-									? 'max-h-unset' : 'max-h-0 of-hidden',
+									? 'h-[var(--scroll-height)]' : 'h-0',
 							]"
 						>
 							<li class="lg:hidden">
