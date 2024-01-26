@@ -83,17 +83,15 @@ export function useMobileMenu(
 	}
 
 	function lastElementFocusIn(event: FocusEvent) {
-		if (window.innerWidth >= windowWidth || event.relatedTarget === secondToLastFocusableElement()) {
-			return;
+		if (window.innerWidth < windowWidth && event.relatedTarget !== secondToLastFocusableElement()) {
+			toggleMenu(true);
 		}
-		toggleMenu(true);
 	}
 
 	function lastElementFocusOut(event: FocusEvent) {
-		if (window.innerWidth >= windowWidth || event.relatedTarget === secondToLastFocusableElement()) {
-			return;
+		if (window.innerWidth < windowWidth && event.relatedTarget !== secondToLastFocusableElement()) {
+			toggleMenu(false);
 		}
-		toggleMenu(false);
 	}
 
 	return {
