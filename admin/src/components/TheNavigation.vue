@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import type { ComponentPublicInstance } from 'vue';
 import { useMobileMenu } from '@humbak/shared';
+import type { ComponentPublicInstance } from 'vue';
 import TheThemeToggle from '~/components/TheThemeToggle.vue';
 
-const firstFocusableNavElement = ref<ComponentPublicInstance>();
 const secondToLastFocusableNavElement = ref<InstanceType<typeof TheThemeToggle>>();
+const secondFocusableNavElement = ref<ComponentPublicInstance>();
 
 const {
 	isExpanded,
 	toggleMenu,
-	toggleButtonFocusIn,
-	toggleButtonFocusOut,
+	firstElementFocusIn,
+	firstElementFocusOut,
 	lastElementFocusIn,
 	lastElementFocusOut,
 } = useMobileMenu(
 	768,
-	() => firstFocusableNavElement.value!.$el,
+	() => secondFocusableNavElement.value?.$el,
 	() => (secondToLastFocusableNavElement.value!.element as HTMLButtonElement)
 );
 </script>
@@ -31,8 +31,6 @@ const {
 				: 'bg-opacity-0 top-3 right-3 w-12 h-12 p-2',
 		]"
 		@click="toggleMenu(!isExpanded)"
-		@focusin="toggleButtonFocusIn"
-		@focusout="toggleButtonFocusOut"
 	>
 		<span class="visually-hidden">menu</span>
 		<div class="i-fa6-solid-bars h-8 w-8" />
@@ -44,16 +42,19 @@ const {
 	>
 		<a
 			id="skipContent"
-			ref="firstFocusableNavElement"
 			href="#content"
 			class="fixed col-span-2 w-fit z-10 border border-black rounded-full bg-black px-3 py-1 text-5 text-white shadow transition-transform -translate-y-full focus-visible:translate-y-2 focus:translate-y-2 dark:(border-white bg-white text-black) md:(-translate-y-[calc(100%_+_5rem)] focus-visible:translate-y-0 focus:translate-y-0)"
 			@click="toggleMenu(false)"
+			@focusin="firstElementFocusIn"
+			@focusout="firstElementFocusOut"
 		>
 			skip navigation
 		</a>
 
 		<RouterLink
-			to="/" class="col-span-2 w-fit px-3 py-1 text-5 shadow transition-margin neon-cyan"
+			to="/"
+			ref="secondFocusableNavElement"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow transition-margin neon-cyan"
 			@click="toggleMenu(false)"
 		>
 			<div class="i-solar-document-text-linear mr-[0.125rem] inline-block align-sub text-cyan" />

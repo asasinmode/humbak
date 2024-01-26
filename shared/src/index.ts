@@ -60,7 +60,7 @@ export function extractWithParentId(menuLinks: IMenuLink[], parentId: null | num
 
 export function useMobileMenu(
 	windowWidth: number,
-	firstFocusableElement: () => Element,
+	secondFocusableElement: () => Element,
 	secondToLastFocusableElement: () => Element
 ) {
 	const isExpanded = ref(false);
@@ -70,26 +70,16 @@ export function useMobileMenu(
 		document.body.style.overflow = isOpen ? 'hidden' : '';
 	}
 
-	function toggleButtonFocusIn(event: FocusEvent) {
-		if (event.relatedTarget === firstFocusableElement()) {
-			toggleMenu(false);
-			return;
+	function firstElementFocusIn(event: FocusEvent) {
+		if (event.relatedTarget !== secondFocusableElement()) {
+			toggleMenu(true);
 		}
-		if (event.relatedTarget !== null && event.relatedTarget !== document.documentElement) {
-			return;
-		}
-		toggleMenu(true);
 	}
 
-	function toggleButtonFocusOut(event: FocusEvent) {
-		if (event.relatedTarget === firstFocusableElement()) {
-			toggleMenu(true);
-			return;
+	function firstElementFocusOut(event: FocusEvent) {
+		if (event.relatedTarget !== secondFocusableElement()) {
+			toggleMenu(false);
 		}
-		if (event.relatedTarget !== null && event.relatedTarget !== document.documentElement) {
-			return;
-		}
-		toggleMenu(false);
 	}
 
 	function lastElementFocusIn(event: FocusEvent) {
@@ -109,8 +99,8 @@ export function useMobileMenu(
 	return {
 		isExpanded,
 		toggleMenu,
-		toggleButtonFocusIn,
-		toggleButtonFocusOut,
+		firstElementFocusIn,
+		firstElementFocusOut,
 		lastElementFocusIn,
 		lastElementFocusOut,
 	};
