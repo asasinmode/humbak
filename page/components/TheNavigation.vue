@@ -168,7 +168,7 @@ function closeMenuAndSetExpanded(id?: number) {
 	<nav
 		id="mainNav"
 		tabindex="-1"
-		class="fixed w-full max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-white of-y-auto of-x-hidden z-102 drop-shadow transition-transform lg:(bg-humbak sticky top-0 h-12 translate-y-0 of-visible)"
+		class="fixed w-full top-0 max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-white of-y-auto of-x-hidden z-102 drop-shadow transition-transform lg:(bg-humbak sticky h-12 translate-y-0 of-visible)"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<menu ref="menu" class="grid grid-cols-2 relative max-w-384 h-full text-black lg:(px-12 flex flex-row mx-auto)">
