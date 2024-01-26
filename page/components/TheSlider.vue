@@ -41,7 +41,7 @@ onBeforeUnmount(() => {
 
 <template>
 	<article
-		class="relative w-full max-w-360 min-h-40 mx-auto my-[clamp(1rem,_0.545rem_+_2.273vi,_2rem)]"
+		class="relative w-full max-w-360 min-h-40 mx-auto my-[clamp(1.25rem,_0.909rem_+_1.705vi,_2rem)]"
 		:style="{ paddingTop: `calc(${aspectRatio} * 100%)` }"
 		aria-hidden="true"
 		tabindex="-1"
