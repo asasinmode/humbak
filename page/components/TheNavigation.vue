@@ -207,7 +207,7 @@ function closeMenuAndSetExpanded(id?: number) {
 				class="hoverable-child-menu-visible col-span-full relative min-w-0 flex-center flex-col lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
 			>
 				<NuxtLink
-					class="w-full p-3 text-center lg:(h-full block)"
+					class="w-full p-3 text-center lg:(h-full block truncate)"
 					:class="firstLevelLink.children.length ? 'hidden' : 'block'"
 					:title="firstLevelLink.text"
 					:to="`/${language}/${firstLevelLink.href}`"
