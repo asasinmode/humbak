@@ -1,6 +1,6 @@
 import { and, desc, eq, isNull, not, or, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
-import { custom, object, optional, string, transform } from 'valibot';
+import { object, optional, string } from 'valibot';
 import { footerContents } from 'src/db/schema/footerContents';
 import { db } from '../db';
 import { languageExistsMiddleware, wrap } from '../helpers';
@@ -8,6 +8,7 @@ import { pages } from '../db/schema/pages';
 import { slides } from '../db/schema/slides';
 import { menuLinks } from '../db/schema/menuLinks';
 import { contents } from '../db/schema/contents';
+import { slideAspectRatio } from '../db/schema/slideAspectRatio';
 
 export const app = new Hono()
 	.get('/languages', async (c) => {
@@ -65,7 +66,7 @@ export const app = new Hono()
 		async (c) => {
 			const { language } = c.req.valid('param');
 
-			const [menuLinksResult, slidesResult, [footerContentsResult]] = await Promise.all([
+			const [menuLinksResult, slidesResult, [slideAspectRatioResult], [footerContentsResult]] = await Promise.all([
 				db.select({
 					pageId: menuLinks.pageId,
 					text: menuLinks.text,
@@ -90,6 +91,11 @@ export const app = new Hono()
 						eq(slides.language, language),
 						eq(slides.isHidden, false)
 					)),
+				db
+					.select({
+						value: slideAspectRatio.value,
+					})
+					.from(slideAspectRatio),
 				db.select({
 					emails: footerContents.emails,
 					phoneNumbers: footerContents.phoneNumbers,
@@ -103,6 +109,7 @@ export const app = new Hono()
 			return c.json({
 				menuLinks: menuLinksResult,
 				slides: slidesResult,
+				slideAspectRatio: slideAspectRatioResult.value,
 				footerContents: footerContentsResult,
 			});
 		}

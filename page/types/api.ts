@@ -1,12 +1,15 @@
 import type { IMenuLink } from '@humbak/shared';
 
+export type ISlide = {
+	id: number;
+	content: string;
+};
+
 // inferred types barely handle admin so here I just typed them out
 export type ILanguagePageData = {
 	menuLinks: IMenuLink[];
-	slides: {
-		id: number;
-		content: string;
-	}[];
+	slides: ISlide[];
+	slideAspectRatio: string;
 	footerContents: {
 		emails: string[];
 		phoneNumbers: string[];
