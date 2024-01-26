@@ -173,7 +173,7 @@ function closeMenuAndSetExpanded(id?: number) {
 	>
 		<menu ref="menu" class="grid grid-cols-2 relative max-w-384 h-full text-black lg:(px-12 flex flex-row mx-auto)">
 			<button
-				class="w-12 h-12 col-start-2 row-start-1 ml-2 my-2 hoverable:text-humbak-8 flex-center lg:(m-0 absolute right-0 hoverable:bg-humbak-5 z-10)"
+				class="w-12 h-12 col-start-2 row-start-1 ml-2 my-2 hoverable:text-humbak-8 flex-center lg:(m-0 absolute right-0 hoverable:bg-humbak-5 hoverable:text-inherit z-10)"
 				title="język"
 				@focusin="firstElementFocusIn"
 				@focusout="firstElementFocusOut"
