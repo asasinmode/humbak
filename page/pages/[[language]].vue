@@ -50,6 +50,5 @@ const transformedMenuLinks = transformMenuLinks(languageData.value.menuLinks.sli
 	<TheNavigation :menu-links="transformedMenuLinks" :language />
 	<TheSlider :slides="languageData!.slides" :aspect-ratio="languageData!.slideAspectRatio" />
 	<NuxtPage />
-	<br>
-	{{ languageData!.footerContents }}
+	<TheFooter :data="languageData!.footerContents" />
 </template>
