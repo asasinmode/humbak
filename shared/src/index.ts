@@ -76,6 +76,7 @@ export function useMobileMenu(
 		}
 	}
 
+	// todo when on first element and click toggle (backdrop) this happens then toggle is called and reverses
 	function firstElementFocusOut(event: FocusEvent) {
 		if (event.relatedTarget !== secondFocusableElement()) {
 			toggleMenu(false);
