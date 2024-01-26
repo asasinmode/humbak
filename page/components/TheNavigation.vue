@@ -143,10 +143,10 @@ function closeMenuAndSetExpanded(id?: number) {
 		class="fixed w-full max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-white of-y-auto of-x-hidden z-102 drop-shadow transition-transform lg:(bg-humbak sticky top-0 h-12 translate-y-0 of-visible)"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
-		<menu ref="menu" class="flex flex-col relative max-w-384 h-full text-black lg:(px-12 flex-row mx-auto)">
+		<menu ref="menu" class="grid grid-cols-2 relative max-w-384 h-full text-black lg:(px-12 flex flex-row mx-auto)">
 			<button
 				ref="firstFocusableNavElement"
-				class="w-12 h-12 absolute hidden lg:flex right-0 flex-center hoverable:bg-humbak-5 z-10"
+				class="w-12 h-12 col-start-2 row-start-1 ml-2 my-2 hoverable:text-humbak-8 flex-center lg:(m-0 absolute right-0 hoverable:bg-humbak-5 z-10)"
 				title="język"
 			>
 				<span class="visually-hidden">język</span>
@@ -154,7 +154,7 @@ function closeMenuAndSetExpanded(id?: number) {
 			</button>
 
 			<NuxtLink
-				class="w-12 h-12 hidden lg:flex absolute left-0 flex-center hoverable:bg-humbak-5 z-10"
+				class="w-12 h-12 col-start-1 row-start-1 my-2 hoverable:text-humbak-8 justify-self-end mr-2 flex-center lg:(m-0 absolute left-0 hoverable:bg-humbak-5 hoverable:text-inherit z-10)"
 				title="home"
 				:to="`/${language}`"
 				@click.left="closeMenuAndSetExpanded()"
@@ -166,7 +166,7 @@ function closeMenuAndSetExpanded(id?: number) {
 			<a
 				id="skipContent"
 				href="#content"
-				class="fixed col-span-2 w-fit z-10 border border-black rounded-full bg-black px-3 py-1 text-5 text-white shadow transition-transform -translate-y-full focus-visible:translate-y-2 focus:translate-y-2 lg:(-translate-y-[calc(100%_+_5rem)] left-1/2 -translate-x-1/2 focus-visible:translate-y-1 focus:translate-y-1)"
+				class="fixed col-span-full w-fit z-10 border border-black rounded-full bg-black px-3 py-1 text-5 text-white shadow transition-transform -translate-y-full focus-visible:translate-y-2 focus:translate-y-2 lg:(-translate-y-[calc(100%_+_5rem)] left-1/2 -translate-x-1/2 focus-visible:translate-y-1 focus:translate-y-1)"
 			>
 				pomiń nawigację
 			</a>
@@ -174,7 +174,7 @@ function closeMenuAndSetExpanded(id?: number) {
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
-				class="hoverable-child-menu-visible relative min-w-0 flex-center flex-col lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
+				class="hoverable-child-menu-visible col-span-full relative min-w-0 flex-center flex-col lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
 			>
 				<NuxtLink
 					class="w-full p-3 lg:h-full text-center"
