@@ -289,143 +289,145 @@ function revertAspectRatioIfUnsaved() {
 </script>
 
 <template>
-	<main id="content" class="px-container grid grid-cols-[min-content_min-content_1fr] mx-auto max-w-256 w-full gap-x-3 gap-y-5 pb-4 pt-[1.125rem] sm:grid-cols-[auto_auto_auto_1fr]">
-		<div id="slidePageControls" class="grid col-span-full items-end grid-cols-[min-content_1fr_max-content] w-full gap-x-3 gap-y-5 md:flex">
+	<main id="content" class="px-container w-full flex flex-col mx-auto gap-y-5 max-w-360 pb-4 pt-[1.125rem]">
+		<div class="max-w-256 w-full mx-auto grid grid-cols-[min-content_min-content_1fr] gap-x-3 gap-y-5 sm:grid-cols-[auto_auto_auto_1fr]">
+			<div class="grid col-span-full max-w-256 mx-auto items-end grid-cols-[min-content_1fr_max-content] w-full gap-x-3 gap-y-5 md:flex">
+				<VCombobox
+					id="languageSelect"
+					ref="languageSelect"
+					v-model="selectedLanguage"
+					class="!min-w-20 !w-20 md:!w-fit"
+					class-input="!w-20 !min-w-20"
+					label="język"
+					:options="languages"
+					:is-loading="isLoadingLanguages"
+					transform-options
+					label-visually-hidden
+					select-only
+					@select-option="getSlidesIfLanguageChanged"
+				/>
+				<VCombobox
+					id="slideIdSelect"
+					ref="slideIdSelect"
+					v-model="selectedSlideId"
+					class="col-span-2 mr-12 md:mr-auto md:w-64"
+					label="slide"
+					:options="slideSelectOptions"
+					:is-loading="isLoadingSlides"
+					label-visually-hidden
+					select-only
+					@select-option="selectSlide"
+				>
+					<template #item="itemProps">
+						<div
+							class="mr-[2px] inline-block h-3 align-mid text-neutral"
+							:class="itemProps.isHidden ? 'i-fa6-solid:eye-slash' : 'i-fa6-solid:eye'"
+						/>
+						{{ itemProps.text }}
+					</template>
+				</VCombobox>
+				<div class="flex gap-2 md:gap-3 relative pt-12 md:pt-0">
+					<PagesFilesDialog class="h-9 w-9 neon-blue" icon-class="w-[1.375rem] h-[1.375rem]" />
+					<VDialog
+						ref="configurationDialog"
+						class="h-9 w-9 neon-blue !absolute top-0 md:!relative"
+						class-container="grid grid-cols-2 gap-x-2 gap-y-3"
+						class-close-button="justify-self-end"
+						close-button-text="zamknij"
+						title="konfiguracja slidera"
+						@open="previousAspectRatio = aspectRatio"
+						@close="revertAspectRatioIfUnsaved"
+					>
+						<template #button>
+							<span class="visually-hidden">konfiguracja slidera</span>
+							<div class="i-mdi-wrench absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
+						</template>
+
+						<h3 class="col-span-full text-center text-5 font-600">
+							konfiguracja slidera
+						</h3>
+						<VInput
+							id="sliderAspectRatio"
+							v-model="aspectRatio"
+							class="col-span-full mb-2"
+							class-input="!w-fit"
+							label="aspect ratio"
+							:error="aspectRatioErrors.value"
+							@update:model-value="aspectRatioErrors.value = ''"
+						/>
+
+						<template #post>
+							<VButton class="justify-self-start neon-green" :is-loading="isSavingAspectRatio" @click="saveAspectRatio">
+								zapisz
+							</VButton>
+						</template>
+					</VDialog>
+					<VButton class="h-9 w-9 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
+						<span class="visually-hidden">formatuj</span>
+						<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
+					</VButton>
+				</div>
+				<VButton ref="resetButton" class="w-fit justify-self-end neon-amber" @click="clearFormAndEditor">
+					wyczyść
+				</VButton>
+				<VButton ref="saveButton" class="min-w-20 neon-green" :is-loading="isSaving" @click="sendForm">
+					{{ selectedSlideId ? 'zapisz' : 'utwórz' }}
+				</VButton>
+			</div>
+
+			<VEditor
+				ref="editor"
+				class="col-span-full h-72 shadow"
+				:models="[
+					{ language: 'html', value: content },
+				]"
+				:current-model="0"
+				:is-loading="isLoadingSlide"
+				:error="errors.content"
+				@update:model-value="updateContent"
+			/>
+
+			<VInput
+				id="slideName"
+				v-model="name"
+				label="nazwa"
+				class="col-span-full sm:col-span-1"
+				:error="errors.name"
+				@update:model-value="errors.name = ''"
+			/>
 			<VCombobox
-				id="languageSelect"
-				ref="languageSelect"
-				v-model="selectedLanguage"
-				class="!min-w-20 !w-20 md:!w-fit"
+				id="editedLanguageSelect"
+				v-model="language"
+				class="!min-w-20 !w-20"
 				class-input="!w-20 !min-w-20"
 				label="język"
 				:options="languages"
 				:is-loading="isLoadingLanguages"
 				transform-options
-				label-visually-hidden
 				select-only
-				@select-option="getSlidesIfLanguageChanged"
+				:error="errors.language"
+				@update:model-value="errors.language = ''"
 			/>
-			<VCombobox
-				id="slideIdSelect"
-				ref="slideIdSelect"
-				v-model="selectedSlideId"
-				class="col-span-2 mr-12 md:mr-auto md:w-64"
-				label="slide"
-				:options="slideSelectOptions"
-				:is-loading="isLoadingSlides"
-				label-visually-hidden
-				select-only
-				@select-option="selectSlide"
+			<VSwitch
+				id="slideIsHidden"
+				v-model="isHidden"
+				:label="isHidden ? 'schowany' : 'schowaj'"
+				:error="errors.isHidden"
+				@update:model-value="errors.isHidden = ''"
+			/>
+			<VButton
+				v-if="selectedSlideId !== undefined"
+				ref="deleteButton"
+				class="h-fit self-end justify-self-end neon-red"
+				:is-loading="isLoadingSlide"
+				@click="deleteSlide"
 			>
-				<template #item="itemProps">
-					<div
-						class="mr-[2px] inline-block h-3 align-mid text-neutral"
-						:class="itemProps.isHidden ? 'i-fa6-solid:eye-slash' : 'i-fa6-solid:eye'"
-					/>
-					{{ itemProps.text }}
-				</template>
-			</VCombobox>
-			<div class="flex gap-2 md:gap-3 relative pt-12 md:pt-0">
-				<PagesFilesDialog class="h-9 w-9 neon-blue" icon-class="w-[1.375rem] h-[1.375rem]" />
-				<VDialog
-					ref="configurationDialog"
-					class="h-9 w-9 neon-blue !absolute top-0 md:!relative"
-					class-container="grid grid-cols-2 gap-x-2 gap-y-3"
-					class-close-button="justify-self-end"
-					close-button-text="zamknij"
-					title="konfiguracja slidera"
-					@open="previousAspectRatio = aspectRatio"
-					@close="revertAspectRatioIfUnsaved"
-				>
-					<template #button>
-						<span class="visually-hidden">konfiguracja slidera</span>
-						<div class="i-mdi-wrench absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
-					</template>
-
-					<h3 class="col-span-full text-center text-5 font-600">
-						konfiguracja slidera
-					</h3>
-					<VInput
-						id="sliderAspectRatio"
-						v-model="aspectRatio"
-						class="col-span-full mb-2"
-						class-input="!w-fit"
-						label="aspect ratio"
-						:error="aspectRatioErrors.value"
-						@update:model-value="aspectRatioErrors.value = ''"
-					/>
-
-					<template #post>
-						<VButton class="justify-self-start neon-green" :is-loading="isSavingAspectRatio" @click="saveAspectRatio">
-							zapisz
-						</VButton>
-					</template>
-				</VDialog>
-				<VButton class="h-9 w-9 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
-					<span class="visually-hidden">formatuj</span>
-					<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
-				</VButton>
-			</div>
-			<VButton ref="resetButton" class="w-fit justify-self-end neon-amber" @click="clearFormAndEditor">
-				wyczyść
-			</VButton>
-			<VButton ref="saveButton" class="min-w-20 neon-green" :is-loading="isSaving" @click="sendForm">
-				{{ selectedSlideId ? 'zapisz' : 'utwórz' }}
+				usuń
 			</VButton>
 		</div>
 
-		<VEditor
-			ref="editor"
-			class="col-span-full h-72 shadow"
-			:models="[
-				{ language: 'html', value: content },
-			]"
-			:current-model="0"
-			:is-loading="isLoadingSlide"
-			:error="errors.content"
-			@update:model-value="updateContent"
-		/>
-
-		<VInput
-			id="slideName"
-			v-model="name"
-			label="nazwa"
-			class="col-span-full sm:col-span-1"
-			:error="errors.name"
-			@update:model-value="errors.name = ''"
-		/>
-		<VCombobox
-			id="editedLanguageSelect"
-			v-model="language"
-			class="!min-w-20 !w-20"
-			class-input="!w-20 !min-w-20"
-			label="język"
-			:options="languages"
-			:is-loading="isLoadingLanguages"
-			transform-options
-			select-only
-			:error="errors.language"
-			@update:model-value="errors.language = ''"
-		/>
-		<VSwitch
-			id="slideIsHidden"
-			v-model="isHidden"
-			:label="isHidden ? 'schowany' : 'schowaj'"
-			:error="errors.isHidden"
-			@update:model-value="errors.isHidden = ''"
-		/>
-		<VButton
-			v-if="selectedSlideId !== undefined"
-			ref="deleteButton"
-			class="h-fit self-end justify-self-end neon-red"
-			:is-loading="isLoadingSlide"
-			@click="deleteSlide"
-		>
-			usuń
-		</VButton>
-
 		<article
-			class="relative col-span-full w-full outline-(1px black dashed) outline dark:outline-white"
+			class="relative outline-(1px black dashed) min-h-40 w-full outline dark:outline-white"
 			:style="{ paddingTop: `calc(${aspectRatio} * 100%)` }"
 			aria-hidden="true"
 			tabindex="-1"
@@ -433,6 +435,6 @@ function revertAspectRatioIfUnsaved() {
 			<div class="absolute inset-0" v-html="parsedContent" />
 		</article>
 
-		<TheSlider ref="theSlider" class="col-span-full" :language="selectedLanguage" :aspect-ratio="aspectRatio" />
+		<TheSlider ref="theSlider" :language="selectedLanguage" :aspect-ratio="aspectRatio" />
 	</main>
 </template>

@@ -95,7 +95,7 @@ defineExpose({
 
 <template>
 	<article
-		class="relative w-full"
+		class="relative w-full min-h-40"
 		:style="{ paddingTop: `calc(${aspectRatio} * 100%)` }"
 		aria-hidden="true"
 		tabindex="-1"

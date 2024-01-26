@@ -41,7 +41,7 @@ onBeforeUnmount(() => {
 
 <template>
 	<article
-		class="relative w-full"
+		class="relative w-full max-w-360 min-h-40 mx-auto mt-8"
 		:style="{ paddingTop: `calc(${aspectRatio} * 100%)` }"
 		aria-hidden="true"
 		tabindex="-1"
