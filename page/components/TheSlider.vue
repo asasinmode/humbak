@@ -28,6 +28,10 @@ function resetSlider() {
 			slideGap: '0px',
 		},
 	});
+
+	for (const button of document.querySelector('.blaze-pagination')?.getElementsByTagName('button') || []) {
+		button.setAttribute('tabindex', '-1');
+	}
 }
 
 onMounted(() => {
