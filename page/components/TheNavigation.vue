@@ -222,7 +222,7 @@ function closeMenuAndSetExpanded(id?: number) {
 				</NuxtLink>
 
 				<button
-					class="relative text-center z-0 p-3 w-full before:(content-empty transition-transform origin-bottom -z-1 absolute w-full h-full bg-gray-1 top-0 left-0) lg:(hidden h-full truncate before:hidden)"
+					class="relative text-center z-0 p-3 w-full before:(content-empty transition-transform origin-bottom -z-1 absolute w-full h-full bg-humbak/20 top-0 left-0) lg:(hidden h-full truncate before:hidden)"
 					:class="[
 						firstLevelLink.children.length ? '' : 'hidden',
 						isMenuExpanded(firstLevelLink.pageId) ? 'before:scale-y-full' : 'before:scale-y-0',
@@ -243,7 +243,7 @@ function closeMenuAndSetExpanded(id?: number) {
 				<menu
 					v-if="firstLevelLink.children.length"
 					:id="`menu${firstLevelLink.pageId}`"
-					class="w-full bg-gray-1 transition-height of-hidden lg:(absolute bg-humbak-5 bottom-0 translate-y-full h-auto of-visible)"
+					class="w-full bg-humbak/20 transition-height of-hidden lg:(absolute bg-humbak-5 bottom-0 translate-y-full h-auto of-visible)"
 					:class="isMenuExpanded(firstLevelLink.pageId)
 						? 'h-[calc(var(--scroll-height,_auto)_+_var(--nested-scroll-height,_0px))]' : 'h-0'
 					"
@@ -274,7 +274,7 @@ function closeMenuAndSetExpanded(id?: number) {
 						</NuxtLink>
 
 						<button
-							class="relative z-0 text-center p-3 w-full before:(content-empty transition-transform origin-bottom -z-1 absolute w-full h-full bg-gray-2 top-0 left-0) lg:(hidden h-full before:hidden)"
+							class="relative z-0 text-center p-3 w-full before:(content-empty transition-transform origin-bottom -z-1 absolute w-full h-full bg-humbak/20 top-0 left-0) lg:(hidden h-full before:hidden)"
 							:class="[
 								secondLevelLink.children.length ? '' : 'hidden',
 								isMenuExpanded(secondLevelLink.pageId) ? 'before:scale-y-full' : 'before:scale-y-0',
@@ -299,7 +299,7 @@ function closeMenuAndSetExpanded(id?: number) {
 
 						<menu
 							v-if="secondLevelLink.children.length"
-							class="w-full transition-height bg-gray-2 of-hidden lg:(absolute bg-humbak-6 top-0 h-auto of-visible)"
+							class="w-full transition-height bg-humbak/20 of-hidden lg:(absolute bg-humbak-6 top-0 h-auto of-visible)"
 							:class="[
 								isMenuToTheLeft(firstLevelIndex)
 									? 'lg:(left-0 -translate-x-full)' : 'lg:(right-0 translate-x-full)',
