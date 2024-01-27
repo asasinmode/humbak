@@ -21,7 +21,7 @@ const linkClass = computed(() => {
 	const rv = [];
 
 	if (hasChildren.value) {
-		rv.push('absolute bg-humbak top-0 right-0 w-min transition-transform');
+		rv.push('absolute top-0 right-0 w-min transition-transform before:(content-empty transition-transform top-0 left-0 z-1 bg-humbak h-full w-full absolute) lg:before:hidden');
 		if (props.isExpanded) {
 			rv.push('translate-x-0');
 		} else {
@@ -59,14 +59,14 @@ const linkClass = computed(() => {
 	</button>
 
 	<NuxtLink
-		class="p-3 text-center lg:(h-full block truncate translate-x-0 static bg-inherit w-full hoverable:bg-humbak-6)"
+		class="p-3 text-center z-2 lg:(h-full block truncate translate-x-0 static bg-inherit w-full hoverable:bg-humbak-6)"
 		:class="linkClass"
 		:title="menuLink.text"
 		:to="`/${language}/${menuLink.href}`"
 		@click.left="$emit('linkClick', menuLink.pageId)"
 		@focus="expandedMenuLinkId = menuLink.pageId"
 	>
-		<span aria-hidden="true" class="whitespace-nowrap" :class="hasChildren ? 'lg:hidden' : 'hidden'">Przejdź do</span>
+		<span aria-hidden="true" class="whitespace-nowrap relative z-2" :class="hasChildren ? 'lg:hidden' : 'hidden'">Przejdź do</span>
 		<span :class="hasChildren ? 'visually-hidden lg:(undo-visually-hidden static)' : ''">
 			{{ menuLink.text }}
 		</span>
