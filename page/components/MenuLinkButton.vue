@@ -21,11 +21,11 @@ const linkClass = computed(() => {
 	const rv = [];
 
 	if (hasChildren.value) {
-		rv.push('absolute top-0 right-0 w-min transition-transform before:(content-empty transition-transform top-0 left-0 z-1 bg-humbak h-full w-full absolute) lg:before:hidden');
+		rv.push('absolute top-0 right-0 w-min transition-transform before:(content-empty transition-transform skew-x-10 top-0 -left-[5%] -right-[5%] z-1 bg-humbak h-full absolute) lg:before:hidden');
 		if (props.isExpanded) {
-			rv.push('translate-x-0');
+			rv.push('translate-x-0 before:translate-x-0');
 		} else {
-			rv.push('translate-x-full');
+			rv.push('translate-x-full before:translate-x-[10%]');
 		}
 	} else {
 		rv.push('w-full');
