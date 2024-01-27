@@ -38,7 +38,5 @@ useHead({
 </script>
 
 <template>
-	<main id="content" class="max-w-360 mx-auto scroll-m-12 pb-8">
-		{{ pageData }}
-	</main>
+	<main id="content" class="max-w-360 w-full px-2 mx-auto scroll-m-12 py-8" v-html="pageData!.html" />
 </template>
