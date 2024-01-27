@@ -28,7 +28,8 @@ const linkClass = computed(() => {
 
 	if (hasChildren.value) {
 		rv.push(
-			'absolute top-0 right-0 w-min transition-transform before:(content-empty transition-transform skew-x-10 top-0 w-[200%] -left-[0.125rem] z-1 bg-humbak h-full absolute) lg:before:hidden'
+			'absolute top-0 right-0 w-min transition-transform before:(content-empty transition-transform skew-x-10 top-0 w-[200%] -left-[0.125rem] z-1 h-full absolute) lg:before:hidden',
+			props.isSecondLevel ? 'before:bg-humbak' : 'before:bg-humbak-3'
 		);
 		if (props.isExpanded) {
 			rv.push(
