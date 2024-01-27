@@ -31,6 +31,22 @@ export default defineConfig({
 	],
 	rules: [
 		[/^grid-area-(.+)$/, ([, c]) => ({ 'grid-area': c })],
+		[/^visually-hidden$/, () => ({
+			'position': 'absolute',
+			'overflow': 'hidden',
+			'clip': 'rect(0 0 0 0)',
+			'clip-path': 'inset(50%)',
+			'width': '1px',
+			'height': '1px',
+			'white-space': 'nowrap',
+		})],
+		[/^undo-visually-hidden$/, () => ({
+			'clip': 'unset',
+			'clip-path': 'unset',
+			'width': 'auto',
+			'height': 'auto',
+			'white-space': 'normal',
+		})],
 	],
 	variants: [
 		(matcher) => {

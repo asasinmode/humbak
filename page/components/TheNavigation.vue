@@ -206,42 +206,15 @@ function closeMenuAndSetExpanded(id?: number) {
 				:key="firstLevelLink.pageId"
 				class="hoverable-child-menu-visible flex flex-col col-span-full relative min-w-0 lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
 			>
-				<button
-					class="relative text-center of-hidden z-0 transition-transform p-3 w-full before:(content-empty transition-transform origin-bottom -z-1 absolute w-full h-full bg-humbak/20 top-0 left-0) lg:(hidden h-full truncate before:hidden)"
-					:class="[
-						firstLevelLink.children.length ? '' : 'hidden',
-						isMenuExpanded(firstLevelLink.pageId) ? 'before:scale-y-full -translate-x-1/6' : 'before:scale-y-0',
-					]"
-					:title="firstLevelLink.text"
-					@mousedown.left.prevent="toggleMenuLinkExpanded(firstLevelLink.pageId, $event)"
-					@focus="expandIfChildNotExpanded(firstLevelLink.pageId, firstLevelLink.children)"
-				>
-					<span class="visually-hidden lg:hidden">rozwiń</span>
-					{{ firstLevelLink.text }}
-					<div
-						v-if="firstLevelLink.children.length"
-						class="i-ph-caret-down-bold transition-transform text-humbak-8 inline-block pointer-events-none h-3 w-3 lg:(block absolute bottom-[0.125rem] left-1/2 -translate-x-1/2 rotate-0 text-inherit)"
-						:class="isMenuExpanded(firstLevelLink.pageId) ? '-rotate-180' : ''"
-					/>
-				</button>
-
-				<NuxtLink
-					class="w-1/3 bg-humbak absolute top-0 right-0 transition-transform p-3 text-center lg:(h-full block truncate translate-x-0 static bg-inherit w-full hoverable:bg-humbak-6)"
-					:class="isMenuExpanded(firstLevelLink.pageId) ? 'translate-x-0' : 'translate-x-full'"
-					:title="firstLevelLink.text"
-					:to="`/${language}/${firstLevelLink.href}`"
-					@click.left="closeMenuAndSetExpanded(firstLevelLink.pageId)"
-					@focus="expandedMenuLinkId = firstLevelLink.pageId"
-				>
-					<span class="lg:hidden">Przejdź do</span>
-					<span class="hidden lg:inline">
-						{{ firstLevelLink.text }}
-					</span>
-					<div
-						v-if="firstLevelLink.children.length"
-						class="i-ph-caret-down-bold hidden pointer-events-none h-3 w-3 absolute bottom-[0.125rem] left-1/2 -translate-x-1/2 lg:block"
-					/>
-				</NuxtLink>
+				<MenuLinkButton
+					v-model="expandedMenuLinkId"
+					:menu-link="firstLevelLink"
+					:is-expanded="isMenuExpanded(firstLevelLink.pageId)"
+					:language
+					@button-click="toggleMenuLinkExpanded"
+					@button-focus="expandIfChildNotExpanded"
+					@link-click="closeMenuAndSetExpanded"
+				/>
 
 				<menu
 					v-if="firstLevelLink.children.length"
@@ -359,10 +332,4 @@ function closeMenuAndSetExpanded(id?: number) {
 		display: block;
 	}
 }
-
-/* @media (max-width: 767px){ */
-/* 	#skipContent:focus + a, #skipContent:focus-visible + a { */
-/* 		margin-top: 3.125rem; */
-/* 	} */
-/* } */
 </style>
