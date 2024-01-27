@@ -250,7 +250,7 @@ function closeMenuAndSetExpanded(id?: number) {
 						</NuxtLink>
 
 						<button
-							class="relative z-0 text-center p-3 w-full before:(content-empty transition-transform origin-bottom -z-1 absolute w-full h-full bg-humbak/20 top-0 left-0) lg:(hidden h-full before:hidden)"
+							class="relative z-2 text-center p-3 w-full before:(content-empty transition-transform origin-bottom z-1 absolute w-full h-full bg-humbak/20 top-0 left-0) lg:(hidden h-full before:hidden)"
 							:class="[
 								secondLevelLink.children.length ? '' : 'hidden',
 								isMenuExpanded(secondLevelLink.pageId) ? 'before:scale-y-full' : 'before:scale-y-0',

@@ -38,7 +38,7 @@ const linkClass = computed(() => {
 
 <template>
 	<button
-		class="relative text-center of-hidden z-0 p-3 w-full before:(content-empty transition-transform origin-bottom -z-1 absolute w-full h-full bg-humbak/20 top-0 left-0) lg:(hidden h-full truncate before:hidden)"
+		class="relative text-center of-hidden z-2 p-3 w-full before:(content-empty transition-transform origin-bottom z-1 absolute w-full h-full bg-humbak/20 top-0 left-0) lg:(hidden h-full truncate before:hidden)"
 		:class="[
 			hasChildren ? '' : 'hidden',
 			isExpanded ? 'before:scale-y-full' : 'before:scale-y-0',
