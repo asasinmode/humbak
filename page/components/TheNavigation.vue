@@ -204,28 +204,13 @@ function closeMenuAndSetExpanded(id?: number) {
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
-				class="hoverable-child-menu-visible col-span-full relative min-w-0 flex-center flex-col lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
+				class="hoverable-child-menu-visible flex flex-col col-span-full relative min-w-0 lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
 			>
-				<NuxtLink
-					class="w-full p-3 text-center lg:(h-full block truncate)"
-					:class="firstLevelLink.children.length ? 'hidden' : 'block'"
-					:title="firstLevelLink.text"
-					:to="`/${language}/${firstLevelLink.href}`"
-					@click.left="closeMenuAndSetExpanded(firstLevelLink.pageId)"
-					@focus="expandedMenuLinkId = firstLevelLink.pageId"
-				>
-					{{ firstLevelLink.text }}
-					<div
-						v-if="firstLevelLink.children.length"
-						class="i-ph-caret-down-bold hidden pointer-events-none h-3 w-3 absolute bottom-[0.125rem] left-1/2 -translate-x-1/2 lg:block"
-					/>
-				</NuxtLink>
-
 				<button
-					class="relative text-center z-0 p-3 w-full before:(content-empty transition-transform origin-bottom -z-1 absolute w-full h-full bg-humbak/20 top-0 left-0) lg:(hidden h-full truncate before:hidden)"
+					class="relative text-center of-hidden z-0 transition-transform p-3 w-full before:(content-empty transition-transform origin-bottom -z-1 absolute w-full h-full bg-humbak/20 top-0 left-0) lg:(hidden h-full truncate before:hidden)"
 					:class="[
 						firstLevelLink.children.length ? '' : 'hidden',
-						isMenuExpanded(firstLevelLink.pageId) ? 'before:scale-y-full' : 'before:scale-y-0',
+						isMenuExpanded(firstLevelLink.pageId) ? 'before:scale-y-full -translate-x-1/6' : 'before:scale-y-0',
 					]"
 					:title="firstLevelLink.text"
 					@mousedown.left.prevent="toggleMenuLinkExpanded(firstLevelLink.pageId, $event)"
@@ -240,10 +225,28 @@ function closeMenuAndSetExpanded(id?: number) {
 					/>
 				</button>
 
+				<NuxtLink
+					class="w-1/3 bg-humbak absolute top-0 right-0 transition-transform p-3 text-center lg:(h-full block truncate translate-x-0 static bg-inherit w-full hoverable:bg-humbak-6)"
+					:class="isMenuExpanded(firstLevelLink.pageId) ? 'translate-x-0' : 'translate-x-full'"
+					:title="firstLevelLink.text"
+					:to="`/${language}/${firstLevelLink.href}`"
+					@click.left="closeMenuAndSetExpanded(firstLevelLink.pageId)"
+					@focus="expandedMenuLinkId = firstLevelLink.pageId"
+				>
+					<span class="lg:hidden">Przejdź do</span>
+					<span class="hidden lg:inline">
+						{{ firstLevelLink.text }}
+					</span>
+					<div
+						v-if="firstLevelLink.children.length"
+						class="i-ph-caret-down-bold hidden pointer-events-none h-3 w-3 absolute bottom-[0.125rem] left-1/2 -translate-x-1/2 lg:block"
+					/>
+				</NuxtLink>
+
 				<menu
 					v-if="firstLevelLink.children.length"
 					:id="`menu${firstLevelLink.pageId}`"
-					class="w-full bg-humbak/20 transition-height of-hidden lg:(absolute bg-humbak-5 bottom-0 translate-y-full h-auto of-visible)"
+					class="w-full bg-humbak/20 col-span-full transition-height of-hidden lg:(absolute bg-humbak-5 bottom-0 translate-y-full h-auto of-visible)"
 					:class="isMenuExpanded(firstLevelLink.pageId)
 						? 'h-[calc(var(--scroll-height,_auto)_+_var(--nested-scroll-height,_0px))]' : 'h-0'
 					"
