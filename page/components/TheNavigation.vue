@@ -57,7 +57,7 @@ function toggleMenuLinkExpanded(id: number, event: MouseEvent, parentId?: number
 	expandedMenuLinkId.value = isToggling ? parentId : id;
 }
 
-function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parentId?: number, event?: FocusEvent) {
+function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parentId?: number) {
 	if (children) {
 		for (const child of children) {
 			if (child.pageId === expandedMenuLinkId.value) {
@@ -229,49 +229,18 @@ function closeMenuAndSetExpanded(id?: number) {
 						:key="secondLevelLink.pageId"
 						class="hoverable-child-menu-visible relative lg:(focus-within:bg-humbak-6 hover:bg-humbak-6)"
 					>
-						<NuxtLink
-							class="w-full p-3 lg:h-full text-center lg:block"
-							:class="secondLevelLink.children.length ? 'hidden' : 'block'"
-							:title="secondLevelLink.text"
-							:to="`/${language}/${secondLevelLink.href}`"
-							@click.left="closeMenuAndSetExpanded(secondLevelLink.pageId)"
-							@focus="expandedMenuLinkId = secondLevelLink.pageId"
-						>
-							{{ secondLevelLink.text }}
-							<div
-								v-if="secondLevelLink.children.length"
-								class="pointer-events-none h-3 w-3 i-ph-caret-down-bold absolute block top-1/2 -translate-y-1/2 hidden lg:block"
-								:class="
-									isMenuToTheLeft(firstLevelIndex)
-										? 'left-[0.125rem] i-ph-caret-left-bold'
-										: 'right-[0.125rem] i-ph-caret-right-bold'
-								"
-							/>
-						</NuxtLink>
-
-						<button
-							class="relative z-2 text-center p-3 w-full before:(content-empty transition-transform origin-bottom z-1 absolute w-full h-full bg-humbak/20 top-0 left-0) lg:(hidden h-full before:hidden)"
-							:class="[
-								secondLevelLink.children.length ? '' : 'hidden',
-								isMenuExpanded(secondLevelLink.pageId) ? 'before:scale-y-full' : 'before:scale-y-0',
-							]"
-							:title="secondLevelLink.text"
-							@mousedown.left.prevent="toggleMenuLinkExpanded(secondLevelLink.pageId, $event, firstLevelLink.pageId)"
-							@focus="expandIfChildNotExpanded(secondLevelLink.pageId, undefined, firstLevelLink.pageId, $event)"
-						>
-							<span class="visually-hidden lg:hidden">rozwiń</span>
-							{{ secondLevelLink.text }}
-							<div
-								v-if="secondLevelLink.children.length"
-								class="pointer-events-none h-3 w-3 transition-transform inline-block i-ph-caret-down-bold text-humbak-8 lg:(absolute block top-1/2 -translate-y-1/2 rotate-0 text-inherit)"
-								:class="[
-									isMenuExpanded(secondLevelLink.pageId) ? '-rotate-180' : '',
-									isMenuToTheLeft(firstLevelIndex)
-										? 'lg:(left-[0.125rem] i-ph-caret-left-bold)'
-										: 'lg:(right-[0.125rem] i-ph-caret-right-bold)',
-								]"
-							/>
-						</button>
+						<MenuLinkButton
+							v-model="expandedMenuLinkId"
+							:menu-link="secondLevelLink"
+							:is-expanded="isMenuExpanded(secondLevelLink.pageId)"
+							:is-to-left="isMenuToTheLeft(firstLevelIndex)"
+							:parent-id="firstLevelLink.pageId"
+							:language
+							is-second-level
+							@button-click="toggleMenuLinkExpanded"
+							@button-focus="expandIfChildNotExpanded"
+							@link-click="closeMenuAndSetExpanded"
+						/>
 
 						<menu
 							v-if="secondLevelLink.children.length"

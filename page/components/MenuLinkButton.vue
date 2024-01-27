@@ -5,11 +5,14 @@ const props = defineProps<{
 	language: string;
 	menuLink: IMenuTreeItem;
 	isExpanded: boolean;
+	isSecondLevel?: boolean;
+	isToLeft?: boolean;
+	parentId?: number;
 }>();
 
 defineEmits<{
-	buttonClick: [number, MouseEvent];
-	buttonFocus: [number, IMenuTreeItem[]];
+	buttonClick: [number, MouseEvent, number | undefined];
+	buttonFocus: [number, undefined | IMenuTreeItem[], number | undefined];
 	linkClick: [number];
 }>();
 
@@ -44,16 +47,26 @@ const linkClass = computed(() => {
 			isExpanded ? 'before:scale-y-full' : 'before:scale-y-0',
 		]"
 		:title="menuLink.text"
-		@mousedown.left.prevent="$emit('buttonClick', menuLink.pageId, $event)"
-		@focus="$emit('buttonFocus', menuLink.pageId, menuLink.children)"
+		@mousedown.left.prevent="$emit('buttonClick', menuLink.pageId, $event, parentId)"
+		@focus="$emit('buttonFocus', menuLink.pageId, isSecondLevel ? undefined : menuLink.children, parentId)"
 	>
 		<div class="transition-transform" :class="isExpanded ? '-translate-x-1/6' : ''">
 			<span class="visually-hidden lg:hidden">Rozwiń</span>
 			{{ menuLink.text }}
 			<div
-				v-if="hasChildren"
+				v-if="hasChildren && !isSecondLevel"
 				class="i-ph-caret-down-bold transition-transform text-humbak-8 inline-block pointer-events-none h-3 w-3 lg:(block absolute bottom-[0.125rem] left-1/2 -translate-x-1/2 rotate-0 text-inherit)"
 				:class="isExpanded ? '-rotate-180' : ''"
+			/>
+			<div
+				v-if="hasChildren && isSecondLevel"
+				class="pointer-events-none h-3 w-3 transition-transform inline-block i-ph-caret-down-bold text-humbak-8 lg:(absolute block top-1/2 -translate-y-1/2 rotate-0 text-inherit)"
+				:class="[
+					isExpanded ? '-rotate-180' : '',
+					isToLeft
+						? 'lg:(left-[0.125rem] i-ph-caret-left-bold)'
+						: 'lg:(right-[0.125rem] i-ph-caret-right-bold)',
+				]"
 			/>
 		</div>
 	</button>
@@ -71,8 +84,17 @@ const linkClass = computed(() => {
 			{{ menuLink.text }}
 		</span>
 		<div
-			v-if="hasChildren"
+			v-if="hasChildren && !isSecondLevel"
 			class="i-ph-caret-down-bold hidden pointer-events-none h-3 w-3 absolute bottom-[0.125rem] left-1/2 -translate-x-1/2 lg:block"
+		/>
+		<div
+			v-if="hasChildren && isSecondLevel"
+			class="pointer-events-none h-3 w-3 i-ph-caret-down-bold absolute block top-1/2 -translate-y-1/2 hidden lg:block"
+			:class="
+				isToLeft
+					? 'left-[0.125rem] i-ph-caret-left-bold'
+					: 'right-[0.125rem] i-ph-caret-right-bold'
+			"
 		/>
 	</NuxtLink>
 </template>
