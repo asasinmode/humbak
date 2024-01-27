@@ -25,7 +25,7 @@ function toggleMenuLinkExpanded(id: number, event: MouseEvent, parentId?: number
 	}
 
 	const parentMenu = (event.target as HTMLElement)?.closest('menu');
-	const targetMenu = (event.target as HTMLElement)?.nextSibling as HTMLElement | null;
+	const targetMenu = (event.target as HTMLElement)?.nextElementSibling?.nextElementSibling as HTMLElement | null;
 
 	if (parentId === undefined && expandedMenuLinkId.value !== undefined) {
 		for (const menuLink of props.menuLinks) {
@@ -198,7 +198,7 @@ function closeMenuAndSetExpanded(id?: number) {
 				href="#content"
 				class="fixed col-span-full w-fit whitespace-nowrap z-10 border border-black rounded-full bg-black px-3 py-1 text-5 text-white shadow transition-transform -translate-y-full left-1/2 -translate-x-1/2 focus-visible:translate-y-3 focus:translate-y-3 lg:(-translate-y-[calc(100%_+_5rem)] left-1/2 -translate-x-1/2 focus-visible:translate-y-1 focus:translate-y-1)"
 			>
-				pomiń nawigację
+				pomiń nawigację h-full
 			</a>
 
 			<li
@@ -227,7 +227,7 @@ function closeMenuAndSetExpanded(id?: number) {
 					<li
 						v-for="secondLevelLink in firstLevelLink.children"
 						:key="secondLevelLink.pageId"
-						class="hoverable-child-menu-visible relative lg:(focus-within:bg-humbak-6 hover:bg-humbak-6)"
+						class="hoverable-child-menu-visible relative flex flex-col lg:(focus-within:bg-humbak-6 hover:bg-humbak-6)"
 					>
 						<MenuLinkButton
 							v-model="expandedMenuLinkId"

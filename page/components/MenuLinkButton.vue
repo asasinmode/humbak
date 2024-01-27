@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { IMenuTreeItem } from '@humbak/shared';
+import type { ComponentPublicInstance } from 'vue';
 
 const props = defineProps<{
 	language: string;
@@ -16,6 +17,8 @@ defineEmits<{
 	linkClick: [number];
 }>();
 
+const link = ref<ComponentPublicInstance>();
+
 const expandedMenuLinkId = defineModel<number | undefined>({ required: true });
 
 const hasChildren = computed(() => !!props.menuLink.children.length);
@@ -24,11 +27,15 @@ const linkClass = computed(() => {
 	const rv = [];
 
 	if (hasChildren.value) {
-		rv.push('absolute top-0 right-0 w-min transition-transform before:(content-empty transition-transform skew-x-10 top-0 -left-[5%] -right-[5%] z-1 bg-humbak h-full absolute) lg:before:hidden');
+		rv.push(
+			'absolute top-0 right-0 w-min transition-transform before:(content-empty transition-transform skew-x-10 top-0 w-[200%] -left-[0.125rem] z-1 bg-humbak h-full absolute) lg:before:hidden'
+		);
 		if (props.isExpanded) {
-			rv.push('translate-x-0 before:translate-x-0');
+			rv.push(
+				'translate-x-0 before:-translate-x-[calc(0%_+_var(--skew-width,_0px))]'
+			);
 		} else {
-			rv.push('translate-x-full before:translate-x-[10%]');
+			rv.push('translate-x-full before:translate-x-5');
 		}
 	} else {
 		rv.push('w-full');
@@ -36,6 +43,21 @@ const linkClass = computed(() => {
 	}
 
 	return rv;
+});
+
+onMounted(() => {
+	const element = link.value?.$el as HTMLElement;
+	if (!element) {
+		console.warn('no link element found');
+		return;
+	}
+	if (props.isSecondLevel || !hasChildren.value) {
+		return;
+	}
+
+	const height = element.clientHeight;
+	const skewedWidth = height * Math.tan(Math.PI * 10 / 180);
+	element.style.setProperty('--skew-width', `${skewedWidth}px`);
 });
 </script>
 
@@ -50,7 +72,7 @@ const linkClass = computed(() => {
 		@mousedown.left.prevent="$emit('buttonClick', menuLink.pageId, $event, parentId)"
 		@focus="$emit('buttonFocus', menuLink.pageId, isSecondLevel ? undefined : menuLink.children, parentId)"
 	>
-		<div class="transition-transform" :class="isExpanded ? '-translate-x-1/6' : ''">
+		<div class="transition-transform pointer-events-none" :class="isExpanded ? '-translate-x-1/6' : ''">
 			<span class="visually-hidden lg:hidden">Rozwiń</span>
 			{{ menuLink.text }}
 			<div
@@ -72,14 +94,21 @@ const linkClass = computed(() => {
 	</button>
 
 	<NuxtLink
-		class="p-3 text-center z-2 lg:(h-full block truncate translate-x-0 static bg-inherit w-full hoverable:bg-humbak-6)"
+		ref="link"
+		class="p-3 text-center w-full block z-2 lg:(h-full truncate translate-x-0 static bg-inherit hoverable:bg-humbak-6)"
 		:class="linkClass"
 		:title="menuLink.text"
 		:to="`/${language}/${menuLink.href}`"
 		@click.left="$emit('linkClick', menuLink.pageId)"
 		@focus="expandedMenuLinkId = menuLink.pageId"
 	>
-		<span aria-hidden="true" class="whitespace-nowrap relative z-2" :class="hasChildren ? 'lg:hidden' : 'hidden'">Przejdź do</span>
+		<span
+			aria-hidden="true"
+			class="whitespace-nowrap relative z-2"
+			:class="hasChildren ? 'lg:hidden' : 'hidden'"
+		>
+			Przejdź do
+		</span>
 		<span :class="hasChildren ? 'visually-hidden lg:(undo-visually-hidden static)' : ''">
 			{{ menuLink.text }}
 		</span>
