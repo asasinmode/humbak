@@ -96,7 +96,7 @@ onMounted(() => {
 
 	<NuxtLink
 		ref="link"
-		class="p-3 text-center w-full block z-2 lg:(h-full truncate translate-x-0 static bg-inherit hoverable:bg-humbak-6)"
+		class="p-3 text-center block z-2 lg:(h-full truncate w-full translate-x-0 static bg-inherit hoverable:bg-humbak-6)"
 		:class="linkClass"
 		:title="menuLink.text"
 		:to="`/${language}/${menuLink.href}`"
