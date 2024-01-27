@@ -19,11 +19,21 @@ if (pageDataError.value || !pageData.value) {
 	throw createError({ statusCode: 404, message: 'strona nieznaleziona' });
 }
 
+let parsedMeta: Record<string, string>[] = [];
+
+try {
+	parsedMeta = JSON.parse(pageData.value.meta);
+} catch (e) {
+	console.error('error parsing meta');
+	console.error(e);
+}
+
 useHead({
 	title: `${pageData.value.title} - Humbak`,
 	link: [
 		{ rel: 'stylesheet', type: 'text/css', href: `/stylesheets/${pageData.value.id}.css` },
 	],
+	meta: parsedMeta,
 });
 </script>
 
