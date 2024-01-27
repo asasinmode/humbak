@@ -37,6 +37,7 @@ const {
 	</button>
 
 	<nav
+		tabindex="-1"
 		class="fixed z-102 grid grid-cols-2 max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] w-full justify-items-center gap-x-4 gap-y-2 of-auto bg-inherit py-2 transition-transform md:(relative flex translate-y-0 justify-around bg-transparent px-[clamp(2.25rem,4.13rem_+_-3.91vw,1rem)])"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
