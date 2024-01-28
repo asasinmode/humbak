@@ -12,7 +12,7 @@ const props = defineProps<{
 }>();
 
 defineEmits<{
-	buttonClick: [number, MouseEvent, number | undefined];
+	buttonClick: [number, number | undefined];
 	buttonFocus: [number, undefined | IMenuTreeItem[], number | undefined];
 	linkClick: [number];
 }>();
@@ -70,7 +70,7 @@ onMounted(() => {
 			isExpanded ? 'before:scale-y-full' : 'before:scale-y-0',
 		]"
 		:title="menuLink.text"
-		@mousedown.left.prevent="$emit('buttonClick', menuLink.pageId, $event, parentId)"
+		@mousedown.left.prevent="$emit('buttonClick', menuLink.pageId, parentId)"
 		@focus="$emit('buttonFocus', menuLink.pageId, isSecondLevel ? undefined : menuLink.children, parentId)"
 	>
 		<div class="transition-transform pointer-events-none" :class="isExpanded ? '-translate-x-1/6' : ''">

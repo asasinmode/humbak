@@ -18,21 +18,6 @@ let secondToLastMenuLink: HTMLElement;
 
 const expandedMenuLinkId = ref<number>();
 
-function toggleMenuLinkExpanded(id: number, event: MouseEvent, parentId?: number) {
-	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
-}
-
-function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parentId?: number) {
-	if (children) {
-		for (const child of children) {
-			if (child.pageId === expandedMenuLinkId.value) {
-				return;
-			}
-		}
-	}
-	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
-}
-
 const expandedMenuIds = computed(() => {
 	for (const menuLink of props.menuLinks) {
 		if (menuLink.pageId === expandedMenuLinkId.value) {
@@ -77,6 +62,25 @@ watch(expandedMenuIds, (newValue, oldValue) => {
 	});
 });
 
+function toggleMenuLinkExpanded(id: number, parentId?: number) {
+	if (parentId === undefined && expandedMenuIds.value[0] === id) {
+		expandedMenuLinkId.value = undefined;
+		return;
+	}
+	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
+}
+
+function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parentId?: number) {
+	if (children) {
+		for (const child of children) {
+			if (child.pageId === expandedMenuLinkId.value) {
+				return;
+			}
+		}
+	}
+	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
+}
+
 function updateMenuHeight(
 	id?: number,
 	{ isNested, reset, add, previouslyNestedExpandedHeight }: {
@@ -94,10 +98,6 @@ function updateMenuHeight(
 	const property = isNested ? '--nested-scroll-height' : '--scroll-height';
 	let value = reset ? 0 : (element.scrollHeight + (add ?? 0));
 	value -= previouslyNestedExpandedHeight ?? 0;
-
-	if (previouslyNestedExpandedHeight) {
-		console.log('updating', { isNested, reset, add, previouslyNestedExpandedHeight }, element);
-	}
 
 	element.style.setProperty(property, `${value}px`);
 
@@ -146,33 +146,6 @@ function onWindowResize() {
 		toggleMenu(false);
 	}
 	previousWindowWidth = window.innerWidth;
-
-	// const nestedExpandedMenuId = expandedMenuIds.value[1];
-	// const nestedExpandedMenu = nestedExpandedMenuId !== undefined ? document.getElementById(`menu${nestedExpandedMenuId}`) : null;
-	// let nestedExpandedMenuScrollHeight = 0;
-	// if (nestedExpandedMenu) {
-	// 	nestedExpandedMenu.style.height = 'auto';
-	// 	nestedExpandedMenuScrollHeight = nestedExpandedMenu.scrollHeight;
-	// 	nestedExpandedMenu.style.setProperty('--scroll-height', `${nestedExpandedMenu.scrollHeight}`);
-	// 	nestedExpandedMenu.style.height = '';
-	// 	console.log('set nested to', nestedExpandedMenu.style.getPropertyValue('--scroll-height'), nestedExpandedMenu);
-	// }
-
-	// const expandedMenuId = expandedMenuIds.value[0];
-	// const expandedMenu = expandedMenuId !== undefined ? document.getElementById(`menu${expandedMenuId}`) : null;
-	// if (!expandedMenu) {
-	// 	return;
-	// }
-
-	// expandedMenu.style.height = 'auto';
-	// expandedMenu.style.setProperty('--scroll-height', `${expandedMenu.scrollHeight}px`);
-	// expandedMenu.style.height = '';
-	// console.log('set top to', expandedMenu.style.getPropertyValue('--scroll-height'), expandedMenu);
-
-	// expandedMenu.style.setProperty(
-	// 	'--nested-scroll-height',
-	// 	`${nestedExpandedMenuScrollHeight}px`
-	// );
 }
 
 function closeMenuAndSetExpanded(id?: number) {
