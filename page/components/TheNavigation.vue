@@ -146,6 +146,22 @@ function onWindowResize() {
 		toggleMenu(false);
 	}
 	previousWindowWidth = window.innerWidth;
+
+	const nestedId = expandedMenuIds.value[1];
+	const nestedElement = nestedId !== undefined ? document.getElementById(`menu${nestedId}`) : null;
+	if (nestedElement) {
+		nestedElement.style.height = 'auto';
+		nestedElement.style.setProperty('--nested-scroll-height', `${nestedElement.scrollHeight}px`);
+		nestedElement.style.height = '';
+	}
+
+	const topId = expandedMenuIds.value[0];
+	const topElement = topId !== undefined ? document.getElementById(`menu${topId}`) : null;
+	if (topElement) {
+		topElement.style.height = 'auto';
+		topElement.style.setProperty('--scroll-height', `${topElement.scrollHeight}px`);
+		topElement.style.height = '';
+	}
 }
 
 function closeMenuAndSetExpanded(id?: number) {
