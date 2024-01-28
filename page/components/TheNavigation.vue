@@ -42,6 +42,8 @@ function toggleMenuLinkExpanded(id: number, event: MouseEvent, parentId?: number
 		}
 	}
 
+	targetMenu?.style.setProperty('--scroll-height', `${targetMenu?.scrollHeight || 0}px`);
+
 	const isToggling = expandedMenuLinkId.value === id;
 	if (parentId !== undefined) {
 		parentMenu?.style.setProperty(
@@ -124,11 +126,6 @@ onMounted(() => {
 	const lastMenuLink = buttons.item(buttons.length - 1)!;
 	lastMenuLink.addEventListener('focusin', lastElementFocusIn);
 	lastMenuLink.addEventListener('focusout', lastElementFocusOut);
-
-	const menus = menu.value.getElementsByTagName('menu');
-	for (const menu of menus) {
-		menu.style.setProperty('--scroll-height', `${menu.scrollHeight}px`);
-	}
 });
 
 onBeforeUnmount(() => {
