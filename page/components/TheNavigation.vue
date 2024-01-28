@@ -63,7 +63,7 @@ watch(expandedMenuIds, (newValue, oldValue) => {
 });
 
 function toggleMenuLinkExpanded(id: number, parentId?: number) {
-	if (parentId === undefined && expandedMenuIds.value[0] === id) {
+	if (expandedMenuIds.value[0] === id) {
 		expandedMenuLinkId.value = undefined;
 		return;
 	}
