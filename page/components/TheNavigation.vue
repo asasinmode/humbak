@@ -59,32 +59,49 @@ function isMenuExpanded(id: number) {
 }
 
 watch(expandedMenuIds, (newValue, oldValue) => {
-	if (oldValue[1] !== newValue[1]) {
-		updateMenuHeight(oldValue[1], { isNested: true, reset: true });
+	let previousNestedHeight = 0;
+	const hasNestedChanged = oldValue[1] !== newValue[1];
+	if (hasNestedChanged) {
+		const { oldValue: oldNestedHeightValue } = updateMenuHeight(oldValue[1], { isNested: true, reset: true });
+		previousNestedHeight = oldNestedHeightValue;
 	}
-	if (oldValue[0] !== newValue[0]) {
+	const hasTopChanged = oldValue[0] !== newValue[0];
+	if (hasTopChanged) {
 		updateMenuHeight(oldValue[0], { reset: true });
 	}
 
-	const nestedHeight = updateMenuHeight(newValue[1], { isNested: true });
-	updateMenuHeight(newValue[0], { add: nestedHeight });
+	const { newValue: nestedHeight } = updateMenuHeight(newValue[1], { isNested: true });
+	updateMenuHeight(newValue[0], {
+		add: nestedHeight,
+		previouslyNestedExpandedHeight: hasNestedChanged && !hasTopChanged ? previousNestedHeight : 0,
+	});
 });
 
 function updateMenuHeight(
 	id?: number,
-	{ isNested, reset, add }: { isNested?: boolean; reset?: boolean; add?: number; } = {}
+	{ isNested, reset, add, previouslyNestedExpandedHeight }: {
+		isNested?: boolean;
+		reset?: boolean;
+		add?: number;
+		previouslyNestedExpandedHeight?: number;
+	} = {}
 ) {
 	const element = id !== undefined ? document.getElementById(`menu${id}`) : null;
 	if (!element) {
-		return 0;
+		return { oldValue: 0, newValue: 0 };
 	}
+	const oldValue = element.scrollHeight;
 	const property = isNested ? '--nested-scroll-height' : '--scroll-height';
-	const value = reset ? 0 : (element.scrollHeight + (add ?? 0));
+	let value = reset ? 0 : (element.scrollHeight + (add ?? 0));
+	value -= previouslyNestedExpandedHeight ?? 0;
 
-	console.log('updating', { isNested, reset, add });
+	if (previouslyNestedExpandedHeight) {
+		console.log('updating', { isNested, reset, add, previouslyNestedExpandedHeight }, element);
+	}
+
 	element.style.setProperty(property, `${value}px`);
 
-	return element.scrollHeight;
+	return { oldValue, newValue: element.scrollHeight };
 }
 
 const {
