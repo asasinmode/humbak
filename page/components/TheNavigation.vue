@@ -47,16 +47,18 @@ watch(expandedMenuIds, (newValue, oldValue) => {
 	let previousNestedHeight = 0;
 	const hasNestedChanged = oldValue[1] !== newValue[1];
 	if (hasNestedChanged) {
-		const { oldValue: oldNestedHeightValue } = updateMenuHeight(oldValue[1], { isNested: true, reset: true });
+		const {
+			oldValue: oldNestedHeightValue,
+		} = updateMenuHeight(oldValue[1], '--nested-scroll-height', { reset: true });
 		previousNestedHeight = oldNestedHeightValue;
 	}
 	const hasTopChanged = oldValue[0] !== newValue[0];
 	if (hasTopChanged) {
-		updateMenuHeight(oldValue[0], { reset: true });
+		updateMenuHeight(oldValue[0], '--scroll-height', { reset: true });
 	}
 
-	const { newValue: nestedHeight } = updateMenuHeight(newValue[1], { isNested: true });
-	updateMenuHeight(newValue[0], {
+	const { newValue: nestedHeight } = updateMenuHeight(newValue[1], '--nested-scroll-height');
+	updateMenuHeight(newValue[0], '--scroll-height', {
 		add: nestedHeight,
 		previouslyNestedExpandedHeight: hasNestedChanged && !hasTopChanged ? previousNestedHeight : 0,
 	});
@@ -82,9 +84,9 @@ function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parent
 }
 
 function updateMenuHeight(
-	id?: number,
-	{ isNested, reset, add, previouslyNestedExpandedHeight }: {
-		isNested?: boolean;
+	id: number | undefined,
+	property: string,
+	{ reset, add, previouslyNestedExpandedHeight }: {
 		reset?: boolean;
 		add?: number;
 		previouslyNestedExpandedHeight?: number;
@@ -95,7 +97,6 @@ function updateMenuHeight(
 		return { oldValue: 0, newValue: 0 };
 	}
 	const oldValue = element.scrollHeight;
-	const property = isNested ? '--nested-scroll-height' : '--scroll-height';
 	let value = reset ? 0 : (element.scrollHeight + (add ?? 0));
 	value -= previouslyNestedExpandedHeight ?? 0;
 
