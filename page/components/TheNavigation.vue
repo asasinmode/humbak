@@ -16,47 +16,10 @@ const secondFocusableNavElement = ref<ComponentPublicInstance>();
 const menu = ref<HTMLMenuElement>();
 let secondToLastMenuLink: HTMLElement;
 
-let previousTopLevelExpandedId: number | undefined;
 const expandedMenuLinkId = ref<number>();
 
 function toggleMenuLinkExpanded(id: number, event: MouseEvent, parentId?: number) {
-	if (parentId !== undefined) {
-		previousTopLevelExpandedId = parentId;
-	}
-
-	const parentMenu = (event.target as HTMLElement)?.closest('menu');
-	const targetMenu = (event.target as HTMLElement)?.nextElementSibling?.nextElementSibling as HTMLElement | null;
-
-	if (parentId === undefined && expandedMenuLinkId.value !== undefined) {
-		for (const menuLink of props.menuLinks) {
-			if (menuLink.pageId !== id) {
-				continue;
-			}
-			for (const child of menuLink.children) {
-				if (child.pageId === expandedMenuLinkId.value) {
-					targetMenu?.style.setProperty('--nested-scroll-height', `0px`);
-					expandedMenuLinkId.value = undefined;
-					return;
-				}
-			}
-		}
-	}
-
-	targetMenu?.style.setProperty('--scroll-height', `${targetMenu?.scrollHeight || 0}px`);
-
-	const isToggling = expandedMenuLinkId.value === id;
-	if (parentId !== undefined) {
-		parentMenu?.style.setProperty(
-			'--nested-scroll-height',
-			`${isToggling ? 0 : targetMenu?.scrollHeight || 0}px`
-		);
-	} else if (!isToggling) {
-		const previousToCollapse = previousTopLevelExpandedId !== undefined ? document.getElementById(`menu${previousTopLevelExpandedId}`) : undefined;
-		previousToCollapse?.style.setProperty('--nested-scroll-height', '0px');
-		previousTopLevelExpandedId = undefined;
-	}
-
-	expandedMenuLinkId.value = isToggling ? parentId : id;
+	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
 }
 
 function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parentId?: number) {
@@ -67,7 +30,6 @@ function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parent
 			}
 		}
 	}
-	previousTopLevelExpandedId = parentId;
 	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
 }
 
@@ -94,6 +56,38 @@ const expandedMenuIds = computed(() => {
 
 function isMenuExpanded(id: number) {
 	return expandedMenuIds.value.includes(id);
+}
+
+watch(expandedMenuIds, (newValue, oldValue) => {
+	if (oldValue[1] !== newValue[1]) {
+		updateMenuHeight(oldValue[1], { isNested: true, reset: true });
+	}
+
+	if (oldValue[0] !== newValue[0]) {
+		updateMenuHeight(oldValue[0], { reset: true });
+	}
+	updateMenuHeight(newValue[1]);
+	updateMenuHeight(newValue[0]);
+});
+
+function updateMenuHeight(
+	id?: number,
+	{ isNested, reset }: { isNested?: boolean; reset?: boolean; } = {}
+) {
+	const element = id !== undefined ? document.getElementById(`menu${id}`) : null;
+	if (!element) {
+		return;
+	}
+	const property = isNested ? '--nested-scroll-height' : '--scroll-height';
+	console.log('updating', {element, isNested, reset});
+
+	// if (setAuto) {
+	// 	element.style.height = 'auto';
+	// }
+	element.style.setProperty(property, `${reset ? 0 : element.scrollHeight}px`);
+	// if (setAuto) {
+	// 	element.style.height = '';
+	// }
 }
 
 const {
@@ -138,6 +132,33 @@ function onWindowResize() {
 		toggleMenu(false);
 	}
 	previousWindowWidth = window.innerWidth;
+
+	// const nestedExpandedMenuId = expandedMenuIds.value[1];
+	// const nestedExpandedMenu = nestedExpandedMenuId !== undefined ? document.getElementById(`menu${nestedExpandedMenuId}`) : null;
+	// let nestedExpandedMenuScrollHeight = 0;
+	// if (nestedExpandedMenu) {
+	// 	nestedExpandedMenu.style.height = 'auto';
+	// 	nestedExpandedMenuScrollHeight = nestedExpandedMenu.scrollHeight;
+	// 	nestedExpandedMenu.style.setProperty('--scroll-height', `${nestedExpandedMenu.scrollHeight}`);
+	// 	nestedExpandedMenu.style.height = '';
+	// 	console.log('set nested to', nestedExpandedMenu.style.getPropertyValue('--scroll-height'), nestedExpandedMenu);
+	// }
+
+	// const expandedMenuId = expandedMenuIds.value[0];
+	// const expandedMenu = expandedMenuId !== undefined ? document.getElementById(`menu${expandedMenuId}`) : null;
+	// if (!expandedMenu) {
+	// 	return;
+	// }
+
+	// expandedMenu.style.height = 'auto';
+	// expandedMenu.style.setProperty('--scroll-height', `${expandedMenu.scrollHeight}px`);
+	// expandedMenu.style.height = '';
+	// console.log('set top to', expandedMenu.style.getPropertyValue('--scroll-height'), expandedMenu);
+
+	// expandedMenu.style.setProperty(
+	// 	'--nested-scroll-height',
+	// 	`${nestedExpandedMenuScrollHeight}px`
+	// );
 }
 
 function closeMenuAndSetExpanded(id?: number) {
@@ -216,10 +237,7 @@ function closeMenuAndSetExpanded(id?: number) {
 				<menu
 					v-if="firstLevelLink.children.length"
 					:id="`menu${firstLevelLink.pageId}`"
-					class="w-full bg-humbak/20 col-span-full transition-height of-hidden lg:(absolute bg-humbak-5 bottom-0 translate-y-full h-auto of-visible)"
-					:class="isMenuExpanded(firstLevelLink.pageId)
-						? 'h-[calc(var(--scroll-height,_auto)_+_var(--nested-scroll-height,_0px))]' : 'h-0'
-					"
+					class="w-full h-[var(--scroll-height,_0px)] transition-height bg-humbak/20 of-hidden lg:(absolute bg-humbak-5 bottom-0 translate-y-full h-auto of-visible)"
 				>
 					<li
 						v-for="secondLevelLink in firstLevelLink.children"
@@ -241,12 +259,11 @@ function closeMenuAndSetExpanded(id?: number) {
 
 						<menu
 							v-if="secondLevelLink.children.length"
-							class="w-full transition-height bg-humbak/20 of-hidden lg:(absolute bg-humbak-6 top-0 h-auto of-visible)"
+							:id="`menu${secondLevelLink.pageId}`"
+							class="w-full h-[var(--nested-scroll-height,_0px)] transition-height bg-humbak/20 of-hidden lg:(absolute bg-humbak-6 top-0 h-auto of-visible)"
 							:class="[
 								isMenuToTheLeft(firstLevelIndex)
 									? 'lg:(left-0 -translate-x-full)' : 'lg:(right-0 translate-x-full)',
-								isMenuExpanded(secondLevelLink.pageId)
-									? 'h-[var(--scroll-height)]' : 'h-0',
 							]"
 						>
 							<li
