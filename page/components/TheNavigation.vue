@@ -62,32 +62,29 @@ watch(expandedMenuIds, (newValue, oldValue) => {
 	if (oldValue[1] !== newValue[1]) {
 		updateMenuHeight(oldValue[1], { isNested: true, reset: true });
 	}
-
 	if (oldValue[0] !== newValue[0]) {
 		updateMenuHeight(oldValue[0], { reset: true });
 	}
-	updateMenuHeight(newValue[1]);
-	updateMenuHeight(newValue[0]);
+
+	const nestedHeight = updateMenuHeight(newValue[1], { isNested: true });
+	updateMenuHeight(newValue[0], { add: nestedHeight });
 });
 
 function updateMenuHeight(
 	id?: number,
-	{ isNested, reset }: { isNested?: boolean; reset?: boolean; } = {}
+	{ isNested, reset, add }: { isNested?: boolean; reset?: boolean; add?: number; } = {}
 ) {
 	const element = id !== undefined ? document.getElementById(`menu${id}`) : null;
 	if (!element) {
-		return;
+		return 0;
 	}
 	const property = isNested ? '--nested-scroll-height' : '--scroll-height';
-	console.log('updating', {element, isNested, reset});
+	const value = reset ? 0 : (element.scrollHeight + (add ?? 0));
 
-	// if (setAuto) {
-	// 	element.style.height = 'auto';
-	// }
-	element.style.setProperty(property, `${reset ? 0 : element.scrollHeight}px`);
-	// if (setAuto) {
-	// 	element.style.height = '';
-	// }
+	console.log('updating', { isNested, reset, add });
+	element.style.setProperty(property, `${value}px`);
+
+	return element.scrollHeight;
 }
 
 const {
