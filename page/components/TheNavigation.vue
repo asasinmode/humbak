@@ -64,26 +64,13 @@ watch(expandedMenuIds, (newValue, oldValue) => {
 	});
 });
 
-function toggleMenuLinkExpanded(id: number, parentId?: number) {
+// todo handle keyboard navigation focus/expanded managment
+function expandButtonClick(id: number, parentId?: number) {
 	if (expandedMenuIds.value[0] === id) {
 		expandedMenuLinkId.value = undefined;
 		return;
 	}
 	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
-}
-
-function expandIfChildNotExpanded(id: number, isGoToLink: boolean, children?: IMenuTreeItem[], parentId?: number) {
-	console.log('thingy', {isGoToLink, children})
-	if (children) {
-		for (const child of children) {
-			if (child.pageId === expandedMenuLinkId.value) {
-				console.log('return');
-				return;
-			}
-		}
-	}
-	console.log('setting to', expandedMenuLinkId.value === id ? parentId : id)
-	expandedMenuLinkId.value = expandedMenuLinkId.value === id && !isGoToLink ? parentId : id;
 }
 
 function updateMenuHeight(
@@ -150,6 +137,10 @@ function onWindowResize() {
 		toggleMenu(false);
 	}
 	previousWindowWidth = window.innerWidth;
+
+	if (window.innerWidth >= 1024) {
+		return;
+	}
 
 	const nestedId = expandedMenuIds.value[1];
 	const nestedElement = nestedId !== undefined ? document.getElementById(`menu${nestedId}`) : null;
@@ -235,8 +226,7 @@ function closeMenuAndSetExpanded(id?: number) {
 					:menu-link="firstLevelLink"
 					:is-expanded="isMenuExpanded(firstLevelLink.pageId)"
 					:language
-					@button-click="toggleMenuLinkExpanded"
-					@button-focus="expandIfChildNotExpanded"
+					@button-click="expandButtonClick"
 					@link-click="closeMenuAndSetExpanded"
 				/>
 
@@ -257,8 +247,7 @@ function closeMenuAndSetExpanded(id?: number) {
 							:parent-id="firstLevelLink.pageId"
 							:language
 							is-second-level
-							@button-click="toggleMenuLinkExpanded"
-							@button-focus="expandIfChildNotExpanded"
+							@button-click="expandButtonClick"
 							@link-click="closeMenuAndSetExpanded"
 						/>
 
@@ -280,7 +269,6 @@ function closeMenuAndSetExpanded(id?: number) {
 									class="w-full p-3 lg:h-full block text-center"
 									:to="`/${language}/${thirdLevelLink.href}`"
 									:title="thirdLevelLink.text"
-									@focus="expandedMenuLinkId = thirdLevelLink.pageId"
 									@click.left="closeMenuAndSetExpanded(secondLevelLink.pageId)"
 								>
 									{{ thirdLevelLink.text }}

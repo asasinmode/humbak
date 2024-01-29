@@ -12,8 +12,7 @@ const props = defineProps<{
 }>();
 
 defineEmits<{
-	buttonClick: [number, number | undefined];
-	buttonFocus: [number, boolean, undefined | IMenuTreeItem[], number | undefined];
+	buttonClick: [id: number, parentId?: number];
 	linkClick: [number];
 }>();
 
@@ -68,8 +67,7 @@ onMounted(() => {
 			isExpanded ? 'before:scale-y-full' : 'before:scale-y-0',
 		]"
 		:title="menuLink.text"
-		@mousedown.left.prevent="$emit('buttonClick', menuLink.pageId, parentId)"
-		@focus="$emit('buttonFocus', menuLink.pageId, false, isSecondLevel ? undefined : menuLink.children, parentId)"
+		@click.left="$emit('buttonClick', menuLink.pageId, parentId)"
 	>
 		<div class="transition-transform pointer-events-none" :class="isExpanded ? '-translate-x-1/6' : ''">
 			<span class="visually-hidden lg:hidden">Rozwiń</span>
@@ -93,14 +91,12 @@ onMounted(() => {
 	</button>
 
 	<NuxtLink
-		:id="`link${menuLink.pageId}`"
 		ref="link"
 		class="p-3 text-center block z-2 lg:(h-full truncate w-full translate-x-0 static bg-inherit hoverable:bg-humbak-6)"
 		:class="linkClass"
 		:title="menuLink.text"
 		:to="`/${language}/${menuLink.href}`"
 		@click.left="$emit('linkClick', menuLink.pageId)"
-		@focus.prevent="$emit('buttonFocus', menuLink.pageId, true, isSecondLevel ? undefined : menuLink.children, parentId)"
 	>
 		<span
 			aria-hidden="true"
