@@ -229,7 +229,7 @@ function closeMenuAndSetExpanded(id?: number) {
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
-				class="hoverable-child-menu-visible flex flex-col of-clip col-span-full relative min-w-0 lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
+				class="hoverable-child-menu-visible flex flex-col of-clip col-span-full relative min-w-0 lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5 of-visible)"
 			>
 				<MenuLinkButton
 					:menu-link="firstLevelLink"
@@ -248,7 +248,7 @@ function closeMenuAndSetExpanded(id?: number) {
 					<li
 						v-for="secondLevelLink in firstLevelLink.children"
 						:key="secondLevelLink.pageId"
-						class="hoverable-child-menu-visible relative of-clip flex flex-col lg:(focus-within:bg-humbak-6 hover:bg-humbak-6)"
+						class="hoverable-child-menu-visible relative of-clip flex flex-col lg:(focus-within:bg-humbak-6 hover:bg-humbak-6 of-visible)"
 					>
 						<MenuLinkButton
 							:menu-link="secondLevelLink"
