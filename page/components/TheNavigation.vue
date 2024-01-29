@@ -72,15 +72,18 @@ function toggleMenuLinkExpanded(id: number, parentId?: number) {
 	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
 }
 
-function expandIfChildNotExpanded(id: number, children?: IMenuTreeItem[], parentId?: number) {
+function expandIfChildNotExpanded(id: number, isGoToLink: boolean, children?: IMenuTreeItem[], parentId?: number) {
+	console.log('thingy', {isGoToLink, children})
 	if (children) {
 		for (const child of children) {
 			if (child.pageId === expandedMenuLinkId.value) {
+				console.log('return');
 				return;
 			}
 		}
 	}
-	expandedMenuLinkId.value = expandedMenuLinkId.value === id ? parentId : id;
+	console.log('setting to', expandedMenuLinkId.value === id ? parentId : id)
+	expandedMenuLinkId.value = expandedMenuLinkId.value === id && !isGoToLink ? parentId : id;
 }
 
 function updateMenuHeight(
@@ -220,16 +223,15 @@ function closeMenuAndSetExpanded(id?: number) {
 				href="#content"
 				class="fixed col-span-full w-fit whitespace-nowrap z-10 border border-black rounded-full bg-black px-3 py-1 text-5 text-white shadow transition-transform -translate-y-full left-1/2 -translate-x-1/2 focus-visible:translate-y-3 focus:translate-y-3 lg:(-translate-y-[calc(100%_+_5rem)] left-1/2 -translate-x-1/2 focus-visible:translate-y-1 focus:translate-y-1)"
 			>
-				pomiń nawigację h-full
+				pomiń nawigację
 			</a>
 
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
-				class="hoverable-child-menu-visible flex flex-col col-span-full relative min-w-0 lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
+				class="hoverable-child-menu-visible flex flex-col of-clip col-span-full relative min-w-0 lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5)"
 			>
 				<MenuLinkButton
-					v-model="expandedMenuLinkId"
 					:menu-link="firstLevelLink"
 					:is-expanded="isMenuExpanded(firstLevelLink.pageId)"
 					:language
@@ -246,10 +248,9 @@ function closeMenuAndSetExpanded(id?: number) {
 					<li
 						v-for="secondLevelLink in firstLevelLink.children"
 						:key="secondLevelLink.pageId"
-						class="hoverable-child-menu-visible relative flex flex-col lg:(focus-within:bg-humbak-6 hover:bg-humbak-6)"
+						class="hoverable-child-menu-visible relative of-clip flex flex-col lg:(focus-within:bg-humbak-6 hover:bg-humbak-6)"
 					>
 						<MenuLinkButton
-							v-model="expandedMenuLinkId"
 							:menu-link="secondLevelLink"
 							:is-expanded="isMenuExpanded(secondLevelLink.pageId)"
 							:is-to-left="isMenuToTheLeft(firstLevelIndex)"
