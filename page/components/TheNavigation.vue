@@ -65,6 +65,7 @@ watch(expandedMenuIds, (newValue, oldValue) => {
 });
 
 // todo handle keyboard navigation focus/expanded managment
+// also handle large screens instead of focus within which stays after link click
 function expandButtonClick(id: number, parentId?: number) {
 	if (expandedMenuIds.value[0] === id) {
 		expandedMenuLinkId.value = undefined;
@@ -184,7 +185,7 @@ function closeMenuAndSetExpanded(id?: number) {
 	<nav
 		id="mainNav"
 		tabindex="-1"
-		class="fixed w-full top-0 max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-white of-y-auto of-x-hidden z-102 drop-shadow transition-transform lg:(bg-humbak sticky h-12 translate-y-0 of-visible)"
+		class="fixed w-full top-0 max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] bg-white of-y-auto of-x-hidden z-102 drop-shadow-md transition-transform lg:(bg-humbak shadow-none sticky h-12 translate-y-0 of-visible)"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<menu ref="menu" class="grid grid-cols-2 relative max-w-384 h-full text-black lg:(px-12 flex flex-row mx-auto)">
@@ -220,7 +221,7 @@ function closeMenuAndSetExpanded(id?: number) {
 			<li
 				v-for="(firstLevelLink, firstLevelIndex) in menuLinks"
 				:key="firstLevelLink.pageId"
-				class="hoverable-child-menu-visible flex flex-col of-clip col-span-full relative min-w-0 lg:(flex-1 h-full focus-within:bg-humbak-5 hover:bg-humbak-5 of-visible)"
+				class="hoverable-child-menu-visible flex flex-col of-clip col-span-full relative min-w-0 lg:(flex-1 h-full hover:bg-humbak-5 of-visible)"
 			>
 				<MenuLinkButton
 					:menu-link="firstLevelLink"
@@ -238,7 +239,7 @@ function closeMenuAndSetExpanded(id?: number) {
 					<li
 						v-for="secondLevelLink in firstLevelLink.children"
 						:key="secondLevelLink.pageId"
-						class="hoverable-child-menu-visible relative of-clip flex flex-col lg:(focus-within:bg-humbak-6 hover:bg-humbak-6 of-visible)"
+						class="hoverable-child-menu-visible relative of-clip flex flex-col lg:(hover:bg-humbak-6 of-visible)"
 					>
 						<MenuLinkButton
 							:menu-link="secondLevelLink"
@@ -263,7 +264,7 @@ function closeMenuAndSetExpanded(id?: number) {
 							<li
 								v-for="thirdLevelLink in secondLevelLink.children"
 								:key="thirdLevelLink.pageId"
-								class="lg:(focus-within:bg-humbak-7 hover:bg-humbak-7)"
+								class="lg:(hover:bg-humbak-7)"
 							>
 								<NuxtLink
 									class="w-full p-3 lg:h-full block text-center"
@@ -300,12 +301,13 @@ function closeMenuAndSetExpanded(id?: number) {
 
 @media (min-width: 1024px) {
 	.hoverable-child-menu-visible > menu {
-		display: none;
+		height: 0;
+		overflow: hidden;
 	}
 
-	.hoverable-child-menu-visible:hover > menu,
-	.hoverable-child-menu-visible:focus-within > menu {
-		display: block;
+	.hoverable-child-menu-visible:hover > menu {
+		height: auto;
+		overflow: visible;
 	}
 }
 </style>
