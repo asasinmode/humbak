@@ -68,7 +68,7 @@ const activeDescendantId = computed(() => cursoredOverIndex.value !== undefined
 
 <template>
 	<div
-		class="relative col-start-2 cursor-pointer row-start-1 w-fit ml-2 my-2 hoverable:text-humbak-8 lg:(m-0 absolute right-0 hoverable:bg-humbak-5 hoverable:text-inherit z-10)"
+		class="relative col-start-2 cursor-pointer row-start-1 w-12 ml-2 my-2 hoverable:text-humbak-8 lg:(m-0 absolute right-0 hoverable:bg-humbak-5 hoverable:text-inherit z-10)"
 		title="język"
 		@mouseenter="expandAndSetCursoredOver"
 		@mouseleave="isExpanded = false"
@@ -103,8 +103,9 @@ const activeDescendantId = computed(() => cursoredOverIndex.value !== undefined
 			v-show="isExpanded && languages.length"
 			id="languageSelect-listbox"
 			ref="listbox"
-			class="absolute bottom-0 bg-humbak-5 left-1/2 z-10 w-12 translate-y-full of-hidden shadow-md -translate-x-1/2"
+			class="absolute flex flex-row top-0 right-0 translate-x-full lg:(bottom-0 right-auto top-auto bg-humbak-5 left-1/2 block z-10 w-12 translate-y-full shadow-md -translate-x-1/2)"
 			role="listbox"
+			aria-orientation="vertical"
 			tabindex="-1"
 			aria-labelledby="languageSelectLabel"
 			@keydown.up.prevent="moveCursor(-1)"
@@ -114,8 +115,8 @@ const activeDescendantId = computed(() => cursoredOverIndex.value !== undefined
 				v-for="(option, index) in languages"
 				:id="`languageSelect-option-${index}`"
 				:key="option"
-				class="select-none"
-				:class="cursoredOverIndex === index ? 'bg-humbak-7' : ''"
+				class="select-none font-700 lg:font-400"
+				:class="cursoredOverIndex === index ? 'text-humbak-8 bg-humbak/20 lg:(bg-humbak-7 text-black)' : 'text-black'"
 				role="option"
 				:aria-selected="language === option"
 				@click="selectOption(index)"
