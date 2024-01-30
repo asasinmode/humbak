@@ -10,7 +10,6 @@ const cursoredOverIndex = ref(props.languages.indexOf(props.language));
 const listbox = ref<HTMLUListElement>();
 
 watch(() => props.language, (value) => {
-	cursoredOverIndex.value = 0;
 	for (let i = 0; i < props.languages.length; i++) {
 		if (props.languages[i] === value) {
 			cursoredOverIndex.value = i;
@@ -47,6 +46,16 @@ function confirmChoice() {
 	isExpanded.value = false;
 }
 
+function expandAndSetCursoredOver() {
+	for (let i = 0; i < props.languages.length; i++) {
+		if (props.languages[i] === props.language) {
+			cursoredOverIndex.value = i;
+			break;
+		}
+	}
+	isExpanded.value = true;
+}
+
 function selectOption(index: number) {
 	navigateTo(`/${props.languages[index]}`);
 	isExpanded.value = false;
@@ -61,7 +70,7 @@ const activeDescendantId = computed(() => cursoredOverIndex.value !== undefined
 	<div
 		class="relative col-start-2 cursor-pointer row-start-1 ml-2 my-2 hoverable:text-humbak-8 lg:(m-0 absolute right-0 hoverable:bg-humbak-5 hoverable:text-inherit z-10)"
 		title="język"
-		@mouseenter="isExpanded = true"
+		@mouseenter="expandAndSetCursoredOver"
 		@mouseleave="isExpanded = false"
 	>
 		<label id="languageSelectLabel" for="languageSelect" class="visually-hidden">
@@ -77,7 +86,7 @@ const activeDescendantId = computed(() => cursoredOverIndex.value !== undefined
 			aria-controls="languageSelect-listbox"
 			:aria-expanded="isExpanded"
 			:aria-activedescendant="activeDescendantId"
-			@focus="isExpanded = true"
+			@focus="expandAndSetCursoredOver"
 			@focusout="closeIfFocusedOutside"
 			@keydown.up.prevent="moveCursor(-1)"
 			@keydown.down.prevent="moveCursor(1)"
