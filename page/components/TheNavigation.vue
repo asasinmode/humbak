@@ -5,6 +5,7 @@ import type { ComponentPublicInstance } from 'vue';
 
 const props = defineProps<{
 	language: string;
+	languages: string[];
 	menuLinks: IMenuTreeItem[];
 }>();
 
@@ -189,15 +190,11 @@ function closeMenuAndSetExpanded(id?: number) {
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<menu ref="menu" class="grid grid-cols-2 relative max-w-384 h-full text-black lg:(px-12 flex flex-row mx-auto)">
-			<button
-				class="w-12 h-12 col-start-2 row-start-1 ml-2 my-2 hoverable:text-humbak-8 flex-center lg:(m-0 absolute right-0 hoverable:bg-humbak-5 hoverable:text-inherit z-10)"
-				title="język"
+			<TheLanguageSelect
+				:languages
 				@focusin="firstElementFocusIn"
 				@focusout="firstElementFocusOut"
-			>
-				<span class="visually-hidden">język</span>
-				<div class="i-ph-translate-bold pointer-events-none w-6 h-6" />
-			</button>
+			/>
 
 			<NuxtLink
 				ref="secondFocusableNavElement"

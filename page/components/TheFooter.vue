@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import type { IFooterContents } from '~/types/api';
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
 	data?: IFooterContents;
-}>(), {
-	data: { emails: [], phoneNumbers: [], socials: [], location: {} },
-});
+}>();
 
-const { emails, phoneNumbers, socials, location } = toRefs(props.data);
+const emails = computed(() => props.data?.emails || []);
+const phoneNumbers = computed(() => props.data?.phoneNumbers || []);
+const socials = computed(() => props.data?.socials || []);
+const location = computed(() => props.data?.location || {});
 
 const maxElementsInColumn = computed(() => Math.max(emails.value.length, phoneNumbers.value.length, 1));
 
