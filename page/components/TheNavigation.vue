@@ -134,7 +134,7 @@ onBeforeUnmount(() => {
 });
 
 function onWindowResize() {
-	if (previousWindowWidth > window.innerWidth && previousWindowWidth >= 1024 && window.innerWidth < 1024) {
+	if (previousWindowWidth < window.innerWidth && previousWindowWidth < 1024 && window.innerWidth >= 1024) {
 		expandedMenuLinkId.value = undefined;
 		toggleMenu(false);
 	}

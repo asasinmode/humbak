@@ -68,7 +68,7 @@ const activeDescendantId = computed(() => cursoredOverIndex.value !== undefined
 
 <template>
 	<div
-		class="relative col-start-2 cursor-pointer row-start-1 ml-2 my-2 hoverable:text-humbak-8 lg:(m-0 absolute right-0 hoverable:bg-humbak-5 hoverable:text-inherit z-10)"
+		class="relative col-start-2 cursor-pointer row-start-1 w-fit ml-2 my-2 hoverable:text-humbak-8 lg:(m-0 absolute right-0 hoverable:bg-humbak-5 hoverable:text-inherit z-10)"
 		title="język"
 		@mouseenter="expandAndSetCursoredOver"
 		@mouseleave="isExpanded = false"

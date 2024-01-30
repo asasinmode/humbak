@@ -67,7 +67,9 @@ export function useMobileMenu(
 
 	function toggleMenu(isOpen: boolean) {
 		isExpanded.value = isOpen;
-		document.body.style.overflow = isOpen ? 'hidden' : '';
+		if (!isOpen || window.innerWidth < 1024) {
+			document.body.style.overflow = isOpen ? 'hidden' : '';
+		}
 	}
 
 	function firstElementFocusIn(event: FocusEvent) {
