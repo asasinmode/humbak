@@ -191,6 +191,7 @@ function closeMenuAndSetExpanded(id?: number) {
 	>
 		<menu ref="menu" class="grid grid-cols-2 relative max-w-384 h-full text-black lg:(px-12 flex flex-row mx-auto)">
 			<TheLanguageSelect
+				:language
 				:languages
 				@focusin="firstElementFocusIn"
 				@focusout="firstElementFocusOut"
