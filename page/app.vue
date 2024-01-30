@@ -9,5 +9,5 @@ if (languagesError.value || !languages.value?.length) {
 </script>
 
 <template>
-	<NuxtPage :languages="languages" />
+	<NuxtPage :languages />
 </template>
