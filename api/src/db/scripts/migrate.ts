@@ -7,4 +7,6 @@ await promptProdContinue();
 
 await migrate(db, { migrationsFolder: fileURLToPath(new URL('../migrations', import.meta.url)) });
 
+await pool.execute(`INSERT INTO slideAspectRatio (value) VALUES ('1 / 3')`);
+
 await pool.end();

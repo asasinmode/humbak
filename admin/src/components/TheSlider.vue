@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
 const api = useApi();
 const { toast, toastGenericError } = useToast();
 
-const isLoading = ref(true);
+const isLoading = ref(false);
 const container = ref<HTMLElement>();
 const slides = ref<IPublicListedSlide[]>([]);
 let blazeSlider: BlazeSlider | undefined;
@@ -105,6 +105,9 @@ defineExpose({
 		tabindex="-1"
 	>
 		<VLoading v-if="isLoading" class="absolute inset-0" />
+		<p v-else-if="!slides.length" class="absolute inset-0 grid text-lg place-items-center">
+			brak slideów
+		</p>
 		<div ref="container" class="blaze-slider absolute inset-0">
 			<div class="blaze-container h-full">
 				<div class="blaze-track-container h-full">
