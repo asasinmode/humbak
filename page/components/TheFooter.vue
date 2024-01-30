@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { IFooterContents } from '~/types/api';
 
-const props = defineProps<{
-	data: IFooterContents;
-}>();
+const props = withDefaults(defineProps<{
+	data?: IFooterContents;
+}>(), {
+	data: { emails: [], phoneNumbers: [], socials: [], location: {} },
+});
 
 const { emails, phoneNumbers, socials, location } = toRefs(props.data);
 
@@ -50,11 +52,13 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 			</template>
 
 			<div
+				v-if="location.text"
 				class="md:footer-row-span i-fa6-solid-map-location-dot h-6 w-6 justify-self-end"
 				aria-hidden="true"
 				:style="`--f-row-start: 1; --f-row-span: ${maxElementsInColumn}`"
 			/>
 			<div
+				v-if="location.text"
 				class="md:footer-row-span relative h-fit w-fit"
 				:style="`--f-row-start: 1; --f-row-span: ${maxElementsInColumn}`"
 			>
@@ -68,7 +72,7 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 			</div>
 		</section>
 
-		<section class="relative col-span-full flex flex-wrap justify-center gap-4">
+		<section v-if="socials" class="relative col-span-full flex flex-wrap justify-center gap-4">
 			<a
 				v-for="social in socials"
 				:key="social.value"

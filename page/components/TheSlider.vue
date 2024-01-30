@@ -3,7 +3,7 @@ import 'blaze-slider/dist/blaze.css';
 import BlazeSlider from 'blaze-slider';
 import type { ISlide } from '~/types/api';
 
-defineProps<{
+const props = defineProps<{
 	slides: ISlide[];
 	aspectRatio: string;
 }>();
@@ -17,6 +17,11 @@ function resetSlider() {
 	}
 
 	blazeSlider && blazeSlider.destroy();
+
+	if (!props.slides.length) {
+		return;
+	}
+
 	blazeSlider = new BlazeSlider(container.value, {
 		all: {
 			enableAutoplay: true,
@@ -45,6 +50,7 @@ onBeforeUnmount(() => {
 
 <template>
 	<article
+		v-show="slides.length"
 		class="relative w-full max-w-360 min-h-40 mx-auto lg:mt-8"
 		:style="{ paddingTop: `calc(${aspectRatio} * 100%)` }"
 		aria-hidden="true"

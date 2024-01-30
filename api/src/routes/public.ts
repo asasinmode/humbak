@@ -106,14 +106,16 @@ export const app = new Hono()
 					.where(eq(footerContents.language, language)),
 			]);
 
-			// @ts-expect-error db returns strings but types are correct
-			footerContentsResult.emails = JSON.parse(footerContentsResult.emails);
-			// @ts-expect-error db returns strings but types are correct
-			footerContentsResult.phoneNumbers = JSON.parse(footerContentsResult.phoneNumbers);
-			// @ts-expect-error db returns strings but types are correct
-			footerContentsResult.location = JSON.parse(footerContentsResult.location);
-			// @ts-expect-error db returns strings but types are correct
-			footerContentsResult.socials = JSON.parse(footerContentsResult.socials);
+			if (footerContentsResult) {
+				// @ts-expect-error db returns strings but types are correct
+				footerContentsResult.emails = JSON.parse(footerContentsResult.emails);
+				// @ts-expect-error db returns strings but types are correct
+				footerContentsResult.phoneNumbers = JSON.parse(footerContentsResult.phoneNumbers);
+				// @ts-expect-error db returns strings but types are correct
+				footerContentsResult.location = JSON.parse(footerContentsResult.location);
+				// @ts-expect-error db returns strings but types are correct
+				footerContentsResult.socials = JSON.parse(footerContentsResult.socials);
+			}
 
 			return c.json({
 				menuLinks: menuLinksResult,
