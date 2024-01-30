@@ -2,6 +2,10 @@
 import { transformMenuLinks } from '@humbak/shared';
 import type { ILanguagePageData } from '~/types/api';
 
+defineOptions({
+	inheritAttrs: false,
+});
+
 definePageMeta({
 	middleware: (route) => {
 		if (!route.params.language) {
@@ -12,11 +16,7 @@ definePageMeta({
 
 const { public: { apiUrl } } = useRuntimeConfig();
 
-const { data: languages, error: languagesError } = await useFetch<string[]>(`${apiUrl}/public/languages`);
-if (languagesError.value || !languages.value?.length) {
-	console.error(languagesError.value);
-	throw createError({ message: 'server error', statusCode: 500 });
-}
+const languages = computed(() => useAttrs().languages as string[]);
 
 const route = useRoute();
 const { language } = route.params;
@@ -31,7 +31,7 @@ if (!languages.value.includes(language)) {
 }
 
 const { data: languageData, error: languageDataError } = await useFetch<ILanguagePageData>(`${apiUrl}/public/${language}`);
-if (languagesError.value || !languageData.value) {
+if (languageDataError.value || !languageData.value) {
 	console.error(languageDataError.value);
 	throw createError({ statusCode: 500, message: 'błąd przy ładowaniu danych strony' });
 }
