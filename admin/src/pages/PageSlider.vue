@@ -135,21 +135,12 @@ async function getSlides() {
 	}
 }
 
-function setLanguagesAndGetSlides(loadedLanguages: string[]) {
-	languages.value = loadedLanguages;
-	isLoadingLanguages.value = false;
-	getSlides();
-}
-
 async function getSlidesIfLanguageChanged() {
-	if (previousSelectedLanguage === selectedLanguage.value) {
+	if (previousSelectedLanguage === selectedLanguage.value || isLoadingSlides.value) {
 		return;
 	}
 	if (hasChanged()) {
-		const proceed = await confirm(languageSelect.value?.getInputRef()?.element, {
-			text: 'Masz niezapisane zmiany. Czy na pewno chcesz kontynuować?',
-			okText: 'kontynuuj',
-		});
+		const proceed = await confirm(languageSelect.value?.getInputRef()?.element);
 		if (!proceed) {
 			selectedLanguage.value = previousSelectedLanguage;
 			return;
@@ -160,6 +151,12 @@ async function getSlidesIfLanguageChanged() {
 	editor.value?.updateModelValue(0, '');
 	await getSlides();
 	previousSelectedLanguage = selectedLanguage.value;
+}
+
+function setLanguagesAndGetSlides(loadedLanguages: string[]) {
+	languages.value = loadedLanguages;
+	isLoadingLanguages.value = false;
+	getSlides();
 }
 
 async function clearFormAndEditor() {
