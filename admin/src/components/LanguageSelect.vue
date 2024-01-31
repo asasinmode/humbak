@@ -3,14 +3,21 @@ import type { ComponentExposed } from 'vue-component-type-helpers';
 
 import VCombobox from '~/components/V/VCombobox.vue';
 
+const props = defineProps<{
+	hasChanged: () => boolean;
+	changedCallback: () => Promise<void>;
+}>();
+
 const emit = defineEmits<{
 	languagesLoaded: [string[]];
 }>();
 
 const api = useApi();
+const { confirm } = useConfirm();
 const { toast } = useToast();
 
 const modelValue = defineModel<string>();
+let previousModelValue: string | undefined;
 const isLoading = ref(false);
 const languages = ref<string[]>([]);
 const element = ref<ComponentExposed<typeof VCombobox>>();
@@ -30,8 +37,24 @@ onMounted(async () => {
 	}
 });
 
+async function confirmIfChanged() {
+	if (previousModelValue === modelValue.value) {
+		return;
+	}
+	if (props.hasChanged?.()) {
+		const proceed = await confirm(element.value?.getInputRef()?.element);
+		if (!proceed) {
+			modelValue.value = previousModelValue;
+			return;
+		}
+	}
+
+	await props.changedCallback();
+	previousModelValue = modelValue.value;
+}
+
 defineExpose({
-	getInputRef: () => element.value?.getInputRef(),
+	setPrevious: (value: string | undefined) => previousModelValue = value,
 });
 </script>
 
@@ -48,5 +71,6 @@ defineExpose({
 		transform-options
 		select-only
 		label-visually-hidden
+		@select-option="confirmIfChanged"
 	/>
 </template>

@@ -4,14 +4,12 @@ import LanguageSelect from '~/components/LanguageSelect.vue';
 import type { IFooterContents } from '~/composables/useApi';
 
 const { toast, toastGenericError } = useToast();
-const { confirm } = useConfirm();
 const api = useApi();
 
 const saveButton = ref<InstanceType<typeof VButton>>();
 const languageSelect = ref<InstanceType<typeof LanguageSelect>>();
 
 const selectedLanguage = ref<string>();
-let previousSelectedLanguage: string | undefined;
 
 const locationTextModelValue = ref('');
 const locationValueModelValue = ref('');
@@ -73,26 +71,13 @@ async function getFooterContent() {
 	}
 }
 
-async function getFooterContentIfLanguageChanged() {
-	if (previousSelectedLanguage === selectedLanguage.value || isLoading.value) {
-		selectedLanguage.value = previousSelectedLanguage;
-		return;
-	}
-	if (hasChanged()) {
-		const proceed = await confirm(languageSelect.value?.getInputRef()?.element);
-		if (!proceed) {
-			selectedLanguage.value = previousSelectedLanguage;
-			return;
-		}
-	}
-
+async function clearFormAndGetFooterContent() {
 	clearForm(undefined, true);
 	await getFooterContent();
-	previousSelectedLanguage = selectedLanguage.value;
 }
 
 function getFooterContentAndSetPreviousLanguage() {
-	getFooterContent().then(() => previousSelectedLanguage = selectedLanguage.value);
+	getFooterContent().then(() => languageSelect.value?.setPrevious(selectedLanguage.value));
 }
 
 const maxElementsInColumn = computed(() => Math.max(emails.value.length + 1, phoneNumbers.value.length + 1, 1));
@@ -167,7 +152,8 @@ function addSocial() {
 			<LanguageSelect
 				ref="languageSelect"
 				v-model="selectedLanguage"
-				@select-option="getFooterContentIfLanguageChanged"
+				:has-changed="hasChanged"
+				:changed-callback="clearFormAndGetFooterContent"
 				@languages-loaded="getFooterContentAndSetPreviousLanguage"
 			/>
 			<VButton

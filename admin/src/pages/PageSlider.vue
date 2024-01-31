@@ -35,7 +35,6 @@ const previousSelectedSlideId = ref<number>();
 
 const languages = ref<string[]>([]);
 const selectedLanguage = ref<string>();
-let previousSelectedLanguage: string | undefined;
 
 const {
 	clearForm,
@@ -68,7 +67,7 @@ const {
 
 		if (slide.language !== selectedLanguage.value) {
 			selectedLanguage.value = slide.language;
-			previousSelectedLanguage = slide.language;
+			languageSelect.value?.setPrevious(slide.language);
 			await getSlides();
 			selectedSlideId.value = slide.id;
 			previousSelectedSlideId.value = slide.id;
@@ -117,7 +116,7 @@ const slideSelectOptions = computed(() =>
 );
 
 async function getSlides() {
-	if (selectedLanguage.value === undefined) {
+	if (selectedLanguage.value === undefined || isLoadingSlides.value) {
 		return;
 	}
 
@@ -135,29 +134,16 @@ async function getSlides() {
 	}
 }
 
-async function getSlidesIfLanguageChanged() {
-	if (previousSelectedLanguage === selectedLanguage.value || isLoadingSlides.value) {
-		selectedLanguage.value = previousSelectedLanguage;
-		return;
-	}
-	if (hasChanged()) {
-		const proceed = await confirm(languageSelect.value?.getInputRef()?.element);
-		if (!proceed) {
-			selectedLanguage.value = previousSelectedLanguage;
-			return;
-		}
-	}
-
+async function clearFormAndGetSlides() {
 	clearForm(undefined, true);
 	editor.value?.updateModelValue(0, '');
 	await getSlides();
-	previousSelectedLanguage = selectedLanguage.value;
 }
 
 function setLanguagesAndGetSlides(loadedLanguages: string[]) {
 	languages.value = loadedLanguages;
 	isLoadingLanguages.value = false;
-	getSlides().then(() => previousSelectedLanguage = selectedLanguage.value);
+	getSlides().then(() => languageSelect.value?.setPrevious(selectedLanguage.value));
 }
 
 async function clearFormAndEditor() {
@@ -287,7 +273,8 @@ function revertAspectRatioIfUnsaved() {
 				<LanguageSelect
 					ref="languageSelect"
 					v-model="selectedLanguage"
-					@select-option="getSlidesIfLanguageChanged"
+					:has-changed="hasChanged"
+					:changed-callback="clearFormAndGetSlides"
 					@languages-loaded="setLanguagesAndGetSlides"
 				/>
 				<VCombobox
