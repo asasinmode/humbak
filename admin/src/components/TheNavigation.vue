@@ -38,7 +38,7 @@ const {
 
 	<nav
 		tabindex="-1"
-		class="fixed z-102 grid grid-cols-2 max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] w-full justify-items-center gap-x-4 gap-y-2 of-auto bg-inherit py-2 transition-transform md:(relative flex translate-y-0 justify-around bg-transparent px-[clamp(2.25rem,4.13rem_+_-3.91vw,1rem)])"
+		class="fixed z-102 grid grid-cols-2 max-h-[calc(100vh_-_clamp(3rem,_-1rem_+_20vh,_8rem))] w-full justify-items-center gap-x-4 gap-y-2 of-auto bg-inherit py-2 transition-transform md:(relative shadow-none flex translate-y-0 justify-around bg-transparent gap-x-0 px-[clamp(2.25rem,4.13rem_+_-3.91vw,1rem)])"
 		:class="[isExpanded ? 'translate-y-0 shadow-md' : '-translate-y-full']"
 	>
 		<a
@@ -83,30 +83,22 @@ const {
 			@click="toggleMenu(false)"
 		>
 			<div class="i-solar-pallete-2-outline mr-[0.125rem] inline-block align-sub text-violet" />
-			css
-		</RouterLink>
-		<RouterLink
-			to="/meta"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-fuchsia"
-			@click="toggleMenu(false)"
-		>
-			<div class="i-fluent-bot-24-regular mr-[0.125rem] inline-block align-sub text-fuchsia" />
-			meta
+			global
 		</RouterLink>
 		<RouterLink
 			to="/slider"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-orange"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-fuchsia"
 			@click="toggleMenu(false)"
 		>
-			<div class="i-solar-wallpaper-linear mr-[0.125rem] inline-block align-sub text-orange" />
+			<div class="i-solar-wallpaper-linear mr-[0.125rem] inline-block align-sub text-fuchsia" />
 			slider
 		</RouterLink>
 		<RouterLink
 			to="/stopka"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-yellow"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-orange"
 			@click="toggleMenu(false)"
 		>
-			<div class="i-solar-smartphone-linear mr-[0.125rem] inline-block align-sub text-yellow-5 dark:text-yellow" />
+			<div class="i-solar-smartphone-linear mr-[0.125rem] inline-block align-sub text-orange" />
 			stopka
 		</RouterLink>
 

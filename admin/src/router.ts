@@ -21,14 +21,9 @@ export const router = createRouter({
 			component: () => import('~/pages/PageFiles.vue'),
 		},
 		{
-			path: '/css',
-			name: 'Css',
-			component: () => import('~/pages/PageCss.vue'),
-		},
-		{
-			path: '/meta',
-			name: 'Meta',
-			component: () => import('~/pages/PageMeta.vue'),
+			path: '/cssmeta',
+			name: 'CssMeta',
+			component: () => import('~/pages/PageCssMeta.vue'),
 		},
 		{
 			path: '/slider',
