@@ -1,20 +1,21 @@
-import { ref } from 'vue';
+import { type Ref, ref } from 'vue';
 import { env } from '~/env';
 
 const { toast } = useToast();
 
 const value = ref('');
 const initValue = ref('');
-const isLoading = ref(false);
 
 const globalPagesStylesheet = document.createElement('style');
 document.head.appendChild(globalPagesStylesheet);
 
 let updateTimeout: NodeJS.Timeout | undefined;
 
-export function useGlobalPagesStylesheet(valueFetchedCallback?: (value: string) => void) {
+export function useGlobalPagesStylesheet(isLoading?: Ref<boolean>, valueFetchedCallback?: (value: string) => void) {
 	onMounted(async () => {
-		isLoading.value = true;
+		if (isLoading) {
+			isLoading.value = true;
+		}
 		try {
 			value.value = await fetch(`${env.VITE_PAGE_URL}/stylesheets/global.css`).then(data => data.text());
 			initValue.value = value.value;
@@ -24,7 +25,9 @@ export function useGlobalPagesStylesheet(valueFetchedCallback?: (value: string) 
 			toast('błąd przy ładowaniu globalnych stylów', 'error');
 			console.error(e);
 		} finally {
-			isLoading.value = false;
+			if (isLoading) {
+				isLoading.value = false;
+			}
 		}
 	});
 
