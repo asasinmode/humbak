@@ -156,7 +156,7 @@ async function getSlidesIfLanguageChanged() {
 function setLanguagesAndGetSlides(loadedLanguages: string[]) {
 	languages.value = loadedLanguages;
 	isLoadingLanguages.value = false;
-	getSlides();
+	getSlides().then(() => previousSelectedLanguage = selectedLanguage.value);
 }
 
 async function clearFormAndEditor() {
