@@ -4,6 +4,7 @@ import type { ComponentExposed } from 'vue-component-type-helpers';
 import VButton from '~/components/V/VButton.vue';
 import VEditor from '~/components/V/VEditor.vue';
 import VCombobox from '~/components/V/VCombobox.vue';
+import LanguageSelect from '~/components/LanguageSelect.vue';
 
 const api = useApi();
 const { toast } = useToast();
@@ -11,15 +12,19 @@ const { confirm } = useConfirm();
 
 const editor = ref<InstanceType<typeof VEditor>>();
 const saveButton = ref<InstanceType<typeof VButton>>();
+const languageSelect = ref<InstanceType<typeof LanguageSelect>>();
 const isLoading = ref(false);
+
+const selectedLanguage = ref<string>();
 
 const initMetaValue = '';
 const {
 	isSaving,
+	clearForm: clearMetaForm,
 	value: metaValue,
 	sendForm: sendMeta,
 	hasChanged: hasMetaChanged,
-	// updateValues: updateMetaValues,
+	updateValues: updateMetaValues,
 } = useForm({ value: '' }, async () => {
 	console.log('saving', metaValue.value);
 	throw new Error('oopsie');
@@ -100,12 +105,21 @@ async function changeEditorModel() {
 }
 
 async function getMeta() {
-	isLoading.value = true;
+	if (!selectedLanguage.value || isLoading.value) {
+		return;
+	}
 
+	isLoading.value = true;
 	try {
-		await new Promise(resolve => setTimeout(resolve, 1000));
+		const { value } = await api.meta.$get({
+			query: { language: selectedLanguage.value as string },
+		}).then(r => r.json());
+
+		updateMetaValues({ value });
+		editor.value?.updateModelValue(1, JSON.stringify(value));
 	} catch (e) {
 		console.error(e);
+		toast('błąd przy ładowaniu meta', 'error');
 	} finally {
 		isLoading.value = false;
 	}
@@ -119,10 +133,27 @@ function updateModelValue(newValue: string) {
 		metaValue.value = newValue;
 	}
 }
+
+async function clearFormAndGetMeta() {
+	clearMetaForm(undefined, true);
+	editor.value?.updateModelValue(1, '');
+	await getMeta();
+}
+
+function getMetaAndSetPreviousLanguage() {
+	getMeta().then(() => languageSelect.value?.setPrevious(selectedLanguage.value));
+}
 </script>
 
 <template>
-	<main id="content" class="grid grid-cols-[min-content_1fr_max-content] grid-rows-[min-content_1fr] mx-auto max-w-256 min-h-inherit w-full gap-x-3 gap-y-5 px-container pb-4 pt-[1.125rem]">
+	<main
+		id="content"
+		class="grid grid-cols-[min-content_1fr_max-content] mx-auto max-w-256 min-h-inherit w-full gap-x-3 gap-y-5 px-container pb-4 pt-[1.125rem]"
+		:class="editorModel === 1
+			? 'grid-rows-[min-content_min-content_1fr] md:(grid-cols-[min-content_min-content_1fr_max-content] grid-rows-[min-content_1fr])'
+			: 'grid-rows-[min-content_1fr]'
+		"
+	>
 		<VCombobox
 			id="modelSelect"
 			ref="modelSelect"
@@ -138,6 +169,15 @@ function updateModelValue(newValue: string) {
 			select-only
 			hide-check
 			@select-option="changeEditorModel"
+		/>
+		<LanguageSelect
+			v-show="editorModel === 1"
+			ref="languageSelect"
+			v-model="selectedLanguage"
+			class="row-start-2 col-span-full -mt-2 md:(row-start-auto col-span-1 mt-0)"
+			:has-changed="hasChanged"
+			:changed-callback="clearFormAndGetMeta"
+			@languages-loaded="getMetaAndSetPreviousLanguage"
 		/>
 		<VButton class="h-9 w-9 justify-self-end p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
 			<span class="visually-hidden">formatuj</span>
@@ -157,7 +197,7 @@ function updateModelValue(newValue: string) {
 				{ language: 'css', value: cssValue },
 				{ language: 'json', value: metaValue },
 			]"
-			:current-model="0"
+			:current-model="editorModel"
 			:is-loading="isLoading"
 			@update:model-value="updateModelValue"
 		/>

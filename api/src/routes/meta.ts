@@ -1,11 +1,10 @@
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { db } from '../db';
 import { languageExistsMiddleware, languageQueryValidation, wrap } from '../helpers';
 import { jwt } from '../helpers/jwt';
 import { insertMetaSchema, meta } from '../db/schema/meta';
 
-// todo finish meta, add language select on admin
 export const app = new Hono()
 	.get(
 		'/',
@@ -16,18 +15,15 @@ export const app = new Hono()
 
 			const [result] = await db
 				.select({
-					value: meta.value,
+					value: sql<string>`${meta.value}`,
 				})
 				.from(meta)
 				.where(eq(meta.language, language));
 			type IResult = typeof result;
 
 			if (!result) {
-				return c.json({ value: [] } as IResult);
+				return c.json({ value: '[]' } as IResult);
 			}
-
-			// @ts-expect-error db returns strings but types are correct
-			result.value = JSON.parse(result.value);
 
 			return c.json(result);
 		}
