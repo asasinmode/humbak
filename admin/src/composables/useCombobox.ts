@@ -18,7 +18,7 @@ export function useCombobox<T>(
 				break;
 			}
 		}
-	});
+	}, { immediate: true });
 
 	const selectedOptionText = computed(() => {
 		const selectedOptionIndex = computedOptions.value.findIndex(option => option.value === modelValue.value);
