@@ -28,6 +28,11 @@ try {
 	console.error(e);
 }
 
+parsedMeta.unshift(
+	{ 'http-equiv': 'date', 'content': pageData.value.createdAt },
+	{ 'http-equiv': 'last-modified', 'content': pageData.value.updatedAt }
+);
+
 useHead({
 	title: `${pageData.value.title} - Humbak`,
 	link: [

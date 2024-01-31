@@ -6,7 +6,7 @@ import { pages } from './pages';
 const defaultHtml = `<section>
 	<h1>Nagłówek</h1>
 </section>`;
-const defaultMeta = [{ name: 'robots', content: 'index, follow' }];
+const defaultMeta = [{ name: 'description', content: '' }, { name: 'abstract', content: '' }];
 
 export const contents = mysqlTable('contents', {
 	pageId: int('pageId').primaryKey().references(() => pages.id, { onDelete: 'cascade' }),

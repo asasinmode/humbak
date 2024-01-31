@@ -32,4 +32,6 @@ export type IPageData = {
 	slug: string;
 	html: string;
 	meta: string;
+	createdAt: string;
+	updatedAt: string;
 };

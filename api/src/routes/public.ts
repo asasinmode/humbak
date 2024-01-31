@@ -50,6 +50,8 @@ export const app = new Hono()
 					slug: pages.slug,
 					html: sql<string>`${contents.rawHtml}`,
 					meta: sql<string>`${contents.meta}`,
+					createdAt: sql<string>`${pages.createdAt}`,
+					updatedAt: sql<string>`${pages.updatedAt}`,
 				})
 				.from(pages)
 				.leftJoin(menuLinks, eq(menuLinks.pageId, pages.id))
