@@ -7,6 +7,7 @@ import { serveStatic } from '@hono/node-server/serve-static';
 import { env } from './env';
 import { filesStoragePath, stylesheetsStoragePath } from './helpers/files';
 import { app as authApp } from './routes/auth';
+import { app as metaApp } from './routes/meta';
 import { app as pagesApp } from './routes/pages';
 import { app as filesApp } from './routes/files';
 import { app as slidesApp } from './routes/slides';
@@ -45,6 +46,7 @@ const typedApp = app
 	.route('/slides', slidesApp)
 	.route('/directories', directoriesApp)
 	.route('/files', filesApp)
+	.route('/meta', metaApp)
 	.route('/public', publicApp);
 
 serve({ port: env.PORT, fetch: app.fetch }, (info) => {
