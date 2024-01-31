@@ -50,7 +50,7 @@ const {
 );
 
 async function getFooterContent() {
-	if (!selectedLanguage.value) {
+	if (!selectedLanguage.value || isLoading.value) {
 		return;
 	}
 

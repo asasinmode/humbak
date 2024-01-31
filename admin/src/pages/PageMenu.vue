@@ -1,80 +1,23 @@
 <script setup lang="ts">
 import type { IMenuLink } from '@humbak/shared';
 import { extractWithParentId, transformMenuLinks } from '@humbak/shared';
+import LanguageSelect from '~/components/LanguageSelect.vue';
 import VButton from '~/components/V/VButton.vue';
 import MenuHiddenLinksWidget from '~/components/Menu/MenuHiddenLinksWidget.vue';
 import type { IMenuTreeItem } from '~/types';
 
 const api = useApi();
 const { toastGenericError, toast } = useToast();
-const { confirm } = useConfirm();
 
 const isLoading = ref(false);
-const isLoadingLanguages = ref(false);
 const selectedLanguage = ref<string>();
-let previousSelectedLanguage: string | undefined;
-const languages = ref<string[]>([]);
 const transformedHiddenMenuLinks = ref<IMenuTreeItem[]>([]);
 const transformedMenuLinks = ref<IMenuTreeItem[]>([]);
 const saveButton = ref<InstanceType<typeof VButton>>();
+const languageSelect = ref<InstanceType<typeof LanguageSelect>>();
 
 let originalMenuLinks: IMenuLink[] = [];
 let changedLinks: Pick<IMenuLink, 'pageId' | 'position' | 'parentId'>[] = [];
-
-onMounted(async () => {
-	isLoadingLanguages.value = true;
-	isLoading.value = true;
-	try {
-		languages.value = await api.languages.$get().then(r => r.json());
-
-		if (!languages.value.length) {
-			return;
-		}
-
-		selectedLanguage.value = languages.value[0];
-		getMenuLinks();
-	} catch (e) {
-		toast('błąd przy ładowaniu języków', 'error');
-		console.error(e);
-	} finally {
-		isLoadingLanguages.value = false;
-		isLoading.value = false;
-	}
-});
-
-async function getMenuLinks() {
-	if (selectedLanguage.value === undefined) {
-		toastGenericError();
-		throw new Error('calling get menu links without selected language');
-	}
-
-	if (previousSelectedLanguage === selectedLanguage.value) {
-		return;
-	}
-	if (getActuallyChanged().length) {
-		const proceed = await confirm(saveButton.value?.element);
-		if (!proceed) {
-			selectedLanguage.value = previousSelectedLanguage;
-			return;
-		}
-	}
-
-	isLoading.value = true;
-	try {
-		const menuLinks = await api.menuLinks.$get({ query: { language: selectedLanguage.value } }).then(r => r.json());
-		originalMenuLinks = [...menuLinks];
-		changedLinks = [];
-		previousSelectedLanguage = selectedLanguage.value;
-
-		transformedHiddenMenuLinks.value = extractWithParentId(menuLinks, -1);
-		transformedMenuLinks.value = transformMenuLinks(menuLinks);
-	} catch (e) {
-		toast('błąd przy ładowaniu menu', 'error');
-		console.error(e);
-	} finally {
-		isLoading.value = false;
-	}
-}
 
 const nav = ref<HTMLElement>();
 const hiddenLinksWidget = ref<InstanceType<typeof MenuHiddenLinksWidget>>();
@@ -414,6 +357,36 @@ function getActuallyChanged() {
 		return link.position !== original.position || (link.parentId !== undefined && link.parentId !== original.parentId);
 	});
 }
+
+async function getMenuLinks() {
+	if (!selectedLanguage.value || isLoading.value) {
+		return;
+	}
+
+	isLoading.value = true;
+	try {
+		const menuLinks = await api.menuLinks.$get({ query: { language: selectedLanguage.value } }).then(r => r.json());
+		originalMenuLinks = [...menuLinks];
+		changedLinks = [];
+
+		transformedHiddenMenuLinks.value = extractWithParentId(menuLinks, -1);
+		transformedMenuLinks.value = transformMenuLinks(menuLinks);
+	} catch (e) {
+		toast('błąd przy ładowaniu menu', 'error');
+		console.error(e);
+	} finally {
+		isLoading.value = false;
+	}
+}
+
+async function clearFormAndGetMenuLinks() {
+	clearErrors();
+	await getMenuLinks();
+}
+
+function getMenuLinksAndSetPreviousLanguage() {
+	getMenuLinks().then(() => languageSelect.value?.setPrevious(selectedLanguage.value));
+}
 </script>
 
 <template>
@@ -421,18 +394,13 @@ function getActuallyChanged() {
 		<VAlert class="col-span-full mt-4 max-w-3xl md:mx-auto lg:hidden" variant="warning">
 			edytowanie menu nie jest dostępne na małych ekranch
 		</VAlert>
-		<VCombobox
-			id="menuLinksLanguage"
+		<LanguageSelect
+			ref="languageSelect"
 			v-model="selectedLanguage"
-			class="menu-controls-padding-right justify-self-end !hidden !min-w-20 !w-20 lg:!flex"
-			class-input="!w-20 !min-w-20"
-			label="język"
-			:options="languages"
-			:is-loading="isLoadingLanguages"
-			transform-options
-			select-only
-			label-visually-hidden
-			@select-option="getMenuLinks"
+			class="menu-controls-padding-right justify-self-end !hidden lg:!flex"
+			:has-changed="() => !!getActuallyChanged().length"
+			:changed-callback="clearFormAndGetMenuLinks"
+			@languages-loaded="getMenuLinksAndSetPreviousLanguage"
 		/>
 		<VButton
 			ref="saveButton"
