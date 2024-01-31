@@ -61,14 +61,17 @@ export function useForm<T extends Record<string, unknown>>(
 	function updateValues(data: { [K in keyof T]: T[K]; } & Record<string, any>) {
 		for (const key in form) {
 			fields[key].value = data[key];
-			initValue[key] = data[key];
+			initValue[key] = structuredClone(data[key]);
 		}
 		clearErrors();
 	}
 
 	function hasChanged() {
 		for (const key in form) {
-			if (fields[key].value !== initValue[key]) {
+			const value = typeof fields[key].value === 'object' ? JSON.stringify(fields[key].value) : fields[key].value;
+			const init = typeof initValue[key] === 'object' ? JSON.stringify(initValue[key]) : initValue[key];
+
+			if (value !== init) {
 				return true;
 			}
 		}
