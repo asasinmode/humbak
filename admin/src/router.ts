@@ -26,6 +26,11 @@ export const router = createRouter({
 			component: () => import('~/pages/PageCss.vue'),
 		},
 		{
+			path: '/meta',
+			name: 'Meta',
+			component: () => import('~/pages/PageMeta.vue'),
+		},
+		{
 			path: '/slider',
 			name: 'Slider',
 			component: () => import('~/pages/PageSlider.vue'),

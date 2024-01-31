@@ -53,8 +53,8 @@ const {
 		</a>
 
 		<RouterLink
-			to="/"
 			ref="secondFocusableNavElement"
+			to="/"
 			class="col-span-2 w-fit px-3 py-1 text-5 shadow transition-margin neon-cyan"
 			@click="toggleMenu(false)"
 		>
@@ -84,6 +84,14 @@ const {
 		>
 			<div class="i-solar-pallete-2-outline mr-[0.125rem] inline-block align-sub text-emerald" />
 			css
+		</RouterLink>
+		<RouterLink
+			to="/meta"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-indigo"
+			@click="toggleMenu(false)"
+		>
+			<div class="i-fluent-bot-24-regular mr-[0.125rem] inline-block align-sub text-indigo dark:text-indigo-3" />
+			meta
 		</RouterLink>
 		<RouterLink
 			to="/slider"
