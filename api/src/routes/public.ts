@@ -1,6 +1,6 @@
 import { and, desc, eq, isNull, not, or, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
-import { object, optional, string } from 'valibot';
+import { minLength, object, optional, string } from 'valibot';
 import { footerContents } from 'src/db/schema/footerContents';
 import { db } from '../db';
 import { languageExistsMiddleware, wrap } from '../helpers';
@@ -63,7 +63,7 @@ export const app = new Hono()
 	)
 	.get(
 		'/:language',
-		wrap('param', object({ language: string() })),
+		wrap('param', object({ language: string([minLength(1, 'nie może być puste')]) })),
 		languageExistsMiddleware('param'),
 		async (c) => {
 			const { language } = c.req.valid('param');
