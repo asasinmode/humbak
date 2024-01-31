@@ -199,7 +199,7 @@ function closeMenuAndSetExpanded(id?: number) {
 
 			<NuxtLink
 				ref="secondFocusableNavElement"
-				class="w-12 h-12 col-start-1 row-start-1 my-2 hoverable:text-humbak-8 justify-self-end mr-2 flex-center lg:(m-0 absolute left-0 hoverable:bg-humbak-5 hoverable:text-inherit z-10)"
+				class="w-12 h-12 col-start-1 row-start-1 my-2 relative z-1 hoverable:text-humbak-8 justify-self-end mr-2 flex-center lg:(m-0 absolute left-0 hoverable:bg-humbak-5 hoverable:text-inherit z-10)"
 				title="home"
 				:to="`/${language}`"
 				@click.left="closeMenuAndSetExpanded()"

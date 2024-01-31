@@ -68,7 +68,8 @@ const activeDescendantId = computed(() => cursoredOverIndex.value !== undefined
 
 <template>
 	<div
-		class="relative col-start-2 cursor-pointer row-start-1 w-12 ml-2 my-2 hoverable:text-humbak-8 lg:(m-0 absolute right-0 hoverable:bg-humbak-5 hoverable:text-inherit z-10)"
+		class="relative col-start-2 cursor-pointer row-start-1 ml-2 my-2 lg:(m-0 absolute right-0 hover:bg-humbak-5 focus-within:bg-humbak-5)"
+		:style="`--languages-count: ${languages.length}`"
 		title="język"
 		@mouseenter="expandAndSetCursoredOver"
 		@mouseleave="isExpanded = false"
@@ -79,7 +80,7 @@ const activeDescendantId = computed(() => cursoredOverIndex.value !== undefined
 		<div
 			id="languageSelect"
 			tabindex="0"
-			class="w-12 h-12 flex-center"
+			class="w-12 h-12 relative flex-center hoverable:text-humbak-8 bg-white z-1 before:(content-empty fixed inset-x-0 -z-1 pointer-events-none bg-inherit h-12 right-[calc(50%_-_0.5rem)]) lg:(before:hidden bg-inherit hoverable:text-inherit)"
 			aria-labelledby="languageSelectLabel"
 			role="combobox"
 			aria-haspopup="listbox"
@@ -99,33 +100,42 @@ const activeDescendantId = computed(() => cursoredOverIndex.value !== undefined
 			</span>
 			<div class="i-ph-translate-bold pointer-events-none w-6 h-6" aria-hidden="true" />
 		</div>
-		<ul
-			v-show="isExpanded && languages.length"
-			id="languageSelect-listbox"
-			ref="listbox"
-			class="absolute flex flex-row top-0 right-0 translate-x-full lg:(bottom-0 right-auto top-auto bg-humbak-5 left-1/2 block z-10 w-12 translate-y-full shadow-md -translate-x-1/2)"
-			role="listbox"
-			aria-orientation="vertical"
-			tabindex="-1"
-			aria-labelledby="languageSelectLabel"
-			@keydown.up.prevent="moveCursor(-1)"
-			@keydown.down.prevent="moveCursor(1)"
+		<transition
+			enter-from-class="-translate-x-[calc(3rem_*_(var(--languages-count)_-_1))]"
+			enter-to-class="translate-x-12"
+			leave-from-class="translate-x-12"
+			leave-to-class="-translate-x-[calc(3rem_*_(var(--languages-count)_-_1))]"
+			@after-enter="listbox?.classList.add('translate-x-12')"
+			@before-leave="listbox?.classList.remove('translate-x-12')"
 		>
-			<li
-				v-for="(option, index) in languages"
-				:id="`languageSelect-option-${index}`"
-				:key="option"
-				class="select-none font-700 lg:font-400"
-				:class="cursoredOverIndex === index ? 'text-humbak-8 bg-humbak/20 lg:(bg-humbak-7 text-black)' : 'text-black'"
-				role="option"
-				:aria-selected="language === option"
-				@click="selectOption(index)"
-				@mouseenter="cursoredOverIndex = index"
+			<ul
+				v-show="isExpanded && languages.length"
+				id="languageSelect-listbox"
+				ref="listbox"
+				class="absolute flex flex-row transition-transform z-0 top-0 left-0 lg:(bottom-0 duration-0 transition-none top-auto bg-humbak-5 left-1/2 block z-10 w-12 translate-y-full shadow-md -translate-x-1/2)"
+				role="listbox"
+				aria-orientation="vertical"
+				tabindex="-1"
+				aria-labelledby="languageSelectLabel"
+				@keydown.up.prevent="moveCursor(-1)"
+				@keydown.down.prevent="moveCursor(1)"
 			>
-				<NuxtLink class="w-12 h-12 flex flex-center truncate" :to="`/${option}`" tabindex="-1" @click.prevent="">
-					{{ option }}
-				</NuxtLink>
-			</li>
-		</ul>
+				<li
+					v-for="(option, index) in languages"
+					:id="`languageSelect-option-${index}`"
+					:key="option"
+					class="select-none font-700 lg:font-400"
+					:class="cursoredOverIndex === index ? 'text-humbak-8 bg-humbak/20 lg:(bg-humbak-7 text-black)' : 'text-black'"
+					role="option"
+					:aria-selected="language === option"
+					@click="selectOption(index)"
+					@mouseenter="cursoredOverIndex = index"
+				>
+					<NuxtLink class="w-12 h-12 flex flex-center truncate" :to="`/${option}`" tabindex="-1" @click.prevent="">
+						{{ option }}
+					</NuxtLink>
+				</li>
+			</ul>
+		</transition>
 	</div>
 </template>
