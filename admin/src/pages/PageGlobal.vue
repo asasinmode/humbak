@@ -17,35 +17,31 @@ const isLoading = ref(false);
 
 const selectedLanguage = ref<string>();
 
-const initMetaValue = '';
+let initMeta = '';
 const {
 	isSaving,
 	clearForm: clearMetaForm,
 	value: metaValue,
 	sendForm: sendMeta,
-	hasChanged: hasMetaChanged,
 	updateValues: updateMetaValues,
 } = useForm({ value: '' }, async () => {
-	console.log('saving', metaValue.value);
-	throw new Error('oopsie');
-	// let contentFields;
-	// try {
-	// 	contentFields = contentEditor.value?.getChangedFields() || {};
-	// } catch (e) {
-	// 	toast('zła wartość meta', 'error');
-	// 	console.error(e);
-	// 	return;
-	// }
+	let value: Record<string, string>[];
+	try {
+		value = JSON.parse(metaValue.value);
+	} catch (e) {
+		toast('zła wartość meta', 'error');
+		console.error(e);
+		return;
+	}
 
-	// await api.pages.$post({
-	// 	json: {
-	// 		value: metaValue.value,
-	// 	},
-	// }).then(r => r.json());
+	await api.meta.$post({
+		json: { value, language: selectedLanguage.value as string },
+	});
 
-	// updateMetaValues({value: metaValue.value});
+	updateMetaValues({ value: metaValue.value });
+	initMeta = metaValue.value;
 
-	// toast('zapisano zmiany');
+	toast('zapisano zmiany');
 },	() => saveButton.value?.element);
 
 const { value: cssValue, initValue: initCssValue, updateValue: updateCssValue } = useGlobalPagesStylesheet(
@@ -53,14 +49,10 @@ const { value: cssValue, initValue: initCssValue, updateValue: updateCssValue } 
 	(value: string) => editor.value?.updateModelValue(0, value)
 );
 
-function hasChanged() {
-	return cssValue.value !== initCssValue.value || hasMetaChanged();
-}
-
 async function saveChanges() {
 	isSaving.value = true;
 	try {
-		if (hasChanged()) {
+		if (hasChanged(false)) {
 			await api.globalCss.$post({ json: { value: cssValue.value } });
 			initCssValue.value = cssValue.value;
 		}
@@ -82,7 +74,7 @@ async function changeEditorModel() {
 	if (previousEditorModel === editorModel.value) {
 		return;
 	}
-	if (hasChanged()) {
+	if (hasChanged(true)) {
 		const proceed = await confirm(modelSelect.value?.getInputRef()?.element, {
 			text: 'Masz niezapisane zmiany. Czy na pewno chcesz kontynuować?',
 			okText: 'kontynuuj',
@@ -98,10 +90,33 @@ async function changeEditorModel() {
 		cssValue.value = initCssValue.value;
 		editor.value?.updateModelValue(0, cssValue.value);
 		await getMeta();
+		languageSelect.value?.setPrevious(selectedLanguage.value);
 	} else {
-		metaValue.value = initMetaValue;
+		clearMetaForm(undefined, true);
 		editor.value?.updateModelValue(1, metaValue.value);
 	}
+}
+
+function hasChanged(usePrevious: boolean) {
+	function hasMetaChanged() {
+		try {
+			const rv = JSON.stringify(JSON.parse(metaValue.value)) !== JSON.stringify(JSON.parse(initMeta));
+			return rv;
+		} catch (error) {
+			console.error('JSON parsing error');
+			return true;
+		}
+	}
+
+	if (usePrevious) {
+		return previousEditorModel === 0
+			? cssValue.value !== initCssValue.value
+			: hasMetaChanged();
+	}
+
+	return editorModel.value === 0
+		? cssValue.value !== initCssValue.value
+		: hasMetaChanged();
 }
 
 async function getMeta() {
@@ -116,7 +131,11 @@ async function getMeta() {
 		}).then(r => r.json());
 
 		updateMetaValues({ value });
-		editor.value?.updateModelValue(1, JSON.stringify(value));
+		initMeta = value;
+		editor.value?.updateModelValue(1, value);
+
+		await nextTick();
+		editor.value?.formatCurrentModel();
 	} catch (e) {
 		console.error(e);
 		toast('błąd przy ładowaniu meta', 'error');
@@ -138,10 +157,6 @@ async function clearFormAndGetMeta() {
 	clearMetaForm(undefined, true);
 	editor.value?.updateModelValue(1, '');
 	await getMeta();
-}
-
-function getMetaAndSetPreviousLanguage() {
-	getMeta().then(() => languageSelect.value?.setPrevious(selectedLanguage.value));
 }
 </script>
 
@@ -175,9 +190,8 @@ function getMetaAndSetPreviousLanguage() {
 			ref="languageSelect"
 			v-model="selectedLanguage"
 			class="row-start-2 col-span-full -mt-2 md:(row-start-auto col-span-1 mt-0)"
-			:has-changed="hasChanged"
+			:has-changed="() => hasChanged(false)"
 			:changed-callback="clearFormAndGetMeta"
-			@languages-loaded="getMetaAndSetPreviousLanguage"
 		/>
 		<VButton class="h-9 w-9 justify-self-end p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
 			<span class="visually-hidden">formatuj</span>
