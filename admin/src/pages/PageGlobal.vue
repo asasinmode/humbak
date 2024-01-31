@@ -42,7 +42,7 @@ const {
 	initMeta = metaValue.value;
 
 	toast('zapisano zmiany');
-},	() => saveButton.value?.element);
+}, () => saveButton.value?.element);
 
 const { value: cssValue, initValue: initCssValue, updateValue: updateCssValue } = useGlobalPagesStylesheet(
 	isLoading,
