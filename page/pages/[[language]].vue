@@ -9,7 +9,7 @@ defineOptions({
 definePageMeta({
 	middleware: (route) => {
 		if (!route.params.language) {
-			return navigateTo('/pl');
+			return navigateTo(`/${useRuntimeConfig().public.defaultLanguage}`);
 		}
 	},
 });
