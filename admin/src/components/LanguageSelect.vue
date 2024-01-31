@@ -1,6 +1,10 @@
 <script setup lang="ts">
+import type { ComponentExposed } from 'vue-component-type-helpers';
+
+import VCombobox from '~/components/V/VCombobox.vue';
+
 const emit = defineEmits<{
-	languagesLoaded: [];
+	languagesLoaded: [string[]];
 }>();
 
 const api = useApi();
@@ -9,17 +13,15 @@ const { toast } = useToast();
 const modelValue = defineModel<string>();
 const isLoading = ref(false);
 const languages = ref<string[]>([]);
+const element = ref<ComponentExposed<typeof VCombobox>>();
 
 onMounted(async () => {
 	isLoading.value = true;
 	try {
 		languages.value = await api.languages.$get().then(r => r.json());
-		if (!languages.value.length) {
-			return;
-		}
 
 		modelValue.value = languages.value[0];
-		emit('languagesLoaded');
+		emit('languagesLoaded', languages.value);
 	} catch (e) {
 		toast('błąd przy ładowaniu języków', 'error');
 		console.error(e);
@@ -27,11 +29,16 @@ onMounted(async () => {
 		isLoading.value = false;
 	}
 });
+
+defineExpose({
+	getInputRef: () => element.value?.getInputRef(),
+});
 </script>
 
 <template>
 	<VCombobox
 		id="languageSelect"
+		ref="element"
 		v-model="modelValue"
 		class="!min-w-20 !w-20"
 		class-input="!min-w-20 !w-20"

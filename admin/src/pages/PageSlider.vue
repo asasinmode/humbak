@@ -6,6 +6,7 @@ import VEditor from '~/components/V/VEditor.vue';
 import VDialog from '~/components/V/VDialog.vue';
 import TheSlider from '~/components/TheSlider.vue';
 import VCombobox from '~/components/V/VCombobox.vue';
+import LanguageSelect from '~/components/LanguageSelect.vue';
 
 import type { IListedSlide } from '~/composables/useApi';
 
@@ -20,12 +21,13 @@ const resetButton = ref<InstanceType<typeof VButton>>();
 const saveButton = ref<InstanceType<typeof VButton>>();
 const deleteButton = ref<InstanceType<typeof VButton>>();
 const editor = ref<InstanceType<typeof VEditor>>();
-const languageSelect = ref<ComponentExposed<typeof VCombobox>>();
+const languageSelect = ref<InstanceType<typeof LanguageSelect>>();
 const slideIdSelect = ref<ComponentExposed<typeof VCombobox>>();
 
-const isLoadingLanguages = ref(false);
 const isLoadingSlides = ref(false);
 const isLoadingSlide = ref(false);
+const isLoadingLanguages = ref(true);
+const isLoadingAspectRatio = ref(false);
 
 const availableSlides = ref<IListedSlide[]>([]);
 const selectedSlideId = ref<number>();
@@ -96,28 +98,17 @@ const aspectRatio = ref('');
 const previousAspectRatio = ref('');
 
 onMounted(async () => {
-	isLoadingLanguages.value = true;
+	isLoadingAspectRatio.value = true;
 	try {
-		const [uniqueLanguages, savedAspectRatio] = await Promise.all([
-			api.languages.$get().then(r => r.json()),
-			api.slides.aspectRatio.$get().then(r => r.json()),
-		]);
-		languages.value = uniqueLanguages;
+		const savedAspectRatio = await api.slides.aspectRatio.$get().then(r => r.json());
+
 		aspectRatio.value = savedAspectRatio;
 		previousAspectRatio.value = savedAspectRatio;
-		if (!languages.value.length) {
-			return;
-		}
-
-		selectedLanguage.value = languages.value[0];
-		previousSelectedLanguage = selectedLanguage.value;
-
-		getSlides();
 	} catch (e) {
-		toast('błąd przy ładowaniu języków', 'error');
+		toast('błąd przy ładowaniu aspect ratio', 'error');
 		console.error(e);
 	} finally {
-		isLoadingLanguages.value = false;
+		isLoadingAspectRatio.value = false;
 	}
 });
 
@@ -127,8 +118,7 @@ const slideSelectOptions = computed(() =>
 
 async function getSlides() {
 	if (selectedLanguage.value === undefined) {
-		toastGenericError();
-		throw new Error('calling get slides without selected language');
+		return;
 	}
 
 	isLoadingSlides.value = true;
@@ -143,6 +133,12 @@ async function getSlides() {
 	} finally {
 		isLoadingSlides.value = false;
 	}
+}
+
+function setLanguagesAndGetSlides(loadedLanguages: string[]) {
+	languages.value = loadedLanguages;
+	isLoadingLanguages.value = false;
+	getSlides();
 }
 
 async function getSlidesIfLanguageChanged() {
@@ -290,19 +286,11 @@ function revertAspectRatioIfUnsaved() {
 	<main id="content" class="px-container w-full flex flex-col mx-auto gap-y-5 max-w-360 pb-4 pt-[1.125rem]">
 		<div class="max-w-256 w-full mx-auto grid grid-cols-[min-content_min-content_1fr] gap-x-3 gap-y-5 sm:grid-cols-[auto_auto_auto_1fr]">
 			<div class="grid col-span-full max-w-256 mx-auto items-end grid-cols-[min-content_1fr_max-content] w-full gap-x-3 gap-y-5 md:flex">
-				<VCombobox
-					id="languageSelect"
+				<LanguageSelect
 					ref="languageSelect"
 					v-model="selectedLanguage"
-					class="!min-w-20 !w-20 md:!w-fit"
-					class-input="!w-20 !min-w-20"
-					label="język"
-					:options="languages"
-					:is-loading="isLoadingLanguages"
-					transform-options
-					label-visually-hidden
-					select-only
 					@select-option="getSlidesIfLanguageChanged"
+					@languages-loaded="setLanguagesAndGetSlides"
 				/>
 				<VCombobox
 					id="slideIdSelect"
