@@ -1,245 +1,150 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { Buffer } from 'node:buffer';
-import { hashPassword } from 'src/helpers/auth';
 import { db, pool } from '..';
 import { promptProdContinue } from '../../helpers';
+import { hashPassword } from '../../helpers/auth';
 import { filesStoragePath, stylesheetsStoragePath } from '../../helpers/files';
 import { createImageSizes } from '../../helpers/files/image';
 import { pages } from '../schema/pages';
 import { slides } from '../schema/slides';
 import { contents } from '../schema/contents';
 import { menuLinks } from '../schema/menuLinks';
+import { slideAspectRatio } from '../schema/slideAspectRatio';
 import { directories } from '../schema/directories';
 import { footerContents } from '../schema/footerContents';
-import { slideAspectRatio } from '../schema/slideAspectRatio';
 import { files } from '../schema/files';
 import { users } from '../schema/users';
 
 await promptProdContinue();
 
+await writeFile(
+	`${filesStoragePath}/slideImage.jpg`,
+	await fetch('https://images.unsplash.com/photo-1455577380025-4321f1e1dca7?q=80&w=1920').then(r => r.arrayBuffer()).then(v => Buffer.from(v))
+);
+const { width, height } = await createImageSizes(`${filesStoragePath}/slideImage.jpg`, 'image/jpeg');
+const [{ insertId: riverSlideImageId }] = await db.insert(files).values({
+	directoryId: null,
+	name: 'slideImage.jpg',
+	path: '/slideImage.jpg',
+	title: 'river in a forest',
+	alt: 'a river surrounded by a forest',
+	mimetype: 'image/jpeg',
+	width,
+	height,
+});
+
+await mkdir(`${filesStoragePath}/oceans`);
+const [{ insertId: oceansDirId }] = await db.insert(directories).values({
+	name: 'oceans',
+	path: '/oceans',
+});
+await mkdir(`${filesStoragePath}/seas`);
+const [{ insertId: seasDirId }] = await db.insert(directories).values({
+	name: 'seas',
+	path: '/seas',
+});
+await mkdir(`${filesStoragePath}/lakes`);
+const [{ insertId: lakesDirId }] = await db.insert(directories).values({
+	name: 'lakes',
+	path: '/lakes',
+});
+
+await mkdir(`${filesStoragePath}/other`);
+const [{ insertId: otherDirId }] = await db.insert(directories).values({
+	name: 'other',
+	path: '/other',
+});
+await mkdir(`${filesStoragePath}/other/documents`);
+const [{ insertId: documentsDirId }] = await db.insert(directories).values({
+	name: 'documents',
+	path: '/other/documents',
+	parentId: otherDirId,
+});
+await writeFile(
+	`${filesStoragePath}/other/documents/examplePdf.pdf`,
+	await fetch('https://www.africau.edu/images/default/sample.pdf').then(r => r.arrayBuffer()).then(v => Buffer.from(v))
+);
+await db.insert(files).values({
+	directoryId: documentsDirId,
+	name: 'examplePdf.pdf',
+	path: '/other/documents/examplePdf.pdf',
+	title: 'example pdf',
+	alt: 'an example pdf with unimportant content',
+	mimetype: 'application/pdf',
+});
+await writeFile(`${filesStoragePath}/other/exampleTxt.txt`, '');
+await db.insert(files).values({
+	directoryId: otherDirId,
+	name: 'exampleTxt.txt',
+	path: '/other/exampleTxt.txt',
+	title: 'example txt',
+	alt: 'an example txt file that\'s empty',
+	mimetype: 'text/plain',
+});
+
+const [slideAspectRatioResult] = await db.select({ value: slideAspectRatio.value }).from(slideAspectRatio);
+!slideAspectRatioResult && await db.insert(slideAspectRatio).values({ value: '1 / 3' });
+
+const slidesData = [
+	{
+		name: 'ocean',
+		language: 'en',
+		content: `<div class="flex-center w-full h-full" style="background-color: hsla(0, 100%, 50%, 0.3)">
+<h6>1</h6>
+</div>`,
+	},
+	{
+		name: 'sea',
+		language: 'en',
+		content: `<div class="flex-center w-full h-full" style="background-color: hsla(0, 100%, 50%, 0.3)">
+<h6>1</h6>
+</div>`,
+	},
+	{
+		name: 'lake',
+		language: 'en',
+		content: `<div class="flex-center w-full h-full" style="background-color: hsla(120, 100%, 50%, 0.3)">
+<h6>2</h6>
+</div>`,
+	},
+	{
+		name: 'river',
+		language: 'en',
+		content: `<div class="flex-center w-full h-full" style="background-color: hsla(0, 0%, 50%, 0.3)">
+	<h6 style="font-size: 3rem">Hidden River</h6>
+</div>`,
+		isHidden: true,
+	},
+];
+
+await db.insert(slides).values(slidesData.map(({ name, language, content, isHidden }) => ({
+	name,
+	language,
+	isHidden,
+	rawContent: content,
+	parsedContent: content,
+})));
+
 for (const { pageData, text, parentId, position } of [
 	{
 		id: 1,
-		pageData: { language: 'pl', title: 'Home', slug: '' },
+		pageData: { language: 'en', title: 'Home', slug: '' },
 		text: 'Home',
 		parentId: null,
 		position: 0,
 	},
 	{
 		id: 2,
-		pageData: { language: 'pl', title: 'Kursy Nurkowania', slug: 'kursy-nurkowania' },
+		pageData: { language: 'en', title: 'Kursy Nurkowania', slug: 'kursy-nurkowania' },
 		text: 'Kursy',
 		parentId: null,
 		position: 0,
 	},
 	{
 		id: 3,
-		pageData: { language: 'pl', title: 'Sekcje Nurkowe', slug: 'sekcje-nurkowe' },
+		pageData: { language: 'en', title: 'Sekcje Nurkowe', slug: 'sekcje-nurkowe' },
 		text: 'Sekcje nurkowe',
 		parentId: 2,
-		position: 0,
-	},
-	{
-		id: 4,
-		pageData: { language: 'pl', title: 'Sekcja Brzesko', slug: 'sekcja-brzesko' },
-		text: 'Sekcja Brzesko',
-		parentId: 3,
-		position: 0,
-	},
-	{
-		id: 5,
-		pageData: { language: 'pl', title: 'Sekcja Proszówki', slug: 'sekcja-proszowki' },
-		text: 'Sekcja Proszówki',
-		parentId: 3,
-		position: 1,
-	},
-	{
-		id: 6,
-		pageData: { language: 'pl', title: 'Sekcja Dąbrowa Górnicza', slug: 'sekcja-dabrowa-gornicza' },
-		text: 'Sekcja Dąbrowa Górnicza',
-		parentId: 3,
-		position: 2,
-	},
-	{
-		id: 7,
-		pageData: { language: 'pl', title: 'Sekcja Niepołomice', slug: 'sekcja-niepolomice' },
-		text: 'Sekcja Niepołomice',
-		parentId: 3,
-		position: 3,
-	},
-	{
-		id: 8,
-		pageData: { language: 'pl', title: 'Sekcja Przygoda', slug: 'sekcja-przygoda' },
-		text: 'Sekcja przygoda',
-		parentId: 3,
-		position: 4,
-	},
-	{
-		id: 9,
-		pageData: { language: 'pl', title: 'OWSD Podstawowy', slug: 'owsd-podstawowy' },
-		text: 'OWSD podstawowy',
-		parentId: 2,
-		position: 1,
-	},
-	{
-		id: 10,
-		pageData: { language: 'pl', title: 'Wyprawy i Aktywności', slug: 'wyprawy-i-aktywnosci' },
-		text: 'Wyprawy i Aktywności',
-		parentId: null,
-		position: 1,
-	},
-	{
-		id: 11,
-		pageData: { language: 'pl', title: 'Rejsy żeglarskie planowane', slug: 'rejsy-zeglarskie-planowane' },
-		text: 'Rejsy żeglarskie planowane',
-		parentId: 10,
-		position: 0,
-	},
-	{
-		id: 12,
-		pageData: { language: 'pl', title: 'Rejsy Ateny zatoka sarońska', slug: 'rejsy-ateny-zatoka-saronska' },
-		text: 'Rejsy Ateny zatoka sarońska',
-		parentId: 11,
-		position: 0,
-	},
-	{
-		id: 13,
-		pageData: { language: 'pl', title: 'Wyprawy nurkowe planowane', slug: 'wyprawy-nurkowe-planowane' },
-		text: 'Wyprawy nurkowe planowane',
-		parentId: 10,
-		position: 1,
-	},
-	{
-		id: 14,
-		pageData: { language: 'pl', title: 'Safari Nurkowe Egipt - 11-18 listopad', slug: 'safari-nurkowe-egipt' },
-		text: 'Safari Nurkowe Egipt - 11-18 listopad',
-		parentId: 13,
-		position: 0,
-	},
-	{
-		id: 15,
-		pageData: { language: 'pl', title: 'Wyprawa nurkowa na Maltę - 11-28 wrzesień', slug: 'wuprawa-nurkowa-malta' },
-		text: 'Wyprawa nurkowa na Maltę - 11-28 wrzesień',
-		parentId: 13,
-		position: 1,
-	},
-	{
-		id: 16,
-		pageData: { language: 'pl', title: 'Cennik', slug: 'cennik' },
-		text: 'Cennik',
-		parentId: null,
-		position: 2,
-	},
-	{
-		id: 17,
-		pageData: { language: 'pl', title: 'O nas', slug: 'o-nas' },
-		text: 'O nas',
-		parentId: null,
-		position: 3,
-	},
-	{
-		id: 18,
-		pageData: { language: 'pl', title: 'uslugi-i-serwis', slug: 'uslugi-i-serwis' },
-		text: 'Usługi i serwis',
-		parentId: null,
-		position: 4,
-	},
-	{
-		id: 19,
-		pageData: { language: 'pl', title: 'Sklep', slug: 'sklep' },
-		text: 'Sklep',
-		parentId: 18,
-		position: 0,
-	},
-	{
-		id: 20,
-		pageData: { language: 'pl', title: 'Wypożyczalnia', slug: 'wypozyczalnia' },
-		text: 'Wypożyczalnia',
-		parentId: 18,
-		position: 1,
-	},
-	{
-		id: 21,
-		pageData: { language: 'pl', title: 'Serwis sprzętu nurkowego', slug: 'serwis-sprzetu-nurkowego' },
-		text: 'Serwis sprzętu nurkowego',
-		parentId: 18,
-		position: 2,
-	},
-	{
-		id: 22,
-		pageData: { language: 'pl', title: 'Bony i kariera zawodowa', slug: 'bony-i-kariera-zawodowa' },
-		text: 'Bony i kariera zawodowa',
-		parentId: 18,
-		position: 3,
-	},
-	{
-		id: 23,
-		pageData: { language: 'pl', title: 'Baseny', slug: 'baseny' },
-		text: 'Baseny',
-		parentId: null,
-		position: 5,
-	},
-	{
-		id: 24,
-		pageData: { language: 'pl', title: 'Kuter port Nieznanowice', slug: 'kuter-port-nieznanowice' },
-		text: 'Kuter port Nieznanowice',
-		parentId: 23,
-		position: 0,
-	},
-	{
-		id: 25,
-		pageData: { language: 'pl', title: 'Deep spot', slug: 'deep-spot' },
-		text: 'Deep spot',
-		parentId: 23,
-		position: 1,
-	},
-	{
-		id: 26,
-		pageData: { language: 'pl', title: 'Basen Niepołomice', slug: 'basen-niepolomice' },
-		text: 'Basen Niepołomice',
-		parentId: 23,
-		position: 2,
-	},
-	{
-		id: 27,
-		pageData: { language: 'pl', title: 'Schowane 1', slug: 'schowane-1' },
-		text: 'Schowane 1',
-		parentId: -1,
-		position: 0,
-	},
-	{
-		id: 28,
-		pageData: { language: 'pl', title: 'Schowane 2', slug: 'schowane-2' },
-		text: 'Schowane 2',
-		parentId: -1,
-		position: 0,
-	},
-	{
-		id: 29,
-		pageData: { language: 'pl', title: 'Schowane 3', slug: 'schowane-3' },
-		text: 'Schowane 3',
-		parentId: -1,
-		position: 0,
-	},
-	{
-		id: 30,
-		pageData: { language: 'pl', title: 'Schowane 4', slug: 'schowane-4' },
-		text: 'Schowane 4',
-		parentId: -1,
-		position: 0,
-	},
-	{
-		id: 31,
-		pageData: { language: 'pl', title: 'Schowane 5', slug: 'schowane-5' },
-		text: 'Schowane 5',
-		parentId: -1,
-		position: 0,
-	},
-	{
-		id: 32,
-		pageData: { language: 'en', title: 'Schowane 6', slug: 'schowane-6' },
-		text: 'Schowane 6',
-		parentId: -1,
 		position: 0,
 	},
 ]) {
@@ -254,121 +159,13 @@ for (const { pageData, text, parentId, position } of [
 	]);
 }
 
-for (const { name, content, isHidden, language } of [
-	{
-		name: 'slide1',
-		language: 'pl',
-		content: `<div class="flex-center w-full h-full" style="background-color: hsla(0, 100%, 50%, 0.3)">
-<h6>1</h6>
-</div>`,
-	},
-	{
-		name: 'slide2',
-		language: 'pl',
-		content: `<div class="flex-center w-full h-full" style="background-color: hsla(120, 100%, 50%, 0.3)">
-<h6>2</h6>
-</div>`,
-	},
-	{
-		name: 'slide3',
-		language: 'pl',
-		content: `<div class="flex-center w-full h-full" style="background-color: hsla(240, 100%, 50%, 0.3)">
-<h6>3</h6>
-</div>`,
-		isHidden: true,
-	},
-	{
-		name: 'slideOne',
-		language: 'en',
-		content: `<div class="flex-center w-full h-full" style="background-color: hsla(60, 100%, 50%, 0.3)">
-<h6>One</h6>
-</div>`,
-	},
-]) {
-	await db.insert(slides).values({ name, rawContent: content, parsedContent: content, isHidden, language });
-}
-
-await db.insert(slideAspectRatio).values({ value: '1 / 2' });
-
 await db.insert(footerContents).values({
-	language: 'pl',
-	emails: ['biuro@humbak.eu'],
-	phoneNumbers: ['Filip 608 062 911'],
-	location: { text: 'Gdzie nas znaleźć', value: 'https://goo.gl/maps/eRCtgre1uTpySr3L6' },
-	socials: [{ type: 'facebook', value: 'https://www.facebook.com/filip.perek.77' }],
+	language: 'en',
+	emails: ['email@example.com'],
+	phoneNumbers: ['Person 123 456 789'],
+	location: { text: 'Where to find us', value: 'https://google.com/maps' },
+	socials: [{ type: 'twitter', value: 'https://x.com' }, { type: 'youtube', value: 'https://youtube.com' }],
 });
-
-for (let dirId = 1; dirId <= 3; dirId++) {
-	const name = `d${dirId}`;
-	const path = `/${name}`;
-	await mkdir(`${filesStoragePath}${path}`);
-	await db.insert(directories).values({
-		name,
-		path,
-	});
-}
-
-for (let childDirId = 4; childDirId <= 6; childDirId++) {
-	const parentId = childDirId - 3;
-	const name = `d${parentId}n`;
-	const path = `/d${parentId}/${name}`;
-	await mkdir(`${filesStoragePath}${path}`);
-	await db.insert(directories).values({
-		name,
-		parentId,
-		path,
-	});
-}
-
-const pdfBuffer = await fetch('https://www.africau.edu/images/default/sample.pdf').then(r => r.arrayBuffer()).then(v => Buffer.from(v));
-const { data: rawGifData } = await fetch('https://api.giphy.com/v1/gifs/random?api_key=7IfGSmZdSFRLfxQaPcLtpQamsqj1ySOa').then(r => r.json());
-const gifBuffer = await fetch(rawGifData.images.original.url).then(r => r.arrayBuffer()).then(v => Buffer.from(v));
-
-for (let dirId = 0; dirId <= 6; dirId++) {
-	let dirPath = '/';
-	if (dirId > 0 && dirId <= 3) {
-		dirPath = `/d${dirId}/`;
-	} else if (dirId > 3) {
-		dirPath = `/d${dirId - 3}/d${dirId - 3}n/`;
-	}
-
-	const mimetypes: [string, string, () => any][] = [
-		['image/jpeg', 'jpeg', () => {
-			const x = Math.random() < 0.5 ? 300 : 800;
-			const y = Math.random() < 0.5 ? 300 : 800;
-			return fetch(`https://picsum.photos/${x}/${y}`).then(r => r.arrayBuffer()).then(v => Buffer.from(v));
-		}],
-		['image/jpeg', 'jpeg', () => {
-			const x = Math.random() < 0.5 ? 300 : 800;
-			const y = Math.random() < 0.5 ? 300 : 800;
-			return fetch(`https://picsum.photos/${x}/${y}`).then(r => r.arrayBuffer()).then(v => Buffer.from(v));
-		}],
-		['image/gif', 'gif', () => gifBuffer],
-		['application/pdf', 'pdf', () => pdfBuffer],
-		['text/plain', 'txt', () => Math.random().toString(36)],
-	];
-
-	for (let i = 0; i < mimetypes.length; i++) {
-		const [mimetype, extension, getFile] = mimetypes[i];
-
-		const name = `plik${dirId}${i}.${extension}`;
-		const path = `${dirPath}${name}`;
-		const title = `tytuł dla ${dirId}${i}`;
-		const alt = `alt dla ${dirId}${i}`;
-
-		await db.insert(files).values({
-			directoryId: dirId === 0 ? null : dirId,
-			path,
-			name,
-			title,
-			alt,
-			mimetype,
-		});
-
-		await writeFile(`${filesStoragePath}${path}`, await getFile());
-		await createImageSizes(`${filesStoragePath}${path}`, mimetype);
-	}
-}
 
 await db.insert(users).values({
 	id: 'test',

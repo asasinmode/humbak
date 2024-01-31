@@ -19,10 +19,6 @@ const schema = object({
 	PAGE_URL: string(),
 	FILES_PATH: string(),
 	STYLESHEETS_PATH: string(),
-	FOOTER_EMAIL: string(),
-	FOOTER_PHONE: string(),
-	FOOTER_LOCATION: string(),
-	FOOTER_FACEBOOK: string(),
 	JWT_SECRET: string(),
 });
 

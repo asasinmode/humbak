@@ -5,6 +5,7 @@ import { languageExistsMiddleware, languageQueryValidation, wrap } from '../help
 import { jwt } from '../helpers/jwt';
 import { insertMetaSchema, meta } from '../db/schema/meta';
 
+// todo finish meta, add language select on admin
 export const app = new Hono()
 	.get(
 		'/',
