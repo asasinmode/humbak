@@ -22,7 +22,7 @@ export const app = new Hono()
 					socials: footerContents.socials,
 				})
 				.from(footerContents)
-				.where(language ? eq(footerContents.language, language) : undefined);
+				.where(eq(footerContents.language, language));
 			type IResult = typeof result;
 
 			if (!result) {
