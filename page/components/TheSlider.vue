@@ -17,7 +17,6 @@ function resetSlider() {
 	}
 
 	blazeSlider && blazeSlider.destroy();
-
 	if (!props.slides.length) {
 		return;
 	}

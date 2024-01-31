@@ -75,6 +75,10 @@ function resetSlider() {
 	}
 
 	blazeSlider && blazeSlider.destroy();
+	if (!slides.value.length) {
+		return;
+	}
+
 	blazeSlider = new BlazeSlider(container.value, {
 		all: {
 			enableAutoplay: true,
