@@ -22,6 +22,8 @@ export const app = new Hono<{
 				alt: files.alt,
 				name: files.name,
 				mimetype: files.mimetype,
+				width: files.width,
+				height: files.height,
 			})
 				.from(files)
 				.where(query
@@ -78,6 +80,8 @@ export const app = new Hono<{
 				alt: files.alt,
 				name: files.name,
 				mimetype: files.mimetype,
+				width: files.width,
+				height: files.height,
 			})
 				.from(files)
 				.where(inArray(files.id, ids));

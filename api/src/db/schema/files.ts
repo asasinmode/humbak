@@ -6,11 +6,13 @@ import { directories } from './directories';
 export const files = mysqlTable('files', {
 	id: int('id').primaryKey().autoincrement(),
 	directoryId: int('directoryId').references((): AnyMySqlColumn => directories.id, { onDelete: 'cascade' }),
-	path: text('path').notNull().default(''),
+	path: text('path').notNull(),
 	name: text('name').notNull(),
 	title: text('title').notNull(),
 	alt: text('alt').notNull(),
 	mimetype: text('mimetype').notNull(),
+	width: int('width'),
+	height: int('height'),
 	createdAt: datetime('createdAt').notNull().default(sql`NOW()`),
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });

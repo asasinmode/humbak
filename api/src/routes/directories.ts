@@ -271,7 +271,10 @@ export const app = new Hono<{
 				return c.json({ message: 'musi być formdata' }, 400);
 			}
 
-			type IFile = Pick<InferSelectModel<typeof files>, 'directoryId' | 'title' | 'alt' | 'path' | 'name' | 'mimetype'> & { file: Uint8Array; };
+			type IFile = Pick<
+				InferSelectModel<typeof files>,
+				'directoryId' | 'title' | 'alt' | 'path' | 'name' | 'mimetype'
+			> & { file: Uint8Array; width?: number; height?: number; };
 			const errors: Record<string | number, Record<string, string>> = {};
 			function setError(index: number, key: keyof IFile, value: string) {
 				errors[index] ||= {};
@@ -370,6 +373,12 @@ export const app = new Hono<{
 				return c.json({ newFiles: errors }, 400);
 			}
 
+			for (const file of filesToSave) {
+				await writeFile(`${filesStoragePath}${file.path}`, file.file);
+				const { width, height } = await createImageSizes(`${filesStoragePath}${file.path}`, file.mimetype);
+				file.width = width;
+				file.height = height;
+			}
 			if (filesToSave.length) {
 				await db.insert(files).values(filesToSave.map(file => ({
 					title: file.title,
@@ -378,11 +387,9 @@ export const app = new Hono<{
 					path: file.path,
 					mimetype: file.mimetype,
 					directoryId: file.directoryId,
+					width: file.width,
+					height: file.height,
 				})));
-			}
-			for (const file of filesToSave) {
-				await writeFile(`${filesStoragePath}${file.path}`, file.file);
-				await createImageSizes(`${filesStoragePath}${file.path}`, file.mimetype);
 			}
 
 			return c.json(await dirData(id, true));
@@ -433,6 +440,8 @@ async function dirData(id: number | null, returnAllDirs: boolean) {
 				title: files.title,
 				alt: files.alt,
 				mimetype: files.mimetype,
+				width: files.width,
+				height: files.height,
 			})
 			.from(files)
 			.where(id === null ? isNull(files.directoryId) : eq(files.directoryId, id))

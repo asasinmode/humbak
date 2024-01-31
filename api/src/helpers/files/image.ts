@@ -4,14 +4,17 @@ import sharp from 'sharp';
 
 sharp.cache(false);
 
-export async function createImageSizes(path: string, mimetype: string) {
+export async function createImageSizes(
+	path: string,
+	mimetype: string
+): Promise<{ width?: number; height?: number; }> {
 	if (mimetype.slice(0, 5) !== 'image' || mimetype === 'image/gif') {
-		return;
+		return {};
 	}
 
 	if (!existsSync(path)) {
 		console.error(`could not create image sizes, file doesn't exist: "${path}"`);
-		return;
+		return {};
 	}
 
 	const image = sharp(path);
@@ -26,6 +29,8 @@ export async function createImageSizes(path: string, mimetype: string) {
 	await image.resize({ [propertyToResize]: 500, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_500.webp`);
 	await image.resize({ [propertyToResize]: 800, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_800.webp`);
 	await image.resize({ [propertyToResize]: 1000, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_1000.webp`);
+
+	return { width: metadata.width, height: metadata.height };
 }
 
 export async function renameFile(path: string, newPath: string, mimetype: string) {

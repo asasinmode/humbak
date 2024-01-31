@@ -127,6 +127,13 @@ export function useHumbakFiles() {
 		element.title = file.title;
 		element.alt = file.alt;
 
+		if (file.width !== null) {
+			element.width = file.width;
+		}
+		if (file.height !== null) {
+			element.height = file.height;
+		}
+
 		if (file.mimetype !== 'image/gif') {
 			const pathWithoutExtension = getPathWithoutExtension(`files${file.path}`);
 			element.srcset = `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1000.webp 1000w`;

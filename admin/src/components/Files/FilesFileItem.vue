@@ -77,6 +77,8 @@ const sizes = computed(() => {
 				:class="disableInteractions ? 'grayscale-100 brightness-60' : ''"
 				:srcset="srcSet"
 				:sizes="sizes"
+				:width="(file as any).width ?? undefined"
+				:height="(file as any).height ?? undefined"
 				class="h-full w-full object-cover"
 			>
 			<span

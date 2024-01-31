@@ -20,4 +20,5 @@ type ILocalItem<T> = T & {
 };
 export type ILocalDirectory = ILocalItem<IDirectory>;
 export type ILocalFile = ILocalItem<IFile>;
-export type INewFile = Omit<IFile, 'id' | 'directoryId'> & { file: File; movedToId?: number | null; };
+export type INewFile = Omit<IFile, 'id' | 'directoryId' | 'width' | 'height'>
+	& { file: File; movedToId?: number | null; };

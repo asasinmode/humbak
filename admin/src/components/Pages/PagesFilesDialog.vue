@@ -164,6 +164,8 @@ async function copy(file: IDialogFile) {
 				:alt="file.alt"
 				:srcset="srcSet(`${env.VITE_PAGE_URL}/files${file.path}`, file.mimetype, isImage(file.mimetype))"
 				:sizes="sizes(file.mimetype, isImage(file.mimetype))"
+				:width="file.width ?? undefined"
+				:height="file.height ?? undefined"
 				class="object-cover col-span-full h-18 w-full max-w-1/2 justify-self-center lg:row-span-full lg:col-span-1 lg:h-25 lg:max-w-none lg:self-center"
 			>
 			<span

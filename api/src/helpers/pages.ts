@@ -43,6 +43,8 @@ export async function parsePageHtml(html?: string): Promise<{ value?: string; fi
 			alt: files.alt,
 			name: files.name,
 			mimetype: files.mimetype,
+			width: files.width,
+			height: files.height,
 		})
 			.from(files)
 			.where(inArray(files.id, allFileIds))
@@ -67,6 +69,8 @@ export async function parsePageHtml(html?: string): Promise<{ value?: string; fi
 		image.attr('src', `files${file.path}`);
 		image.attr('title', file.title);
 		image.attr('alt', file.alt);
+		file.width !== null && image.attr('width', `${file.width}`);
+		file.height !== null && image.attr('height', `${file.height}`);
 
 		if (file.mimetype !== 'image/gif') {
 			const pathWithoutExtension = getPathWithoutExtension(`files${file.path}`);
