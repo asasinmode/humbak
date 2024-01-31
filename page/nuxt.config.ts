@@ -11,6 +11,7 @@ export default defineNuxtConfig({
 	css: [
 		'@unocss/reset/tailwind.css',
 		'assets/index.css',
+		'assets/content.css',
 	],
 	routeRules: {
 		'/stylesheets/**': {
@@ -29,6 +30,7 @@ export default defineNuxtConfig({
 			link: [
 				{ rel: 'icon', href: '/favicon.ico' },
 				{ rel: 'canonical', href: 'https://humbak.eu/' },
+				{ rel: 'stylesheet', type: 'text/css', href: '/stylesheets/global.css' },
 			],
 		},
 	},

@@ -38,9 +38,6 @@ if (languageDataError.value || !languageData.value) {
 
 useHead({
 	htmlAttrs: { lang: language },
-	link: [
-		{ rel: 'stylesheet', type: 'text/css', href: '/stylesheets/global.css' },
-	],
 });
 
 const transformedMenuLinks = transformMenuLinks(languageData.value.menuLinks.slice());
