@@ -55,50 +55,50 @@ const {
 		<RouterLink
 			ref="secondFocusableNavElement"
 			to="/"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow transition-margin neon-cyan"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow transition-margin neon-emerald"
 			@click="toggleMenu(false)"
 		>
-			<div class="i-solar-document-text-linear mr-[0.125rem] inline-block align-sub text-cyan" />
+			<div class="i-solar-document-text-linear mr-[0.125rem] inline-block align-sub text-emerald" />
 			strony
 		</RouterLink>
 		<RouterLink
 			to="/menu"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-violet"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-cyan"
 			@click="toggleMenu(false)"
 		>
-			<div class="i-solar-layers-outline mr-[0.125rem] inline-block align-sub text-violet" />
+			<div class="i-solar-layers-outline mr-[0.125rem] inline-block align-sub text-cyan" />
 			menu
 		</RouterLink>
 		<RouterLink
 			to="/pliki"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-orange"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-indigo"
 			@click="toggleMenu(false)"
 		>
-			<div class="i-solar-folder-with-files-linear mr-[0.125rem] inline-block align-sub text-orange" />
+			<div class="i-solar-folder-with-files-linear mr-[0.125rem] inline-block align-sub text-indigo dark:text-indigo-3" />
 			pliki
 		</RouterLink>
 		<RouterLink
 			to="/css"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-emerald"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-violet"
 			@click="toggleMenu(false)"
 		>
-			<div class="i-solar-pallete-2-outline mr-[0.125rem] inline-block align-sub text-emerald" />
+			<div class="i-solar-pallete-2-outline mr-[0.125rem] inline-block align-sub text-violet" />
 			css
 		</RouterLink>
 		<RouterLink
 			to="/meta"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-indigo"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-fuchsia"
 			@click="toggleMenu(false)"
 		>
-			<div class="i-fluent-bot-24-regular mr-[0.125rem] inline-block align-sub text-indigo dark:text-indigo-3" />
+			<div class="i-fluent-bot-24-regular mr-[0.125rem] inline-block align-sub text-fuchsia" />
 			meta
 		</RouterLink>
 		<RouterLink
 			to="/slider"
-			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-fuchsia"
+			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-orange"
 			@click="toggleMenu(false)"
 		>
-			<div class="i-solar-wallpaper-linear mr-[0.125rem] inline-block align-sub text-fuchsia" />
+			<div class="i-solar-wallpaper-linear mr-[0.125rem] inline-block align-sub text-orange" />
 			slider
 		</RouterLink>
 		<RouterLink
