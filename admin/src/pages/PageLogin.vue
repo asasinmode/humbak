@@ -16,7 +16,6 @@ const {
 } = useForm(
 	{ username: '', password: '' },
 	async () => {
-		// @ts-expect-error idk why type is wrong
 		const serverJwt = await api.auth.login.$post({
 			json: { username: username.value, password: password.value },
 		}).then((r: Response) => r.text());
@@ -24,7 +23,7 @@ const {
 		login(username.value, serverJwt);
 		router.push('/');
 	},
-	saveButton.value?.element
+	() => saveButton.value?.element
 );
 </script>
 

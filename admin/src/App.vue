@@ -19,7 +19,6 @@ onMounted(async () => {
 	isVerifying.value = true;
 
 	try {
-		// @ts-expect-error idk why types are wrong
 		await api.auth.verify.$get();
 		login(storedUsername, storedJwt);
 		const pathname = window.location.pathname;

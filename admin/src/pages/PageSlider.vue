@@ -100,7 +100,6 @@ onMounted(async () => {
 	try {
 		const [uniqueLanguages, savedAspectRatio] = await Promise.all([
 			api.languages.$get().then(r => r.json()),
-			// @ts-expect-error idk why type is wrong
 			api.slides.aspectRatio.$get().then(r => r.json()),
 		]);
 		languages.value = uniqueLanguages;
@@ -269,7 +268,6 @@ async function saveAspectRatio() {
 	isSavingAspectRatio.value = true;
 
 	try {
-		// @ts-expect-error idk why type is wrong
 		await api.slides.aspectRatio.$put({ json: { value: aspectRatio.value } });
 		previousAspectRatio.value = aspectRatio.value;
 		configurationDialog.value?.close();

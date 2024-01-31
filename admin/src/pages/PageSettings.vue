@@ -17,7 +17,6 @@ const {
 } = useForm(
 	{ username: '' },
 	async () => {
-		// @ts-expect-error idk why types are wrong
 		await api.auth.changeUsername.$post({ json: { username: username.value } });
 		loggedInUsername.value = username.value;
 		updateUsernameValues({
@@ -36,7 +35,6 @@ const {
 } = useForm(
 	{ oldPassword: '', newPassword: '' },
 	async () => {
-		// @ts-expect-error idk why types are wrong
 		await api.auth.changePassword.$post({
 			json: {
 				oldPassword: oldPassword.value,
