@@ -78,7 +78,7 @@ const {
 			pliki
 		</RouterLink>
 		<RouterLink
-			to="/css"
+			to="/global"
 			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-violet"
 			@click="toggleMenu(false)"
 		>
