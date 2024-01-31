@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import VButton from '~/components/V/VButton.vue';
+import LanguageSelect from '~/components/LanguageSelect.vue';
 import type { IFooterContents } from '~/composables/useApi';
 
 const { toast, toastGenericError } = useToast();
+const { confirm } = useConfirm();
 const api = useApi();
 
 const saveButton = ref<InstanceType<typeof VButton>>();
+const languageSelect = ref<InstanceType<typeof LanguageSelect>>();
 
-const isLoadingLanguages = ref(false);
-const languages = ref<string[]>([]);
+const selectedLanguage = ref<string>();
 let previousSelectedLanguage: string | undefined;
 
 const locationTextModelValue = ref('');
@@ -18,18 +20,18 @@ const isLoading = ref(false);
 const saveKey = ref(0);
 
 const {
-	clearForm,
 	sendForm,
 	updateValues,
+	clearForm,
 	isSaving,
+	hasChanged,
 	errors,
 	emails,
 	phoneNumbers,
 	location,
 	socials,
-	language,
-} = useForm<IFooterContents>(
-	{ emails: [], phoneNumbers: [], location: { text: '', value: '' }, socials: [], language: '' },
+} = useForm<Omit<IFooterContents, 'language'>>(
+	{ emails: [], phoneNumbers: [], location: { text: '', value: '' }, socials: [] },
 	async () => {
 		const footerData = await api.footerContents.$post({
 			json: {
@@ -37,7 +39,7 @@ const {
 				phoneNumbers: phoneNumbers.value,
 				location: location.value,
 				socials: socials.value,
-				language: language.value,
+				language: selectedLanguage.value as string,
 			},
 		}).then(r => r.json());
 
@@ -50,24 +52,17 @@ const {
 );
 
 async function getFooterContent() {
-	if (!language.value || previousSelectedLanguage === language.value) {
+	if (!selectedLanguage.value) {
 		return;
 	}
 
 	isLoading.value = true;
 	try {
-		const data = await api.footerContents.$get({ query: { language: language.value } }).then(r => r.json());
-		previousSelectedLanguage = language.value;
+		const data = await api.footerContents.$get({
+			query: { language: selectedLanguage.value },
+		}).then(r => r.json());
 
-		if (!data) {
-			clearForm(undefined, true);
-			return;
-		}
-
-		emails.value = data.emails;
-		phoneNumbers.value = data.phoneNumbers;
-		location.value = data.location;
-		socials.value = data.socials;
+		updateValues(data);
 		locationTextModelValue.value = '';
 		locationValueModelValue.value = '';
 	} catch (e) {
@@ -76,6 +71,28 @@ async function getFooterContent() {
 	} finally {
 		isLoading.value = false;
 	}
+}
+
+async function getFooterContentIfLanguageChanged() {
+	if (previousSelectedLanguage === selectedLanguage.value || isLoading.value) {
+		selectedLanguage.value = previousSelectedLanguage;
+		return;
+	}
+	if (hasChanged()) {
+		const proceed = await confirm(languageSelect.value?.getInputRef()?.element);
+		if (!proceed) {
+			selectedLanguage.value = previousSelectedLanguage;
+			return;
+		}
+	}
+
+	clearForm(undefined, true);
+	await getFooterContent();
+	previousSelectedLanguage = selectedLanguage.value;
+}
+
+function getFooterContentAndSetPreviousLanguage() {
+	getFooterContent().then(() => previousSelectedLanguage = selectedLanguage.value);
 }
 
 const maxElementsInColumn = computed(() => Math.max(emails.value.length + 1, phoneNumbers.value.length + 1, 1));
@@ -147,7 +164,12 @@ function addSocial() {
 <template>
 	<main id="content" class="flex flex-col gap-x-3 gap-y-5 pb-4 pt-[1.125rem]">
 		<div class="px-container grid grid-cols-[1fr_min-content] mx-auto max-w-360 w-full gap-x-3">
-			<LanguageSelect v-model="language" @select-option="getFooterContent" @languages-loaded="getFooterContent" />
+			<LanguageSelect
+				ref="languageSelect"
+				v-model="selectedLanguage"
+				@select-option="getFooterContentIfLanguageChanged"
+				@languages-loaded="getFooterContentAndSetPreviousLanguage"
+			/>
 			<VButton
 				ref="saveButton"
 				class="mr-12 h-fit md:mr-0 neon-green"

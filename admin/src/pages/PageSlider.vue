@@ -137,6 +137,7 @@ async function getSlides() {
 
 async function getSlidesIfLanguageChanged() {
 	if (previousSelectedLanguage === selectedLanguage.value || isLoadingSlides.value) {
+		selectedLanguage.value = previousSelectedLanguage;
 		return;
 	}
 	if (hasChanged()) {
