@@ -49,29 +49,8 @@ const {
 	() => saveButton.value?.element
 );
 
-onMounted(async () => {
-	isLoadingLanguages.value = true;
-	isLoading.value = true;
-	try {
-		languages.value = await api.languages.$get().then(r => r.json());
-
-		if (!languages.value.length) {
-			return;
-		}
-
-		language.value = languages.value[0];
-		getFooterContent();
-	} catch (e) {
-		toast('błąd przy ładowaniu języków', 'error');
-		console.error(e);
-	} finally {
-		isLoading.value = false;
-		isLoadingLanguages.value = false;
-	}
-});
-
 async function getFooterContent() {
-	if (previousSelectedLanguage === language.value) {
+	if (!language.value || previousSelectedLanguage === language.value) {
 		return;
 	}
 
@@ -168,19 +147,7 @@ function addSocial() {
 <template>
 	<main id="content" class="flex flex-col gap-x-3 gap-y-5 pb-4 pt-[1.125rem]">
 		<div class="px-container grid grid-cols-[1fr_min-content] mx-auto max-w-360 w-full gap-x-3">
-			<VCombobox
-				id="footerLanguage"
-				v-model="language"
-				class="!min-w-20 !w-20"
-				class-input="!min-w-20 !w-20"
-				label="język"
-				:options="languages"
-				:is-loading="isLoadingLanguages"
-				transform-options
-				select-only
-				label-visually-hidden
-				@select-option="getFooterContent"
-			/>
+			<LanguageSelect v-model="language" @select-option="getFooterContent" @languages-loaded="getFooterContent" />
 			<VButton
 				ref="saveButton"
 				class="mr-12 h-fit md:mr-0 neon-green"

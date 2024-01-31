@@ -15,6 +15,7 @@ declare module 'vue' {
     IconsSnippetIndentedParagraphs: typeof import('./../components/Icons/IconsSnippetIndentedParagraphs.vue')['default']
     IconsSnippetTripleContainer: typeof import('./../components/Icons/IconsSnippetTripleContainer.vue')['default']
     IconsSnippetUnorderedList: typeof import('./../components/Icons/IconsSnippetUnorderedList.vue')['default']
+    LanguageSelect: typeof import('./../components/LanguageSelect.vue')['default']
     MenuHiddenLinksWidget: typeof import('./../components/Menu/MenuHiddenLinksWidget.vue')['default']
     MenuLinkButton: typeof import('./../components/Menu/MenuLinkButton.vue')['default']
     PagesContentEditor: typeof import('./../components/Pages/PagesContentEditor.vue')['default']
