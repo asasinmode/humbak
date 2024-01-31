@@ -11,8 +11,37 @@ const { confirm } = useConfirm();
 
 const editor = ref<InstanceType<typeof VEditor>>();
 const saveButton = ref<InstanceType<typeof VButton>>();
-const isSaving = ref(false);
 const isLoading = ref(false);
+
+const initMetaValue = '';
+const {
+	isSaving,
+	value: metaValue,
+	sendForm: sendMeta,
+	hasChanged: hasMetaChanged,
+	// updateValues: updateMetaValues,
+} = useForm({ value: '' }, async () => {
+	console.log('saving', metaValue.value);
+	throw new Error('oopsie');
+	// let contentFields;
+	// try {
+	// 	contentFields = contentEditor.value?.getChangedFields() || {};
+	// } catch (e) {
+	// 	toast('zła wartość meta', 'error');
+	// 	console.error(e);
+	// 	return;
+	// }
+
+	// await api.pages.$post({
+	// 	json: {
+	// 		value: metaValue.value,
+	// 	},
+	// }).then(r => r.json());
+
+	// updateMetaValues({value: metaValue.value});
+
+	// toast('zapisano zmiany');
+},	() => saveButton.value?.element);
 
 const { value: cssValue, initValue: initCssValue, updateValue: updateCssValue } = useGlobalPagesStylesheet(
 	isLoading,
@@ -20,7 +49,7 @@ const { value: cssValue, initValue: initCssValue, updateValue: updateCssValue } 
 );
 
 function hasChanged() {
-	return cssValue.value !== initCssValue.value;
+	return cssValue.value !== initCssValue.value || hasMetaChanged();
 }
 
 async function saveChanges() {
@@ -38,11 +67,6 @@ async function saveChanges() {
 	} finally {
 		isSaving.value = false;
 	}
-}
-
-function updateModelValue(newValue: string) {
-	cssValue.value = newValue;
-	updateCssValue(newValue);
 }
 
 const modelSelect = ref<ComponentExposed<typeof VCombobox>>();
@@ -69,6 +93,9 @@ async function changeEditorModel() {
 		cssValue.value = initCssValue.value;
 		editor.value?.updateModelValue(0, cssValue.value);
 		await getMeta();
+	} else {
+		metaValue.value = initMetaValue;
+		editor.value?.updateModelValue(1, metaValue.value);
 	}
 }
 
@@ -81,6 +108,15 @@ async function getMeta() {
 		console.error(e);
 	} finally {
 		isLoading.value = false;
+	}
+}
+
+function updateModelValue(newValue: string) {
+	if (editorModel.value === 0) {
+		cssValue.value = newValue;
+		updateCssValue(newValue);
+	} else {
+		metaValue.value = newValue;
 	}
 }
 </script>
@@ -110,7 +146,7 @@ async function getMeta() {
 		<VButton
 			class="mr-12 md:mr-0 neon-green"
 			:is-loading="isSaving"
-			@click="saveChanges"
+			@click="editorModel === 0 ? saveChanges() : sendMeta(false)"
 		>
 			zapisz
 		</VButton>
@@ -119,6 +155,7 @@ async function getMeta() {
 			class="col-span-full min-h-64"
 			:models="[
 				{ language: 'css', value: cssValue },
+				{ language: 'json', value: metaValue },
 			]"
 			:current-model="0"
 			:is-loading="isLoading"
