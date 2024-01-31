@@ -321,12 +321,14 @@ function revertAspectRatioIfUnsaved() {
 						class-close-button="justify-self-end"
 						close-button-text="zamknij"
 						title="konfiguracja slidera"
+						:disabled="isLoadingAspectRatio"
 						@open="previousAspectRatio = aspectRatio"
 						@close="revertAspectRatioIfUnsaved"
 					>
 						<template #button>
 							<span class="visually-hidden">konfiguracja slidera</span>
-							<div class="i-mdi-wrench absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
+							<VLoading v-if="isLoadingAspectRatio" />
+							<div v-else class="i-mdi-wrench absolute left-1/2 top-1/2 h-5 w-5 translate-center" />
 						</template>
 
 						<h3 class="col-span-full text-center text-5 font-600">
