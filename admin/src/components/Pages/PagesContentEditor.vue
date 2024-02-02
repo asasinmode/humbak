@@ -146,7 +146,7 @@ defineExpose({
 				<div class="i-solar-magic-stick-3-bold absolute left-1/2 top-1/2 h-[1.15rem] w-[1.15rem] translate-center" />
 			</VButton>
 			<PagesSnippetsDialog />
-			<PagesFilesDialog class="mt-2 h-8 w-8 p-0" />
+			<HumbakFilesDialog class="mt-2 h-8 w-8 p-0" />
 			<VButton
 				class="left-1/2 top-1/2 h-8 w-8 translate-center cursor-move p-0 !absolute neon-neutral"
 				title="zmień rozmiar"

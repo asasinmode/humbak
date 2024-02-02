@@ -84,13 +84,13 @@ function nonImageText(mimetype: string) {
 	return knownMimetypeExtensions[mimetype] || mimetype;
 }
 function srcSet(path: string, mimetype: string, isImage: boolean) {
-	if (isImage && mimetype !== 'image/gif') {
+	if (isImage && mimetype !== 'image/gif' && mimetype !== 'image/svg+xml') {
 		const pathWithoutExtension = getPathWithoutExtension(path);
 		return `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1000.webp 1000w`;
 	}
 }
 function sizes(mimetype: string, isImage: boolean) {
-	if (isImage && mimetype !== 'image/gif') {
+	if (isImage && mimetype !== 'image/gif' && mimetype !== 'image/svg+xml') {
 		return '(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px';
 	}
 }

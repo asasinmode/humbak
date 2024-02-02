@@ -72,7 +72,7 @@ export async function parsePageHtml(html?: string): Promise<{ value?: string; fi
 		file.width !== null && image.attr('width', `${file.width}`);
 		file.height !== null && image.attr('height', `${file.height}`);
 
-		if (file.mimetype !== 'image/gif') {
+		if (file.mimetype !== 'image/gif' && file.mimetype !== 'image/svg+xml') {
 			const pathWithoutExtension = getPathWithoutExtension(`files${file.path}`);
 			image.attr('srcset', `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1000.webp 1000w`);
 			image.attr('sizes', '(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px');

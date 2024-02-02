@@ -50,14 +50,14 @@ function cancelMove() {
 }
 
 const srcSet = computed(() => {
-	if (!isNew.value && file.value.mimetype !== 'image/gif') {
+	if (!isNew.value && file.value.mimetype !== 'image/gif' && file.value.mimetype !== 'image/svg+xml') {
 		const pathWithoutExtension = getPathWithoutExtension(path.value);
 		return `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1000.webp 1000w`;
 	}
 });
 
 const sizes = computed(() => {
-	if (!isNew.value && file.value.mimetype !== 'image/gif') {
+	if (!isNew.value && file.value.mimetype !== 'image/gif' && file.value.mimetype !== 'image/svg+xml') {
 		return '(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px';
 	}
 });

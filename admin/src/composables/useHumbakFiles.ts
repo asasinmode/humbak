@@ -1,4 +1,5 @@
 import type { IDialogFile } from './useApi';
+import { env } from '~/env';
 import { getPathWithoutExtension } from '~/helpers';
 
 const { toast, toastGenericError } = useToast();
@@ -123,7 +124,8 @@ export function useHumbakFiles() {
 
 	function replaceTempWithImage(temp: ITempFileElement, file: IDialogFile) {
 		const element = document.createElement('img');
-		element.src = `files${file.path}`;
+		const src = `${env.VITE_PAGE_URL}/files${file.path}`;
+		element.src = src;
 		element.title = file.title;
 		element.alt = file.alt;
 
@@ -134,8 +136,8 @@ export function useHumbakFiles() {
 			element.height = file.height;
 		}
 
-		if (file.mimetype !== 'image/gif') {
-			const pathWithoutExtension = getPathWithoutExtension(`files${file.path}`);
+		if (file.mimetype !== 'image/gif' && file.mimetype !== 'image/svg+xml') {
+			const pathWithoutExtension = getPathWithoutExtension(src);
 			element.srcset = `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1000.webp 1000w`;
 			element.sizes = '(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px';
 		}
