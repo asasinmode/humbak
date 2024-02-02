@@ -25,7 +25,10 @@ const classContainer = computed(() => {
 	return rv;
 });
 
-const isLoading = ref(false);
+const isLoadingDirs = ref(false);
+const isLoadingFiles = ref(false);
+const computedIsLoading = computed(() => isLoadingDirs.value || isLoadingFiles.value);
+
 const saveButton = ref<InstanceType<typeof VButton>>();
 const allDirectories = ref<IDirectory[]>([]);
 
@@ -81,10 +84,8 @@ const pathBreadcrumbs = computed<IBreadcrumb[]>(() => {
 	return breadcrumbs;
 });
 
-onMounted(async () => {
-	isLoading.value = true;
-	await getDirectories();
-	isLoading.value = false;
+onMounted(() => {
+	getDirectories();
 });
 
 const {
@@ -199,19 +200,21 @@ function handleFileInput(event: Event) {
 }
 
 async function getDirectories() {
+	isLoadingDirs.value = true;
+
 	try {
 		const directories = await api.directories.$get().then(r => r.json());
 		allDirectories.value = directories;
 	} catch (e) {
 		console.error(e);
 		toast('błąd przy ładowaniu folderów', 'error');
+	} finally {
+		isLoadingDirs.value = false;
 	}
 }
 
-async function getDir(id: number | null, skipLoadingIndicator = false) {
-	if (!skipLoadingIndicator) {
-		isLoading.value = true;
-	}
+async function getDir(id: number | null) {
+	isLoadingFiles.value = true;
 
 	try {
 		const { files, directories } = await api.directories[':id'].$get({ param: { id: `${id}` } }).then(r => r.json());
@@ -225,9 +228,7 @@ async function getDir(id: number | null, skipLoadingIndicator = false) {
 		console.error(e);
 		toast('błąd przy ładowaniu plików', 'error');
 	} finally {
-		if (!skipLoadingIndicator) {
-			isLoading.value = false;
-		}
+		isLoadingFiles.value = false;
 	}
 }
 
@@ -775,7 +776,7 @@ async function goToDir(id: number | null, event: MouseEvent) {
 				ref="saveButton"
 				class="mr-12 h-fit md:mr-container neon-green"
 				:is-loading="isSaving"
-				:disabled="isLoading"
+				:disabled="computedIsLoading"
 				@click="saveChanges"
 			>
 				zapisz
@@ -786,7 +787,7 @@ async function goToDir(id: number | null, event: MouseEvent) {
 			class="relative mx-auto max-w-360 w-full gap-x-5 px-container"
 			:class="classContainer"
 			aria-live="polite"
-			:aria-busy="isLoading || isSaving"
+			:aria-busy="computedIsLoading || isSaving"
 		>
 			<div
 				class="relative row-span-5 flex flex-col of-hidden border-2 border-neutral rounded-lg shadow"
@@ -798,13 +799,13 @@ async function goToDir(id: number | null, event: MouseEvent) {
 						v-model="newDirName"
 						label="nazwa folderu"
 						:error="createDirErrors.name || createDirErrors.parentId"
-						:disabled="isLoading"
+						:disabled="computedIsLoading"
 						@update:model-value="clearCreateDirErrors"
 					/>
 					<VButton
 						class="h-fit shrink-0 neon-green"
 						:class="isTiles ? '' : 'md:mt-[1.625rem]'"
-						:disabled="isLoading"
+						:disabled="computedIsLoading"
 						:is-loading="isSavingDir"
 						@click="createDir"
 					>
@@ -823,11 +824,11 @@ async function goToDir(id: number | null, event: MouseEvent) {
 					@dragover.prevent=""
 				>
 					<input ref="fileInput" type="file" multiple hidden @input="handleFileInput">
-					<VButton v-show="!isDraggingOverFiles" class="neon-blue" :disabled="isLoading" @click="openFileInput">
+					<VButton v-show="!isDraggingOverFiles" class="neon-blue" :disabled="computedIsLoading" @click="openFileInput">
 						wgraj pliki
 					</VButton>
 				</div>
-				<VLoading v-if="isLoading" class="absolute inset-0 bg-black/10 dark:bg-white/10" size="40" />
+				<VLoading v-if="computedIsLoading" class="absolute inset-0 bg-black/10 dark:bg-white/10" size="40" />
 			</div>
 			<FilesDirItem
 				v-for="(dir, index) in currentDirDirs"
