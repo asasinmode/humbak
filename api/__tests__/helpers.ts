@@ -26,7 +26,7 @@ export function createAllDirs(dirs: { parentId: number | null; path?: string; }[
 	return { allDirs, allDirsArray };
 }
 
-export function createOriginalFiles(files: { directoryId: number | null; name?: string; }[]) {
+export function createOriginalFiles(files: { directoryId: number | null; name?: string; mimetype?: string; }[]) {
 	const rv = new Map<number, IOriginalFile>();
 
 	for (let i = 0; i < files.length; i++) {
@@ -37,7 +37,7 @@ export function createOriginalFiles(files: { directoryId: number | null; name?: 
 			directoryId: tmp.directoryId,
 			path: `/${id}`,
 			name: tmp.name ?? `${id}`,
-			mimetype: 'text/plain',
+			mimetype: tmp.mimetype ?? 'text/plain',
 		};
 		rv.set(id, file);
 	}

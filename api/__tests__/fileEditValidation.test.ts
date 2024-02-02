@@ -242,6 +242,82 @@ test('file edit validation', async (t) => {
 		});
 	});
 
+	await t.test('errors file exists in chosen location (image)', async () => {
+		await writeFile(`${testFilesPath}/tmpPng.png`, '');
+		await writeFile(`${testFilesPath}/tmpJpg.jpeg`, '');
+		await writeFile(`${testFilesPath}/other.txt`, '');
+
+		const originalFiles = createOriginalFiles([
+			{ directoryId: null, name: 'tmpPng.png', mimetype: 'image/png' },
+			{ directoryId: null, name: 'tmpJpg.jpeg', mimetype: 'image/jpeg' },
+		]);
+
+		const result = await getFilesToEdit([
+			createInputFile(1, null, 'other.png'),
+			createInputFile(2, null, 'other.jpeg'),
+		], new Map(), [], originalFiles, `${dirPath}/`);
+
+		assert.deepStrictEqual(result.filesToEdit, []);
+		assert.deepStrictEqual(result.errors, {
+			0: {
+				name: 'plik o podanej nazwie istnieje w wybranej lokacji',
+			},
+			1: {
+				name: 'plik o podanej nazwie istnieje w wybranej lokacji',
+			},
+		});
+	});
+
+	await t.test('accepts file exists in chosen location (not image)', async () => {
+		await writeFile(`${testFilesPath}/tmp.txt`, '');
+		await writeFile(`${testFilesPath}/tmpGif.gif`, '');
+		await writeFile(`${testFilesPath}/tmpSvg.svg`, '');
+		await writeFile(`${testFilesPath}/other.txt`, '');
+
+		const originalFiles = createOriginalFiles([
+			{ directoryId: null, name: 'tmp.pdf' },
+			{ directoryId: null, name: 'tmpGif.gif', mimetype: 'image/gif' },
+			{ directoryId: null, name: 'tmpSvg.svg', mimetype: 'image/svg+xml' },
+		]);
+
+		const result = await getFilesToEdit([
+			createInputFile(1, null, 'other.pdf'),
+			createInputFile(2, null, 'other.gif'),
+			createInputFile(3, null, 'other.svg'),
+		], new Map(), [], originalFiles, `${dirPath}/`);
+
+		assert.deepStrictEqual(result.filesToEdit, [
+			{
+				id: 1,
+				directoryId: null,
+				name: 'other.pdf',
+				title: '1',
+				alt: '1',
+				targetDir: undefined,
+				originalFile: originalFiles.get(1),
+			},
+			{
+				id: 2,
+				directoryId: null,
+				name: 'other.gif',
+				title: '2',
+				alt: '2',
+				targetDir: undefined,
+				originalFile: originalFiles.get(2),
+			},
+			{
+				id: 3,
+				directoryId: null,
+				name: 'other.svg',
+				title: '3',
+				alt: '3',
+				targetDir: undefined,
+				originalFile: originalFiles.get(3),
+			},
+		]);
+		assert.deepStrictEqual(result.errors, {});
+	});
+
 	await t.test('accepts only alt/title changed', async () => {
 		await writeFile(`${testFilesPath}/tmp3`, '');
 
