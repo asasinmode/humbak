@@ -12,7 +12,7 @@ export async function createImageSizes(
 	path: string,
 	mimetype: string
 ): Promise<{ width?: number; height?: number; }> {
-	if (!isMimetypeWithSizes(mimetype)) {
+	if (mimetype.slice(0, 5) !== 'image') {
 		return {};
 	}
 
@@ -23,6 +23,10 @@ export async function createImageSizes(
 
 	const image = sharp(path);
 	const metadata = await image.metadata();
+
+	if (mimetype === 'image/gif' || mimetype === 'image/svg+xml') {
+		return { width: metadata.width, height: metadata.height };
+	}
 
 	let propertyToResize = 'width';
 	if (metadata.width && metadata.height) {
