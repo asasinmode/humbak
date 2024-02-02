@@ -1,11 +1,14 @@
 import { existsSync } from 'node:fs';
-import { rename, rm } from 'node:fs/promises';
+import { readdir, rename, rm } from 'node:fs/promises';
 import sharp from 'sharp';
 
 sharp.cache(false);
 
+function isMimetypeWithSizes(mimetype: string) {
+	return mimetype.slice(0, 5) === 'image' && mimetype !== 'image/gif';
+}
+
 // dont create sizes for svg & update preview on frontend
-// validation if file image check name without extension for images & tests
 // change bad meta value toast to "incorrect"
 // add veditor errors (meta incorrect json)
 // humbak image on frontend replace use absolute path to page
@@ -21,7 +24,7 @@ export async function createImageSizes(
 	path: string,
 	mimetype: string
 ): Promise<{ width?: number; height?: number; }> {
-	if (mimetype.slice(0, 5) !== 'image' || mimetype === 'image/gif') {
+	if (!isMimetypeWithSizes(mimetype)) {
 		return {};
 	}
 
@@ -48,7 +51,7 @@ export async function createImageSizes(
 
 export async function renameFile(path: string, newPath: string, mimetype: string) {
 	await rename(path, newPath);
-	if (mimetype.slice(0, 5) !== 'image' || mimetype === 'image/gif') {
+	if (!isMimetypeWithSizes(mimetype)) {
 		return;
 	}
 
@@ -74,4 +77,22 @@ export async function deleteFile(path: string, mimetype: string) {
 export function getPathWithoutExtension(path: string) {
 	const pathDotIndex = path.lastIndexOf('.');
 	return path.slice(0, pathDotIndex !== -1 ? pathDotIndex : undefined);
+}
+
+export async function imageWithSameNameExists(path: string, name: string, mimetype: string) {
+	if (!isMimetypeWithSizes(mimetype)) {
+		return false;
+	}
+
+	const extensionlessName = getPathWithoutExtension(name);
+	const nameLength = extensionlessName.length;
+	const files = await readdir(path, { withFileTypes: true });
+
+	for (const file of files) {
+		if (!file.isDirectory() && file.name.slice(0, nameLength) === extensionlessName) {
+			return true;
+		}
+	}
+
+	return false;
 }

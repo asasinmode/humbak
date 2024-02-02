@@ -4,7 +4,7 @@ import { Hono, type MiddlewareHandler } from 'hono';
 import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { type Input, array, custom, null_, number, object, string, transform, union } from 'valibot';
 import { processDeletedDirs } from '../helpers/files/dirDeleteProcessing';
-import { createImageSizes } from '../helpers/files/image';
+import { createImageSizes, getPathWithoutExtension, imageWithSameNameExists } from '../helpers/files/image';
 import { parsePageHtml } from '../helpers/pages';
 import { db } from '../db';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
@@ -330,14 +330,9 @@ export const app = new Hono<{
 				if (!file.name) {
 					setError(i, 'name', 'nie może być puste');
 				} else {
-					const newPath = `${filesStoragePath}${targetDirPath}${file.name}`;
-					const somethingExists = existsSync(newPath);
-					if (somethingExists) {
-						const stats = await lstat(newPath);
-						if (!stats.isDirectory()) {
-							setError(i, 'name', 'plik o podanej nazwie istnieje w wybranej lokacji');
-							continue;
-						}
+					if (await imageWithSameNameExists(`${filesStoragePath}${targetDirPath}`, file.name, file.type)) {
+						setError(i, 'name', 'plik o podanej nazwie istnieje w wybranej lokacji');
+						continue;
 					}
 				}
 

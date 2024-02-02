@@ -1,8 +1,7 @@
-import { existsSync } from 'node:fs';
-import { lstat } from 'node:fs/promises';
 import type { InferSelectModel } from 'drizzle-orm';
 import type { files } from '../../db/schema/files';
 import type { IDir, IPutDirectoryInput } from '../../routes/directories';
+import { imageWithSameNameExists } from './image';
 import { filesStoragePath } from '.';
 
 export type IOriginalFile = Pick<InferSelectModel<typeof files>, 'id' | 'directoryId' | 'path' | 'name' | 'mimetype'>;
@@ -71,14 +70,9 @@ export async function getFilesToEdit(
 
 		const hasMoved = originalFile.directoryId !== file.directoryId || file.name !== originalFile.name;
 		if (hasMoved) {
-			const newPath = `${filesStoragePath}${targetDirPath}${file.name}`;
-			const somethingExists = existsSync(newPath);
-			if (somethingExists) {
-				const stats = await lstat(newPath);
-				if (!stats.isDirectory()) {
-					setError(i, 'name', 'plik o podanej nazwie istnieje w wybranej lokacji');
-					continue;
-				}
+			if (await imageWithSameNameExists(`${filesStoragePath}${targetDirPath}`, file.name, originalFile.mimetype)) {
+				setError(i, 'name', 'plik o podanej nazwie istnieje w wybranej lokacji');
+				continue;
 			}
 		}
 
