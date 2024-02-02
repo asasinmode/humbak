@@ -12,7 +12,6 @@ if (env.NODE_ENV !== 'test') {
 	throw new Error('tests cannot be run in non-test environment');
 }
 
-console.log('running test setup...');
 const setupStart = performance.now();
 
 const dirname = fileURLToPath(new URL('.', import.meta.url));

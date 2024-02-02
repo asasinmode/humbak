@@ -81,11 +81,9 @@ export function getPathWithoutExtension(path: string) {
 
 export async function imageWithSameNameExists(path: string, name: string, mimetype: string) {
 	if (!isMimetypeWithSizes(mimetype)) {
-		return false;
+		name = getPathWithoutExtension(name);
 	}
-
-	const extensionlessName = getPathWithoutExtension(name);
-	const nameLength = extensionlessName.length;
+	const nameLength = name.length;
 
 	if (!existsSync(path)) {
 		return false;
@@ -98,7 +96,7 @@ export async function imageWithSameNameExists(path: string, name: string, mimety
 
 	const files = await readdir(path, { withFileTypes: true });
 	for (const file of files) {
-		if (!file.isDirectory() && file.name.slice(0, nameLength) === extensionlessName) {
+		if (!file.isDirectory() && file.name.slice(0, nameLength) === name) {
 			return true;
 		}
 	}
