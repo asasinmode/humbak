@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { readdir, rename, rm } from 'node:fs/promises';
+import { lstat, readdir, rename, rm } from 'node:fs/promises';
 import sharp from 'sharp';
 
 sharp.cache(false);
@@ -86,8 +86,17 @@ export async function imageWithSameNameExists(path: string, name: string, mimety
 
 	const extensionlessName = getPathWithoutExtension(name);
 	const nameLength = extensionlessName.length;
-	const files = await readdir(path, { withFileTypes: true });
 
+	if (!existsSync(path)) {
+		return false;
+	}
+
+	const stats = await lstat(path);
+	if (!stats.isDirectory()) {
+		return false;
+	}
+
+	const files = await readdir(path, { withFileTypes: true });
 	for (const file of files) {
 		if (!file.isDirectory() && file.name.slice(0, nameLength) === extensionlessName) {
 			return true;
