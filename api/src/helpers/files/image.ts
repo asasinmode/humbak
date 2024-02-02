@@ -5,21 +5,9 @@ import sharp from 'sharp';
 sharp.cache(false);
 
 function isMimetypeWithSizes(mimetype: string) {
-	return mimetype.slice(0, 5) === 'image' && mimetype !== 'image/gif';
+	return mimetype.slice(0, 5) === 'image' && mimetype !== 'image/gif' && mimetype !== 'image/svg+xml';
 }
 
-// dont create sizes for svg & update preview on frontend
-// change bad meta value toast to "incorrect"
-// add veditor errors (meta incorrect json)
-// humbak image on frontend replace use absolute path to page
-// add default language on page, language select use it or first
-// footer location inputs add placeholders Where to find us / https://google.com/maps
-// files not image span extension if no mimetype
-// store file view preference in localstorage
-// page language change menulink move to hidden & reset position
-// create page default menu link hidden
-// images title & alt per language (separate table)
-// page use global meta
 export async function createImageSizes(
 	path: string,
 	mimetype: string
@@ -80,7 +68,7 @@ export function getPathWithoutExtension(path: string) {
 }
 
 export async function imageWithSameNameExists(path: string, name: string, mimetype: string) {
-	if (!isMimetypeWithSizes(mimetype)) {
+	if (isMimetypeWithSizes(mimetype)) {
 		name = getPathWithoutExtension(name);
 	}
 	const nameLength = name.length;
