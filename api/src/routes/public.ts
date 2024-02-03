@@ -9,6 +9,7 @@ import { slides } from '../db/schema/slides';
 import { menuLinks } from '../db/schema/menuLinks';
 import { contents } from '../db/schema/contents';
 import { slideAspectRatio } from '../db/schema/slideAspectRatio';
+import { meta } from '../db/schema/meta';
 
 export const app = new Hono()
 	.get('/languages', async (c) => {
@@ -68,7 +69,7 @@ export const app = new Hono()
 		async (c) => {
 			const { language } = c.req.valid('param');
 
-			const [menuLinksResult, slidesResult, [slideAspectRatioResult], [footerContentsResult]] = await Promise.all([
+			const [menuLinksResult, slidesResult, [metaResult]] = await Promise.all([
 				db.select({
 					pageId: menuLinks.pageId,
 					text: menuLinks.text,
@@ -93,6 +94,14 @@ export const app = new Hono()
 						eq(slides.language, language),
 						eq(slides.isHidden, false)
 					)),
+				db.select({
+					value: meta.value,
+				})
+					.from(meta)
+					.where(eq(meta.language, language)),
+			]);
+
+			const [[slideAspectRatioResult], [footerContentsResult]] = await Promise.all([
 				db
 					.select({
 						value: slideAspectRatio.value,
@@ -124,6 +133,7 @@ export const app = new Hono()
 				slides: slidesResult,
 				slideAspectRatio: slideAspectRatioResult.value,
 				footerContents: footerContentsResult,
+				meta: metaResult?.value,
 			});
 		}
 	);

@@ -24,6 +24,7 @@ export type ILanguagePageData = {
 	slides: ISlide[];
 	slideAspectRatio: string;
 	footerContents: IFooterContents;
+	meta?: string;
 };
 
 export type IPageData = {

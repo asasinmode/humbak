@@ -36,8 +36,20 @@ if (languageDataError.value || !languageData.value) {
 	throw createError({ statusCode: 500, message: 'błąd przy ładowaniu danych strony' });
 }
 
+let parsedMeta: Record<string, string>[] = [];
+
+if (languageData.value.meta) {
+	try {
+		parsedMeta = JSON.parse(languageData.value.meta);
+	} catch (e) {
+		console.error('error parsing meta');
+		console.error(e);
+	}
+}
+
 useHead({
 	htmlAttrs: { lang: language },
+	meta: parsedMeta,
 });
 
 const transformedMenuLinks = transformMenuLinks(languageData.value.menuLinks.slice());
