@@ -20,6 +20,7 @@ const selectedLanguage = ref<string>();
 let initMeta = '';
 const {
 	isSaving,
+	errors: metaErrors,
 	clearForm: clearMetaForm,
 	value: metaValue,
 	sendForm: sendMeta,
@@ -211,6 +212,7 @@ async function clearFormAndGetMeta() {
 				{ language: 'css', value: cssValue },
 				{ language: 'json', value: metaValue },
 			]"
+			:error="metaErrors.value ? JSON.stringify(metaErrors.value, null, 2) : ''"
 			:current-model="editorModel"
 			:is-loading="isLoading"
 			@update:model-value="updateModelValue"

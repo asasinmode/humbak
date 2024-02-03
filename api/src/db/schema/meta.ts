@@ -14,5 +14,5 @@ export const meta = mysqlTable('meta', {
 
 export const insertMetaSchema = object({
 	language: nonEmptyMaxLengthString(32),
-	value: array(record(string())),
+	value: array(record(string('wartość musi być tekstem'), 'musi być obiektem'), 'musi być listą'),
 });
