@@ -46,7 +46,7 @@ const {
 		try {
 			contentFields = contentEditor.value?.getChangedFields() || {};
 		} catch (e) {
-			toast('zła wartość meta', 'error');
+			toast('niewłaściwa wartość meta', 'error');
 			console.error(e);
 			return;
 		}

@@ -29,7 +29,7 @@ const {
 	try {
 		value = JSON.parse(metaValue.value);
 	} catch (e) {
-		toast('zła wartość meta', 'error');
+		toast('niewłaściwa wartość meta', 'error');
 		console.error(e);
 		return;
 	}
