@@ -1,10 +1,9 @@
-import { existsSync } from 'node:fs';
-import { lstat, mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { Hono, type MiddlewareHandler } from 'hono';
 import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { type Input, array, custom, null_, number, object, string, transform, union } from 'valibot';
 import { processDeletedDirs } from '../helpers/files/dirDeleteProcessing';
-import { createImageSizes, getPathWithoutExtension, imageWithSameNameExists } from '../helpers/files/image';
+import { createImageSizes, imageWithSameNameExists } from '../helpers/files/image';
 import { parsePageHtml } from '../helpers/pages';
 import { db } from '../db';
 import { directories, insertDirectorySchema } from '../db/schema/directories';

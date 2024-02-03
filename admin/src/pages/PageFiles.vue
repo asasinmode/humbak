@@ -139,14 +139,6 @@ function restoreDir(index: number) {
 	currentDirDirs.value[index].isBeingDeleted = false;
 }
 
-function deleteFile(index: number, isNew: boolean) {
-	if (isNew) {
-		newFiles.value.splice(index, 1);
-	} else {
-		currentDirFiles.value[index].isBeingDeleted = true;
-	}
-}
-
 function restoreFile(index: number) {
 	currentDirFiles.value[index].isBeingDeleted = false;
 }
@@ -176,14 +168,7 @@ function handleFileDrop(event: DragEvent) {
 		if (!file) {
 			continue;
 		}
-		newFiles.value.unshift({
-			title: '',
-			alt: '',
-			name: file.name,
-			path: URL.createObjectURL(file),
-			file,
-			mimetype: file.type,
-		});
+		addNewFile(file);
 	}
 }
 
@@ -193,14 +178,7 @@ function handleFileInput(event: Event) {
 		return;
 	}
 	for (const file of target.files) {
-		newFiles.value.unshift({
-			title: '',
-			alt: '',
-			name: file.name,
-			path: URL.createObjectURL(file),
-			mimetype: file.type,
-			file,
-		});
+		addNewFile(file);
 	}
 }
 
@@ -338,6 +316,56 @@ function grabFile(index: number, event: MouseEvent, mimetype: string, isNew?: bo
 		grabPreviewElement.value = createPreviewElement(event.clientX, event.clientY, mimetype, src, name);
 		document.addEventListener('mousemove', movePreview);
 	}, 150);
+}
+
+function addNewFile(file: File) {
+	const keys = Object.keys(newFilesErrors.value.newFiles);
+	for (let i = keys.length; i >= 0; i--) {
+		const parsedIndex = Number.parseInt(keys[i]);
+		if (Number.isNaN(parsedIndex)) {
+			continue;
+		}
+
+		const newIndex = parsedIndex + 1;
+		newFilesErrors.value.newFiles[newIndex] = newFilesErrors.value.newFiles[i];
+
+		if (i === 0) {
+			newFilesErrors.value.newFiles[parsedIndex] = {};
+		}
+	}
+	newFiles.value.unshift({
+		title: '',
+		alt: '',
+		name: file.name,
+		path: URL.createObjectURL(file),
+		mimetype: file.type,
+		file,
+	});
+}
+
+function deleteFile(index: number, isNew: boolean) {
+	if (isNew) {
+		newFiles.value.splice(index, 1);
+		if (newFilesErrors.value.newFiles[index]) {
+			newFilesErrors.value.newFiles[index] = {};
+			const keys = Object.keys(newFilesErrors.value.newFiles);
+			for (let i = 0; i < keys.length; i++) {
+				const parsedIndex = Number.parseInt(keys[i]);
+				if (Number.isNaN(parsedIndex) || i <= index) {
+					continue;
+				}
+
+				const newIndex = parsedIndex - 1;
+				newFilesErrors.value.newFiles[newIndex] = newFilesErrors.value.newFiles[i];
+
+				if (i === keys.length - 1) {
+					newFilesErrors.value.newFiles[parsedIndex] = {};
+				}
+			}
+		}
+	} else {
+		currentDirFiles.value[index].isBeingDeleted = true;
+	}
 }
 
 function openFilesDialog(index: number, event: KeyboardEvent, isDir: boolean, isNew?: boolean) {
