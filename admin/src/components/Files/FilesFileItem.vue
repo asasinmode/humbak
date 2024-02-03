@@ -42,7 +42,7 @@ const hasChanged = computed(() =>
 );
 const isImage = computed(() => file.value.mimetype.slice(0, 5) === 'image');
 const path = computed(() => isNew.value ? file.value.path : `${env.VITE_PAGE_URL}/files${file.value.path}`);
-const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype] || file.value.mimetype);
+const nonImageText = computed(() => knownMimetypeExtensions[file.value.mimetype] || file.value.mimetype || '?');
 
 function cancelMove() {
 	file.value.movedToId = undefined;
