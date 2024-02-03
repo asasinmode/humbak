@@ -2,6 +2,7 @@
 import type { ComponentExposed } from 'vue-component-type-helpers';
 
 import VCombobox from '~/components/V/VCombobox.vue';
+import { env } from '~/env';
 
 const props = defineProps<{
 	hasChanged: () => boolean;
@@ -27,7 +28,9 @@ onMounted(async () => {
 	try {
 		languages.value = await api.languages.$get().then(r => r.json());
 
-		modelValue.value = languages.value[0];
+		modelValue.value = languages.value.includes(env.VITE_DEFAULT_LANGUAGE)
+			? env.VITE_DEFAULT_LANGUAGE
+			: languages.value[0];
 		emit('languagesLoaded', languages.value);
 	} catch (e) {
 		toast('błąd przy ładowaniu języków', 'error');
