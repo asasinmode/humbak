@@ -164,7 +164,7 @@ async function clearFormAndGetMeta() {
 <template>
 	<main
 		id="content"
-		class="grid grid-cols-[min-content_1fr_max-content] mx-auto max-w-256 min-h-inherit w-full gap-x-3 gap-y-5 px-container pb-4 pt-[1.125rem]"
+		class="grid grid-cols-[min-content_1fr_max-content] mx-auto max-w-256 h-screen min-h-100 md:min-h-88 md:h-[calc(100vh_-_3.75rem)] w-full gap-x-3 gap-y-5 px-container pb-4 pt-[1.125rem]"
 		:class="editorModel === 1
 			? 'grid-rows-[min-content_min-content_1fr] md:(grid-cols-[min-content_min-content_1fr_max-content] grid-rows-[min-content_1fr])'
 			: 'grid-rows-[min-content_1fr]'
