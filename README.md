@@ -4,11 +4,10 @@ This readme contains only todos for now
 
 ### in progress
 
-add veditor errors (meta incorrect json)
+add default language on page, language select use it or first
 
 ### left to do
 
-add default language on page, language select use it or first
 footer location inputs add placeholders Where to find us / https://google.com/maps
 files not image span question mark if no mimetype
 store file view preference in localstorage

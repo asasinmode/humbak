@@ -140,7 +140,7 @@ defineExpose({
 				{ language: 'css', value: contents.css.value },
 				{ language: 'json', value: contents.meta.value },
 			]"
-			:error="metaErrors ? `meta: ${JSON.stringify(metaErrors, null, 2)}` : ''"
+			:error="metaErrors ? `meta:\n${JSON.stringify(metaErrors, null, 2).slice(2, -2)}` : ''"
 			:current-model="currentModelIndex"
 			@update:model-value="updateCurrentModel"
 		/>
