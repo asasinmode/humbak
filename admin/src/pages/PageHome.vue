@@ -40,6 +40,7 @@ const {
 		language: '',
 		slug: '',
 		menuText: '',
+		meta: '',
 	},
 	async () => {
 		let contentFields;
@@ -214,7 +215,7 @@ async function clearFormAndLoadedPage() {
 			/>
 		</section>
 
-		<PagesContentEditor ref="contentEditor" />
+		<PagesContentEditor ref="contentEditor" v-model:meta-error="errors.meta" />
 
 		<section class="mt-6 flex justify-center gap-4">
 			<VButton ref="resetButton" class="-ml-[0.8rem] neon-amber" @click="clearFormAndLoadedPage">

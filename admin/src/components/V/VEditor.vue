@@ -6,7 +6,7 @@ const props = withDefaults(
 		models: IModel[];
 		currentModel?: number;
 		isLoading?: boolean;
-		error?: string;
+		error?: string | Record<string, unknown>;
 	}>(),
 	{ currentModel: 0 }
 );
@@ -34,7 +34,7 @@ defineExpose({
 	<div class="relative">
 		<article ref="editorRef" class="h-full w-full" />
 		<VLoading v-show="editorIsLoading || isLoading" class="absolute inset-0" :size="40" />
-		<p v-if="error" class="pointer-events-none absolute bottom-0 left-3 translate-y-full text-3 text-red-500">
+		<p v-if="error" class="pointer-events-none absolute bottom-2 bg-black rounded-md p-3 dark:bg-white shadow-md left-1/2 -translate-x-1/2 text-[0.875rem] text-red-5 dark:text-red-6">
 			{{ error }}
 		</p>
 	</div>

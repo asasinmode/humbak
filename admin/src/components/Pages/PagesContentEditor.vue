@@ -8,6 +8,8 @@ const container = ref<HTMLDivElement>();
 const { initResizeDrag } = useResizeHandler(container);
 const { parsedContent, updateParsedContent } = useHumbakFiles();
 
+const metaErrors = defineModel<Record<string, unknown> | string>('metaError');
+
 const contents = ref({
 	html: {
 		initValue: '',
@@ -43,6 +45,8 @@ function updateCurrentModel(value: string) {
 		updateStyleElement(value);
 	} else {
 		contents.value.meta.value = value;
+		// @ts-expect-error errors are reset with empty string
+		metaErrors.value = '';
 	}
 }
 
@@ -136,6 +140,7 @@ defineExpose({
 				{ language: 'css', value: contents.css.value },
 				{ language: 'json', value: contents.meta.value },
 			]"
+			:error="metaErrors ? `meta: ${JSON.stringify(metaErrors, null, 2)}` : ''"
 			:current-model="currentModelIndex"
 			@update:model-value="updateCurrentModel"
 		/>
