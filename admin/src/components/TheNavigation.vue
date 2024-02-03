@@ -82,7 +82,7 @@ const {
 			class="col-span-2 w-fit px-3 py-1 text-5 shadow neon-violet"
 			@click="toggleMenu(false)"
 		>
-			<div class="i-solar-pallete-2-outline mr-[0.125rem] inline-block align-sub text-violet" />
+			<div class="i-fa6-solid-earth-europe mr-[0.125rem] inline-block align-sub text-violet" />
 			global
 		</RouterLink>
 		<RouterLink
