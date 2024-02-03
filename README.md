@@ -4,11 +4,10 @@ This readme contains only todos for now
 
 ### in progress
 
-footer location inputs add placeholders Where to find us / https://google.com/maps
+files not image span question mark if no mimetype
 
 ### left to do
 
-files not image span question mark if no mimetype
 store file view preference in localstorage
 page language change menulink move to hidden & reset position
 create page default menu link hidden
