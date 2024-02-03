@@ -14,7 +14,12 @@ const { confirm } = useConfirm();
 const { clearLoadedFiles } = useHumbakFiles();
 const { toast, toastGenericError } = useToast();
 
-const isTiles = ref(true);
+const savedPreference = localStorage.getItem('files-display');
+const isTiles = ref(savedPreference ? savedPreference === 'tiles' : true);
+
+watch(isTiles, (value) => {
+	localStorage.setItem('files-display', value ? 'tiles' : 'list');
+});
 
 const classContainer = computed(() => {
 	let rv = 'grid grid-rows-[clamp(7rem,_6.1579rem_+_4.2105vw,_9rem)_auto_auto_auto_auto] grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-y-4';
