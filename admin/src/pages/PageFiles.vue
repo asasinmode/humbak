@@ -915,7 +915,7 @@ async function goToDir(id: number | null, event: MouseEvent) {
 				:disabled="dir.isBeingDeleted"
 				@input="dialogTargetId = dir.id"
 			>
-			<div v-if="dir.isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute top-1/2 -translate-y-1/2 right-[0.3125rem] w-5 h-5 text-red-5 pointer-events-none" />
+			<div v-if="dir.isBeingDeleted" class="i-solar-trash-bin-trash-linear absolute top-1/2 -translate-y-1/2 right-[0.3125rem] w-5 h-5 text-red-6 dark:text-red-5 pointer-events-none" />
 		</label>
 
 		<template #post>

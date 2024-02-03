@@ -533,7 +533,7 @@ function getMenuLinksAndSetPreviousLanguage() {
 				<VLoading v-show="isLoading" class="absolute inset-0" size="20" />
 			</menu>
 		</nav>
-		<p class="text-red-5">
+		<p v-if="errors.menuLinks" class="text-red-6 dark:text-red-5 text-center col-span-full">
 			{{ errors.menuLinks }}
 		</p>
 	</main>

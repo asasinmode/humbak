@@ -7,7 +7,7 @@ type ClassRecord = Record<ToastVariant, string>;
 
 const icon: ClassRecord = {
 	success: 'i-solar-check-circle-linear text-green',
-	error: 'i-solar-close-circle-linear text-red',
+	error: 'i-solar-close-circle-linear text-red-5 dark:text-red',
 	warning: 'i-solar-danger-circle-linear text-yellow-5 dark:text-yellow',
 };
 const containerProgress: ClassRecord = {

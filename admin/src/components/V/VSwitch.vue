@@ -19,7 +19,7 @@ const value = defineModel<boolean>();
 
 <template>
 	<div
-		class="h-fit min-w-18 flex flex-col pb-[2.375rem]"
+		class="h-fit relative min-w-18 flex flex-col pb-[2.375rem]"
 		:class="$props.class"
 		@focusout="$emit('focusout', $event)"
 	>
@@ -35,12 +35,15 @@ const value = defineModel<boolean>();
 			v-if="label"
 			:id="`${id}Label`"
 			:for="id"
-			class="v-switch-label relative ml-3 w-fit after:(absolute bottom-[calc(-0.125rem_-_2px)] h-[calc(2.25rem_-_4px)] w-[calc(2.25rem_-_4px)] translate-y-full rounded-1/2 bg-neutral-8 transition-transform content-empty -left-[calc(0.75rem_-_2px)] dark:bg-neutral-2) before:(absolute bottom-[-0.125rem] h-9 w-[calc(4.5rem_-_4px)] translate-y-full neon-neutral rounded-full content-empty -left-3)"
-			:class="labelVisuallyHidden ? 'visually-hidden' : ''"
+			class="v-switch-label relative ml-3 w-fit after:(absolute bottom-[calc(-0.125rem_-_2px)] h-[calc(2.25rem_-_4px)] w-[calc(2.25rem_-_4px)] translate-y-full rounded-1/2 bg-neutral-8 transition-transform content-empty -left-[calc(0.75rem_-_2px)] dark:bg-neutral-2) before:(absolute bottom-[-0.125rem] h-9 w-[calc(4.5rem_-_4px)] translate-y-full rounded-full content-empty -left-3)"
+			:class="[
+				labelVisuallyHidden ? 'visually-hidden' : '',
+				error ? 'error before:neon-red' : 'before:neon-neutral'
+			]"
 		>
 			{{ label }}
 		</label>
-		<p v-if="error" class="pointer-events-none absolute bottom-0 left-3 translate-y-full text-3 text-red-500">
+		<p v-if="error" class="pointer-events-none absolute bottom-0 left-3 translate-y-full text-3 text-red-6 dark:text-red-5">
 			{{ error }}
 		</p>
 	</div>
@@ -49,6 +52,9 @@ const value = defineModel<boolean>();
 <style>
 .v-switch:checked + label::before {
 	@apply border-green border-op-50 dark:border-op-80 bg-green bg-op-20
+}
+.v-switch:checked + label.error::before {
+	@apply border-red border-op-50 dark:border-op-80 bg-red bg-op-20
 }
 .v-switch:checked + label::after {
 	@apply translate-x-full

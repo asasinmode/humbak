@@ -155,7 +155,7 @@ export function useHumbakFiles() {
 
 		const element = document.createElement('p');
 		element.textContent = message;
-		element.className = 'text-red-5 font-600 border-2 border-red-5 border-dashed flex-center p-1 m-1 bg-red/10';
+		element.className = 'text-red-6 font-600 border-2 border-red-5 border-dashed flex-center p-1 m-1 bg-red/10';
 
 		replaceTarget.replaceWith(element);
 	}

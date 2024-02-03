@@ -339,16 +339,16 @@ function addSocial() {
 			</section>
 			<VLoading v-show="isLoading" class="absolute inset-0 z-30" size="25" />
 		</div>
-		<p v-if="errors.emails" class="text-center text-red-5">
+		<p v-if="errors.emails" class="text-center text-red-6 dark:text-red-5">
 			Emaile: {{ errors.emails }}
 		</p>
-		<p v-if="errors.phoneNumbers" class="text-center text-red-5">
+		<p v-if="errors.phoneNumbers" class="text-center text-red-6 dark:text-red-5">
 			Telefony: {{ errors.phoneNumbers }}
 		</p>
-		<p v-if="errors.location" class="text-center text-red-5">
+		<p v-if="errors.location" class="text-center text-red-6 dark:text-red-5">
 			Lokacja: {{ errors.location }}
 		</p>
-		<p v-if="errors.socials" class="text-center text-red-5">
+		<p v-if="errors.socials" class="text-center text-red-6 dark:text-red-5">
 			Sociale: {{ errors.socials }}
 		</p>
 	</main>

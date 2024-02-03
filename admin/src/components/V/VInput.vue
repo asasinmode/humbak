@@ -71,7 +71,7 @@ defineExpose({ element });
 		>
 			{{ value }}
 		</div>
-		<p v-if="error" class="pointer-events-none absolute bottom-0 left-3 translate-y-full text-3 text-red-5">
+		<p v-if="error" class="pointer-events-none absolute bottom-0 left-3 translate-y-full text-3 text-red-6 dark:text-red-5">
 			{{ error }}
 		</p>
 
