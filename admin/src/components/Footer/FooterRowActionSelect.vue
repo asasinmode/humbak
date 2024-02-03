@@ -156,7 +156,7 @@ function selectOption(index?: number) {
 				<button
 					:id="`footerRowActions${type}${index}-${localIndex}`"
 					role="menuitem"
-					class="relative h-full w-full of-hidden border-y-2 border-neutral-7 bg-neutral-4 px-2 py-1 group-first:(border-l-2 rounded-l-md) group-last:(border-r-2 rounded-r-md)"
+					class="relative h-full w-full of-hidden border-y-2 border-neutral-7 bg-neutral-3 px-2 py-1 group-first:(border-l-2 rounded-l-md) group-last:(border-r-2 rounded-r-md)"
 					:class="option.class"
 					@click="selectOption(localIndex)"
 				>
