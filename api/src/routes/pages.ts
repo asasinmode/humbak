@@ -76,6 +76,14 @@ export const app = new Hono()
 	.post('/', wrap('json', upsertPageInputSchema), async (c) => {
 		const { menuText, html, meta, css, ...pageFields } = c.req.valid('json');
 
+		const originalPage = pageFields.id !== undefined
+			? await db.select({ language: pages.language }).from(pages).where(eq(pages.id, pageFields.id))
+			: undefined;
+
+		const languageChanged = originalPage?.[0] !== undefined
+			? originalPage[0].language !== pageFields.language
+			: false;
+
 		const { value: parsedHtml, fileIds: associatedFilesIds } = await parsePageHtml(html);
 
 		const [{ insertId: pageId }] = await db
@@ -89,19 +97,36 @@ export const app = new Hono()
 				},
 			});
 
-		const [{ count: position }] = await db
-			.select({ count: sql<number>`COUNT(*)` })
-			.from(menuLinks)
-			.leftJoin(pages, eq(pages.id, menuLinks.pageId))
-			.where(and(isNull(menuLinks.parentId), eq(pages.language, pageFields.language)));
+		const isNew = pageFields.id === undefined;
+		let position: number;
+
+		if (isNew) {
+			position = 0;
+		} else {
+			const [{ count }] = await db
+				.select({ count: sql<number>`COUNT(*)` })
+				.from(menuLinks)
+				.leftJoin(pages, eq(pages.id, menuLinks.pageId))
+				.where(and(isNull(menuLinks.parentId), eq(pages.language, pageFields.language)));
+
+			position = count;
+		}
 
 		await Promise.all([
-			db.insert(menuLinks).values({ pageId, position, text: menuText }).onDuplicateKeyUpdate({
-				set: {
+			db.insert(menuLinks)
+				.values({
+					pageId,
+					position,
 					text: menuText,
-					updatedAt: new Date(),
-				},
-			}),
+					parentId: isNew ? -1 : null,
+				})
+				.onDuplicateKeyUpdate({
+					set: {
+						text: menuText,
+						parentId: languageChanged ? -1 : undefined,
+						updatedAt: new Date(),
+					},
+				}),
 			db.insert(contents).values({ pageId, rawHtml: html, parsedHtml, meta }).onDuplicateKeyUpdate({
 				set: {
 					rawHtml: html,
