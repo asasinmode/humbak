@@ -8,13 +8,13 @@ green="$ESC[0;32m"
 yellow="$ESC[0;33m"
 blue="$ESC[1;34m"
 
-getEnv(){
+getEnv() {
 	VAR=$(grep -w $1 .env | xargs)
 	IFS="=" read -ra VAR <<< "$VAR"
 	echo ${VAR[1]}
 }
 
-printColored(){
+printColored() {
 	printf "$1$2${NC}" 
 }
 
@@ -82,11 +82,12 @@ deployProject(){
 		cd "$project/dist"
 
 		local domainPrefix=$([ "$target" == "dev" ] && echo "dev." || echo "")
-		local publicDirectory="/home/$SERVER_USER/domains/$domainPrefix$project.humbak.eu/public_html"
+		local publicDirectory="/home/$SERVER_USER/domains/$domainPrefix$project.$SERVER_PAGE_DOMAIN/public_html"
+		local sourceNode="/home/$SERVER_USER/nodevenv/domains/$domainPrefix$project.$SERVER_PAGE_DOMAIN/public_html/20/bin/activate"
 		local installCommand=$([ "$installDependencies" = true ] && echo "npm i" || echo "")
 
 			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
-source "/home/$SERVER_USER/nodevenv/domains/$domainPrefix$project.humbak.eu/public_html/18/bin/activate"
+source "$sourceNode"
 cd $publicDirectory
 screen -S "${domainPrefix}${project}" -X quit
 exit
@@ -98,7 +99,7 @@ put package.json package.json
 quit
 ENDFTP
 			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
-source "/home/$SERVER_USER/nodevenv/domains/$domainPrefix$project.humbak.eu/public_html/18/bin/activate"
+source "$sourceNode"
 cd $publicDirectory
 $installCommand
 screen -S "${domainPrefix}${project}" -dm node index.js
@@ -124,7 +125,7 @@ fi
 
 printf "\n$green?$white choose project$NC"
 
-projectOptions=("api" "admin" "webpage")
+projectOptions=("api" "admin" "page")
 
 selectOption "${projectOptions[@]}"
 projectChoice=$?
@@ -140,7 +141,7 @@ target="dev"
 
 printf "$green?$white choose action$NC"
 
-actionOptions=("build" "deploy" "build and deploy")
+actionOptions=("deploy" "build and deploy")
 
 selectOption "${actionOptions[@]}"
 actionChoice=$?
@@ -148,15 +149,12 @@ action=${actionOptions[$actionChoice]}
 
 SERVER_IP=$(getEnv SERVER_IP)
 SERVER_USER=$(getEnv SERVER_USER)
+SERVER_PAGE_DOMAIN=$(getEnv SERVER_PAGE_DOMAIN)
 SSH_PORT=$(getEnv SSH_PORT)
 SSH_USER=$(getEnv SSH_USER)
 SSH_PASSWORD=$(getEnv SSH_PASSWORD)
 
 if [ $actionChoice -eq 0 ]; then
-	printf "building "
-	printColored $white $project
-	buildProject
-elif [ $actionChoice -eq 1 ]; then
 	printf "deploying "
 	printColored $white $project
 	deployProject
