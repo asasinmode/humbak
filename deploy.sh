@@ -96,18 +96,21 @@ deployProject(){
 		local installCommand=$([ "$installDependencies" = true ] && echo "pnpm i" || echo "")
 		local screenName="${domainPrefix}${project}"
 
-		if [ "$project" == 'page' ]; then
+		if [ "${project}" == 'page' ]; then
 			local targetFile="index.mjs"
 		else
 			local targetFile="index.js"
 		fi
 
+		if [ "${project}" != 'admin' ]; then
 			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
 source "${sourceNode}"
 cd ${publicDirectory}
 screen -S "${screenName}" -X quit
 exit
 ENDSSH
+		fi
+
 		if [ "${project}" == 'api' ]; then
 				sendApi "$publicDirectory"
 		elif [ "${project}" == 'admin' ]; then
@@ -115,13 +118,16 @@ ENDSSH
 		else
 				sendPage "${publicDirectory}"
 		fi
-# 			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
-# source "$sourceNode"
-# cd $publicDirectory
-# $installCommand
-# screen -S "${domainPrefix}${project}" -dm "node $targetFile"
-# exit
-# ENDSSH
+
+		if [ "${project}" != 'admin' ]; then
+			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
+source "$sourceNode"
+cd $publicDirectory
+$installCommand
+screen -S "${domainPrefix}${project}" -dm "node $targetFile"
+exit
+ENDSSH
+		fi
 	)
 }
 
