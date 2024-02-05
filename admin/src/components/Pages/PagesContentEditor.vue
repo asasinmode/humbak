@@ -45,7 +45,6 @@ function updateCurrentModel(value: string) {
 		updateStyleElement(value);
 	} else {
 		contents.value.meta.value = value;
-		// @ts-expect-error errors are reset with empty string
 		metaErrors.value = '';
 	}
 }

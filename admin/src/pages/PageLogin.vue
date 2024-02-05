@@ -18,7 +18,9 @@ const {
 	async () => {
 		const serverJwt = await api.auth.login.$post({
 			json: { username: username.value, password: password.value },
-		}).then((r: Response) => r.text());
+		})
+			// @ts-expect-error server returns string here
+			.then((r: Response) => r.text());
 
 		login(username.value, serverJwt);
 		router.push('/');
