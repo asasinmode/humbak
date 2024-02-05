@@ -2,6 +2,13 @@ import process from 'node:process';
 
 export default defineNuxtConfig({
 	devtools: { enabled: true },
+	nitro: {
+		output: {
+			dir: './dist',
+			serverDir: './dist/server',
+			publicDir: './dist/public',
+		},
+	},
 	devServer: {
 		port: Number.parseInt(process.env.PORT || '5174'),
 	},
