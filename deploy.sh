@@ -81,9 +81,18 @@ deployProject(){
 	(
 		cd "$project/dist"
 
-		local domainPrefix=$([ "$target" == "dev" ] && echo "dev." || echo "")
-		local publicDirectory="/home/$SERVER_USER/domains/$domainPrefix$project.$SERVER_PAGE_DOMAIN/public_html"
-		local sourceNode="/home/$SERVER_USER/nodevenv/domains/$domainPrefix$project.$SERVER_PAGE_DOMAIN/public_html/20/bin/activate"
+		local domainPrefix=$([ "$target" == "dev" ] && echo "dev-" || echo "")
+
+		if [ "$project" == 'page' ] && [ "$target" == 'dev' ]; then
+			local projectDir="dev.${project}"
+		elif [ "$project" == 'page' ]; then
+			local projectDir="${SERVER_PAGE_DOMAIN}"
+		else
+			local projectDir="${domainPrefix}${project}.${SERVER_PAGE_DOMAIN}"
+		fi
+
+		local publicDirectory="/home/$SERVER_USER/domains/$projectDir/public_html"
+		local sourceNode="/home/$SERVER_USER/nodevenv/domains/$projectDir/public_html/20/bin/activate"
 		local installCommand=$([ "$installDependencies" = true ] && echo "pnpm i" || echo "")
 
 			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
@@ -92,20 +101,41 @@ cd $publicDirectory
 screen -S "${domainPrefix}${project}" -X quit
 exit
 ENDSSH
-			sftp -o PubkeyAuthentication=no -P $SSH_PORT "$SSH_USER@$SERVER_IP" << ENDFTP
+		if [ "$project" == 'api' ]; then
+				sendApi "$publicDirectory"
+		elif [ "$project" == 'admin' ]; then
+				sendAdmin "$publicDirectory"
+		else
+				sendPage "$publicDirectory"
+		fi
+# 			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
+# source "$sourceNode"
+# cd $publicDirectory
+# $installCommand
+# screen -S "${domainPrefix}${project}" -dm node index.js
+# exit
+# ENDSSH
+	)
+}
+
+sendApi() {
+	local publicDirectory="$1"
+	sftp -o PubkeyAuthentication=no -P $SSH_PORT "$SSH_USER@$SERVER_IP" << ENDFTP
 cd $publicDirectory
 put index.js index.js
 put package.json package.json
 quit
 ENDFTP
-			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
-source "$sourceNode"
+}
+
+sendAdmin() {
+	local publicDirectory="$1"
+	sftp -o PubkeyAuthentication=no -P $SSH_PORT "$SSH_USER@$SERVER_IP" << ENDFTP
 cd $publicDirectory
-$installCommand
-screen -S "${domainPrefix}${project}" -dm node index.js
-exit
-ENDSSH
-	)
+put index.js index.js
+put package.json package.json
+quit
+ENDFTP
 }
 
 if [ ! -f ./.env ]; then
