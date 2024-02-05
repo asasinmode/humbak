@@ -122,8 +122,8 @@ sendApi() {
 	local publicDirectory="$1"
 	sftp -o PubkeyAuthentication=no -P $SSH_PORT "$SSH_USER@$SERVER_IP" << ENDFTP
 cd $publicDirectory
-put index.js index.js
-put package.json package.json
+put index.js
+put package.json
 quit
 ENDFTP
 }
@@ -132,8 +132,10 @@ sendAdmin() {
 	local publicDirectory="$1"
 	sftp -o PubkeyAuthentication=no -P $SSH_PORT "$SSH_USER@$SERVER_IP" << ENDFTP
 cd $publicDirectory
-put index.js index.js
-put package.json package.json
+rm -rf assets
+put index.html
+mkdir assets
+put -r assets
 quit
 ENDFTP
 }
@@ -160,11 +162,6 @@ projectOptions=("api" "admin" "page")
 selectOption "${projectOptions[@]}"
 projectChoice=$?
 project=${projectOptions[$projectChoice]}
-
-if [ $projectChoice -ne 0 ]; then
-	printColored $red "not supported yet"
-	exit
-fi
 
 # TODO: menu with dev/prod target
 target="dev"
