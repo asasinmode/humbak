@@ -79,49 +79,56 @@ buildProject(){
 deployProject(){
 	printf "\n"
 	(
-		cd "$project/dist"
+		cd "${project}/dist"
 
 		local domainPrefix=$([ "$target" == "dev" ] && echo "dev-" || echo "")
 
 		if [ "$project" == 'page' ] && [ "$target" == 'dev' ]; then
-			local projectDir="dev.${project}"
+			local projectDir="dev.${SERVER_PAGE_DOMAIN}"
 		elif [ "$project" == 'page' ]; then
 			local projectDir="${SERVER_PAGE_DOMAIN}"
 		else
 			local projectDir="${domainPrefix}${project}.${SERVER_PAGE_DOMAIN}"
 		fi
 
-		local publicDirectory="/home/$SERVER_USER/domains/$projectDir/public_html"
-		local sourceNode="/home/$SERVER_USER/nodevenv/domains/$projectDir/public_html/20/bin/activate"
+		local publicDirectory="/home/${SERVER_USER}/domains/${projectDir}/public_html"
+		local sourceNode="/home/${SERVER_USER}/nodevenv/domains/${projectDir}/public_html/20/bin/activate"
 		local installCommand=$([ "$installDependencies" = true ] && echo "pnpm i" || echo "")
+		local screenName="${domainPrefix}${project}"
+
+		if [ "$project" == 'page' ]; then
+			local targetFile="index.mjs"
+		else
+			local targetFile="index.js"
+		fi
 
 			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
-source "$sourceNode"
-cd $publicDirectory
-screen -S "${domainPrefix}${project}" -X quit
+source "${sourceNode}"
+cd ${publicDirectory}
+screen -S "${screenName}" -X quit
 exit
 ENDSSH
-		if [ "$project" == 'api' ]; then
+		if [ "${project}" == 'api' ]; then
 				sendApi "$publicDirectory"
-		elif [ "$project" == 'admin' ]; then
-				sendAdmin "$publicDirectory"
+		elif [ "${project}" == 'admin' ]; then
+				sendAdmin "${publicDirectory}"
 		else
-				sendPage "$publicDirectory"
+				sendPage "${publicDirectory}"
 		fi
 # 			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
 # source "$sourceNode"
 # cd $publicDirectory
 # $installCommand
-# screen -S "${domainPrefix}${project}" -dm node index.js
+# screen -S "${domainPrefix}${project}" -dm "node $targetFile"
 # exit
 # ENDSSH
 	)
 }
 
 sendApi() {
-	local publicDirectory="$1"
-	sftp -o PubkeyAuthentication=no -P $SSH_PORT "$SSH_USER@$SERVER_IP" << ENDFTP
-cd $publicDirectory
+	local publicDirectory="${1}"
+	sftp -o PubkeyAuthentication=no -P $SSH_PORT "${SSH_USER}@${SERVER_IP}" << ENDFTP
+cd ${publicDirectory}
 put index.js
 put package.json
 quit
@@ -129,13 +136,35 @@ ENDFTP
 }
 
 sendAdmin() {
-	local publicDirectory="$1"
-	sftp -o PubkeyAuthentication=no -P $SSH_PORT "$SSH_USER@$SERVER_IP" << ENDFTP
-cd $publicDirectory
-rm -rf assets
+	local publicDirectory="${1}"
+	sftp -o PubkeyAuthentication=no -P $SSH_PORT "${SSH_USER}@${SERVER_IP}" << ENDFTP
+cd ${publicDirectory}
+rm assets/*
 put index.html
 mkdir assets
 put -r assets
+quit
+ENDFTP
+}
+
+sendPage() {
+	local publicDirectory="${1}"
+			ssh "${SSH_USER}@${SERVER_IP}" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
+cd ${publicDirectory}
+rm -rf _nuxt
+rm -rf chunks
+exit
+ENDSSH
+	sftp -o PubkeyAuthentication=no -P $SSH_PORT "${SSH_USER}@${SERVER_IP}" << ENDFTP
+cd ${publicDirectory}
+put server/index.mjs
+put server/index.mjs.map
+put server/package.json
+put public/favicon.ico
+mkdir _nuxt
+put -r public/_nuxt
+mkdir chunks
+put -r server/chunks
 quit
 ENDFTP
 }
