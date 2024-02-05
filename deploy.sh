@@ -84,7 +84,7 @@ deployProject(){
 		local domainPrefix=$([ "$target" == "dev" ] && echo "dev." || echo "")
 		local publicDirectory="/home/$SERVER_USER/domains/$domainPrefix$project.$SERVER_PAGE_DOMAIN/public_html"
 		local sourceNode="/home/$SERVER_USER/nodevenv/domains/$domainPrefix$project.$SERVER_PAGE_DOMAIN/public_html/20/bin/activate"
-		local installCommand=$([ "$installDependencies" = true ] && echo "npm i" || echo "")
+		local installCommand=$([ "$installDependencies" = true ] && echo "pnpm i" || echo "")
 
 			ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
 source "$sourceNode"
