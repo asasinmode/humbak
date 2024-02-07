@@ -77,12 +77,16 @@ export const app = new Hono()
 		const { menuText, html, meta, css, ...pageFields } = c.req.valid('json');
 
 		const originalPage = pageFields.id !== undefined
-			? await db.select({ language: pages.language }).from(pages).where(eq(pages.id, pageFields.id))
+			? await db.select({ language: pages.language, slug: pages.slug })
+				.from(pages).where(eq(pages.id, pageFields.id))
 			: undefined;
 
-		const languageChanged = originalPage?.[0] !== undefined
-			? originalPage[0].language !== pageFields.language
-			: false;
+		let languageChanged = false;
+		let slugChanged = false;
+		if (originalPage?.[0] !== undefined) {
+			languageChanged = originalPage[0].language !== pageFields.language;
+			slugChanged = originalPage[0].slug !== pageFields.slug;
+		}
 
 		const { value: parsedHtml, fileIds: associatedFilesIds } = await parsePageHtml(html);
 
@@ -97,6 +101,7 @@ export const app = new Hono()
 				},
 			});
 
+		const isHomePage = !pageFields.slug;
 		const isNew = pageFields.id === undefined;
 		let position: number;
 
@@ -118,12 +123,16 @@ export const app = new Hono()
 					pageId,
 					position,
 					text: menuText,
-					parentId: isNew ? -1 : null,
+					parentId: isHomePage ? null : -1,
 				})
 				.onDuplicateKeyUpdate({
 					set: {
 						text: menuText,
-						parentId: languageChanged ? -1 : undefined,
+						parentId: isHomePage
+							? null
+							: languageChanged || (!isHomePage && slugChanged)
+								? -1
+								: undefined,
 						updatedAt: new Date(),
 					},
 				}),
