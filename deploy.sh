@@ -166,7 +166,6 @@ cd ${publicDirectory}
 put server/index.mjs
 put server/index.mjs.map
 put server/package.json
-put public/favicon.ico
 mkdir _nuxt
 put -r public/_nuxt
 mkdir chunks

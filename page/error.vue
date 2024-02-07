@@ -9,6 +9,8 @@ const props = defineProps<{
 useHead({
 	title: `Błąd ${props.error?.statusCode} - Humbak`,
 });
+
+const config = useRuntimeConfig();
 </script>
 
 <template>
@@ -19,7 +21,11 @@ useHead({
 		<h2 class="text-center text-3xl">
 			{{ error?.message }}
 		</h2>
-		<a href="/pl" class="text-xl text-link" @click.prevent="clearError({ redirect: '/pl' })">
+		<a
+			:href="`/${config.public.defaultLanguage}`"
+			class="text-xl text-link"
+			@click.prevent="clearError({ redirect: `/${config.public.defaultLanguage}` })"
+		>
 			wróć
 		</a>
 	</main>
