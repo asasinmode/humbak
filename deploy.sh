@@ -124,7 +124,7 @@ ENDSSH
 source "$sourceNode"
 cd $publicDirectory
 $installCommand
-screen -S "${domainPrefix}${project}" -dm "node $targetFile"
+screen -S "${screenName}" -dm node $targetFile
 exit
 ENDSSH
 		fi
