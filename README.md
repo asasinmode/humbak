@@ -5,8 +5,7 @@ This readme contains only todos for now
 ### left to do
 
 fix local mysql json & use it
-admin routing issue for subpages
+page add google analytics & cookies dialog
 api index html page
 seeders
 update github readme + wiki
-rewrite deploy script in rust
