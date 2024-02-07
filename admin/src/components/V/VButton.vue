@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineProps<{
 	isLoading?: boolean;
+	disabled?: boolean;
 }>();
 
 const element = ref<HTMLButtonElement>();
@@ -12,7 +13,7 @@ defineExpose({ element });
 	<button
 		ref="element"
 		class="relative px-3 py-1 shadow"
-		:disabled="isLoading"
+		:disabled="isLoading || disabled"
 		:aria-busy="isLoading"
 	>
 		<VLoading v-show="isLoading" class="absolute left-1/2 top-1/2 translate-center" />
