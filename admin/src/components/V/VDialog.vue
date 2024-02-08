@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { focusableElements } from '@humbak/shared';
 import VButton from '~/components/V/VButton.vue';
 
 const props = defineProps<{
@@ -95,41 +96,6 @@ function handleTab(event: KeyboardEvent) {
 			event.preventDefault();
 		}
 	}
-}
-
-function focusableElements(parent: HTMLElement) {
-	const elements = Array.from(parent.querySelectorAll<Focusable>('a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, *[tabindex], *[contenteditable]'));
-
-	const inputGroups: Record<string, { elements: HTMLInputElement[]; startIndex: number; endIndex: number; }> = {};
-	for (let i = 0; i < elements.length; i++) {
-		const element = elements[i] as HTMLInputElement;
-		if (
-			element.tagName !== 'INPUT'
-			|| (element as HTMLInputElement).type !== 'radio'
-			|| !(element as HTMLInputElement).name
-		) {
-			continue;
-		}
-
-		const { name } = element;
-		inputGroups[name] ||= { elements: [], startIndex: i, endIndex: i };
-		inputGroups[name].elements.push(element);
-		inputGroups[name].endIndex = i;
-	}
-
-	let elementsOffset = 0;
-	for (const key in inputGroups) {
-		const { elements: groupElements, startIndex, endIndex } = inputGroups[key];
-		const checkedIndex = groupElements.findIndex(el => el.checked);
-		if (checkedIndex === -1) {
-			continue;
-		}
-		const length = endIndex - startIndex + 1;
-		elements.splice(startIndex - elementsOffset, length, groupElements[checkedIndex]);
-		elementsOffset = length - 1;
-	}
-
-	return elements;
 }
 
 defineExpose({
