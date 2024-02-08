@@ -83,11 +83,18 @@ function disagree() {
 			aria-live="polite"
 			aria-modal="true"
 			:aria-hidden="!isOpen"
-			class="max-w-[90vw] w-xl bg-neutral-1 grid grid-cols-2 shadow-lg lg:max-w-5xl"
+			class="max-w-[90vw] w-3xl bg-neutral-1 grid grid-cols-2 shadow-lg gap-y-1 lg:max-w-5xl"
 		>
-			<h1 class="col-span-full">
-				cześć
-			</h1>
+			<h3 class="text-4xl col-span-full mx-auto pt-4 text-center">
+				Ciasteczka 🍪
+			</h3>
+			<p class="p-4 col-span-full">
+				Ta strona wykorzystuje pliki cookies pochodzące od podmiotów trzecich w celu korzystania z narzędzi zewnętrznych (Google Analytics).
+				Do informacji, które są gromadzone w plikach cookies od podmiotów trzecich, mają dostęp dostawcy wymienionych narzędzi zewnętrznych.
+			</p>
+
+			<TheTrackingDialogContent />
+
 			<button
 				class="w-full py-3 bg-gray-2 hoverable:bg-gray-3 text-center"
 				@click="disagree"
