@@ -197,7 +197,6 @@ selectOption "${projectOptions[@]}"
 projectChoice=$?
 project=${projectOptions[$projectChoice]}
 
-# TODO: menu with dev/prod target
 target="dev"
 
 printf "$green?$white choose action$NC"
