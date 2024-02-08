@@ -26,6 +26,7 @@
 		"@unocss/reset": "^0.58.3",
 		"blaze-slider": "^1.9.3",
 		"nuxt": "^3.9.3",
+		"nuxt-gtag": "^1.1.2",
 		"typescript": "^5.3.3",
 		"unocss": "^0.58.3",
 		"vue": "^3.4.15",

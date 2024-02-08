@@ -56,6 +56,7 @@ const transformedMenuLinks = transformMenuLinks(languageData.value.menuLinks.sli
 </script>
 
 <template>
+	<TrackingDialog />
 	<TheNavigation :menu-links="transformedMenuLinks" :languages :language />
 	<TheSlider :slides="languageData!.slides" :aspect-ratio="languageData!.slideAspectRatio" />
 	<NuxtPage />

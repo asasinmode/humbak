@@ -14,6 +14,7 @@ export default defineNuxtConfig({
 	},
 	modules: [
 		'@unocss/nuxt',
+		'nuxt-gtag',
 	],
 	css: [
 		'@unocss/reset/tailwind.css',
@@ -47,5 +48,8 @@ export default defineNuxtConfig({
 			adminUrl: '',
 			defaultLanguage: '',
 		},
+	},
+	gtag: {
+		initialConsent: false,
 	},
 });

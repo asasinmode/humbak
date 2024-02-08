@@ -5,6 +5,8 @@ type Focusable = Element & {
 	focus: () => void;
 };
 
+const { grantConsent, revokeConsent } = useGtag();
+
 const isOpen = ref(false);
 const dialog = ref<HTMLElement>();
 const closeButton = ref<HTMLButtonElement>();
@@ -47,10 +49,26 @@ function handleTab(event: KeyboardEvent) {
 	}
 }
 
-defineExpose({
-	close,
-	open,
+onMounted(() => {
+	const savedValue = localStorage.getItem('trackingConsent');
+	if (savedValue === null) {
+		open();
+	} else {
+		savedValue === 'true' ? grantConsent() : revokeConsent();
+	}
 });
+
+function agree() {
+	localStorage.setItem('trackingConsent', 'true');
+	grantConsent();
+	close();
+}
+
+function disagree() {
+	localStorage.setItem('trackingConsent', 'false');
+	revokeConsent();
+	close();
+}
 </script>
 
 <template>
@@ -65,15 +83,23 @@ defineExpose({
 			aria-live="polite"
 			aria-modal="true"
 			:aria-hidden="!isOpen"
-			class="max-w-[90vw] w-sm rounded bg-neutral-1 px-2 py-4 shadow-lg lg:max-w-5xl lg:w-xl dark:bg-neutral-9 md:px-4"
+			class="max-w-[90vw] w-xl bg-neutral-1 grid grid-cols-2 shadow-lg lg:max-w-5xl"
 		>
-			<h1>cześć</h1>
+			<h1 class="col-span-full">
+				cześć
+			</h1>
+			<button
+				class="w-full py-3 bg-gray-2 hoverable:bg-gray-3 text-center"
+				@click="disagree"
+			>
+				Nie wyrażam zgody
+			</button>
 			<button
 				ref="closeButton"
-				class="neon-red"
-				@click="close"
+				class="w-full py-3 bg-humbak hoverable:bg-humbak-5 text-center"
+				@click="agree"
 			>
-				Zamknij
+				Wyrażam zgodę
 			</button>
 		</article>
 	</div>
