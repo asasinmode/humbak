@@ -166,7 +166,7 @@ function addSocial() {
 				zapisz
 			</VButton>
 		</div>
-		<div class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-4 bg-humbak pb-4 pt-6 text-black lg:px-8 md:px-[clamp(2rem,_-12.25rem_+_29.6875vw,_6.75rem)]">
+		<div class="relative grid col-span-full grid-cols-1 w-full justify-items-center gap-6 bg-humbak pb-4 pt-8 text-black lg:px-8 md:px-[clamp(2rem,_-12.25rem_+_29.6875vw,_6.75rem)] md:pb-6">
 			<section class="grid grid-cols-[min-content_max-content] max-w-360 gap-x-3 gap-y-4 lg:grid-cols-[repeat(3,_1fr_2fr)] md:grid-cols-[min-content_6fr_4fr_6fr_4fr_max-content] md:w-full">
 				<template v-for="index in emails.length" :key="`email${index}`">
 					<div
