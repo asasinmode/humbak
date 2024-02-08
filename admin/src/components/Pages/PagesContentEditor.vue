@@ -59,6 +59,7 @@ async function formatMeta() {
 
 function clear() {
 	updateValues({ html: '', css: '', meta: '' });
+	updateParsedContent('');
 }
 
 function updateValues(
