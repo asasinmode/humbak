@@ -24,8 +24,8 @@ await writeFile(
 const { width, height } = await createImageSizes(`${filesStoragePath}/slideImage.jpg`, 'image/jpeg');
 const [{ insertId: riverSlideImageId }] = await db.insert(files).values({
 	directoryId: null,
-	name: 'slideImage.jpg',
-	path: '/slideImage.jpg',
+	name: 'river.jpg',
+	path: '/river.jpg',
 	title: 'river in a forest',
 	alt: 'a river surrounded by a forest',
 	mimetype: 'image/jpeg',
@@ -110,8 +110,17 @@ const slidesData = [
 	{
 		name: 'river',
 		language: 'en',
-		content: `<div class="flex-center w-full h-full" style="background-color: hsla(0, 0%, 50%, 0.3)">
-	<h6 style="font-size: 3rem">Hidden River</h6>
+		content: `<div class="flex-center w-full h-full">
+  <HumbakFile fid="${riverSlideImageId}" class="w-full h-full"></HumbakFile>
+  <h6 class="absolute" style="font-size: 8rem; color: white; font-weight: 600;">
+    River
+  </h6>
+  <h6 class="absolute" style="font-size: 8rem; color: #00ff00; font-weight: 600; transform: translate(2px, 2px); mix-blend-mode: difference;">
+    River
+  </h6>
+  <h6 class="absolute" style="font-size: 8rem; color: #ff00ff; font-weight: 600; transform: translate(-2px, -2px); mix-blend-mode: difference;">
+    River
+  </h6>
 </div>`,
 		isHidden: true,
 	},
