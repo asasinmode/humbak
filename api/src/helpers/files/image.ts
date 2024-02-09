@@ -36,7 +36,8 @@ export async function createImageSizes(
 	const pathWithoutExtension = getPathWithoutExtension(path);
 	await image.resize({ [propertyToResize]: 500, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_500.webp`);
 	await image.resize({ [propertyToResize]: 800, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_800.webp`);
-	await image.resize({ [propertyToResize]: 1000, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_1000.webp`);
+	await image.resize({ [propertyToResize]: 1040, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_1040.webp`);
+	await image.resize({ [propertyToResize]: 1280, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_1280.webp`);
 
 	return { width: metadata.width, height: metadata.height };
 }
@@ -51,7 +52,8 @@ export async function renameFile(path: string, newPath: string, mimetype: string
 	const newPathWithoutExtension = getPathWithoutExtension(newPath);
 	existsSync(`${pathWithoutExtension}_500.webp`) && await rename(`${pathWithoutExtension}_500.webp`, `${newPathWithoutExtension}_500.webp`);
 	existsSync(`${pathWithoutExtension}_800.webp`) && await rename(`${pathWithoutExtension}_800.webp`, `${newPathWithoutExtension}_800.webp`);
-	existsSync(`${pathWithoutExtension}_1000.webp`) && await rename(`${pathWithoutExtension}_1000.webp`, `${newPathWithoutExtension}_1000.webp`);
+	existsSync(`${pathWithoutExtension}_1040.webp`) && await rename(`${pathWithoutExtension}_1040.webp`, `${newPathWithoutExtension}_1040.webp`);
+	existsSync(`${pathWithoutExtension}_1280.webp`) && await rename(`${pathWithoutExtension}_1280.webp`, `${newPathWithoutExtension}_1280.webp`);
 }
 
 export async function deleteFile(path: string, mimetype: string) {
@@ -63,7 +65,8 @@ export async function deleteFile(path: string, mimetype: string) {
 	const pathWithoutExtension = getPathWithoutExtension(path);
 	existsSync(`${pathWithoutExtension}_500.webp`) && await rm(`${pathWithoutExtension}_500.webp`);
 	existsSync(`${pathWithoutExtension}_800.webp`) && await rm(`${pathWithoutExtension}_800.webp`);
-	existsSync(`${pathWithoutExtension}_1000.webp`) && await rm(`${pathWithoutExtension}_1000.webp`);
+	existsSync(`${pathWithoutExtension}_1040.webp`) && await rm(`${pathWithoutExtension}_1040.webp`);
+	existsSync(`${pathWithoutExtension}_1280.webp`) && await rm(`${pathWithoutExtension}_1280.webp`);
 }
 
 export function getPathWithoutExtension(path: string) {

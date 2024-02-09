@@ -31,6 +31,9 @@ export default defineNuxtConfig({
 	vite: {
 		server: {
 			cors: true,
+			watch: {
+				ignored: ['./public/files/**', './public/stylesheets/**'],
+			},
 		},
 	},
 	app: {

@@ -18,8 +18,8 @@ import { users } from '../schema/users';
 await promptProdContinue();
 
 await writeFile(`${stylesheetsStoragePath}/global.css`, `.text-slider {
-  font-size: clamp(3rem, -0.7895rem + 18.9474vi, 12rem);
-  font-weight: 600;
+	font-size: clamp(3rem, -0.7895rem + 18.9474vi, 12rem);
+	font-weight: 600;
 }`);
 
 const riverSlideImageId = await createFile({
@@ -118,78 +118,78 @@ const slidesData = [
 		name: 'ocean',
 		language: 'en',
 		content: `<div class="flex-center w-full h-full relative">
-  <HumbakFile fid="${oceanSlideImageId}" class="w-full h-full"></HumbakFile>
-  <h6 class="absolute w-full h-full flex-center text-slider" style="color: white; background-color: hsl(0 0 0% / 0.2)">
-    ocean
-  </h6>
-  <a
-    href="https://unsplash.com/photos/landscape-photography-of-waves-and-clouds-q-DJ9XhKkhA"
-    target="_blank"
-    class="absolute text-link"
-    style="bottom: 0.3rem; right: 0.5rem;"
-  >
-    unsplash
-  </a>
+	<HumbakFile fid="${oceanSlideImageId}" class="w-full h-full"></HumbakFile>
+	<h6 class="absolute w-full h-full flex-center text-slider" style="color: white; background-color: hsl(0 0 0% / 0.2)">
+		ocean
+	</h6>
+	<a
+		href="https://unsplash.com/photos/landscape-photography-of-waves-and-clouds-q-DJ9XhKkhA"
+		target="_blank"
+		class="absolute text-link"
+		style="bottom: 0.3rem; right: 0.5rem;"
+	>
+		unsplash
+	</a>
 </div>`,
 	},
 	{
 		name: 'sea',
 		language: 'en',
 		content: `<div class="flex-center w-full h-full relative">
-  <HumbakFile fid="${seaSlideImageId}" class="w-full h-full"></HumbakFile>
-  <h6 class="absolute w-full h-full flex-center text-slider" style="color: white; background-color: hsl(0 0 0% / 0.2)">
-    sea
-  </h6>
-  <a
-    href="https://unsplash.com/photos/landscape-photography-of-waves-and-clouds-q-DJ9XhKkhA"
-    target="_blank"
-    class="absolute text-link"
-    style="bottom: 0.3rem; right: 0.5rem;"
-  >
-    unsplash
-  </a>
+	<HumbakFile fid="${seaSlideImageId}" class="w-full h-full"></HumbakFile>
+	<h6 class="absolute w-full h-full flex-center text-slider" style="color: white; background-color: hsl(0 0 0% / 0.2)">
+		sea
+	</h6>
+	<a
+		href="https://unsplash.com/photos/aerial-photo-body-of-water-cuTk59eNHUE"
+		target="_blank"
+		class="absolute text-link"
+		style="bottom: 0.3rem; right: 0.5rem;"
+	>
+		unsplash
+	</a>
 </div>`,
 	},
 	{
 		name: 'lake',
 		language: 'en',
 		content: `<div class="flex-center w-full h-full relative">
-  <HumbakFile fid="${lakeSlideImageId}" class="w-full h-full"></HumbakFile>
-  <h6 class="absolute w-full h-full flex-center text-slider" style="color: white; background-color: hsl(0 0 0% / 0.2)">
-    lake
-  </h6>
-  <a
-    href="https://unsplash.com/photos/landscape-photography-of-waves-and-clouds-q-DJ9XhKkhA"
-    target="_blank"
-    class="absolute text-link"
-    style="bottom: 0.3rem; right: 0.5rem;"
-  >
-    unsplash
-  </a>
+	<HumbakFile fid="${lakeSlideImageId}" class="w-full h-full"></HumbakFile>
+	<h6 class="absolute w-full h-full flex-center text-slider" style="color: white; background-color: hsl(0 0 0% / 0.2)">
+		lake
+	</h6>
+	<a
+		href="https://unsplash.com/photos/green-forest-near-lake-and-mountain-under-cloudy-sky-Hrmayke-v8g"
+		target="_blank"
+		class="absolute text-link"
+		style="bottom: 0.3rem; right: 0.5rem;"
+	>
+		unsplash
+	</a>
 </div>`,
 	},
 	{
 		name: 'river',
 		language: 'en',
 		content: `<div class="flex-center w-full h-full relative">
-  <HumbakFile fid="${riverSlideImageId}" class="w-full h-full"></HumbakFile>
-  <h6 class="absolute text-slider w-full h-full flex-center" style="color: white; background-color: hsl(0 0% 0% / 0.2)">
-    river
-  </h6>
-  <h6 class="absolute text-slider" style="color: #00ff00; transform: translate(2px, 2px); mix-blend-mode: difference;">
-    river
-  </h6>
-  <h6 class="absolute text-slider" style="color: #ff00ff; transform: translate(-2px, -2px); mix-blend-mode: difference;">
-    river
-  </h6>
-  <a
-    href="https://unsplash.com/photos/body-of-water-between-trees-under-cloudy-sky-rB7-LCa_diU"
-    target="_blank"
-    class="absolute text-link"
-    style="bottom: 0.3rem; right: 0.5rem;"
-  >
-    unsplash
-  </a>
+	<HumbakFile fid="${riverSlideImageId}" class="w-full h-full"></HumbakFile>
+	<h6 class="absolute text-slider w-full h-full flex-center" style="color: white; background-color: hsl(0 0% 0% / 0.2)">
+		river
+	</h6>
+	<h6 class="absolute text-slider" style="color: #00ff00; transform: translate(2px, 2px); mix-blend-mode: difference;">
+		river
+	</h6>
+	<h6 class="absolute text-slider" style="color: #ff00ff; transform: translate(-2px, -2px); mix-blend-mode: difference;">
+		river
+	</h6>
+	<a
+		href="https://unsplash.com/photos/body-of-water-between-trees-under-cloudy-sky-rB7-LCa_diU"
+		target="_blank"
+		class="absolute text-link"
+		style="bottom: 0.3rem; right: 0.5rem;"
+	>
+		unsplash
+	</a>
 </div>`,
 		isHidden: true,
 	},

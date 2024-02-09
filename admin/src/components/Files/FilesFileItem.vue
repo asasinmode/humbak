@@ -58,7 +58,7 @@ const srcSet = computed(() => {
 
 const sizes = computed(() => {
 	if (!isNew.value && file.value.mimetype !== 'image/gif' && file.value.mimetype !== 'image/svg+xml') {
-		return '(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px';
+		return '(max-width: 480px) 500px, (max-width: 768px) 800px, (max-width: 960px) 1040px, 1280px';
 	}
 });
 </script>

@@ -138,8 +138,8 @@ export function useHumbakFiles() {
 
 		if (file.mimetype !== 'image/gif' && file.mimetype !== 'image/svg+xml') {
 			const pathWithoutExtension = getPathWithoutExtension(src);
-			element.srcset = `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1000.webp 1000w`;
-			element.sizes = '(max-width: 500px) 500px, (max-width: 800px) 800px, 1000px';
+			element.srcset = `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1040.webp 1040w, ${pathWithoutExtension}_1280.webp 1280w`;
+			element.sizes = '(max-width: 480px) 500px, (max-width: 768px) 800px, (max-width: 960px) 1040px, 1280px';
 		}
 
 		for (const attribute of temp.attributes) {
