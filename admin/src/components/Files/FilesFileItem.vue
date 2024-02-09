@@ -99,6 +99,7 @@ const sizes = computed(() => {
 			title="pobierz"
 			:href="path"
 			:download="file.name"
+			target="_blank"
 		>
 			<span class="visually-hidden">pobierz</span>
 			<div class="i-fluent-arrow-download-16-filled w-5 h-5" />
