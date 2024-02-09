@@ -5,6 +5,7 @@ import { promptProdContinue } from '../../helpers';
 import { hashPassword } from '../../helpers/auth';
 import { filesStoragePath, stylesheetsStoragePath } from '../../helpers/files';
 import { createImageSizes } from '../../helpers/files/image';
+import { parsePageHtml } from '../../helpers/pages';
 import { pages } from '../schema/pages';
 import { slides } from '../schema/slides';
 import { contents } from '../schema/contents';
@@ -14,11 +15,12 @@ import { directories } from '../schema/directories';
 import { footerContents } from '../schema/footerContents';
 import { files } from '../schema/files';
 import { users } from '../schema/users';
+import { filesToSlides } from '../schema/filesToSlides';
 
 await promptProdContinue();
 
 await writeFile(`${stylesheetsStoragePath}/global.css`, `.text-slider {
-	font-size: clamp(3rem, -0.7895rem + 18.9474vi, 12rem);
+	font-size: clamp(4rem, 1.3333rem + 13.3333vi, 12rem);
 	font-weight: 600;
 }`);
 
@@ -195,13 +197,26 @@ const slidesData = [
 	},
 ];
 
-await db.insert(slides).values(slidesData.map(({ name, language, content, isHidden }) => ({
-	name,
-	language,
-	isHidden,
-	rawContent: content,
-	parsedContent: content,
-})));
+const [{ insertId: slideInsertId }] = await db
+	.insert(slides)
+	.values(await Promise.all(slidesData.map(async ({ name, language, content, isHidden }) => {
+		const { value } = await parsePageHtml(content);
+
+		return {
+			name,
+			language,
+			isHidden,
+			rawContent: content,
+			parsedContent: value,
+		};
+	})));
+
+await db.insert(filesToSlides).values([
+	{ slideId: slideInsertId, fileId: oceanSlideImageId },
+	{ slideId: slideInsertId + 1, fileId: seaSlideImageId },
+	{ slideId: slideInsertId + 2, fileId: lakeSlideImageId },
+	{ slideId: slideInsertId + 3, fileId: riverSlideImageId },
+]);
 
 for (const { pageData, text, parentId, position } of [
 	{
@@ -242,7 +257,12 @@ await db.insert(footerContents).values({
 	emails: ['email@example.com'],
 	phoneNumbers: ['Person 123 456 789'],
 	location: { text: 'Where to find us', value: 'https://google.com/maps' },
-	socials: [{ type: 'twitter', value: 'https://x.com' }, { type: 'youtube', value: 'https://youtube.com' }],
+	socials: [
+		{ type: 'twitter', value: 'https://x.com' },
+		{ type: 'facebook', value: 'https://facebook.com' },
+		{ type: 'youtube', value: 'https://youtube.com' },
+		{ type: 'instagram', value: 'https://instagram.com' },
+	],
 });
 
 await db.insert(users).values({

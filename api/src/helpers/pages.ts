@@ -1,6 +1,7 @@
 import type { CheerioAPI, Element } from 'cheerio';
 import { load } from 'cheerio';
 import { inArray } from 'drizzle-orm';
+import { env } from 'src/env';
 import { db } from '../db';
 import { files } from '../db/schema/files';
 import { getPathWithoutExtension } from './files/image';
@@ -66,14 +67,15 @@ export async function parsePageHtml(html?: string): Promise<{ value?: string; fi
 		fileIds.add(id);
 
 		const image = dom('<img>');
-		image.attr('src', `files${file.path}`);
+		image.attr('src', `${env.PAGE_URL}/files${file.path}`);
 		image.attr('title', file.title);
 		image.attr('alt', file.alt);
 		file.width !== null && image.attr('width', `${file.width}`);
 		file.height !== null && image.attr('height', `${file.height}`);
 
 		if (file.mimetype !== 'image/gif' && file.mimetype !== 'image/svg+xml') {
-			const pathWithoutExtension = getPathWithoutExtension(`files${file.path}`);
+			const pathWithoutExtension = `${env.PAGE_URL}/${getPathWithoutExtension(`files${file.path}`)}`;
+
 			image.attr('srcset', `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1040.webp 1040w, ${pathWithoutExtension}_1280.webp 1280w`);
 			image.attr('sizes', '(max-width: 480px) 500px, (max-width: 768px) 800px, (max-width: 960px) 1040px, 1280px');
 		}
