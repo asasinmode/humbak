@@ -72,13 +72,13 @@ await db.insert(files).values({
 	alt: 'an example pdf with unimportant content',
 	mimetype: 'application/pdf',
 });
-await writeFile(`${filesStoragePath}/other/exampleTxt.txt`, '');
+await writeFile(`${filesStoragePath}/other/exampleTxt.txt`, 'not actually empty O.o');
 await db.insert(files).values({
 	directoryId: otherDirId,
 	name: 'exampleTxt.txt',
 	path: '/other/exampleTxt.txt',
 	title: 'example txt',
-	alt: 'an example txt file that\'s empty',
+	alt: 'an example txt maybe empty txt file',
 	mimetype: 'text/plain',
 });
 
