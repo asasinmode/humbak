@@ -21,7 +21,7 @@ await writeFile(
 	`${filesStoragePath}/slideImage.jpg`,
 	await fetch('https://images.unsplash.com/photo-1455577380025-4321f1e1dca7?q=80&w=1920').then(r => r.arrayBuffer()).then(v => Buffer.from(v))
 );
-const { width, height } = await createImageSizes(`${filesStoragePath}/slideImage.jpg`, 'image/jpeg');
+const { width, height } = await createImageSizes(`${filesStoragePath}/river.jpg`, 'image/jpeg');
 const [{ insertId: riverSlideImageId }] = await db.insert(files).values({
 	directoryId: null,
 	name: 'river.jpg',
@@ -54,6 +54,16 @@ const [{ insertId: otherDirId }] = await db.insert(directories).values({
 	name: 'other',
 	path: '/other',
 });
+await writeFile(`${filesStoragePath}/other/exampleTxt.txt`, 'not actually empty O.o');
+await db.insert(files).values({
+	directoryId: otherDirId,
+	name: 'exampleTxt.txt',
+	path: '/other/exampleTxt.txt',
+	title: 'example txt',
+	alt: 'an example txt maybe empty txt file',
+	mimetype: 'text/plain',
+});
+
 await mkdir(`${filesStoragePath}/other/documents`);
 const [{ insertId: documentsDirId }] = await db.insert(directories).values({
 	name: 'documents',
@@ -71,15 +81,6 @@ await db.insert(files).values({
 	title: 'example pdf',
 	alt: 'an example pdf with unimportant content',
 	mimetype: 'application/pdf',
-});
-await writeFile(`${filesStoragePath}/other/exampleTxt.txt`, 'not actually empty O.o');
-await db.insert(files).values({
-	directoryId: otherDirId,
-	name: 'exampleTxt.txt',
-	path: '/other/exampleTxt.txt',
-	title: 'example txt',
-	alt: 'an example txt maybe empty txt file',
-	mimetype: 'text/plain',
 });
 
 const [slideAspectRatioResult] = await db.select({ value: slideAspectRatio.value }).from(slideAspectRatio);
@@ -121,6 +122,14 @@ const slidesData = [
   <h6 class="absolute" style="font-size: 8rem; color: #ff00ff; font-weight: 600; transform: translate(-2px, -2px); mix-blend-mode: difference;">
     River
   </h6>
+	<a
+    href="https://unsplash.com/photos/body-of-water-between-trees-under-cloudy-sky-rB7-LCa_diU"
+    target="_blank"
+    class="absolute text-link"
+    style="bottom: 0.3rem; right: 0.5rem;"
+  >
+    unsplash
+  </a>
 </div>`,
 		isHidden: true,
 	},
