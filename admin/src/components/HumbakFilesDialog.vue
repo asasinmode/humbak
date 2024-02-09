@@ -179,7 +179,7 @@ async function copy(file: IDialogFile) {
 			<h6 class="hyphens-auto lg:text-lg col-span-full text-center lg:row-span-full lg:col-span-1 lg:text-start lg:self-center">
 				{{ file.name }}
 			</h6>
-			<a :href="`files${file.path}`" target="_blank" class="neon-blue text-sm px-3 py-1 shadow h-fit justify-self-end lg:self-end lg:justify-self-center lg:text-base">
+			<a :href="`${env.VITE_PAGE_URL}/files${file.path}`" target="_blank" class="neon-blue text-sm px-3 py-1 shadow h-fit justify-self-end lg:self-end lg:justify-self-center lg:text-base">
 				podgląd
 			</a>
 			<VButton class="neon-green text-sm h-fit justify-self-start lg:justify-self-center lg:text-base" @click="copy(file)">
