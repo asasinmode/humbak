@@ -86,7 +86,7 @@ function nonImageText(mimetype: string) {
 function srcSet(path: string, mimetype: string, isImage: boolean) {
 	if (isImage && mimetype !== 'image/gif' && mimetype !== 'image/svg+xml') {
 		const pathWithoutExtension = getPathWithoutExtension(path);
-		return `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1000.webp 1000w`;
+		return `${pathWithoutExtension}_500.webp 500w, ${pathWithoutExtension}_800.webp 800w, ${pathWithoutExtension}_1040.webp 1040w, ${pathWithoutExtension}_1280.webp 1280w`;
 	}
 }
 function sizes(mimetype: string, isImage: boolean) {

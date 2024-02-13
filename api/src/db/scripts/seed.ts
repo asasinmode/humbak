@@ -175,7 +175,7 @@ const slidesData = [
 		language: 'en',
 		content: `<div class="flex-center w-full h-full relative">
 	<HumbakFile fid="${riverSlideImageId}" class="w-full h-full"></HumbakFile>
-	<h6 class="absolute text-slider w-full h-full flex-center" style="color: white; background-color: hsl(0 0% 0% / 0.2)">
+	<h6 class="absolute text-slider w-full h-full flex-center" style="color: white;">
 		river
 	</h6>
 	<h6 class="absolute text-slider" style="color: #00ff00; transform: translate(2px, 2px); mix-blend-mode: difference;">
