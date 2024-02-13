@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { Buffer } from 'node:buffer';
 import { db, pool } from '..';
 import { promptProdContinue } from '../../helpers';
+import { env } from '../../env';
 import { hashPassword } from '../../helpers/auth';
 import { filesStoragePath, stylesheetsStoragePath } from '../../helpers/files';
 import { createImageSizes } from '../../helpers/files/image';
@@ -225,8 +226,46 @@ const enHomePageId = await createPage({
 	menuText: 'home EN',
 	parentId: null,
 	position: 0,
-	content: `<h1>humbak demo</h1>
-	<p>This is a demo page for "humbak", a blog cms. Current content is a showcase of the features available and should be reset regularly.</p>`,
+	content: `<section>
+	<h1>humbak demo</h1>
+	<p>This is a demo page for <strong>humbak</strong>, a blog cms. Current content is a showcase of the features available and should be reset regularly.</p>
+</section>
+
+<section>
+	<h2>features</h2>
+	<h3>admin</h3>
+	<p>The content managment part of the <strong>humbak</strong> cms is done on the <a href="${env.ADMIN_URL}" target="_blank" class="text-link">admin page</a>. The following section describes the features available there and contains instructions on how to use them.</p>
+</section>
+
+<section>
+	<h3>pages</h3>
+	<p>The cms' main feature is creating pages, which can be done on the <a href="${env.ADMIN_URL}" target="_blank" class="text-link">admin home page</a>. Once there, you can browse and search all the pages and edit their <em>content</em>, <em>css</em> and <em>meta</em>.</p>
+
+	<h4>pages table</h4>
+	<p>At the top of the <a href="${env.ADMIN_URL}" target="_blank" class="text-link">home page</a> are a search input and a table. The table contains all of the created pages and can be filtered with the input above it. Each page has <b>edit</b> and <b>delete</b> buttons.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">table placeholder</div>
+
+	<h4>page form</h4>
+<p>Below the table there is a form consisting of 4 text fields, the <b>editor</b> and the <b>preview box</b>. Between <em>the editor</em> and <em>the preview box</em> are <b>control buttons</b>. Going from top to bottom, the <em>control buttons</em> are: <b>editor mode select</b>, <b>content formatting</b>, <b>snippets</b> and <b>Humbak Files</b>. The last, gray button in the middle can be used to resize the <em>editor</em>. Lastly, below the editor there are the <b>clear</b> and <b>save</b> buttons.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">form placeholder</div>
+	<p>Use the <b>editor mode select</b> to switch between editing page's <em>html</em>, <em>css</em> and <em>meta</em>. Note that meta should be a valid JSON array containing objects that will be mapped to meta tags, for example <code>{ "name": "description", "content": "My page's description" }</code> will create a tag <code>&lt;meta name="description" content="My page's description"&gt;.</p>
+
+	<h4>humbak files</h4>
+	<p>The fourth <em>control button</em> button, opens a <b>Humbak Files dialog</b>, inside of which you can browse and search all of your files and open their preview or copy their html tag.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">humbak files dialog placeholder</div>
+	<p><em>Humbak Files</em> can be uploaded on the <a href="${env.ADMIN_URL}/files" target="_blank" class="text-link">files page</a> and have some special features that are described in the <a href="#humbak-files" class="text-link">Humbak Files</a> section. To make their features work, inside the page html you use them through a special tag <code>&ltHumbakFile fid="1"&gt;</code>. They require a special <b>fid</b> attribute that contains the target <b>Humbak File's</b> id and accept all valid html attributes, such as <em>class</em> or <em>style</em>.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">humbak file tag placeholder</div>
+</section>
+
+<section>
+	<h3>menu</h3>
+	<p>After creating pages you can manage the menu layout on the <a href="${env.ADMIN_URL}/menu" target="_blank" class="text-link">admin menu page</a>.</p>
+	<p>At the top there are: the <em>expandable and movable</em> <b>hidden pages list</b>, the <b>language select</b> and the <b>save button</b>. Below, there is the <b>menu layout editor</b> that is an interactive preview of a menu and can be used to hide and move the menu links around.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">menu page placeholder</div>
+
+	<h4>example of using the menu layout editor</h4>
+	<div class="flex-center" style="background-color: orange; height: 40px;">moving menus gif placeholder</div>
+</section>`,
 });
 
 await db.insert(footerContents).values({
