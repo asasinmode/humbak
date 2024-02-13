@@ -218,39 +218,16 @@ await db.insert(filesToSlides).values([
 	{ slideId: slideInsertId + 3, fileId: riverSlideImageId },
 ]);
 
-for (const { pageData, text, parentId, position } of [
-	{
-		id: 1,
-		pageData: { language: 'en', title: 'Home', slug: '' },
-		text: 'Home',
-		parentId: null,
-		position: 0,
-	},
-	{
-		id: 2,
-		pageData: { language: 'en', title: 'Kursy Nurkowania', slug: 'kursy-nurkowania' },
-		text: 'Kursy',
-		parentId: null,
-		position: 0,
-	},
-	{
-		id: 3,
-		pageData: { language: 'en', title: 'Sekcje Nurkowe', slug: 'sekcje-nurkowe' },
-		text: 'Sekcje nurkowe',
-		parentId: 2,
-		position: 0,
-	},
-]) {
-	const [{ insertId: pageId }] = await db
-		.insert(pages)
-		.values(pageData);
-
-	await Promise.all([
-		db.insert(menuLinks).values({ text, pageId, position, parentId }),
-		db.insert(contents).values({ pageId }),
-		writeFile(`${stylesheetsStoragePath}/${pageId}.css`, ''),
-	]);
-}
+const enHomePageId = await createPage({
+	language: 'en',
+	title: 'home',
+	slug: '',
+	menuText: 'home EN',
+	parentId: null,
+	position: 0,
+	content: `<h1>humbak demo</h1>
+	<p>This is a demo page for "humbak", a blog cms. Current content is a showcase of the features available and should be reset regularly.</p>`,
+});
 
 await db.insert(footerContents).values({
 	language: 'en',
@@ -294,4 +271,28 @@ async function createFile(
 	});
 
 	return insertId;
+}
+
+async function createPage({ language, title, slug, menuText, parentId, position, content }: {
+	language: string;
+	title: string;
+	slug: string;
+	menuText: string;
+	parentId: number | null;
+	position: number;
+	content: string;
+}) {
+	const [{ insertId: pageId }] = await db
+		.insert(pages)
+		.values({ language, title, slug });
+
+	const { value } = await parsePageHtml(content);
+
+	await Promise.all([
+		db.insert(menuLinks).values({ text: menuText, pageId, position, parentId }),
+		db.insert(contents).values({ pageId, rawHtml: content, parsedHtml: value }),
+		writeFile(`${stylesheetsStoragePath}/${pageId}.css`, ''),
+	]);
+
+	return pageId;
 }
