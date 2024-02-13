@@ -130,7 +130,7 @@ export const app = new Hono()
 						text: menuText,
 						parentId: isHomePage
 							? null
-							: languageChanged || (!isHomePage && slugChanged)
+							: languageChanged || slugChanged
 								? -1
 								: undefined,
 						updatedAt: new Date(),

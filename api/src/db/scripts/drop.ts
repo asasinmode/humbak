@@ -1,13 +1,20 @@
 import { existsSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 import { pool } from '..';
-import { filesStoragePath } from '../../helpers/files';
+import { filesStoragePath, stylesheetsStoragePath } from '../../helpers/files';
 import { deleteFile } from '../../helpers/files/image';
 import { getTableNames, promptProdContinue } from '../../helpers';
 
 await promptProdContinue();
 
+existsSync(`${stylesheetsStoragePath}/global.css`) && await rm(`${stylesheetsStoragePath}/global.css`);
+
 const tables = await getTableNames();
+
+const [rawPages] = await pool.execute('SELECT `id` FROM `pages`');
+for (const { id } of rawPages as unknown as { id: number; }[]) {
+	existsSync(`${stylesheetsStoragePath}/${id}.css`) && await rm(`${stylesheetsStoragePath}/${id}.css`);
+}
 
 const [rawDirectories] = await pool.execute('SELECT `path` FROM `directories`');
 for (const { path } of rawDirectories as unknown as { path: string; }[]) {

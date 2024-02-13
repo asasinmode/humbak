@@ -1,13 +1,20 @@
 import { existsSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
-import { filesStoragePath } from '../../helpers/files';
+import { filesStoragePath, stylesheetsStoragePath } from '../../helpers/files';
 import { pool } from '..';
 import { getTableNames, promptProdContinue } from '../../helpers';
 import { deleteFile } from '../../helpers/files/image';
 
 await promptProdContinue();
 
+existsSync(`${stylesheetsStoragePath}/global.css`) && await rm(`${stylesheetsStoragePath}/global.css`);
+
 const tables = await getTableNames();
+
+const [rawPages] = await pool.execute('SELECT `id` FROM `pages`');
+for (const { id } of rawPages as unknown as { id: number; }[]) {
+	existsSync(`${stylesheetsStoragePath}/${id}.css`) && await rm(`${stylesheetsStoragePath}/${id}.css`);
+}
 
 await pool.execute('SET FOREIGN_KEY_CHECKS = 0');
 await pool.execute('TRUNCATE TABLE `pages`');
