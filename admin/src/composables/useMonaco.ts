@@ -107,6 +107,7 @@ export function useMonaco(
 
 		const editorInstance = monaco.editor.create(containerRef.value, {
 			model: editorModels.value[currentModel.value],
+			wordWrap: 'on',
 			automaticLayout: true,
 			scrollBeyondLastLine: false,
 			minimap: {
