@@ -169,14 +169,14 @@ export const plHomePageContent = `<section>
 	</div>
 
 	<h4>formularz strony</h4>
-	<p>Poniżej tabeli znajduje się formularz złożony z 4 pól tekstowych, <b>edytora</b> i <b>podglądu</b>. Pomiędzy <em>edytorem</em> i <em>podglądem</em> są <b>guziki kontrolne</b>. Idąc od góry do dołu, <em>guziki kontrolne</em> to: <b>wybór trybu edytora</b>, <b>formatowanie zawartości</b>, <b>snippety</b> i <b>Pliki Humbak</b>. Ostatni, szary guzik po środku służy do zmieniani rozmiaru <em>edytora</em>. Na samym końcu, poniżej <b>edytora</b> są guziki <b>wyczyść</b> i <b>zapisz</b>.</p>
+	<p>Poniżej tabeli znajduje się formularz złożony z 4 pól tekstowych, <b>edytora</b> i <b>podglądu</b>. Pomiędzy <em>edytorem</em> i <em>podglądem</em> są <b>przyciki kontrolne</b>. Idąc od góry do dołu, <em>przyciski kontrolne</em> to: <b>wybór trybu edytora</b>, <b>formatowanie zawartości</b>, <b>snippety</b> i <b>Pliki Humbak</b>. Ostatni, szary przycisk po środku służy do zmieniani rozmiaru <em>edytora</em>. Na samym końcu, poniżej <b>edytora</b> są przyciski <b>wyczyść</b> i <b>zapisz</b>.</p>
 	<div class="flex-center" style="background-color: orange; height: 40px;">
 		form placeholder
 	</div>
 	<p>Użyj <b>wyboru trybu edytora</b> do zmieniania między edytowaniem <em>html</em>, <em>css</em> i <em>mety</em> strony. W przypadku edytowania <em>mety</em>, zawartość powinna być prawidłową JSON listą zawierającą obiekty, które zostaną zamienione w tagi meta. Przykładowo <code>{ "name": "description", "content": "Opis mojej strony" }</code> utworzy tag <code>&lt;meta name="description" content="Opis mojej strony"&gt;</code>.</p>
 
 	<h4>pliki humbak</h4>
-	<p>Czwarty <em>guzik kontrolny</em>, otwiera <b>dialog Humbak Plików</b>, w środku którego możesz wyszukiwać i przeglądać wszystkie pliki, otwierać ich podglądy oraz kopiować ich tagi HTML.</p>
+	<p>Czwarty <em>przycisk kontrolny</em>, otwiera <b>dialog Humbak Plików</b>, w środku którego możesz wyszukiwać i przeglądać wszystkie pliki, otwierać ich podglądy oraz kopiować ich tagi HTML.</p>
 	<div class="flex-center" style="background-color: orange; height: 40px;">
 		humbak files dialog placeholder
 	</div>
