@@ -15,6 +15,7 @@ const schema = object({
 	PORT: coerce(number([integer()]), Number),
 	DATABASE_URL: string(),
 	DATABASE_NAME: string(),
+	API_URL: string(),
 	ADMIN_URL: string(),
 	PAGE_URL: string(),
 	FILES_PATH: string(),
