@@ -16,7 +16,7 @@ import { footerContents } from '../schema/footerContents';
 import { files } from '../schema/files';
 import { users } from '../schema/users';
 import { filesToSlides } from '../schema/filesToSlides';
-import { enHomePageContent } from './helpers';
+import { enHomePageContent, plHomePageContent } from './helpers';
 
 await promptProdContinue();
 
@@ -227,6 +227,16 @@ const enHomePageId = await createPage({
 	parentId: null,
 	position: 0,
 	content: enHomePageContent,
+});
+
+const plHomePageId = await createPage({
+	language: 'pl',
+	title: 'dom',
+	slug: '',
+	menuText: 'home PL',
+	parentId: null,
+	position: 0,
+	content: plHomePageContent,
 });
 
 await db.insert(footerContents).values({

@@ -36,7 +36,7 @@ export const enHomePageContent = `<section>
 	<p>Use the <b>editor mode select</b> to switch between editing page's <em>html</em>, <em>css</em> and <em>meta</em>. Note that meta should be a valid JSON array containing objects that will be mapped to meta tags, for example <code>{ "name": "description", "content": "My page's description" }</code> will create a tag <code>&lt;meta name="description" content="My page's description"&gt;.</code></p>
 
 	<h4>humbak files</h4>
-	<p>The fourth <em>control button</em> button, opens the <b>humbak files dialog</b>, inside of which you can browse and search all of your files and open their preview or copy their html tag.</p>
+	<p>The fourth <em>control button</em>, opens the <b>humbak files dialog</b>, inside of which you can browse and search all of your files and open their preview or copy their html tag.</p>
 	<div class="flex-center" style="background-color: orange; height: 40px;">
 		humbak files dialog placeholder
 	</div>
@@ -139,3 +139,145 @@ export const enHomePageContent = `<section>
 		settings page placeholder
 	</div>
 </section>`;
+
+export const plHomePageContent = `<section>
+	<h1>humbak demo</h1>
+	<p>To jest strona demo dla <strong>humbak</strong>, aplikacji CMS (content managment site - strona do zarządzania zawartością) dla bloga. Obecna zawartość przedstawia dostępną funkcjonalność CMS'a i powinna być resetowana regularnie</p>
+</section>
+
+<section>
+	<h2>funkcjonalność</h2>
+
+	<h3>strona</h3>
+	<p>Zawartość zarządzana przez CMS jest wyświetlana na... <a href="#" class="text-link">stronie</a>. Tej samej, którą obecnie przeglądasz.</p>
+
+	<h3>api</h3>
+	<p>Strona główna i strona admina komunikują się przez i za pomocą <a href="${env.API_PAGE}" target="_blank" class="text-link">strony api</a>. Poza <a href="${env.API_PAGE}" target="_blank" class="text-link">stroną domową TODO fancy underline</a> (którą polecam odwiedzić), nie ma na niej za wiele.</p>
+
+	<h3>admin</h3>
+	<p>Zarządzanie zawartością <strong>humbak</strong> cms'a odbywa się na <a href="${env.ADMIN_URL}" target="_blank" class="text-link">stronie admina</a>. Następujące sekcje opisują funkcjonalność dostępną na niej oraz zawierają instrukcje, jak jej używać.</p>
+</section>
+
+<section>
+	<h3>strony</h3>
+	<p>Główną funkcjonalnością cms'a jest tworzenie stron, które odbywa się na <a href="${env.ADMIN_URL}" target="_blank" class="text-link">głównej stronie admina</a>. Możesz na niej szukać i przeglądać wszystkie strony oraz edytować ich <em>zawartość</em>, <em>css</em> i <em>metę</em>.</p>
+
+	<h4>tabela stron</h4>
+	<p>Na samej górze <a href="${env.ADMIN_URL}" target="_blank" class="text-link">strony głównej</a> znajdują się wyszukiwarka i tabela. Tabela zawiera wszystkie utworzone strony i może być filtrowana przez wyszukiwarkę nad nią. Każda strona w tabeli ma przyciski <b>edytuj</b> oraz <b>usuń</b>.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		table placeholder
+	</div>
+
+	<h4>formularz strony</h4>
+	<p>Poniżej tabeli znajduje się formularz złożony z 4 pól tekstowych, <b>edytora</b> i <b>podglądu</b>. Pomiędzy <em>edytorem</em> i <em>podglądem</em> są <b>guziki kontrolne</b>. Idąc od góry do dołu, <em>guziki kontrolne</em> to: <b>wybór trybu edytora</b>, <b>formatowanie zawartości</b>, <b>snippety</b> i <b>Pliki Humbak</b>. Ostatni, szary guzik po środku służy do zmieniani rozmiaru <em>edytora</em>. Na samym końcu, poniżej <b>edytora</b> są guziki <b>wyczyść</b> i <b>zapisz</b>.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		form placeholder
+	</div>
+	<p>Użyj <b>wyboru trybu edytora</b> do zmieniania między edytowaniem <em>html</em>, <em>css</em> i <em>mety</em> strony. W przypadku edytowania <em>mety</em>, zawartość powinna być prawidłową JSON listą zawierającą obiekty, które zostaną zamienione w tagi meta. Przykładowo <code>{ "name": "description", "content": "Opis mojej strony" }</code> utworzy tag <code>&lt;meta name="description" content="Opis mojej strony"&gt;</code>.</p>
+
+	<h4>pliki humbak</h4>
+	<p>Czwarty <em>guzik kontrolny</em>, otwiera <b>dialog Humbak Plików</b>, w środku którego możesz wyszukiwać i przeglądać wszystkie pliki, otwierać ich podglądy oraz kopiować ich tagi HTML.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		humbak files dialog placeholder
+	</div>
+	<p><em>Humbak pliki</em> mogą być wgrywane na <a href="${env.ADMIN_URL}/files" target="_blank" class="text-link">stronie plików admina</a> i mają specjalne właściwości opisane w sekcji <a href="#files" class="text-link">pliki humbak</a>. Żeby ich funkcjonalność działała, w html zawartości muszą one być używane za pomocą specjalnego tagu <code>&ltHumbakFile fid="1"&gt;</code>. Te tagi wymagają atrybutu <b>fid</b> który zawiera id docelowego <b>pliku humbak</b> i akceptują wszystkie poprawne html atrybuty, takie jak <em>class</em> lub <em>style</em>.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		humbak file tag placeholder
+	</div>
+</section>
+
+<section>
+	<h3>menu</h3>
+	<p>Po utworzeniu stron możesz zarządzać ułożeniem menu na <a href="${env.ADMIN_URL}/menu" target="_blank" class="text-link">stronie menu admina</a>.</p>
+	<p>Na samej górze znajdują się: <em>rozszerzana i ruchoma</em> <b>lista ukrytych stron</b>, <b>wybór języka</b> i <b>przycisk zapisz</b>. Poniżej jest <b>edytor układu menu</b> będący interaktywnym podglądem menu, który może być użyty do chowania i zmieniania pozycji linków menu. Żeby schować link należy przeciągnąć go do <b>listy ukrytych stron</b>. Podobnie, żeby pokazać link należy go przeciągnąć z tej samej listy do <b>edytora układu</b>.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		menu page placeholder
+	</div>
+
+	<h4>przykład używania edytora układu menu</h4>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		moving menus gif placeholder
+	</div>
+</section>
+
+<section>
+	<h3>pliki</h3>
+	<p><b>Pliki humbak</b> mogą być wgrywane i zarządzane na <a href="${env.ADMIN_URL}/files" target="_blank" class="text-link">stronie plików admina</a>.</p>
+	<p class="indent">
+		W lewym górnym rogu znajdują się <em>okruchy folderów</em>, które pokazują twój obecny folder, jego ścieżkę i mogą być użyte do nawigowania między folderami. Na prawo od nich są 2 przyciski do zmieniania widoku pomiędzy widokiem listy a kafelkami. Obok nich jest przycisk <b>zapisz</b>.
+	</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		toggling views gif
+	</div>
+	<p class="indent">
+		Poniżej powyższych wylistowane są wszystkie twoje pliki, z wyjątkiem pierwszego elementu, który służy do tworzenia nowych folderów i wgrywania nowych plików. Poza edytowaniem atrybutów plików i folderów możesz nawigować do poszczególnych folderów oraz usuwać/edytować pliki i foldery. Przycisk <b>przesuń</b> może być albo przeciągnięty i upuszczony do konkretnego folderu, albo kliknięty na żeby otworzyć <b>dialog przesuwania</b>.
+	</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		moving files/directories gif
+	</div>
+	<p>Zaletą używania <b>plików humbak</b> jest fakt, że zmiana tytułu/atrybutu alt lub przemieszczenie go jest na bieżąco śledzone i wszystkie strony i slajdy używane go zostaną zaktualizowane z najnowszymi danymi.</p>
+
+	<h4>dialog przesuwania</h4>
+	<p>Dialog przesuwania zawiera listę folderów. W przypadku, kiedy folder, do którego chcesz przesunąć inny plik/folder jest w innej, niż obecna, lokacji, możesz użyć go do wybrania docelowego folderu i przesunięcia do niego pliku.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		moving dir using move dialog gif
+	</div>
+</section>
+
+<section>
+	<h3>global</h3>
+	<p>Kiedy na <a href="${env.ADMIN_URL}" target="_blank" class="text-link">stronie głównej admina</a> możesz edytować <em>css</em> i <em>metę</em> poszczególnych stron, <a href="${env.ADMIN_URL}/global" target="_blank" class="text-link">strona global admina</a> jest używana do edytowania <em>css</em> i <em>mety</em> dzielonej między wszystkimi stronami (z wyjątkiem <em>mety</em>, która jest dzielona między wszystkimi stronami o tym samym języku).</p>
+	<p class="indent">
+		At the top you can select the <b>editor's</b> mode, choosing between <em>css</em> and <em>meta</em>, along with, in case of being in <em>meta</em> edit mode, choosing the target language. To the right of these selects are the <b>content formatting</b> and the <b>save</b> buttons. Below all of that is the <b>editor</b>.
+	</p>
+	<p class="indent">
+		Na samej górze możesz wybrać tryb <b>edytora</b>, wybierając pomiędzy <em>css</em> i <em>metą</em>. Dodatkowo, w przypadku trybu edytora będącego <em>metą</em>, możesz wybrać język, dla którego jest ona zmieniana. Na prawo od tych dwóch pól wyboru są przyciski <b>formatowania kontentu</b> i <b>zapisywania</b>. Poniżej tych elementów znajduje się <b>edytor</b>.
+	</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		global page placeholder
+	</div>
+</section>
+
+<section>
+	<h3>slider</h3>
+	<p><b>Slider</b> znajdujący się na górze wszystkich stron może być konfigurowany na <a href="${env.ADMIN_URL}/slider" target="_blank" class="text-link">stronie slider admina</a>.</p>
+	<p class="indent">
+		Pierwszy rząd na stronie zawiera <b>wybór języka</b>, <b>wybór slajdu</b>, kolejno przyciski kontrolne <b>pliki humbak</b>, <b>ustawienia slidera</b> <b>formatowanie zawartości</b> oraz przyciski <b>wyczyść</b> i <b>zapisz</b>. Poniżej tych wszystkich elementów znajduje się <b>edytor</b>, pod którym jest formularz do zarządzania atrybutami obecnego slajdu: nazwa, język i widoczność.
+	</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		slider page placeholder
+	</div>
+	<p>Poniżej formularza są <b>podgląd</b>, pokazujący wygląd obecnie edytowanego slajdu i <b>slider</b>, będący kopią slidera widocznego na <a href="${env.PAGE_URL}" target="_blank" class="text-link">stronie głównej</a>. O ile <em>podgląd</em> aktualizuje się na bieżąco z <em>html'em</em> obecnego slajdu, to <em>slider</em> aktualizuje się dopiero po zapisaniu zmian.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		slider page previews placeholder
+	</div>
+
+	<h4>ustawienia slidera</h4>
+	<p>Przycisk kontrolny <em>ustawień slidera</em> otwiera <b>dialog konfiguracji slidera</b>. W środku dialogu możesz zmienić <b>proporcje</b> slidera. Format wartości powinien być w formie wspieranej przez <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/calc" target="_blank" class="text-link">funkcję calc css</a>.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		slider settings dialog placeholder
+	</div>
+</section>
+
+<section>
+	<h3>stopka</h3>
+	<p>Podobnie do <b>slidera</b>, <b>stopka</b> może być edytowana na <a href="${env.ADMIN_URL}/footer" target="_blank" class="text-link">stronie stopka admina</a>.</p>
+	<p class="indent">
+		Na górze strony znajduje się <b>wybór języka</b> i przycisk <b>zapisz</b>, poniżej których jest interaktywny podgląd stopki. W pierwszej kolumnie można dodawać i edytować emaile, w drugiej numery telefonu a w ostatniej link lokacji. Poniżej tych kolumn, w drugim rzędzie znajdują się linki do sociali, które mogą być edytowane w <b>dialog sociali</b>.
+	</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		footer page placeholder
+	</div>
+
+	<h4>dialog sociali</h4>
+	<p>W środku dialogu możesz dodawać i edytować kilka wybranych social linków, które pokażą się na dole stopki.</p>
+	<div class="flex-center" style="background-color: orange; height: 40px;">
+		footer page socials dialog
+	</div>
+</section>
+
+<section>
+	<h3>ustawienia</h3>
+	<p>Na samym końcu, na <a href="${env.ADMIN_URL}/settings" target="_blank" class="text-link">stronie ustawień admina</a> możesz się wylogować lub zmienić swoją nazwę użytkownika i hasło.</p>
+</section>
+`;
