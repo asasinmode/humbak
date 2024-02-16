@@ -350,10 +350,10 @@ export function enSeasPageContent([imgId1, imgId2]: [number, number]) {
 
 	<div class="split-container-2">
 		<a href="https://unsplash.com/photos/photography-of-seashore-during-sunset-FGvRZ-BeCKo" target="_blank">
-			<HumbakFile id="${imgId1}"></HumbakFile>
+			<HumbakFile fid="${imgId1}"></HumbakFile>
 		</a>
 		<a href="https://unsplash.com/photos/body-of-water-near-mountains-at-daytime-F-7HklW7be8" target="_blank">
-			<HumbakFile id="${imgId2}"></HumbakFile>
+			<HumbakFile fid="${imgId2}"></HumbakFile>
 		</a>
 	</div>
 
@@ -369,10 +369,10 @@ export function plSeasPageContent([imgId1, imgId2]: [number, number]) {
 
 	<div class="split-container-2">
 		<a href="https://unsplash.com/photos/photography-of-seashore-during-sunset-FGvRZ-BeCKo" target="_blank">
-			<HumbakFile id="${imgId1}"></HumbakFile>
+			<HumbakFile fid="${imgId1}"></HumbakFile>
 		</a>
 		<a href="https://unsplash.com/photos/body-of-water-near-mountains-at-daytime-F-7HklW7be8" target="_blank">
-			<HumbakFile id="${imgId2}"></HumbakFile>
+			<HumbakFile fid="${imgId2}"></HumbakFile>
 		</a>
 	</div>
 
@@ -395,13 +395,13 @@ export function enLakesPageContent([imgId1, imgId2, imgId3, imgId4, imgId5, imgI
 
 	<div class="split-container-3">
 		<a href="https://unsplash.com/photos/aerial-photography-of-islands-surrounded-with-body-of-water-ZLLwL9bKlnk" target="_blank">
-			<HumbakFile id="${imgId2}"></HumbakFile>
+			<HumbakFile fid="${imgId2}"></HumbakFile>
 		</a>
 		<a href="https://unsplash.com/photos/lake-beside-hills-yTmvgqhT2m0" target="_blank">
-			<HumbakFile id="${imgId3}"></HumbakFile>
+			<HumbakFile fid="${imgId3}"></HumbakFile>
 		</a>
 		<a href="https://unsplash.com/photos/brown-rocks-beside-blue-lake-near-white-snowy-mountain-at-daytime-TV1jBQWiHwU" target="_blank">
-			<HumbakFile id="${imgId4}"></HumbakFile>
+			<HumbakFile fid="${imgId4}"></HumbakFile>
 		</a>
 	</div>
 
@@ -435,13 +435,13 @@ export function plLakesPageContent([imgId1, imgId2, imgId3, imgId4, imgId5, imgI
 
 	<div class="split-container-3">
 		<a href="https://unsplash.com/photos/aerial-photography-of-islands-surrounded-with-body-of-water-ZLLwL9bKlnk" target="_blank">
-			<HumbakFile id="${imgId2}"></HumbakFile>
+			<HumbakFile fid="${imgId2}"></HumbakFile>
 		</a>
 		<a href="https://unsplash.com/photos/lake-beside-hills-yTmvgqhT2m0" target="_blank">
-			<HumbakFile id="${imgId3}"></HumbakFile>
+			<HumbakFile fid="${imgId3}"></HumbakFile>
 		</a>
 		<a href="https://unsplash.com/photos/brown-rocks-beside-blue-lake-near-white-snowy-mountain-at-daytime-TV1jBQWiHwU" target="_blank">
-			<HumbakFile id="${imgId4}"></HumbakFile>
+			<HumbakFile fid="${imgId4}"></HumbakFile>
 		</a>
 	</div>
 
