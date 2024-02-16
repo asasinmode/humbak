@@ -114,6 +114,7 @@ export function useMonaco(
 				enabled: false,
 			},
 			tabSize: 2,
+			insertSpaces: false,
 		});
 
 		editor.value = editorInstance;
