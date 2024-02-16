@@ -26,6 +26,9 @@ await writeFile(`${stylesheetsStoragePath}/global.css`, `.text-slider {
 	font-weight: 600;
 }`);
 
+// START
+// slide images
+// START
 const riverSlideImageId = await createFile({
 	url: 'https://images.unsplash.com/photo-1455577380025-4321f1e1dca7',
 	directoryId: null,
@@ -52,34 +55,42 @@ const [{ insertId: lakesDirId }] = await db.insert(directories).values({
 	path: '/lakes',
 });
 
-const oceanSlideImageId = await createFile({
-	url: 'https://images.unsplash.com/photo-1488278905738-514111aa236c',
-	directoryId: oceansDirId,
-	name: 'ocean.jpg',
-	path: '/oceans/ocean.jpg',
-	title: 'ocean',
-	alt: 'an ocean under a clouded sky',
-	mimetype: 'image/jpeg',
-});
-const seaSlideImageId = await createFile({
-	url: 'https://images.unsplash.com/photo-1444260239795-df1f0772a252',
-	directoryId: seasDirId,
-	name: 'sea.jpg',
-	path: '/seas/sea.jpg',
-	title: 'sea',
-	alt: 'aerial photo of a see with a rocky coast',
-	mimetype: 'image/jpeg',
-});
-const lakeSlideImageId = await createFile({
-	url: 'https://images.unsplash.com/photo-1516132006923-6cf348e5dee2',
-	directoryId: lakesDirId,
-	name: 'lake.jpg',
-	path: '/lakes/lake.jpg',
-	title: 'lake',
-	alt: 'a lake surrounded by a forest and mountains',
-	mimetype: 'image/jpeg',
-});
+const [oceanSlideImageId, seaSlideImageId, lakeSlideImageId] = await Promise.all([
+	createFile({
+		url: 'https://images.unsplash.com/photo-1488278905738-514111aa236c',
+		directoryId: oceansDirId,
+		name: 'ocean.jpg',
+		path: '/oceans/ocean.jpg',
+		title: 'ocean',
+		alt: 'an ocean under a clouded sky',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1444260239795-df1f0772a252',
+		directoryId: seasDirId,
+		name: 'sea.jpg',
+		path: '/seas/sea.jpg',
+		title: 'sea',
+		alt: 'aerial photo of a see with a rocky coast',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1516132006923-6cf348e5dee2',
+		directoryId: lakesDirId,
+		name: 'lake.jpg',
+		path: '/lakes/lake.jpg',
+		title: 'lake',
+		alt: 'a lake surrounded by a forest and mountains',
+		mimetype: 'image/jpeg',
+	}),
+]);
+// END
+// slide images
+// END
 
+// START
+// misc files
+// START
 await mkdir(`${filesStoragePath}/other`);
 const [{ insertId: otherDirId }] = await db.insert(directories).values({
 	name: 'other',
@@ -113,7 +124,13 @@ await db.insert(files).values({
 	alt: 'an example pdf with unimportant content',
 	mimetype: 'application/pdf',
 });
+// END
+// misc files
+// END
 
+// START
+// slides
+// START
 const [slideAspectRatioResult] = await db.select({ value: slideAspectRatio.value }).from(slideAspectRatio);
 !slideAspectRatioResult && await db.insert(slideAspectRatio).values({ value: '1 / 3' });
 
@@ -219,6 +236,9 @@ await db.insert(filesToSlides).values([
 	{ slideId: slideInsertId + 2, fileId: lakeSlideImageId },
 	{ slideId: slideInsertId + 3, fileId: riverSlideImageId },
 ]);
+// END
+// slides
+// END
 
 const enHomePageId = await createPage({
 	language: 'en',
@@ -240,6 +260,9 @@ const plHomePageId = await createPage({
 	content: plHomePageContent,
 });
 
+// START
+// oceans home
+// START
 const [oceanPageImage1Id, oceanPageImage2Id, oceanPageImage3Id, oceanPageImage4Id] = await Promise.all([
 	createFile({
 		url: 'https://images.unsplash.com/photo-1471922694854-ff1b63b20054',
@@ -288,7 +311,6 @@ const enOceansPageId = await createPage({
 	position: 0,
 	content: enOceansPageContent([oceanPageImage1Id, oceanPageImage2Id, oceanPageImage3Id, oceanPageImage4Id]),
 });
-
 const plOceansPageId = await createPage({
 	language: 'pl',
 	title: 'oceany',
@@ -298,7 +320,6 @@ const plOceansPageId = await createPage({
 	position: 0,
 	content: plOceansPageContent([oceanPageImage1Id, oceanPageImage2Id, oceanPageImage3Id, oceanPageImage4Id]),
 });
-
 await db.insert(filesToPages).values([
 	{ pageId: enOceansPageId, fileId: oceanPageImage1Id },
 	{ pageId: enOceansPageId, fileId: oceanPageImage2Id },
@@ -309,7 +330,13 @@ await db.insert(filesToPages).values([
 	{ pageId: plOceansPageId, fileId: oceanPageImage3Id },
 	{ pageId: plOceansPageId, fileId: oceanPageImage4Id },
 ]);
+// END
+// oceans home
+// END
 
+// START
+// footer
+// START
 await db.insert(footerContents).values([
 	{
 		language: 'en',
@@ -336,6 +363,9 @@ await db.insert(footerContents).values([
 		],
 	},
 ]);
+// END
+// footer
+// END
 
 await db.insert(users).values({
 	id: 'test',
