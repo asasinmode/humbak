@@ -443,7 +443,7 @@ const [seasPageImage1Id, seasPageImage2Id] = await Promise.all([
 		mimetype: 'image/jpeg',
 	}),
 	createFile({
-		url: 'https://images.unsplash.com/photo-1508439192733-e7448b721adc',
+		url: 'https://images.unsplash.com/photo-1569567264003-e13b34c6b323',
 		directoryId: seasDirId,
 		name: 'sea-island.jpg',
 		path: '/seas/sea-island.jpg',

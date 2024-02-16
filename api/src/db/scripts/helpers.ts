@@ -394,7 +394,7 @@ export function enLakesPageContent([imgId1, imgId2, imgId3, imgId4, imgId5, imgI
 	<p>Moreover, lakes possess cultural significance and often become focal points for human settlement and recreation. Throughout history, communities have been drawn to the shores of lakes, relying on them as sources of water, transportation, and sustenance. Today, lakes continue to be cherished for their recreational opportunities, providing havens for boating, fishing, and contemplative moments amidst nature's tranquility.</p>
 
 	<div class="split-container-3">
-		<a href="https://unsplash.com/photos/aerial-photography-of-islands-surrounded-with-body-of-water-ZLLwL9bKlnk" target="_blank">
+		<a href="https://unsplash.com/photos/green-grasses-near-body-of-water-with-mountain-range-in-vicinity-sC-BXbi9ajw" target="_blank">
 			<HumbakFile fid="${imgId2}"></HumbakFile>
 		</a>
 		<a href="https://unsplash.com/photos/lake-beside-hills-yTmvgqhT2m0" target="_blank">
