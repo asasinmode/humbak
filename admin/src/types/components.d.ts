@@ -12,6 +12,7 @@ declare module 'vue' {
     FooterRow: typeof import('./../components/Footer/FooterRow.vue')['default']
     FooterRowActionSelect: typeof import('./../components/Footer/FooterRowActionSelect.vue')['default']
     HumbakFilesDialog: typeof import('./../components/HumbakFilesDialog.vue')['default']
+    IconsSnippetDescribedImage: typeof import('./../components/Icons/IconsSnippetDescribedImage.vue')['default']
     IconsSnippetDoubleContainer: typeof import('./../components/Icons/IconsSnippetDoubleContainer.vue')['default']
     IconsSnippetIndentedParagraphs: typeof import('./../components/Icons/IconsSnippetIndentedParagraphs.vue')['default']
     IconsSnippetTripleContainer: typeof import('./../components/Icons/IconsSnippetTripleContainer.vue')['default']

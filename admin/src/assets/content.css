@@ -9,3 +9,15 @@ img {
 .split-container-3 {
 	@apply grid lg:grid-cols-3 gap-3
 }
+
+.described-image {
+	@apply flex flex-col gap-1 justify-center
+}
+
+.described-image>*:first-child {
+	@apply w-full
+}
+
+.described-image>*:nth-child(2) {
+	@apply text-center text-sm text-neutral-8
+}

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import IconsSnippetUnorderedList from '~/components/Icons/IconsSnippetUnorderedList.vue';
+import IconsSnippetDescribedImage from '~/components/Icons/IconsSnippetDescribedImage.vue';
 import IconsSnippetDoubleContainer from '~/components/Icons/IconsSnippetDoubleContainer.vue';
 import IconsSnippetTripleContainer from '~/components/Icons/IconsSnippetTripleContainer.vue';
 import IconsSnippetIndentedParagraphs from '~/components/Icons/IconsSnippetIndentedParagraphs.vue';
@@ -17,6 +18,11 @@ const tripleContainer = `<div class="split-container-3">
 	<div class="bg-humbak-3">jedna trzecia</div>
 	<div class="bg-humbak-5">druga trzecia</div>
 	<div class="bg-humbak-3">trzecia trzecia</div>
+</div>`;
+
+const describedImage = `<div class="described-image">
+	<HumbakFile fid=""></HumbakFile>
+	<p>opis obrazka</p>
 </div>`;
 
 const orderedList = `<ol>
@@ -63,6 +69,11 @@ const snippets = [
 		icon: IconsSnippetTripleContainer,
 		text: 'potrójny kontener',
 		snippet: tripleContainer,
+	},
+	{
+		icon: IconsSnippetDescribedImage,
+		text: 'opisany obraz',
+		snippet: describedImage,
 	},
 	{
 		icon: IconsSnippetUnorderedList,
