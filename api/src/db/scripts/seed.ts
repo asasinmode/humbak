@@ -17,7 +17,16 @@ import { files } from '../schema/files';
 import { users } from '../schema/users';
 import { filesToSlides } from '../schema/filesToSlides';
 import { filesToPages } from '../schema/filesToPages';
-import { enHomePageContent, enOceansPageContent, enSeasPageContent, plHomePageContent, plOceansPageContent, plSeasPageContent } from './helpers';
+import {
+	enHomePageContent,
+	enLakesPageContent,
+	enOceansPageContent,
+	enSeasPageContent,
+	plHomePageContent,
+	plLakesPageContent,
+	plOceansPageContent,
+	plSeasPageContent,
+} from './helpers';
 
 await promptProdContinue();
 
@@ -26,8 +35,11 @@ await writeFile(`${stylesheetsStoragePath}/global.css`, `.text-slider {
 	font-weight: 600;
 }`);
 
+console.time('seed');
+
 // START
 // slide images
+console.timeLog('seed', 'slide images');
 // START
 const riverSlideImageId = await createFile({
 	url: 'https://images.unsplash.com/photo-1455577380025-4321f1e1dca7',
@@ -90,6 +102,7 @@ const [oceanSlideImageId, seaSlideImageId, lakeSlideImageId] = await Promise.all
 
 // START
 // misc files
+console.timeLog('seed', 'misc files');
 // START
 await mkdir(`${filesStoragePath}/other`);
 const [{ insertId: otherDirId }] = await db.insert(directories).values({
@@ -130,6 +143,7 @@ await db.insert(files).values({
 
 // START
 // slides
+console.timeLog('seed', 'slides');
 // START
 const [slideAspectRatioResult] = await db.select({ value: slideAspectRatio.value }).from(slideAspectRatio);
 !slideAspectRatioResult && await db.insert(slideAspectRatio).values({ value: '1 / 3' });
@@ -314,6 +328,7 @@ await db.insert(filesToSlides).values([
 
 // START
 // home
+console.timeLog('seed', 'home pages');
 // START
 const enHomePageId = await createPage({
 	language: 'en',
@@ -340,6 +355,7 @@ const plHomePageId = await createPage({
 
 // START
 // oceans home
+console.timeLog('seed', 'oceans home pages');
 // START
 const [oceanPageImage1Id, oceanPageImage2Id, oceanPageImage3Id, oceanPageImage4Id] = await Promise.all([
 	createFile({
@@ -414,6 +430,7 @@ await db.insert(filesToPages).values([
 
 // START
 // seas home
+console.timeLog('seed', 'seas home pages');
 // START
 const [seasPageImage1Id, seasPageImage2Id] = await Promise.all([
 	createFile({
@@ -464,7 +481,106 @@ await db.insert(filesToPages).values([
 // END
 
 // START
+// lakes home
+console.timeLog('seed', 'lakes home pages');
+// START
+const [lakesPageImage1Id, lakesPageImage2Id, lakesPageImage3Id] = await Promise.all([
+	createFile({
+		url: 'https://images.unsplash.com/photo-1525088299396-2417f1366edd',
+		directoryId: lakesDirId,
+		name: 'many-lakes.jpg',
+		path: '/lakes/many-lakes.jpg',
+		title: 'many lakes',
+		alt: 'a drone shot of many connected lakes during a sunny day with a clear sky',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1531275090635-95f0974c3073',
+		directoryId: lakesDirId,
+		name: 'lake-forest-mountains.jpg',
+		path: '/lakes/lake-forest-mountains.jpg',
+		title: 'lake inside a forest',
+		alt: 'a clearwater lake surrounded by a forest with mountains in the distance',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1570106178002-deb401f6e4fc',
+		directoryId: lakesDirId,
+		name: 'cloudy-lake-hills.jpg',
+		path: '/lakes/cloudy-lake-hills.jpg',
+		title: 'lake surrounded by hills',
+		alt: 'a lake surrounded by hills under a cloudy sky',
+		mimetype: 'image/jpeg',
+	}),
+]);
+const [lakesPageImage4Id, lakesPageImage5Id, lakesPageImage6Id] = await Promise.all([
+	createFile({
+		url: 'https://images.unsplash.com/photo-1500066210756-649d53a72901',
+		directoryId: lakesDirId,
+		name: 'lake-snowy-mountains.jpg',
+		path: '/lakes/lake-snowy-mountains.jpg',
+		title: 'snowy mountains lake',
+		alt: 'a lake surrounded by snowy mountains covered in forests',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1528492501711-867fd2c44bb5',
+		directoryId: lakesDirId,
+		name: 'cloudy-lake-mirror.jpg',
+		path: '/lakes/cloud-lake-mirror.jpg',
+		title: 'cloudy lake mirror',
+		alt: 'a lake under a cloudy sky reflecting a mountain covered in a forest',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1624239364354-93ae3e590f66',
+		directoryId: lakesDirId,
+		name: 'lake-mountain-mirror.jpg',
+		path: '/lakes/lake-mountain-mirror.jpg',
+		title: 'lake mountain mirror',
+		alt: 'a mountain lake on a sunny day reflecting large mountains',
+		mimetype: 'image/jpeg',
+	}),
+]);
+const enLakesPageId = await createPage({
+	language: 'en',
+	title: 'lakes',
+	slug: 'lakes',
+	menuText: 'lakes',
+	parentId: null,
+	position: 2,
+	content: enLakesPageContent([lakesPageImage1Id, lakesPageImage2Id, lakesPageImage3Id, lakesPageImage4Id, lakesPageImage5Id, lakesPageImage6Id]),
+});
+const plLakesPageId = await createPage({
+	language: 'pl',
+	title: 'jeziora',
+	slug: 'jeziora',
+	menuText: 'jeziora',
+	parentId: null,
+	position: 2,
+	content: plLakesPageContent([lakesPageImage1Id, lakesPageImage2Id, lakesPageImage3Id, lakesPageImage4Id, lakesPageImage5Id, lakesPageImage6Id]),
+});
+await db.insert(filesToPages).values([
+	{ pageId: enLakesPageId, fileId: lakesPageImage1Id },
+	{ pageId: enLakesPageId, fileId: lakesPageImage2Id },
+	{ pageId: enLakesPageId, fileId: lakesPageImage3Id },
+	{ pageId: enLakesPageId, fileId: lakesPageImage4Id },
+	{ pageId: enLakesPageId, fileId: lakesPageImage5Id },
+	{ pageId: enLakesPageId, fileId: lakesPageImage6Id },
+	{ pageId: plLakesPageId, fileId: lakesPageImage1Id },
+	{ pageId: plLakesPageId, fileId: lakesPageImage2Id },
+	{ pageId: plLakesPageId, fileId: lakesPageImage3Id },
+	{ pageId: plLakesPageId, fileId: lakesPageImage4Id },
+	{ pageId: plLakesPageId, fileId: lakesPageImage5Id },
+	{ pageId: plLakesPageId, fileId: lakesPageImage6Id },
+]);
+// END
+// lakes home
+// END
+
+// START
 // footer
+console.timeLog('seed', 'footer home pages');
 // START
 await db.insert(footerContents).values([
 	{
@@ -503,6 +619,8 @@ await db.insert(users).values({
 });
 
 await pool.end();
+
+console.timeEnd('seed');
 
 async function createFile(
 	{ url, name, directoryId, path, title, alt, mimetype }:

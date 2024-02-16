@@ -304,7 +304,9 @@ export function enOceansPageContent([imgId1, imgId2, imgId3, imgId4]: [number, n
 
 	<p class="indent">Beneath the glistening surface, oceans harbor a mysterious and intricate tapestry of marine life, ranging from microscopic plankton to majestic whales. Their depths house hidden realms and abyssal plains, where enigmatic creatures thrive in conditions unfathomable to terrestrial life. Oceans also serve as crucibles of biodiversity, nurturing vibrant coral reefs and underwater landscapes that teem with an abundance of flora and fauna. Moreover, they act as dynamic theaters of geological processes, with tectonic plates colliding and diverging beneath their surface, shaping coastlines and giving rise to underwater mountain ranges.</p>
 
-	<HumbakFile fid="${imgId4}"></HumbakFile>
+	<a href="https://unsplash.com/photos/school-of-fish-in-body-of-water-9y7y26C-l4Y" target="_blank">
+		<HumbakFile fid="${imgId4}"></HumbakFile>
+	</a>
 
 	<p class="indent">The oceans' influence extends far beyond their physical boundaries, exerting a profound impact on weather patterns, atmospheric composition, and the overall health of our planet. As humanity grapples with the imperative to safeguard these aquatic giants from the pressures of climate change and overexploitation, a deeper understanding of their intricate ecosystems becomes essential. In essence, oceans encapsulate the essence of Earth's interconnected and dynamic nature, serving as both cradles of life and silent guardians of our planet's delicate equilibrium.</p>
 </section>`;
@@ -332,7 +334,9 @@ export function plOceansPageContent([imgId1, imgId2, imgId3, imgId4]: [number, n
 
 	<p>Pod błyszczącą powierzchnią oceany kryją tajemniczą i złożoną mozaikę życia morskiego, począwszy od mikroskopijnych planktonów po majestatyczne wieloryby. Ich głębiny skrywają ukryte królestwa i równiny abysalne, gdzie enigmatyczne istoty rozwijają się w warunkach niepojętych dla życia lądowego. Oceany pełnią także rolę kuźni bioróżnorodności, pielęgnując kolorowe rafy koralowe i podwodne krajobrazy, które pulsuje obfitością flory i fauny. Ponadto, działają jako dynamiczne areny procesów geologicznych, gdzie płyty tektoniczne zderzają się i oddzielają pod ich powierzchnią, kształtując linie brzegowe i powodując powstanie podwodnych łańcuchów górskich.</p>
 
-	<HumbakFile fid="${imgId4}"></HumbakFile>
+	<a href="https://unsplash.com/photos/school-of-fish-in-body-of-water-9y7y26C-l4Y" target="_blank">
+		<HumbakFile fid="${imgId4}"></HumbakFile>
+	</a>
 
 	<p>Wpływ oceanów rozciąga się daleko poza ich fizyczne granice, wywierając głęboki wpływ na wzorce pogodowe, skład atmosfery i ogólną kondycję naszej planety. W miarę jak ludzkość boryka się z koniecznością ochrony tych wodnych gigantów przed wpływami zmian klimatycznych i nadmiernego eksploatowania, staje się istotne głębsze zrozumienie ich złożonych ekosystemów. W istocie, oceany uosabiają istotę złożonej i spójnej natury Ziemi, pełniąc jednocześnie rolę kołyski życia i cichych strażników delikatnej równowagi naszej planety.</p>
 </section>`;
@@ -373,5 +377,85 @@ export function plSeasPageContent([imgId1, imgId2]: [number, number]) {
 	</div>
 
 	<p>Pośród fal i przemieszczających się piasków, morza splatają opowieści o handlu, eksploracji i osadnictwie ludzkim, wytwarzając historyczne i kulturowe znaczenie na ich brzegach. W miarę jak ludzkość boryka się z wyzwaniami związanymi z zmianami klimatu i ochroną środowiska, zrozumienie i ochrona tych złożonych środowisk morskich stają się priorytetem. Morza, ze swoją wiecznie zmieniającą się dynamiką i unikalnymi cechami, przyczyniają się nie tylko do bioróżnorodności naszej planety, lecz także do bogatej narracji historii Ziemi oraz trwającej interakcji między naturą a cywilizacją. W eksploracji mórz wyruszamy w podróż, która łączy nas zarówno z starożytnymi opowieściami przeszłości, jak i z pilnymi wysiłkami w dziedzinie ochrony kształtującej przyszłość.</p>
+</section>`;
+}
+
+export function enLakesPageContent([imgId1, imgId2, imgId3, imgId4, imgId5, imgId6]: [number, number, number, number, number, number]) {
+	return `<section>
+	<h1>lakes</h1>
+	<p>Lakes, serene and often nestled within the embrace of terrestrial landscapes, stand as tranquil reservoirs that dot the Earth's surface. Distinguished by their relative size and enclosed nature, lakes vary from expansive bodies, such as the Great Lakes, to smaller, more intimate water features scattered across the globe. Their presence contributes not only to the aesthetic beauty of landscapes but also plays a crucial role in ecological processes and human activities.</p>
+	<p class="indent">These freshwater expanses serve as crucial habitats for a diverse array of flora and fauna, creating thriving ecosystems within their depths and along their shores. Lakes support an intricate balance of life, offering refuge to aquatic plants, fish, and a myriad of waterfowl. The interconnectedness of lakes with surrounding ecosystems is evident as they receive inputs from rivers and streams, influencing water quality and fostering biodiversity.</p>
+
+	<div class="described-image">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+		<p><a href="https://unsplash.com/photos/aerial-photography-of-islands-surrounded-with-body-of-water-ZLLwL9bKlnk" target="_blank" class="text-link text-black">many lakes</a></p>
+	</div>
+
+	<p>Moreover, lakes possess cultural significance and often become focal points for human settlement and recreation. Throughout history, communities have been drawn to the shores of lakes, relying on them as sources of water, transportation, and sustenance. Today, lakes continue to be cherished for their recreational opportunities, providing havens for boating, fishing, and contemplative moments amidst nature's tranquility.</p>
+
+	<div class="split-container-3">
+		<a href="https://unsplash.com/photos/aerial-photography-of-islands-surrounded-with-body-of-water-ZLLwL9bKlnk" target="_blank">
+			<HumbakFile id="${imgId2}"></HumbakFile>
+		</a>
+		<a href="https://unsplash.com/photos/lake-beside-hills-yTmvgqhT2m0" target="_blank">
+			<HumbakFile id="${imgId3}"></HumbakFile>
+		</a>
+		<a href="https://unsplash.com/photos/brown-rocks-beside-blue-lake-near-white-snowy-mountain-at-daytime-TV1jBQWiHwU" target="_blank">
+			<HumbakFile id="${imgId4}"></HumbakFile>
+		</a>
+	</div>
+
+	<p>As humanity grapples with the challenges of environmental conservation, lakes underscore the need for sustainable practices to preserve these vital water bodies. Whether serving as reflective mirrors amidst mountain landscapes or contributing to the vibrancy of urban environments, lakes embody both the delicate balance of natural ecosystems and the enduring connection between humans and their watery havens.</p>
+
+	<div class="split-container-2">
+		<div class="described-image">
+			<HumbakFile fid="${imgId5}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/calm-body-of-water-near-mountain-YR-oXTkOtLo" target="_blank" class="text-link text-black">a lake</a></p>
+		</div>
+		<div class="described-image">
+			<HumbakFile fid="${imgId6}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/lake-near-mountain-under-blue-sky-during-daytime-jAAk__SlP8U" target="_blank" class="text-link text-black">other lake</a></p>
+		</div>
+	</div>
+</section>`;
+}
+
+export function plLakesPageContent([imgId1, imgId2, imgId3, imgId4, imgId5, imgId6]: [number, number, number, number, number, number]) {
+	return `<section>
+	<h1>lakes</h1>
+	<p>Jeziora, spokojne i często osadzone w objęciach krajobrazów lądowych, stanowią spokojne zbiorniki wodne, zdobiące powierzchnię Ziemi. Wyróżniające się swoim względnym rozmiarem i zamkniętym charakterem, jeziora różnią się od rozległych zbiorników, takich jak Wielkie Jeziora, po mniejsze, bardziej kameralne akweny rozsiane po całym globie. Ich obecność przyczynia się nie tylko do estetycznego piękna krajobrazów, ale także odgrywa kluczową rolę w procesach ekologicznych i ludzkich działalnościach.</p>
+	<p class="indent">Te słodkowodne obszary pełnią istotne funkcje jako siedliska różnorodnych form flory i fauny, tworząc kwitnące ekosystemy zarówno w głębiach, jak i wzdłuż brzegów. Jeziora wspierają złożoną równowagę życia, oferując schronienie dla roślin wodnych, ryb i licznych gatunków ptactwa wodnego. Wzajemne powiązania jezior z otaczającymi ekosystemami są widoczne, gdy otrzymują dopływy z rzek i strumieni, wpływając na jakość wody i wspierając różnorodność biologiczną.</p>
+
+	<div class="described-image">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+		<p><a href="https://unsplash.com/photos/aerial-photography-of-islands-surrounded-with-body-of-water-ZLLwL9bKlnk" target="_blank" class="text-link text-black">many lakes</a></p>
+	</div>
+
+	<p>Ponadto jeziora posiadają znaczenie kulturowe i często stają się punktami centralnymi osadnictwa ludzkiego oraz miejscami rekreacji. Na przestrzeni historii społeczności przyciągały brzegi jezior, polegając na nich jako źródłach wody, środkach transportu i źródłach utrzymania. Dziś jeziora wciąż są cenione ze względu na swoje możliwości rekreacyjne, stanowiąc ostoję dla żeglugi, wędkarstwa i refleksyjnych chwil wśród spokoju natury.</p>
+
+	<div class="split-container-3">
+		<a href="https://unsplash.com/photos/aerial-photography-of-islands-surrounded-with-body-of-water-ZLLwL9bKlnk" target="_blank">
+			<HumbakFile id="${imgId2}"></HumbakFile>
+		</a>
+		<a href="https://unsplash.com/photos/lake-beside-hills-yTmvgqhT2m0" target="_blank">
+			<HumbakFile id="${imgId3}"></HumbakFile>
+		</a>
+		<a href="https://unsplash.com/photos/brown-rocks-beside-blue-lake-near-white-snowy-mountain-at-daytime-TV1jBQWiHwU" target="_blank">
+			<HumbakFile id="${imgId4}"></HumbakFile>
+		</a>
+	</div>
+
+	<p>W obliczu wyzwań związanych z ochroną środowiska, jeziora podkreślają konieczność praktyk zrównoważonych, mających na celu zachowanie tych istotnych zbiorników wodnych. Czy to jako odbicia górskich krajobrazów czy elementy wzbogacające środowiska miejskie, jeziora łączą w sobie zarówno delikatną równowagę naturalnych ekosystemów, jak i trwałe powiązanie między ludźmi a ich wodnymi oazami.</p>
+
+	<div class="split-container-2">
+		<div class="described-image">
+			<HumbakFile fid="${imgId5}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/calm-body-of-water-near-mountain-YR-oXTkOtLo" target="_blank" class="text-link text-black">a lake</a></p>
+		</div>
+		<div class="described-image">
+			<HumbakFile fid="${imgId6}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/lake-near-mountain-under-blue-sky-during-daytime-jAAk__SlP8U" target="_blank" class="text-link text-black">other lake</a></p>
+		</div>
+	</div>
 </section>`;
 }
