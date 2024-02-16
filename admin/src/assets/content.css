@@ -1,3 +1,11 @@
 img {
 	@apply w-full h-full object-cover
 }
+
+.split-container-2 {
+	@apply grid md:grid-cols-2 gap-3
+}
+
+.split-container-3 {
+	@apply grid lg:grid-cols-3 gap-3
+}

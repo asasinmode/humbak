@@ -5,18 +5,18 @@ import IconsSnippetTripleContainer from '~/components/Icons/IconsSnippetTripleCo
 import IconsSnippetIndentedParagraphs from '~/components/Icons/IconsSnippetIndentedParagraphs.vue';
 
 const indentedParagraphs = `<p>Przykładowy tekst</p>
-<p class="indent-4">Druga linijka przykładowego tekstu</p>
-<p class="indent-4">Trzecia linijka przykładowego tekstu</p>`;
+<p class="indent">Druga linijka przykładowego tekstu</p>
+<p class="indent">Trzecia linijka przykładowego tekstu</p>`;
 
-const doubleContainer = `<div class="grid md:grid-cols-2">
-	<div>pierwsza połowa</div>
-	<div>druga połowa</div>
+const doubleContainer = `<div class="split-container-2">
+	<div class="bg-humbak-3">pierwsza połowa</div>
+	<div class="bg-humbak-5">druga połowa</div>
 </div>`;
 
-const tripleContainer = `<div class="grid lg:grid-cols-3">
-	<div>jedna trzecia</div>
-	<div>druga trzecia</div>
-	<div>trzecia trzecia</div>
+const tripleContainer = `<div class="split-container-3">
+	<div class="bg-humbak-3">jedna trzecia</div>
+	<div class="bg-humbak-5">druga trzecia</div>
+	<div class="bg-humbak-3">trzecia trzecia</div>
 </div>`;
 
 const orderedList = `<ol>
