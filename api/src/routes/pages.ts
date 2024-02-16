@@ -11,6 +11,7 @@ import { filesToPages } from '../db/schema/filesToPages';
 import { insertPageSchema, pages } from '../db/schema/pages';
 import { contents, insertContentSchema } from '../db/schema/contents';
 import { insertMenuLinkSchema, menuLinks } from '../db/schema/menuLinks';
+import { env } from '../env';
 
 const upsertPageInputSchema = merge([
 	insertPageSchema,
@@ -185,8 +186,8 @@ export const app = new Hono()
 		if (!page) {
 			return c.body(null, 204);
 		}
-		if (page.slug === '' && page.language === 'pl') {
-			return c.text('home strona dla języka pl nie może być usunięta', 400);
+		if (page.slug === '' && page.language === env.DEFAULT_LANGUAGE) {
+			return c.text(`home strona dla języka ${env.DEFAULT_LANGUAGE} nie może być usunięta`, 400);
 		}
 
 		await Promise.all([

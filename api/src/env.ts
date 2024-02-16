@@ -20,6 +20,7 @@ const schema = object({
 	PAGE_URL: string(),
 	FILES_PATH: string(),
 	STYLESHEETS_PATH: string(),
+	DEFAULT_LANGUAGE: string(),
 	JWT_SECRET: string(),
 });
 
