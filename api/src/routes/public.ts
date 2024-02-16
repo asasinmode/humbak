@@ -49,7 +49,7 @@ export const app = new Hono()
 					id: pages.id,
 					title: pages.title,
 					slug: pages.slug,
-					html: sql<string>`${contents.rawHtml}`,
+					html: sql<string>`${contents.parsedHtml}`,
 					meta: sql<string>`${contents.meta}`,
 					createdAt: sql<string>`${pages.createdAt}`,
 					updatedAt: sql<string>`${pages.updatedAt}`,
