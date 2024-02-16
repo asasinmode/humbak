@@ -134,8 +134,8 @@ await db.insert(files).values({
 const [slideAspectRatioResult] = await db.select({ value: slideAspectRatio.value }).from(slideAspectRatio);
 !slideAspectRatioResult && await db.insert(slideAspectRatio).values({ value: '1 / 3' });
 
-const slidesData = [
-	{
+const [{ insertId: slideInsertId }] = await db.insert(slides).values(await Promise.all([
+	createSlide({
 		name: 'ocean',
 		language: 'en',
 		content: `<div class="flex-center w-full h-full relative">
@@ -152,8 +152,8 @@ const slidesData = [
 		unsplash
 	</a>
 </div>`,
-	},
-	{
+	}),
+	createSlide({
 		name: 'sea',
 		language: 'en',
 		content: `<div class="flex-center w-full h-full relative">
@@ -170,8 +170,8 @@ const slidesData = [
 		unsplash
 	</a>
 </div>`,
-	},
-	{
+	}),
+	createSlide({
 		name: 'lake',
 		language: 'en',
 		content: `<div class="flex-center w-full h-full relative">
@@ -188,8 +188,8 @@ const slidesData = [
 		unsplash
 	</a>
 </div>`,
-	},
-	{
+	}),
+	createSlide({
 		name: 'river',
 		language: 'en',
 		content: `<div class="flex-center w-full h-full relative">
@@ -213,33 +213,105 @@ const slidesData = [
 	</a>
 </div>`,
 		isHidden: true,
-	},
-];
-
-const [{ insertId: slideInsertId }] = await db
-	.insert(slides)
-	.values(await Promise.all(slidesData.map(async ({ name, language, content, isHidden }) => {
-		const { value } = await parsePageHtml(content);
-
-		return {
-			name,
-			language,
-			isHidden,
-			rawContent: content,
-			parsedContent: value,
-		};
-	})));
+	}),
+	createSlide({
+		name: 'ocean',
+		language: 'pl',
+		content: `<div class="flex-center w-full h-full relative">
+	<HumbakFile fid="${oceanSlideImageId}" class="w-full h-full"></HumbakFile>
+	<h6 class="absolute w-full h-full flex-center text-slider" style="color: white; background-color: hsl(0 0 0% / 0.2)">
+		ocean
+	</h6>
+	<a
+		href="https://unsplash.com/photos/landscape-photography-of-waves-and-clouds-q-DJ9XhKkhA"
+		target="_blank"
+		class="absolute text-link"
+		style="bottom: 0.3rem; right: 0.5rem;"
+	>
+		unsplash
+	</a>
+</div>`,
+	}),
+	createSlide({
+		name: 'morze',
+		language: 'pl',
+		content: `<div class="flex-center w-full h-full relative">
+	<HumbakFile fid="${seaSlideImageId}" class="w-full h-full"></HumbakFile>
+	<h6 class="absolute w-full h-full flex-center text-slider" style="color: white; background-color: hsl(0 0 0% / 0.2)">
+		morze
+	</h6>
+	<a
+		href="https://unsplash.com/photos/aerial-photo-body-of-water-cuTk59eNHUE"
+		target="_blank"
+		class="absolute text-link"
+		style="bottom: 0.3rem; right: 0.5rem;"
+	>
+		unsplash
+	</a>
+</div>`,
+	}),
+	createSlide({
+		name: 'jezioro',
+		language: 'pl',
+		content: `<div class="flex-center w-full h-full relative">
+	<HumbakFile fid="${lakeSlideImageId}" class="w-full h-full"></HumbakFile>
+	<h6 class="absolute w-full h-full flex-center text-slider" style="color: white; background-color: hsl(0 0 0% / 0.2)">
+		jezioro
+	</h6>
+	<a
+		href="https://unsplash.com/photos/green-forest-near-lake-and-mountain-under-cloudy-sky-Hrmayke-v8g"
+		target="_blank"
+		class="absolute text-link"
+		style="bottom: 0.3rem; right: 0.5rem;"
+	>
+		unsplash
+	</a>
+</div>`,
+	}),
+	createSlide({
+		name: 'rzeka',
+		language: 'pl',
+		content: `<div class="flex-center w-full h-full relative">
+	<HumbakFile fid="${riverSlideImageId}" class="w-full h-full"></HumbakFile>
+	<h6 class="absolute text-slider w-full h-full flex-center" style="color: white;">
+		rzeka
+	</h6>
+	<h6 class="absolute text-slider" style="color: #00ff00; transform: translate(2px, 2px); mix-blend-mode: difference;">
+		rzeka
+	</h6>
+	<h6 class="absolute text-slider" style="color: #ff00ff; transform: translate(-2px, -2px); mix-blend-mode: difference;">
+		rzeka
+	</h6>
+	<a
+		href="https://unsplash.com/photos/body-of-water-between-trees-under-cloudy-sky-rB7-LCa_diU"
+		target="_blank"
+		class="absolute text-link"
+		style="bottom: 0.3rem; right: 0.5rem;"
+	>
+		unsplash
+	</a>
+</div>`,
+		isHidden: true,
+	}),
+]));
 
 await db.insert(filesToSlides).values([
 	{ slideId: slideInsertId, fileId: oceanSlideImageId },
 	{ slideId: slideInsertId + 1, fileId: seaSlideImageId },
 	{ slideId: slideInsertId + 2, fileId: lakeSlideImageId },
 	{ slideId: slideInsertId + 3, fileId: riverSlideImageId },
+	{ slideId: slideInsertId + 4, fileId: oceanSlideImageId },
+	{ slideId: slideInsertId + 5, fileId: seaSlideImageId },
+	{ slideId: slideInsertId + 6, fileId: lakeSlideImageId },
+	{ slideId: slideInsertId + 7, fileId: riverSlideImageId },
 ]);
 // END
 // slides
 // END
 
+// START
+// home
+// START
 const enHomePageId = await createPage({
 	language: 'en',
 	title: 'home',
@@ -259,6 +331,9 @@ const plHomePageId = await createPage({
 	position: 0,
 	content: plHomePageContent,
 });
+// END
+// home
+// END
 
 // START
 // oceans home
@@ -420,4 +495,16 @@ async function createPage({ language, title, slug, menuText, parentId, position,
 	]);
 
 	return pageId;
+}
+
+async function createSlide({ name, language, content, isHidden }: { name: string; language: string; content: string; isHidden?: boolean; }) {
+	const { value } = await parsePageHtml(content);
+
+	return {
+		name,
+		language,
+		isHidden,
+		rawContent: content,
+		parsedContent: value,
+	};
 }
