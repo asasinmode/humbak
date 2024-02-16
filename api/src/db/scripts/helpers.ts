@@ -330,10 +330,48 @@ export function plOceansPageContent([imgId1, imgId2, imgId3, imgId4]: [number, n
 		</div>
 	</div>
 
-	<p class="indent">Pod błyszczącą powierzchnią oceany kryją tajemniczą i złożoną mozaikę życia morskiego, począwszy od mikroskopijnych planktonów po majestatyczne wieloryby. Ich głębiny skrywają ukryte królestwa i równiny abysalne, gdzie enigmatyczne istoty rozwijają się w warunkach niepojętych dla życia lądowego. Oceany pełnią także rolę kuźni bioróżnorodności, pielęgnując kolorowe rafy koralowe i podwodne krajobrazy, które pulsuje obfitością flory i fauny. Ponadto, działają jako dynamiczne areny procesów geologicznych, gdzie płyty tektoniczne zderzają się i oddzielają pod ich powierzchnią, kształtując linie brzegowe i powodując powstanie podwodnych łańcuchów górskich.</p>
+	<p>Pod błyszczącą powierzchnią oceany kryją tajemniczą i złożoną mozaikę życia morskiego, począwszy od mikroskopijnych planktonów po majestatyczne wieloryby. Ich głębiny skrywają ukryte królestwa i równiny abysalne, gdzie enigmatyczne istoty rozwijają się w warunkach niepojętych dla życia lądowego. Oceany pełnią także rolę kuźni bioróżnorodności, pielęgnując kolorowe rafy koralowe i podwodne krajobrazy, które pulsuje obfitością flory i fauny. Ponadto, działają jako dynamiczne areny procesów geologicznych, gdzie płyty tektoniczne zderzają się i oddzielają pod ich powierzchnią, kształtując linie brzegowe i powodując powstanie podwodnych łańcuchów górskich.</p>
 
 	<HumbakFile fid="${imgId4}"></HumbakFile>
 
-	<p class="indent">Wpływ oceanów rozciąga się daleko poza ich fizyczne granice, wywierając głęboki wpływ na wzorce pogodowe, skład atmosfery i ogólną kondycję naszej planety. W miarę jak ludzkość boryka się z koniecznością ochrony tych wodnych gigantów przed wpływami zmian klimatycznych i nadmiernego eksploatowania, staje się istotne głębsze zrozumienie ich złożonych ekosystemów. W istocie, oceany uosabiają istotę złożonej i spójnej natury Ziemi, pełniąc jednocześnie rolę kołyski życia i cichych strażników delikatnej równowagi naszej planety.</p>
+	<p>Wpływ oceanów rozciąga się daleko poza ich fizyczne granice, wywierając głęboki wpływ na wzorce pogodowe, skład atmosfery i ogólną kondycję naszej planety. W miarę jak ludzkość boryka się z koniecznością ochrony tych wodnych gigantów przed wpływami zmian klimatycznych i nadmiernego eksploatowania, staje się istotne głębsze zrozumienie ich złożonych ekosystemów. W istocie, oceany uosabiają istotę złożonej i spójnej natury Ziemi, pełniąc jednocześnie rolę kołyski życia i cichych strażników delikatnej równowagi naszej planety.</p>
+</section>`;
+}
+
+export function enSeasPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>seas</h1>
+	<p>Seas, the dynamic expanses of saltwater that cradle our planet, are vital components of Earth's intricate tapestry. Unlike oceans, seas are smaller, partially enclosed by land, and often characterized by unique geological and ecological features. With an array of names such as the Mediterranean, Caribbean, and Coral Seas, these bodies of water play a pivotal role in shaping regional climates and fostering diverse ecosystems.</p>
+	<p class="indent">Seas are teeming hubs of marine life, harboring a rich biodiversity that adapts to the specific conditions of each sea's environment. From the bustling shallows to the mysterious depths, these aquatic realms host a mesmerizing array of species, ranging from vibrant coral reefs to elusive deep-sea creatures. The intricate interplay between tides, currents, and underwater topography creates a mosaic of habitats, providing a home for an astonishing variety of flora and fauna.</p>
+
+	<div class="split-container-2">
+		<a href="https://unsplash.com/photos/photography-of-seashore-during-sunset-FGvRZ-BeCKo" target="_blank">
+			<HumbakFile id="${imgId1}"></HumbakFile>
+		</a>
+		<a href="https://unsplash.com/photos/body-of-water-near-mountains-at-daytime-F-7HklW7be8" target="_blank">
+			<HumbakFile id="${imgId2}"></HumbakFile>
+		</a>
+	</div>
+
+	<p>Beyond their ecological significance, seas hold historical and cultural importance, serving as conduits for trade, exploration, and human settlement throughout millennia. As humanity faces the challenges of climate change and environmental conservation, understanding and protecting these intricate marine environments becomes paramount. Seas, with their ever-shifting dynamics and unique characteristics, contribute not only to the biodiversity of our planet but also to the rich narrative of Earth's history and the ongoing interplay between nature and civilization.</p>
+</section>`;
+}
+
+export function plSeasPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>morza</h1>
+	<p>Morza, dynamiczne przestrzenie słonej wody, które otaczają naszą planetę, są istotnymi składnikami złożonej tkaniny Ziemi. W przeciwieństwie do oceanów, morza są mniejsze, częściowo zamknięte przez ląd, często charakteryzują się unikalnymi cechami geologicznymi i ekologicznymi. O takich nazwach jak Morze Śródziemne, Karaibskie i Koralowe, te obszary wodne odgrywają kluczową rolę w kształtowaniu regionalnych klimatów i wspieraniu różnorodnych ekosystemów.</p>
+	<p class="indent">Morza są pulsem życia morskiego, z bogatą bioróżnorodnością, która dostosowuje się do konkretnych warunków środowiska każdego morza. Od ruchliwych płycizn po tajemnicze głębiny, te akwatyczne krainy gościć w sobie olśniewającą gamę gatunków, począwszy od kolorowych raf koralowych po nieuchwytne stworzenia głębin morskich. Złożona interakcja pomiędzy pływami, prądami i podwodną topografią tworzy mozaikę siedlisk, zapewniając schronienie dla zdumiewającej różnorodności flory i fauny.</p>
+
+	<div class="split-container-2">
+		<a href="https://unsplash.com/photos/photography-of-seashore-during-sunset-FGvRZ-BeCKo" target="_blank">
+			<HumbakFile id="${imgId1}"></HumbakFile>
+		</a>
+		<a href="https://unsplash.com/photos/body-of-water-near-mountains-at-daytime-F-7HklW7be8" target="_blank">
+			<HumbakFile id="${imgId2}"></HumbakFile>
+		</a>
+	</div>
+
+	<p>Pośród fal i przemieszczających się piasków, morza splatają opowieści o handlu, eksploracji i osadnictwie ludzkim, wytwarzając historyczne i kulturowe znaczenie na ich brzegach. W miarę jak ludzkość boryka się z wyzwaniami związanymi z zmianami klimatu i ochroną środowiska, zrozumienie i ochrona tych złożonych środowisk morskich stają się priorytetem. Morza, ze swoją wiecznie zmieniającą się dynamiką i unikalnymi cechami, przyczyniają się nie tylko do bioróżnorodności naszej planety, lecz także do bogatej narracji historii Ziemi oraz trwającej interakcji między naturą a cywilizacją. W eksploracji mórz wyruszamy w podróż, która łączy nas zarówno z starożytnymi opowieściami przeszłości, jak i z pilnymi wysiłkami w dziedzinie ochrony kształtującej przyszłość.</p>
 </section>`;
 }

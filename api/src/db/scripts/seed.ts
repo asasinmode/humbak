@@ -17,7 +17,7 @@ import { files } from '../schema/files';
 import { users } from '../schema/users';
 import { filesToSlides } from '../schema/filesToSlides';
 import { filesToPages } from '../schema/filesToPages';
-import { enHomePageContent, enOceansPageContent, plHomePageContent, plOceansPageContent } from './helpers';
+import { enHomePageContent, enOceansPageContent, enSeasPageContent, plHomePageContent, plOceansPageContent, plSeasPageContent } from './helpers';
 
 await promptProdContinue();
 
@@ -134,7 +134,7 @@ await db.insert(files).values({
 const [slideAspectRatioResult] = await db.select({ value: slideAspectRatio.value }).from(slideAspectRatio);
 !slideAspectRatioResult && await db.insert(slideAspectRatio).values({ value: '1 / 3' });
 
-const [{ insertId: slideInsertId }] = await db.insert(slides).values(await Promise.all([
+const [{ insertId: enSlideInsertId }] = await db.insert(slides).values(await Promise.all([
 	createSlide({
 		name: 'ocean',
 		language: 'en',
@@ -214,6 +214,9 @@ const [{ insertId: slideInsertId }] = await db.insert(slides).values(await Promi
 </div>`,
 		isHidden: true,
 	}),
+]));
+
+const [{ insertId: plSlideInsertId }] = await db.insert(slides).values(await Promise.all([
 	createSlide({
 		name: 'ocean',
 		language: 'pl',
@@ -296,14 +299,14 @@ const [{ insertId: slideInsertId }] = await db.insert(slides).values(await Promi
 ]));
 
 await db.insert(filesToSlides).values([
-	{ slideId: slideInsertId, fileId: oceanSlideImageId },
-	{ slideId: slideInsertId + 1, fileId: seaSlideImageId },
-	{ slideId: slideInsertId + 2, fileId: lakeSlideImageId },
-	{ slideId: slideInsertId + 3, fileId: riverSlideImageId },
-	{ slideId: slideInsertId + 4, fileId: oceanSlideImageId },
-	{ slideId: slideInsertId + 5, fileId: seaSlideImageId },
-	{ slideId: slideInsertId + 6, fileId: lakeSlideImageId },
-	{ slideId: slideInsertId + 7, fileId: riverSlideImageId },
+	{ slideId: enSlideInsertId, fileId: oceanSlideImageId },
+	{ slideId: enSlideInsertId + 1, fileId: seaSlideImageId },
+	{ slideId: enSlideInsertId + 2, fileId: lakeSlideImageId },
+	{ slideId: enSlideInsertId + 3, fileId: riverSlideImageId },
+	{ slideId: plSlideInsertId, fileId: oceanSlideImageId },
+	{ slideId: plSlideInsertId + 1, fileId: seaSlideImageId },
+	{ slideId: plSlideInsertId + 2, fileId: lakeSlideImageId },
+	{ slideId: plSlideInsertId + 3, fileId: riverSlideImageId },
 ]);
 // END
 // slides
@@ -407,6 +410,57 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // oceans home
+// END
+
+// START
+// seas home
+// START
+const [seasPageImage1Id, seasPageImage2Id] = await Promise.all([
+	createFile({
+		url: 'https://images.unsplash.com/photo-1424581342241-2b1aba4d3462',
+		directoryId: seasDirId,
+		name: 'sea-beach.jpg',
+		path: '/seas/sea-beach.jpg',
+		title: 'beach sea sunrise',
+		alt: 'a sea at sunrise with beach close to the ground',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1508439192733-e7448b721adc',
+		directoryId: seasDirId,
+		name: 'sea-island.jpg',
+		path: '/seas/sea-island.jpg',
+		title: 'sea island',
+		alt: 'a sea under a sunny sky with an island close in the distance',
+		mimetype: 'image/jpeg',
+	}),
+]);
+const enSeasPageId = await createPage({
+	language: 'en',
+	title: 'seas',
+	slug: 'seas',
+	menuText: 'seas',
+	parentId: null,
+	position: 1,
+	content: enSeasPageContent([seasPageImage1Id, seasPageImage2Id]),
+});
+const plSeasPageId = await createPage({
+	language: 'pl',
+	title: 'morza',
+	slug: 'morza',
+	menuText: 'morza',
+	parentId: null,
+	position: 1,
+	content: plSeasPageContent([seasPageImage1Id, seasPageImage2Id]),
+});
+await db.insert(filesToPages).values([
+	{ pageId: enSeasPageId, fileId: seasPageImage1Id },
+	{ pageId: enSeasPageId, fileId: seasPageImage2Id },
+	{ pageId: plSeasPageId, fileId: seasPageImage1Id },
+	{ pageId: plSeasPageId, fileId: seasPageImage2Id },
+]);
+// END
+// seas home
 // END
 
 // START
