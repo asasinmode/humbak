@@ -2,7 +2,7 @@ import { env } from '../../env';
 
 export const enHomePageContent = `<section>
 	<h1>humbak demo</h1>
-	<p>This is a demo page for <strong>humbak</strong>, a blog cms. Current content is a showcase of the features available and should be reset regularly.</p>
+	<p>This is a demo page for <strong>humbak</strong>, a blog cms. Current content is a showcase of the features available and should be reset regularly. Most of the text content was generated with <a href="https://chat.openai.com/" target="_blank">ChatGPT</a>.</p>
 </section>
 
 <section>
@@ -142,7 +142,7 @@ export const enHomePageContent = `<section>
 
 export const plHomePageContent = `<section>
 	<h1>humbak demo</h1>
-	<p>To jest strona demo dla <strong>humbak</strong>, aplikacji CMS (content managment site - strona do zarządzania zawartością) dla bloga. Obecna zawartość przedstawia dostępną funkcjonalność CMS'a i powinna być resetowana regularnie</p>
+	<p>To jest strona demo dla <strong>humbak</strong>, aplikacji CMS (content managment site - strona do zarządzania zawartością) dla bloga. Obecna zawartość przedstawia dostępną funkcjonalność CMS'a i powinna być resetowana regularnie. Większość tekstu została wygenerowana przez <a href="https://chat.openai.com/" target="_blank">ChatGPT</a>.</p>
 </section>
 
 <section>
@@ -152,7 +152,7 @@ export const plHomePageContent = `<section>
 	<p>Zawartość zarządzana przez CMS jest wyświetlana na... <a href="#" class="text-link">stronie</a>. Tej samej, którą obecnie przeglądasz.</p>
 
 	<h3>api</h3>
-	<p>Strona główna i strona admina komunikują się przez i za pomocą <a href="${env.API_PAGE}" target="_blank" class="text-link">strony api</a>. Poza <a href="${env.API_PAGE}" target="_blank" class="text-link">stroną domową TODO fancy underline</a> (którą polecam odwiedzić), nie ma na niej za wiele.</p>
+	<p>Strona główna i strona admina komunikują się przez i za pomocą <a href="${env.API_URL}" target="_blank" class="text-link">strony api</a>. Poza <a href="${env.API_URL}" target="_blank" class="text-link">stroną domową TODO fancy underline</a> (którą polecam odwiedzić), nie ma na niej za wiele.</p>
 
 	<h3>admin</h3>
 	<p>Zarządzanie zawartością <strong>humbak</strong> cms'a odbywa się na <a href="${env.ADMIN_URL}" target="_blank" class="text-link">stronie admina</a>. Następujące sekcje opisują funkcjonalność dostępną na niej oraz zawierają instrukcje, jak jej używać.</p>
@@ -281,3 +281,59 @@ export const plHomePageContent = `<section>
 	<p>Na samym końcu, na <a href="${env.ADMIN_URL}/settings" target="_blank" class="text-link">stronie ustawień admina</a> możesz się wylogować lub zmienić swoją nazwę użytkownika i hasło.</p>
 </section>
 `;
+
+export function enOceansPageContent([imgId1, imgId2, imgId3, imgId4]: [number, number, number, number]) {
+	return `<section>
+	<h1>oceans</h1>
+	<p>Oceans, expansive aqueous realms that cover approximately 71% of the Earth's surface, stand as colossal reservoirs of life and intrigue. These vast bodies of saltwater, comprising the Pacific, Atlantic, Indian, Southern, and Arctic Oceans, play a pivotal role in shaping the planet's climate and supporting an astonishing diversity of ecosystems. Spanning intercontinental distances, oceans serve as conduits of global connectivity, facilitating the exchange of heat, moisture, and nutrients across their sprawling expanses.</p>
+
+	<div class="split-container-3">
+		<div class="described-image">
+			<HumbakFile fid="${imgId1}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/five-birds-flying-on-the-sea-OD9EOzfSOh0" target="_blank" class="text-black text-link">an ocean</a></p>
+		</div>
+		<div class="described-image">
+			<HumbakFile fid="${imgId2}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/body-of-water-under-bright-sky-69lLaqQ6bQU" target="_blank" class="text-black text-link">also an ocean</a></p>
+		</div>
+		<div class="described-image">
+			<HumbakFile fid="${imgId3}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/seashore-DA_tplYgTow" target="_blank" class="text-black text-link">an ocean too</a></p>
+		</div>
+	</div>
+
+	<p class="indent">Beneath the glistening surface, oceans harbor a mysterious and intricate tapestry of marine life, ranging from microscopic plankton to majestic whales. Their depths house hidden realms and abyssal plains, where enigmatic creatures thrive in conditions unfathomable to terrestrial life. Oceans also serve as crucibles of biodiversity, nurturing vibrant coral reefs and underwater landscapes that teem with an abundance of flora and fauna. Moreover, they act as dynamic theaters of geological processes, with tectonic plates colliding and diverging beneath their surface, shaping coastlines and giving rise to underwater mountain ranges.</p>
+
+	<HumbakFile fid="${imgId4}"></HumbakFile>
+
+	<p class="indent">The oceans' influence extends far beyond their physical boundaries, exerting a profound impact on weather patterns, atmospheric composition, and the overall health of our planet. As humanity grapples with the imperative to safeguard these aquatic giants from the pressures of climate change and overexploitation, a deeper understanding of their intricate ecosystems becomes essential. In essence, oceans encapsulate the essence of Earth's interconnected and dynamic nature, serving as both cradles of life and silent guardians of our planet's delicate equilibrium.</p>
+</section>`;
+}
+
+export function plOceansPageContent([imgId1, imgId2, imgId3, imgId4]: [number, number, number, number]) {
+	return `<section>
+	<h1>oceany</h1>
+	<p>Oceany, rozległe krainy wodne obejmujące około 71% powierzchni Ziemi, stanowią kolosalne zbiorniki życia i fascynacji. Te ogromne masy solnej wody, obejmujące Pacyfik, Atlantyk, Indyjski, Południowy i Arktyczny Ocean, odgrywają kluczową rolę w kształtowaniu klimatu planety i wspieraniu zdumiewającej różnorodności ekosystemów. Rozciągając się na międzykontynentalne odległości, oceany pełnią rolę korytarzy globalnego połączenia, ułatwiając wymianę ciepła, wilgoci i składników odżywczych na ich rozległych obszarach.</p>
+
+	<div class="split-container-3">
+		<div class="described-image">
+			<HumbakFile fid="${imgId1}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/five-birds-flying-on-the-sea-OD9EOzfSOh0" target="_blank" class="text-black text-link">ocean</a></p>
+		</div>
+		<div class="described-image">
+			<HumbakFile fid="${imgId2}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/body-of-water-under-bright-sky-69lLaqQ6bQU" target="_blank" class="text-black text-link">też ocean</a></p>
+		</div>
+		<div class="described-image">
+			<HumbakFile fid="${imgId3}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/seashore-DA_tplYgTow" target="_blank" class="text-black text-link">również ocean</a></p>
+		</div>
+	</div>
+
+	<p class="indent">Pod błyszczącą powierzchnią oceany kryją tajemniczą i złożoną mozaikę życia morskiego, począwszy od mikroskopijnych planktonów po majestatyczne wieloryby. Ich głębiny skrywają ukryte królestwa i równiny abysalne, gdzie enigmatyczne istoty rozwijają się w warunkach niepojętych dla życia lądowego. Oceany pełnią także rolę kuźni bioróżnorodności, pielęgnując kolorowe rafy koralowe i podwodne krajobrazy, które pulsuje obfitością flory i fauny. Ponadto, działają jako dynamiczne areny procesów geologicznych, gdzie płyty tektoniczne zderzają się i oddzielają pod ich powierzchnią, kształtując linie brzegowe i powodując powstanie podwodnych łańcuchów górskich.</p>
+
+	<HumbakFile fid="${imgId4}"></HumbakFile>
+
+	<p class="indent">Wpływ oceanów rozciąga się daleko poza ich fizyczne granice, wywierając głęboki wpływ na wzorce pogodowe, skład atmosfery i ogólną kondycję naszej planety. W miarę jak ludzkość boryka się z koniecznością ochrony tych wodnych gigantów przed wpływami zmian klimatycznych i nadmiernego eksploatowania, staje się istotne głębsze zrozumienie ich złożonych ekosystemów. W istocie, oceany uosabiają istotę złożonej i spójnej natury Ziemi, pełniąc jednocześnie rolę kołyski życia i cichych strażników delikatnej równowagi naszej planety.</p>
+</section>`;
+}

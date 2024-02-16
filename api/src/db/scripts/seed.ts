@@ -16,7 +16,8 @@ import { footerContents } from '../schema/footerContents';
 import { files } from '../schema/files';
 import { users } from '../schema/users';
 import { filesToSlides } from '../schema/filesToSlides';
-import { enHomePageContent, plHomePageContent } from './helpers';
+import { filesToPages } from '../schema/filesToPages';
+import { enHomePageContent, enOceansPageContent, plHomePageContent, plOceansPageContent } from './helpers';
 
 await promptProdContinue();
 
@@ -239,18 +240,102 @@ const plHomePageId = await createPage({
 	content: plHomePageContent,
 });
 
-await db.insert(footerContents).values({
+const [oceanPageImage1Id, oceanPageImage2Id, oceanPageImage3Id, oceanPageImage4Id] = await Promise.all([
+	createFile({
+		url: 'https://images.unsplash.com/photo-1471922694854-ff1b63b20054',
+		directoryId: oceansDirId,
+		name: 'ocean-sunrise-birds.jpg',
+		path: '/oceans/ocean-sunrise-birds.jpg',
+		title: 'ocean at sunrise',
+		alt: 'an ocean at sunrise with birds flying above it',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1508439192733-e7448b721adc',
+		directoryId: oceansDirId,
+		name: 'ocean-fog.jpg',
+		path: '/oceans/ocean-fog.jpg',
+		title: 'ocean fog',
+		alt: 'an ocean with fog in the distance',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1533371452382-d45a9da51ad9',
+		directoryId: oceansDirId,
+		name: 'ocean-sunset.jpg',
+		path: '/oceans/ocean-sunset.jpg',
+		title: 'ocean at sunset',
+		alt: 'an ocean at sunset with clouded sky in the distance',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1583212292454-1fe6229603b7',
+		directoryId: oceansDirId,
+		name: 'ocean-underwater.jpg',
+		path: '/oceans/ocean-underwater.jpg',
+		title: 'ocean underwater',
+		alt: 'an underwater reef picture rife with fish',
+		mimetype: 'image/jpeg',
+	}),
+]);
+
+const enOceansPageId = await createPage({
 	language: 'en',
-	emails: ['email@example.com'],
-	phoneNumbers: ['Person 123 456 789'],
-	location: { text: 'Where to find us', value: 'https://google.com/maps' },
-	socials: [
-		{ type: 'twitter', value: 'https://x.com' },
-		{ type: 'facebook', value: 'https://facebook.com' },
-		{ type: 'youtube', value: 'https://youtube.com' },
-		{ type: 'instagram', value: 'https://instagram.com' },
-	],
+	title: 'oceans',
+	slug: 'oceans',
+	menuText: 'oceans',
+	parentId: null,
+	position: 0,
+	content: enOceansPageContent([oceanPageImage1Id, oceanPageImage2Id, oceanPageImage3Id, oceanPageImage4Id]),
 });
+
+const plOceansPageId = await createPage({
+	language: 'pl',
+	title: 'oceany',
+	slug: 'oceany',
+	menuText: 'oceany',
+	parentId: null,
+	position: 0,
+	content: plOceansPageContent([oceanPageImage1Id, oceanPageImage2Id, oceanPageImage3Id, oceanPageImage4Id]),
+});
+
+await db.insert(filesToPages).values([
+	{ pageId: enOceansPageId, fileId: oceanPageImage1Id },
+	{ pageId: enOceansPageId, fileId: oceanPageImage2Id },
+	{ pageId: enOceansPageId, fileId: oceanPageImage3Id },
+	{ pageId: enOceansPageId, fileId: oceanPageImage4Id },
+	{ pageId: plOceansPageId, fileId: oceanPageImage1Id },
+	{ pageId: plOceansPageId, fileId: oceanPageImage2Id },
+	{ pageId: plOceansPageId, fileId: oceanPageImage3Id },
+	{ pageId: plOceansPageId, fileId: oceanPageImage4Id },
+]);
+
+await db.insert(footerContents).values([
+	{
+		language: 'en',
+		emails: ['email@example.com'],
+		phoneNumbers: ['Person 123 456 789'],
+		location: { text: 'Where to find us', value: 'https://google.com/maps' },
+		socials: [
+			{ type: 'twitter', value: 'https://x.com' },
+			{ type: 'facebook', value: 'https://facebook.com' },
+			{ type: 'youtube', value: 'https://youtube.com' },
+			{ type: 'instagram', value: 'https://instagram.com' },
+		],
+	},
+	{
+		language: 'pl',
+		emails: ['email@example.com'],
+		phoneNumbers: ['Osoba 123 456 789'],
+		location: { text: 'Gdzie nas znaleźć', value: 'https://google.com/maps' },
+		socials: [
+			{ type: 'twitter', value: 'https://x.com' },
+			{ type: 'facebook', value: 'https://facebook.com' },
+			{ type: 'youtube', value: 'https://youtube.com' },
+			{ type: 'instagram', value: 'https://instagram.com' },
+		],
+	},
+]);
 
 await db.insert(users).values({
 	id: 'test',
