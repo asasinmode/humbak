@@ -2,7 +2,7 @@ import { env } from '../../env';
 
 export const enHomePageContent = `<section>
 	<h1>humbak demo</h1>
-	<p>This is a demo page for <strong>humbak</strong>, a blog cms. Current content is a showcase of the features available and should be reset regularly. Most of the text content was generated with <a href="https://chat.openai.com/" target="_blank">ChatGPT</a>.</p>
+	<p>This is a demo page for <strong>humbak</strong>, a blog cms. Current content is a showcase of the features available and should be reset regularly. Most of the text content was generated with <a href="https://chat.openai.com/" target="_blank" class="text-link">ChatGPT</a> and images were taken from <a href="https://unsplash.com/" target="_blank" class="text-link">Unsplash</a>.</p>
 </section>
 
 <section>
@@ -457,5 +457,63 @@ export function plLakesPageContent([imgId1, imgId2, imgId3, imgId4, imgId5, imgI
 			<p><a href="https://unsplash.com/photos/lake-near-mountain-under-blue-sky-during-daytime-jAAk__SlP8U" target="_blank" class="text-link text-black">other lake</a></p>
 		</div>
 	</div>
+</section>`;
+}
+
+export function enAtlanticPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Atlantic</h1>
+	<p>The Atlantic Ocean, a vast expanse of saltwater that stretches between the
+		<ul>
+			<li>Americas<li>
+			<li>Europe<li>
+			<li>Africa<li>
+			<li>Antarctica<li>
+		</ul>
+	commands a position of profound significance in the global maritime landscape. As the second-largest ocean on Earth, the Atlantic encompasses a diverse range of climates, ecosystems, and marine life, contributing to its reputation as a dynamic and influential force in shaping the planet's interconnected systems.</p>
+
+	<div class="described-image">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+		<p><a href="https://science4fun.info/atlantic-ocean/" target="_blank" class="text-black text-link">atlantic ocean map</a></p>
+	</div>
+
+	<p>The Atlantic Ocean serves as a conduit for complex oceanic currents and circulation patterns, influencing weather patterns and regulating the planet's climate. Its strategic location has historically facilitated exploration, trade, and cultural exchange among continents, forging connections that have shaped human history. The Atlantic, with its mighty currents and powerful storms, has witnessed centuries of seafaring adventures, playing a crucial role in maritime exploration and trade routes.</p>
+
+	<a href="https://unsplash.com/photos/boat-on-sea-under-white-clouds-8eFbe3jQZ7Y" target="_blank">
+		<HumbakFile fid="${imgId2}"></HumbakFile>
+	</a>
+
+	<p>Beneath the surface, the Atlantic Ocean harbors a rich tapestry of marine biodiversity, from the vibrant coral reefs of the Caribbean to the open ocean habitats supporting diverse fish species. The underwater landscape features expansive abyssal plains, submarine mountain ranges, and deep-sea trenches, adding to the ocean's geological complexity. Additionally, the Atlantic plays a pivotal role in the migratory routes of marine species, including whales, dolphins, and various fish, highlighting its ecological importance.</p>
+
+	<p class="indent">As the global community faces challenges related to climate change and environmental conservation, the Atlantic Ocean emerges as a focal point for scientific research and international cooperation. Efforts to understand and protect this immense marine expanse are crucial for preserving the delicate balance of oceanic ecosystems and ensuring the sustained health of our planet. The Atlantic Ocean, with its vastness and diversity, continues to captivate the human imagination while serving as a barometer of the Earth's environmental well-being.</p>
+</section>`;
+}
+
+export function plAtlanticPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Atlantyk</h1>
+	<p>Ocean Atlantycki, rozległa przestrzeń słonej wody rozciągająca się między
+		<ul>
+			<li>Amerykami<li>
+			<li>Europą<li>
+			<li>Afryką<li>
+			<li>Antarktydą<li>
+		</ul>
+	zajmuje pozycję o głębokim znaczeniu w globalnym krajobrazie morskim. Jako drugi co do wielkości ocean na Ziemi, Atlantyk obejmuje różnorodne klimaty, ekosystemy i życie morskie, przyczyniając się do swojej reputacji dynamicznej i wpływowej siły kształtującej złożone systemy naszej planety.</p>
+
+	<div class="described-image">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+		<p><a href="https://science4fun.info/atlantic-ocean/" target="_blank" class="text-black text-link">atlantic ocean map</a></p>
+	</div>
+
+	<p>Ocean Atlantycki pełni funkcję kanału dla złożonych prądów oceanicznych i cyrkulacyjnych wzorców, wpływając na układy pogodowe i regulując klimat planety. Jego strategiczna lokalizacja historycznie ułatwiała eksplorację, handel i wymianę kulturową między kontynentami, kształtując powiązania, które wpłynęły na historię ludzkości. Atlantyk, z jego potężnymi prądami i gwałtownymi burzami, był świadkiem wieków morskich przygód, odgrywając istotną rolę w eksploracji morskiej i trasach handlowych.</p>
+
+	<a href="https://unsplash.com/photos/boat-on-sea-under-white-clouds-8eFbe3jQZ7Y" target="_blank">
+		<HumbakFile fid="${imgId2}"></HumbakFile>
+	</a>
+
+	<p>Pod powierzchnią Oceanu Atlantyckiego skrywa się bogata mozaika bioróżnorodności morskiej, począwszy od kolorowych raf koralowych Karaibów po otwarte habitaty wspierające różnorodne gatunki ryb. Podwodny krajobraz obejmuje rozległe równiny abysalne, podmorskie łańcuchy górskie i rowy oceaniczne, dodając do geologicznej złożoności oceanu. Ponadto Atlantyk odgrywa kluczową rolę w trasach migracyjnych gatunków morskich, w tym wielorybów, delfinów i różnorodnych gatunków ryb, podkreślając swoje znaczenie ekologiczne.</p>
+
+	<p class="indent">W obliczu wyzwań związanych ze zmianami klimatycznymi i ochroną środowiska, Ocean Atlantycki staje się punktem centralnym dla badań naukowych i współpracy międzynarodowej. Dążenia do zrozumienia i ochrony tej ogromnej przestrzeni morskiej są kluczowe dla zachowania delikatnej równowagi oceanicznych ekosystemów i zapewnienia trwałego zdrowia naszej planety. Ocean Atlantycki, ze swoją ogromnością i różnorodnością, nadal fascynuje ludzką wyobraźnię, jednocześnie pełniąc rolę barometru dobrostanu środowiska na Ziemi.</p>
 </section>`;
 }

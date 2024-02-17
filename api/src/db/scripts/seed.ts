@@ -26,6 +26,7 @@ import {
 	plLakesPageContent,
 	plOceansPageContent,
 	plSeasPageContent,
+	enAtlanticPageContent
 } from './helpers';
 
 await promptProdContinue();
@@ -579,6 +580,63 @@ await db.insert(filesToPages).values([
 // END
 
 // START
+// oceans atlantic
+console.timeLog('seed', 'oceans atlantic page');
+// START
+await mkdir(`${filesStoragePath}/oceans/atlantic`);
+const [{ insertId: atlanticDirId }] = await db.insert(directories).values({
+	name: 'atlantic',
+	path: '/oceans/atlantic',
+});
+const [atlanticPageImage1Id, atlanticPageImage2Id] = await Promise.all([
+	createFile({
+		url: 'https://science4fun.info/wp-content/uploads/2022/02/Atlantic-Ocean-Map.jpg',
+		directoryId: atlanticDirId,
+		name: 'atlantic-map.jpg',
+		path: '/oceans/atlantic/atlantic-map.jpg',
+		title: 'atlantic map',
+		alt: 'map of atlantic ocean between 4 continents',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1475181624534-3e2ff2beb57c',
+		directoryId: atlanticDirId,
+		name: 'sea-storm-forming.jpg',
+		path: '/oceans/atlantic/sea-storm-forming.jpg',
+		title: 'sea storm forming',
+		alt: 'a sea under a cloudy sky with storm and tornadoes forming in the distance',
+		mimetype: 'image/jpeg',
+	}),
+]);
+const enAtlanticPageId = await createPage({
+	language: 'en',
+	title: 'Atlantic ocean',
+	slug: 'atlantic',
+	menuText: 'Atlantic',
+	parentId: enOceansPageId,
+	position: 0,
+	content: enAtlanticPageContent([atlanticPageImage1Id, atlanticPageImage2Id]),
+});
+const plAtlanticPageId = await createPage({
+	language: 'pl',
+	title: 'ocean Atlantycki',
+	slug: 'atlantyk',
+	menuText: 'Atlantyk',
+	parentId: plOceansPageId,
+	position: 0,
+	content: plAtlanticPageContent([atlanticPageImage1Id, atlanticPageImage2Id]),
+});
+await db.insert(filesToPages).values([
+	{ pageId: enAtlanticPageId, fileId: atlanticPageImage1Id },
+	{ pageId: enAtlanticPageId, fileId: atlanticPageImage2Id },
+	{ pageId: plAtlanticPageId, fileId: atlanticPageImage1Id },
+	{ pageId: plAtlanticPageId, fileId: atlanticPageImage2Id },
+]);
+// END
+// oceans atlantic
+// END
+
+// START
 // footer
 console.timeLog('seed', 'footer home pages');
 // START
@@ -624,11 +682,11 @@ console.timeEnd('seed');
 
 async function createFile(
 	{ url, name, directoryId, path, title, alt, mimetype }:
-	{ url: string; name: string; directoryId: number | null; path: string; title: string; alt: string; mimetype: string; }
+		{ url: string; name: string; directoryId: number | null; path: string; title: string; alt: string; mimetype: string; }
 ) {
 	await writeFile(
-	`${filesStoragePath}${path}`,
-	await fetch(`${url}?q=80&w=1920`).then(r => r.arrayBuffer()).then(v => Buffer.from(v))
+		`${filesStoragePath}${path}`,
+		await fetch(`${url}?q=80&w=1920`).then(r => r.arrayBuffer()).then(v => Buffer.from(v))
 	);
 	const { width, height } = await createImageSizes(`${filesStoragePath}${path}`, mimetype);
 	const [{ insertId }] = await db.insert(files).values({
