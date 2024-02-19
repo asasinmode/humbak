@@ -517,3 +517,51 @@ export function plAtlanticPageContent([imgId1, imgId2]: [number, number]) {
 	<p class="indent">W obliczu wyzwań związanych ze zmianami klimatycznymi i ochroną środowiska, Ocean Atlantycki staje się punktem centralnym dla badań naukowych i współpracy międzynarodowej. Dążenia do zrozumienia i ochrony tej ogromnej przestrzeni morskiej są kluczowe dla zachowania delikatnej równowagi oceanicznych ekosystemów i zapewnienia trwałego zdrowia naszej planety. Ocean Atlantycki, ze swoją ogromnością i różnorodnością, nadal fascynuje ludzką wyobraźnię, jednocześnie pełniąc rolę barometru dobrostanu środowiska na Ziemi.</p>
 </section>`;
 }
+
+export function enPacificPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Pacific</h1>
+	<p>The Pacific Ocean, Earth's largest and deepest ocean, sprawls across the globe, embracing vast expanses between Asia and Australia, the Americas, and Antarctica. As a colossal water body, the Pacific plays a pivotal role in shaping the planet's climate, marine ecosystems, and cultural interactions. Its sheer size and expanse make it a dynamic force with far-reaching impacts on both the natural world and human societies.</p>
+
+	<p class="indent">Stretching from the Arctic to the Antarctic, the Pacific Ocean encompasses an array of climatic zones, from the icy waters of the North to the temperate and tropical regions near the Equator. This diversity fosters a rich tapestry of marine life, ranging from the iconic species of the Arctic seas to the vibrant coral reefs of the South Pacific. The ocean's currents, such as the powerful North and South Pacific Gyres, influence global weather patterns, contributing to the intricate dance of atmospheric and oceanic processes.</p>
+
+	<a href="https://science4fun.info/pacific-ocean/" target="_blank">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+	</a>
+
+	<p>Throughout history, the Pacific has been a conduit for exploration, trade, and cultural exchange. The vastness of its waters has connected continents and facilitated the movement of peoples, goods, and ideas. Islands scattered across the Pacific have unique ecosystems and cultures, reflecting the resilience and adaptability of the communities that call these remote places home.</p>
+
+	<p class="indent">The Pacific Ocean, with its iconic features like the Great Barrier Reef, the Mariana Trench, and countless islands, harbors a staggering biodiversity. From the humpback whales that traverse its vastness to the microscopic plankton that form the basis of marine food webs, the Pacific is a living testament to the interconnectedness of life on Earth.</p>
+
+	<div class="described-image">
+		<HumbakFile fid="${imgId2}"></HumbakFile>
+		<p><a href="https://unsplash.com/photos/green-coral-reef-under-water-vJGsAdVDaRw" target="_blank" class="text-black text-link">coral reef</a></p>
+	</div>
+
+	<p>In the face of contemporary challenges such as climate change, overfishing, and plastic pollution, the Pacific Ocean stands as a critical focal point for global conservation efforts. Understanding and safeguarding this immense marine realm are imperative for maintaining the delicate balance of the planet's ecosystems and ensuring the sustainable coexistence of nature and humanity. The Pacific Ocean, with its majesty and significance, remains a source of awe and inspiration, embodying the vastness and mysteries of our planet's blue expanse.</p>
+</section>`;
+}
+
+export function plPacificPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Pacyfik</h1>
+	<p>Pacyfik, największy i najgłębszy ocean na Ziemi, rozciąga się po całym globie, obejmując rozległe przestrzenie między Azją i Australią, Amerykami a Antarktydą. Jako kolosalne zbiornisko wodne, Pacyfik odgrywa kluczową rolę w kształtowaniu klimatu planety, ekosystemów morskich i interakcji kulturowych. Jego ogromny rozmiar i obszar sprawiają, że jest dynamiczną siłą z oddziaływaniem o dalekim zasięgu zarówno na świat przyrody, jak i społeczeństwo ludzkie.</p>
+
+	<p class="indent">Rozciągający się od Arktyki po Antarktydę, Ocean Spokojny obejmuje szereg stref klimatycznych, od lodowatych wód na północy po umiarkowane i tropikalne obszary blisko równika. Ta różnorodność sprzyja bogatej mozaice życia morskiego, począwszy od ikonicznych gatunków mórz arktycznych po kolorowe rafy koralowe na południowym Pacyfiku. Prądy oceaniczne, takie jak potężne giętki północny i południowy Pacyfik, wpływają na globalne wzorce pogodowe, przyczyniając się do skomplikowanego tańca procesów atmosferycznych i oceanicznych.</p>
+
+	<a href="https://science4fun.info/pacific-ocean/" target="_blank">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+	</a>
+
+	<p>Na przestrzeni historii Pacyfik był kanałem dla eksploracji, handlu i wymiany kulturowej. Ogrom jego wód połączył kontynenty i ułatwił przemieszczanie się ludzi, towarów i idei. Wyspy rozsiane po Pacyfiku posiadają unikalne ekosystemy i kultury, odzwierciedlając odporność i adaptacyjność społeczności, które nazywają te odległe miejsca domem.</p>
+
+	<p class="indent">Pacyfik, ze swoimi ikonicznymi cechami, takimi jak Wielka Rafa Koralowa, Rów Mariański i niezliczone wyspy, kryje w sobie zdumiewającą bioróżnorodność. Od wielorybów, które przemierzają jego obszar po mikroskopijne planktony, stanowiące podstawę morskich łańcuchów pokarmowych, Pacyfik jest żywym świadectwem wzajemnych powiązań życia na Ziemi.</p>
+
+	<div class="described-image">
+		<HumbakFile fid="${imgId2}"></HumbakFile>
+		<p><a href="https://unsplash.com/photos/green-coral-reef-under-water-vJGsAdVDaRw" target="_blank" class="text-black text-link">rafa koralowa</a></p>
+	</div>
+
+	<p>W obliczu współczesnych wyzwań, takich jak zmiany klimatyczne, nadmierny połów ryb czy zanieczyszczenie plastikiem, Pacyfik staje się kluczowym punktem skupienia dla globalnych działań na rzecz ochrony. Zrozumienie i ochrona tej ogromnej przestrzeni morskiej są niezbędne dla utrzymania delikatnej równowagi ekosystemów planety i zapewnienia zrównoważonego współistnienia natury i ludzkości. Pacyfik, ze swoim majestatem i znaczeniem, pozostaje źródłem podziwu i inspiracji, uosabiając w sobie ogrom i tajemnice błękitnej przestrzeni naszej planety.</p>
+</section>`;
+}

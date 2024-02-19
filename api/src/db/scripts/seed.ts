@@ -19,15 +19,17 @@ import { filesToSlides } from '../schema/filesToSlides';
 import { filesToPages } from '../schema/filesToPages';
 import {
 	enHomePageContent,
-	enLakesPageContent,
-	enOceansPageContent,
-	enSeasPageContent,
 	plHomePageContent,
+	enLakesPageContent,
 	plLakesPageContent,
+	enOceansPageContent,
 	plOceansPageContent,
+	enSeasPageContent,
 	plSeasPageContent,
 	enAtlanticPageContent,
-	plAtlanticPageContent
+	plAtlanticPageContent,
+	enPacificPageContent,
+	plPacificPageContent
 } from './helpers';
 
 await promptProdContinue();
@@ -596,7 +598,7 @@ const [atlanticPageImage1Id, atlanticPageImage2Id] = await Promise.all([
 		name: 'atlantic-map.jpg',
 		path: '/oceans/atlantic/atlantic-map.jpg',
 		title: 'atlantic map',
-		alt: 'map of atlantic ocean between 4 continents',
+		alt: 'map atlantic atlantic\'s ocean position',
 		mimetype: 'image/jpeg',
 	}),
 	createFile({
@@ -632,6 +634,63 @@ await db.insert(filesToPages).values([
 	{ pageId: enAtlanticPageId, fileId: atlanticPageImage2Id },
 	{ pageId: plAtlanticPageId, fileId: atlanticPageImage1Id },
 	{ pageId: plAtlanticPageId, fileId: atlanticPageImage2Id },
+]);
+// END
+// oceans atlantic
+// END
+
+// START
+// oceans pacific
+console.timeLog('seed', 'oceans pacific page');
+// START
+await mkdir(`${filesStoragePath}/oceans/pacific`);
+const [{ insertId: pacificDirId }] = await db.insert(directories).values({
+	name: 'pacific',
+	path: '/oceans/pacific',
+});
+const [pacificPageImage1Id, pacificPageImage2Id] = await Promise.all([
+	createFile({
+		url: 'https://science4fun.info/wp-content/uploads/2022/02/Pacific-Ocean-Map.jpg',
+		directoryId: pacificDirId,
+		name: 'pacific-map.jpg',
+		path: '/oceans/pacific/pacific-map.jpg',
+		title: 'pacific map',
+		alt: 'map highlighting the pacific ocean\'s position',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1600583696773-472aafd3dd6c',
+		directoryId: pacificDirId,
+		name: 'coral-reef.jpg',
+		path: '/oceans/pacific/coral-reef.jpg',
+		title: 'coral reef',
+		alt: 'a coral reef under water',
+		mimetype: 'image/jpeg',
+	}),
+]);
+const enPacificPageId = await createPage({
+	language: 'en',
+	title: 'Pacific ocean',
+	slug: 'pacific',
+	menuText: 'Pacific',
+	parentId: enOceansPageId,
+	position: 1,
+	content: enPacificPageContent([pacificPageImage1Id, pacificPageImage2Id]),
+});
+const plPacificPageId = await createPage({
+	language: 'pl',
+	title: 'ocean Pacyficzny',
+	slug: 'pacyfik',
+	menuText: 'Pacyfik',
+	parentId: plOceansPageId,
+	position: 1,
+	content: plPacificPageContent([pacificPageImage1Id, pacificPageImage2Id]),
+});
+await db.insert(filesToPages).values([
+	{ pageId: enPacificPageId, fileId: pacificPageImage1Id },
+	{ pageId: enPacificPageId, fileId: pacificPageImage2Id },
+	{ pageId: plPacificPageId, fileId: pacificPageImage1Id },
+	{ pageId: plPacificPageId, fileId: pacificPageImage2Id },
 ]);
 // END
 // oceans atlantic
@@ -739,3 +798,4 @@ async function createSlide({ name, language, content, isHidden }: { name: string
 		parsedContent: value,
 	};
 }
+
