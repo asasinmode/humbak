@@ -26,7 +26,8 @@ import {
 	plLakesPageContent,
 	plOceansPageContent,
 	plSeasPageContent,
-	enAtlanticPageContent
+	enAtlanticPageContent,
+	plAtlanticPageContent
 } from './helpers';
 
 await promptProdContinue();

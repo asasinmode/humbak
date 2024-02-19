@@ -503,7 +503,7 @@ export function plAtlanticPageContent([imgId1, imgId2]: [number, number]) {
 
 	<div class="described-image">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
-		<p><a href="https://science4fun.info/atlantic-ocean/" target="_blank" class="text-black text-link">atlantic ocean map</a></p>
+		<p><a href="https://science4fun.info/atlantic-ocean/" target="_blank" class="text-black text-link">mapa oceanu atlantyckiego</a></p>
 	</div>
 
 	<p>Ocean Atlantycki pełni funkcję kanału dla złożonych prądów oceanicznych i cyrkulacyjnych wzorców, wpływając na układy pogodowe i regulując klimat planety. Jego strategiczna lokalizacja historycznie ułatwiała eksplorację, handel i wymianę kulturową między kontynentami, kształtując powiązania, które wpłynęły na historię ludzkości. Atlantyk, z jego potężnymi prądami i gwałtownymi burzami, był świadkiem wieków morskich przygód, odgrywając istotną rolę w eksploracji morskiej i trasach handlowych.</p>
