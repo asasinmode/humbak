@@ -29,7 +29,9 @@ import {
 	enAtlanticPageContent,
 	plAtlanticPageContent,
 	enPacificPageContent,
-	plPacificPageContent
+	plPacificPageContent,
+	enIndianPageContent,
+	plIndianPageContent
 } from './helpers';
 
 await promptProdContinue();
@@ -691,6 +693,63 @@ await db.insert(filesToPages).values([
 	{ pageId: enPacificPageId, fileId: pacificPageImage2Id },
 	{ pageId: plPacificPageId, fileId: pacificPageImage1Id },
 	{ pageId: plPacificPageId, fileId: pacificPageImage2Id },
+]);
+// END
+// oceans atlantic
+// END
+
+// START
+// oceans indian
+console.timeLog('seed', 'oceans pacific page');
+// START
+await mkdir(`${filesStoragePath}/oceans/pacific`);
+const [{ insertId: indianDirId }] = await db.insert(directories).values({
+	name: 'indian',
+	path: '/oceans/indian',
+});
+const [indianPageImage1Id, indianPageImage2Id] = await Promise.all([
+	createFile({
+		url: 'https://science4fun.info/wp-content/uploads/2022/06/Indian-Ocean-map.jpg',
+		directoryId: indianDirId,
+		name: 'indian-map.jpg',
+		path: '/oceans/indian/indian-map.jpg',
+		title: 'indian map',
+		alt: 'map highlighting the indian ocean\'s position',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1602110604773-4e0255ef8b0d?q=80&w=2664&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+		directoryId: indianDirId,
+		name: 'shore.jpg',
+		path: '/oceans/indian/shore.jpg',
+		title: 'shore',
+		alt: 'a bird\'s eye view of a sandy beach with waves washing over',
+		mimetype: 'image/jpeg',
+	}),
+]);
+const enIndianPageId = await createPage({
+	language: 'en',
+	title: 'Indian ocean',
+	slug: 'indian',
+	menuText: 'Indian Ocean',
+	parentId: enOceansPageId,
+	position: 2,
+	content: enIndianPageContent([indianPageImage1Id, indianPageImage2Id]),
+});
+const plIndianPageId = await createPage({
+	language: 'pl',
+	title: 'ocean Indyjski',
+	slug: 'indyjski',
+	menuText: 'Ocean Indyjski',
+	parentId: plOceansPageId,
+	position: 2,
+	content: plIndianPageContent([indianPageImage1Id, indianPageImage2Id]),
+});
+await db.insert(filesToPages).values([
+	{ pageId: enIndianPageId, fileId: indianPageImage1Id },
+	{ pageId: enIndianPageId, fileId: indianPageImage2Id },
+	{ pageId: plIndianPageId, fileId: indianPageImage1Id },
+	{ pageId: plIndianPageId, fileId: indianPageImage2Id },
 ]);
 // END
 // oceans atlantic

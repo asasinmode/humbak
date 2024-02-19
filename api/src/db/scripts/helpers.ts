@@ -565,3 +565,43 @@ export function plPacificPageContent([imgId1, imgId2]: [number, number]) {
 	<p>W obliczu współczesnych wyzwań, takich jak zmiany klimatyczne, nadmierny połów ryb czy zanieczyszczenie plastikiem, Pacyfik staje się kluczowym punktem skupienia dla globalnych działań na rzecz ochrony. Zrozumienie i ochrona tej ogromnej przestrzeni morskiej są niezbędne dla utrzymania delikatnej równowagi ekosystemów planety i zapewnienia zrównoważonego współistnienia natury i ludzkości. Pacyfik, ze swoim majestatem i znaczeniem, pozostaje źródłem podziwu i inspiracji, uosabiając w sobie ogrom i tajemnice błękitnej przestrzeni naszej planety.</p>
 </section>`;
 }
+
+export function enIndianPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Indian Ocean</h1>
+	<p>The Indian Ocean, Earth's third-largest ocean, spans the expanses between Africa, Asia, Australia, and the Indian subcontinent. Known for its warm temperatures and diverse marine ecosystems, it plays a crucial role in global climate regulation and maritime connectivity. This vast body of saltwater, with its strategic location, weaves together a narrative of environmental significance, historical trade routes, and vibrant biodiversity.</p>
+
+	<p class="indent">Extending from the Arctic to the Antarctic, the Indian Ocean encompasses a range of climatic zones, fostering an intricate tapestry of marine life. From the tropical coral reefs of the Maldives to the rich fishing grounds along the coast of East Africa, the ocean supports a wealth of biodiversity. Its monsoon winds and seasonal currents influence regional weather patterns, impacting the livelihoods of coastal communities and shaping cultural practices.</p>
+
+	<a href="https://unsplash.com/photos/boat-on-sea-under-white-clouds-8eFbe3jQZ7Y" target="_blank">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+	</a>
+
+	<p>Historically, the Indian Ocean has served as a vital crossroads for trade and cultural exchange, connecting civilizations across Africa, the Middle East, South Asia, and Southeast Asia. The maritime Silk Road facilitated the flow of goods, ideas, and technologies, leaving a profound imprint on the development of societies along its shores. Islands like Madagascar, Seychelles, and Sri Lanka showcase the cultural diversity and resilience shaped by centuries of Indian Ocean interactions.</p>
+
+	<div class="described-image">
+		<HumbakFile fid="${imgId2}"></HumbakFile>
+		<p><a href="https://unsplash.com/photos/black-and-white-rock-formation-on-blue-sea-water-during-daytime-eEx3ILScxW0" target="_blank" class="text-black text-link">shore</a></p>
+	</div>
+</section>`;
+}
+
+export function plIndianPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Ocean Indyjski</h1>
+	<p>Ocean Indyjski, trzeci pod względem wielkości ocean na Ziemi, rozciąga się między kontynentami Afryki, Azji, Australii i subkontynentem Indyjskim. Znany ze swoich ciepłych temperatur i różnorodnych ekosystemów morskich, odgrywa kluczową rolę w globalnej regulacji klimatu i łączności morskiej. Ten ogromny obszar słonej wody, ze swoją strategiczną lokalizacją, tworzy narrację znaczenia środowiskowego, historycznych szlaków handlowych i bogatej bioróżnorodności.</p>
+
+	<p class="indent">Rozciągający się od Arktyki po Antarktydę, Ocean Indyjski obejmuje różnorodne strefy klimatyczne, tworząc złożoną mozaikę życia morskiego. Od tropikalnych raf koralowych Malediwów po bogate w ryby wody wybrzeża Afryki Wschodniej, ocean wspiera bogactwo różnorodności biologicznej. Jego monsunowe wiatry i sezonowe prądy wpływają na regionalne wzorce pogodowe, wpływając na środowisko życia społeczności przybrzeżnych i kształtując praktyki kulturowe.</p>
+
+	<a href="https://science4fun.info/indian-ocean/" target="_blank">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+	</a>
+
+	<p>Historycznie Ocean Indyjski pełnił rolę kluczowego skrzyżowania handlowego i wymiany kulturowej, łącząc cywilizacje Afryki, Bliskiego Wschodu, Południowej Azji i Azji Południowo-Wschodniej. Morski Szlak Jedwabny ułatwiał przepływ towarów, idei i technologii, pozostawiając głęboki ślad w rozwoju społeczeństw przy jego brzegach. Wyspy takie jak Madagaskar, Seszele i Sri Lanka ukazują różnorodność kulturową i odporność kształtowane przez wieki interakcji w regionie Oceanu Indyjskiego.</p>
+
+	<div class="described-image">
+		<HumbakFile fid="${imgId2}"></HumbakFile>
+		<p><a href="https://unsplash.com/photos/black-and-white-rock-formation-on-blue-sea-water-during-daytime-eEx3ILScxW0" target="_blank" class="text-black text-link">wybrzeże</a></p>
+	</div>
+</section>`;
+}
