@@ -33,7 +33,9 @@ import {
 	enIndianPageContent,
 	plIndianPageContent,
 	enMediterraneanPageContent,
-	plMediterraneanPageContent
+	plMediterraneanPageContent,
+	enBalticPageContent,
+	plBalticPageContent
 } from './helpers';
 
 await promptProdContinue();
@@ -805,6 +807,64 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // seas mediterranean
+// END
+
+// START
+// seas baltic
+console.timeLog('seed', 'seas baltic page');
+// START
+await mkdir(`${filesStoragePath}/seas/baltic`);
+const [{ insertId: balticDirId }] = await db.insert(directories).values({
+	name: 'baltic',
+	path: '/seas/baltic',
+	parentId: seasDirId
+});
+const [balticPageImage1Id, balticPageImage2Id] = await Promise.all([
+	createFile({
+		url: 'https://upload.wikimedia.org/wikipedia/commons/9/92/Baltic_Sea_map.png',
+		directoryId: balticDirId,
+		name: 'map.jpg',
+		path: '/seas/baltic/map.jpg',
+		title: 'baltic map',
+		alt: 'baltic sea\'s map',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1587731233770-aa67fd11e81d',
+		directoryId: balticDirId,
+		name: 'beach.jpg',
+		path: '/seas/baltic/beach.jpg',
+		title: 'baltic beach',
+		alt: 'a fenced path to the beach with sea in the distance during the day',
+		mimetype: 'image/jpeg',
+	}),
+]);
+const enBalticPageId = await createPage({
+	language: 'en',
+	title: 'Baltic sea',
+	slug: 'baltic',
+	menuText: 'Baltic sea',
+	parentId: enSeasPageId,
+	position: 1,
+	content: enBalticPageContent([balticPageImage1Id, balticPageImage2Id]),
+});
+const plBalticPageId = await createPage({
+	language: 'pl',
+	title: 'Morze Bałtyckie',
+	slug: 'baltyckie',
+	menuText: 'Morze Bałtyckie',
+	parentId: plSeasPageId,
+	position: 1,
+	content: plBalticPageContent([balticPageImage1Id, balticPageImage2Id]),
+});
+await db.insert(filesToPages).values([
+	{ pageId: enBalticPageId, fileId: balticPageImage1Id },
+	{ pageId: enBalticPageId, fileId: balticPageImage2Id },
+	{ pageId: plBalticPageId, fileId: balticPageImage1Id },
+	{ pageId: plBalticPageId, fileId: balticPageImage2Id },
+]);
+// END
+// seas baltic
 // END
 
 // START

@@ -635,3 +635,47 @@ export function plMediterraneanPageContent([imgId1, imgId2]: [number, number]) {
 	</div>
 </section>`;
 }
+
+export function enBalticPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Baltic Sea</h1>
+	<p>The Baltic Sea, nestled within the northeastern region of Europe, is a unique and brackish body of water surrounded by nine countries: Denmark, Estonia, Finland, Germany, Latvia, Lithuania, Poland, Russia, and Sweden. This relatively shallow and enclosed sea has played a significant role in the history, culture, and economy of the Baltic region. Known for its distinctive blend of fresh and saltwater, the Baltic Sea presents a delicate and interconnected ecosystem.</p>
+
+	<div class="split-container-2">
+		<div class="described-image">
+			<HumbakFile fid="${imgId1}"></HumbakFile>
+			<p><a href="https://pl.m.wikipedia.org/wiki/Plik:Baltic_Sea_map.png" target="_blank" class="text-black text-link">map</a></p>
+		</div>
+		<div class="described-image">
+			<HumbakFile fid="${imgId2}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/brown-wooden-fence-on-beach-during-daytime-cRzcTyM70Q0" target="_blank" class="text-black text-link">Baltic Sea beach</a></p>
+		</div>
+	</div>
+
+	<p>The Baltic Sea is characterized by its numerous islands, coastal landscapes, and diverse marine habitats. From the archipelagos of Sweden to the sandy shores of the Baltic countries, this sea hosts a variety of flora and fauna adapted to its specific conditions. Despite its relatively small size compared to other seas, the Baltic Sea has been a crucial waterway for trade, connecting the countries along its shores and facilitating cultural exchange.</p>
+
+	<p class="indent">Morze Śródziemne to nie tylko kolebka starożytnych cywilizacji, ale także żywy dowód na delikatną równowagę między naturą a działalnością człowieka. Dzisiaj stoi ono przed nowoczesnymi wyzwaniami, takimi jak zanieczyszczenie, nadmierny połów ryb czy zmiany klimatu. Dążenia do ochrony i zachowania ekologicznej integralności Morza Śródziemnego są kluczowe dla zapewnienia dalszego dobrostanu jego ekosystemów morskich i zrównoważonego współistnienia społeczności, które nazywają jego brzegi domem. Morze Śródziemne, ze swoimi lazurowymi wodami i bogatą historią, pozostaje symbolem trwałego związku między ludzkością a morzem.</p>
+</section>`;
+}
+
+export function plBalticPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Morze Bałtyckie</h1>
+	<p>Morze Bałtyckie, usytuowane w północno-wschodniej części Europy, to unikalne i słonawo-słodkowodne akwen otoczone dziewięcioma krajami: Danią, Estonią, Finlandią, Niemcami, Łotwą, Litwą, Polską, Rosją i Szwecją. To stosunkowo płytkie i zamknięte morze odegrało istotną rolę w historii, kulturze i gospodarce regionu bałtyckiego. Znane ze swojego charakterystycznego połączenia słodkiej i słonej wody, Morze Bałtyckie prezentuje delikatny i wzajemnie powiązany ekosystem.</p>
+
+	<div class="split-container-2">
+		<div class="described-image">
+			<HumbakFile fid="${imgId1}"></HumbakFile>
+			<p><a href="https://pl.m.wikipedia.org/wiki/Plik:Baltic_Sea_map.png" target="_blank" class="text-black text-link">położenie</a></p>
+		</div>
+		<div class="described-image">
+			<HumbakFile fid="${imgId2}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/brown-wooden-fence-on-beach-during-daytime-cRzcTyM70Q0" target="_blank" class="text-black text-link">plaża nad Morzem Bałtyckim</a></p>
+		</div>
+	</div>
+
+	<p>Morze Bałtyckie wyróżnia się licznymi wyspami, krajobrazami przybrzeżnymi i różnorodnymi siedliskami morskim. Od archipelagów Szwecji po piaszczyste wybrzeża krajów bałtyckich, to morze gości różnorodną florę i faunę dostosowaną do swoich specyficznych warunków. Pomimo swojego stosunkowo niewielkiego rozmiaru w porównaniu z innymi morzami, Morze Bałtyckie odgrywało kluczową rolę jako szlak handlowy, łącząc kraje leżące wzdłuż jego brzegów i umożliwiając wymianę kulturową.</p>
+
+	<p class="indent">Stan środowiska Morza Bałtyckiego napotykał wyzwania, zwłaszcza w ostatnich dziesięcioleciach, takie jak eutrofizacja, zanieczyszczenie i zmiany w bioróżnorodności. Działania mające na celu rozwiązanie tych problemów obejmują współpracę między krajami bałtyckimi a Unią Europejską w celu wprowadzenia zrównoważonych praktyk i działań konserwacyjnych. Morze Bałtyckie, ze swoimi złożonymi krajobrazami przybrzeżnymi i wspólną historią, stanowi przypomnienie o znaczeniu ochrony naszych mórz dla przyszłych pokoleń, podkreślając konieczność odpowiedzialnego zarządzania w celu utrzymania delikatnej równowagi tego wyjątkowego środowiska morskiego.</p>
+</section>`;
+}
