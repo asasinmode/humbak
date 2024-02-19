@@ -679,3 +679,55 @@ export function plBalticPageContent([imgId1, imgId2]: [number, number]) {
 	<p class="indent">Stan środowiska Morza Bałtyckiego napotykał wyzwania, zwłaszcza w ostatnich dziesięcioleciach, takie jak eutrofizacja, zanieczyszczenie i zmiany w bioróżnorodności. Działania mające na celu rozwiązanie tych problemów obejmują współpracę między krajami bałtyckimi a Unią Europejską w celu wprowadzenia zrównoważonych praktyk i działań konserwacyjnych. Morze Bałtyckie, ze swoimi złożonymi krajobrazami przybrzeżnymi i wspólną historią, stanowi przypomnienie o znaczeniu ochrony naszych mórz dla przyszłych pokoleń, podkreślając konieczność odpowiedzialnego zarządzania w celu utrzymania delikatnej równowagi tego wyjątkowego środowiska morskiego.</p>
 </section>`;
 }
+
+export function enBlackPageContent([imgId1, imgId2, imgId3]: [number, number, number]) {
+	return `<section>
+	<h1>Black Sea</h1>
+	<p>The Black Sea, nestled between Southeastern Europe and Western Asia, is a captivating and historically significant body of water. Surrounded by six countries - Bulgaria, Romania, Ukraine, Russia, Turkey, and Georgia - the Black Sea has been a crossroads for trade, cultural exchange, and geopolitical dynamics throughout the ages. Known for its unique hydrography, the Black Sea combines elements of both freshwater and saltwater, creating a distinctive environment that has influenced the development of civilizations along its shores.</p>
+
+	<p class="indent">Characterized by diverse coastlines, the Black Sea boasts ancient cities, vibrant ecosystems, and a rich maritime history. From the ancient Greek colonies along the western coast to the bustling ports of modern-day Turkey, the Black Sea has been a hub for commerce and cultural interaction. Its strategic importance has been highlighted by the historical Silk Road and the more recent geopolitical considerations, emphasizing its role in regional stability.</p>
+
+	<p class="indent">The environmental health of the Black Sea has faced challenges, including issues such as pollution, overfishing, and changes in biodiversity. International efforts, involving collaboration among the countries bordering the Black Sea, aim to address these challenges and promote sustainable practices for the benefit of both the marine ecosystems and the communities that depend on them. The Black Sea, with its complex history and ecological diversity, stands as a testament to the intricate connections between human activities and the natural world, urging responsible stewardship for its continued well-being.</p>
+
+	<div class="split-container-3">
+		<div class="described-image">
+			<HumbakFile fid="${imgId1}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/blue-sky-over-sea-during-daytime-NH0u5ate6vY" target="_blank" class="text-black text-link">crimea peninsula</a></p>
+		</div>
+		<div class="described-image">
+			<HumbakFile fid="${imgId2}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/brown-rocky-shore-with-blue-sea-water-during-daytime-OQddDk-3Xgs" target="_blank" class="text-black text-link">rocks in the sea on a coast</a></p>
+		</div>
+	</div>
+
+	<a href="https://en.wikipedia.org/wiki/Black_Sea#/media/File:Black_Sea_map.png" target="_blank" class="text-black text-link">
+		<HumbakFile fid="${imgId3}"></HumbakFile>
+	</a>
+</section>`;
+}
+
+export function plBlackPageContent([imgId1, imgId2, imgId3]: [number, number, number]) {
+	return `<section>
+	<h1>Morze Czarne</h1>
+	<p>Morze Czarne, położone między Europą Południowo-Wschodnią a Zachodnią Azją, to fascynujące i historycznie istotne akwen słony. Otoczone przez sześć krajów - Bułgarię, Rumunię, Ukrainę, Rosję, Turcję i Gruzję - Morze Czarne było skrzyżowaniem szlaków handlowych, wymiany kulturowej i dynamicznych relacji geopolitycznych na przestrzeni wieków. Znane ze swojej unikalnej hydrografii, Morze Czarne łączy elementy wód słodkich i słonych, tworząc charakterystyczne środowisko, które wpłynęło na rozwój cywilizacji na jego brzegach.</p>
+
+	<p class="indent">Charakteryzujące się zróżnicowanymi liniami brzegowymi, Morze Czarne posiada starożytne miasta, bogate ekosystemy i burzliwą historię morską. Od starożytnych kolonii greckich na zachodnim wybrzeżu po ruchliwe porty współczesnej Turcji, Morze Czarne stanowiło centrum handlu i interakcji kulturowej. Jego strategiczne znaczenie podkreślają zarówno historyczna Jedwabna Droga, jak i bardziej współczesne rozważania geopolityczne, akcentujące jego rolę w regionalnej stabilności.</p>
+
+	<p class="indent">Środowiskowe zdrowie Morza Czarnego napotykało wyzwania, w tym problemy związane z zanieczyszczeniem, nadmiernym połowem ryb czy zmianami w bioróżnorodności. Międzynarodowe wysiłki, obejmujące współpracę krajów otaczających Morze Czarne, mają na celu rozwiązanie tych problemów i promowanie zrównoważonych praktyk na rzecz korzyści zarówno ekosystemów morskich, jak i społeczności zależnych od nich. Morze Czarne, ze swoją skomplikowaną historią i różnorodnością ekologiczną, stanowi dowód na złożone powiązania między działalnością ludzką a światem przyrody, wzywając do odpowiedzialnej opieki w celu zapewnienia jego dalszego dobrostanu.</p>
+
+	<div class="split-container-3">
+		<div class="described-image">
+			<HumbakFile fid="${imgId1}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/blue-sky-over-sea-during-daytime-NH0u5ate6vY" target="_blank" class="text-black text-link">półwysep krymski</a></p>
+		</div>
+		<div class="described-image">
+			<HumbakFile fid="${imgId2}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/brown-rocky-shore-with-blue-sea-water-during-daytime-OQddDk-3Xgs" target="_blank" class="text-black text-link">skały w wodzie nad wybrzeżem</a></p>
+		</div>
+	</div>
+
+	<a href="https://en.wikipedia.org/wiki/Black_Sea#/media/File:Black_Sea_map.png" target="_blank" class="text-black text-link">
+		<HumbakFile fid="${imgId3}"></HumbakFile>
+	</a>
+</section>`;
+}

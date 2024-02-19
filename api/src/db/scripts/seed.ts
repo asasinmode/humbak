@@ -35,7 +35,9 @@ import {
 	enMediterraneanPageContent,
 	plMediterraneanPageContent,
 	enBalticPageContent,
-	plBalticPageContent
+	plBalticPageContent,
+	enBlackPageContent,
+	plBlackPageContent
 } from './helpers';
 
 await promptProdContinue();
@@ -728,7 +730,7 @@ const [indianPageImage1Id] = await Promise.all([
 const enIndianPageId = await createPage({
 	language: 'en',
 	title: 'Indian ocean',
-	slug: 'indian',
+	slug: 'indian-ocean',
 	menuText: 'Indian Ocean',
 	parentId: enOceansPageId,
 	position: 2,
@@ -737,7 +739,7 @@ const enIndianPageId = await createPage({
 const plIndianPageId = await createPage({
 	language: 'pl',
 	title: 'Ocean Indyjski',
-	slug: 'indyjski',
+	slug: 'ocean-indyjski',
 	menuText: 'Ocean Indyjski',
 	parentId: plOceansPageId,
 	position: 2,
@@ -784,7 +786,7 @@ const [mediterraneanPageImage1Id, mediterraneanPageImage2Id] = await Promise.all
 const enMediterraneanPageId = await createPage({
 	language: 'en',
 	title: 'Mediterranean sea',
-	slug: 'mediterranean',
+	slug: 'mediterranean-sea',
 	menuText: 'Mediterranean sea',
 	parentId: enSeasPageId,
 	position: 0,
@@ -793,7 +795,7 @@ const enMediterraneanPageId = await createPage({
 const plMediterraneanPageId = await createPage({
 	language: 'pl',
 	title: 'Morze Śródziemne',
-	slug: 'srodziemne',
+	slug: 'morze-srodziemne',
 	menuText: 'Morze Śródziemne',
 	parentId: plSeasPageId,
 	position: 0,
@@ -841,9 +843,9 @@ const [balticPageImage1Id, balticPageImage2Id] = await Promise.all([
 ]);
 const enBalticPageId = await createPage({
 	language: 'en',
-	title: 'Baltic sea',
-	slug: 'baltic',
-	menuText: 'Baltic sea',
+	title: 'Baltic Sea',
+	slug: 'baltic-sea',
+	menuText: 'Baltic Sea',
 	parentId: enSeasPageId,
 	position: 1,
 	content: enBalticPageContent([balticPageImage1Id, balticPageImage2Id]),
@@ -851,7 +853,7 @@ const enBalticPageId = await createPage({
 const plBalticPageId = await createPage({
 	language: 'pl',
 	title: 'Morze Bałtyckie',
-	slug: 'baltyckie',
+	slug: 'morze-baltyckie',
 	menuText: 'Morze Bałtyckie',
 	parentId: plSeasPageId,
 	position: 1,
@@ -865,6 +867,75 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // seas baltic
+// END
+
+// START
+// seas black
+console.timeLog('seed', 'seas black page');
+// START
+await mkdir(`${filesStoragePath}/seas/black`);
+const [{ insertId: blackDirId }] = await db.insert(directories).values({
+	name: 'black',
+	path: '/seas/black',
+	parentId: seasDirId
+});
+const [blackPageImage1Id, blackPageImage2Id, blackPageImage3Id] = await Promise.all([
+	createFile({
+		url: 'https://images.unsplash.com/photo-1613934696606-854c849b8eaf',
+		directoryId: blackDirId,
+		name: 'beach-sunset.jpg',
+		path: '/seas/black/beach-sunset.jpg',
+		title: 'beach sunset',
+		alt: 'beach at sunset with clouded sky in the distance',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1621597357988-c9a41208ec56',
+		directoryId: blackDirId,
+		name: 'rocks-sea-shore.jpg',
+		path: '/seas/black/rocks-sea-shore.jpg',
+		title: 'rocks sea shore',
+		alt: 'rocks in the sea on the coast seen from above',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://upload.wikimedia.org/wikipedia/commons/5/52/Black_Sea_map.png',
+		directoryId: blackDirId,
+		name: 'map.jpg',
+		path: '/seas/black/map.jpg',
+		title: 'black map',
+		alt: 'black sea\'s map',
+		mimetype: 'image/jpeg',
+	}),
+]);
+const enBlackPageId = await createPage({
+	language: 'en',
+	title: 'Black Sea',
+	slug: 'black-sea',
+	menuText: 'Black Sea',
+	parentId: enSeasPageId,
+	position: 2,
+	content: enBlackPageContent([blackPageImage1Id, blackPageImage2Id, blackPageImage3Id]),
+});
+const plBlackPageId = await createPage({
+	language: 'pl',
+	title: 'Morze Czarne',
+	slug: 'morze-czarne',
+	menuText: 'Morze Czarne',
+	parentId: plSeasPageId,
+	position: 2,
+	content: plBlackPageContent([blackPageImage1Id, blackPageImage2Id, blackPageImage3Id]),
+});
+await db.insert(filesToPages).values([
+	{ pageId: enBlackPageId, fileId: blackPageImage1Id },
+	{ pageId: enBlackPageId, fileId: blackPageImage2Id },
+	{ pageId: enBlackPageId, fileId: blackPageImage3Id },
+	{ pageId: plBlackPageId, fileId: blackPageImage1Id },
+	{ pageId: plBlackPageId, fileId: blackPageImage2Id },
+	{ pageId: plBlackPageId, fileId: blackPageImage3Id },
+]);
+// END
+// seas black
 // END
 
 // START
