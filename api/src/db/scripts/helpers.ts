@@ -566,27 +566,22 @@ export function plPacificPageContent([imgId1, imgId2]: [number, number]) {
 </section>`;
 }
 
-export function enIndianPageContent([imgId1, imgId2]: [number, number]) {
+export function enIndianPageContent([imgId1]: [number]) {
 	return `<section>
 	<h1>Indian Ocean</h1>
 	<p>The Indian Ocean, Earth's third-largest ocean, spans the expanses between Africa, Asia, Australia, and the Indian subcontinent. Known for its warm temperatures and diverse marine ecosystems, it plays a crucial role in global climate regulation and maritime connectivity. This vast body of saltwater, with its strategic location, weaves together a narrative of environmental significance, historical trade routes, and vibrant biodiversity.</p>
 
 	<p class="indent">Extending from the Arctic to the Antarctic, the Indian Ocean encompasses a range of climatic zones, fostering an intricate tapestry of marine life. From the tropical coral reefs of the Maldives to the rich fishing grounds along the coast of East Africa, the ocean supports a wealth of biodiversity. Its monsoon winds and seasonal currents influence regional weather patterns, impacting the livelihoods of coastal communities and shaping cultural practices.</p>
 
-	<a href="https://unsplash.com/photos/boat-on-sea-under-white-clouds-8eFbe3jQZ7Y" target="_blank">
+	<a href="https://science4fun.info/indian-ocean/" target="_blank">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 
 	<p>Historically, the Indian Ocean has served as a vital crossroads for trade and cultural exchange, connecting civilizations across Africa, the Middle East, South Asia, and Southeast Asia. The maritime Silk Road facilitated the flow of goods, ideas, and technologies, leaving a profound imprint on the development of societies along its shores. Islands like Madagascar, Seychelles, and Sri Lanka showcase the cultural diversity and resilience shaped by centuries of Indian Ocean interactions.</p>
-
-	<div class="described-image">
-		<HumbakFile fid="${imgId2}"></HumbakFile>
-		<p><a href="https://unsplash.com/photos/black-and-white-rock-formation-on-blue-sea-water-during-daytime-eEx3ILScxW0" target="_blank" class="text-black text-link">shore</a></p>
-	</div>
 </section>`;
 }
 
-export function plIndianPageContent([imgId1, imgId2]: [number, number]) {
+export function plIndianPageContent([imgId1]: [number]) {
 	return `<section>
 	<h1>Ocean Indyjski</h1>
 	<p>Ocean Indyjski, trzeci pod względem wielkości ocean na Ziemi, rozciąga się między kontynentami Afryki, Azji, Australii i subkontynentem Indyjskim. Znany ze swoich ciepłych temperatur i różnorodnych ekosystemów morskich, odgrywa kluczową rolę w globalnej regulacji klimatu i łączności morskiej. Ten ogromny obszar słonej wody, ze swoją strategiczną lokalizacją, tworzy narrację znaczenia środowiskowego, historycznych szlaków handlowych i bogatej bioróżnorodności.</p>
@@ -598,10 +593,45 @@ export function plIndianPageContent([imgId1, imgId2]: [number, number]) {
 	</a>
 
 	<p>Historycznie Ocean Indyjski pełnił rolę kluczowego skrzyżowania handlowego i wymiany kulturowej, łącząc cywilizacje Afryki, Bliskiego Wschodu, Południowej Azji i Azji Południowo-Wschodniej. Morski Szlak Jedwabny ułatwiał przepływ towarów, idei i technologii, pozostawiając głęboki ślad w rozwoju społeczeństw przy jego brzegach. Wyspy takie jak Madagaskar, Seszele i Sri Lanka ukazują różnorodność kulturową i odporność kształtowane przez wieki interakcji w regionie Oceanu Indyjskiego.</p>
+</section>`;
+}
+
+export function enMediterraneanPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Mediterranean sea</h1>
+	<p>The Mediterranean Sea, nestled between the continents of Europe, Africa, and Asia, is a captivating and historically rich body of water. Often referred to as the "cradle of civilization," the Mediterranean has played a central role in shaping the cultural and economic development of the surrounding regions. Its unique geography, characterized by diverse coastlines and islands, has fostered a mosaic of cultures, making it a melting pot of civilizations throughout history.</p>
+
+	<p class="indent">This sea, bordered by countries like Italy, Greece, Turkey, Egypt, and Spain, boasts a moderate climate and supports an abundance of marine life. From the azure waters of the Aegean to the vibrant coral reefs near Egypt, the Mediterranean hosts a remarkable array of biodiversity. Its strategic location has made it a crossroads for trade, exploration, and cultural exchange, with ancient seafaring civilizations leaving their indelible mark on its shores.</p>
+
+	<a href="https://www.drishtiias.com/daily-updates/daily-news-analysis/mediterranean-sea" target="_blank">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+	</a>
+
+	<p>The Mediterranean Sea is not only a cradle of ancient civilizations but also a living testament to the delicate balance between nature and human activities. Today, it faces modern challenges such as pollution, overfishing, and climate change. Efforts to protect and preserve the Mediterranean's ecological integrity are crucial to ensuring the continued well-being of its marine ecosystems and the sustainable coexistence of the communities that call its shores home. The Mediterranean, with its azure waters and storied past, remains a symbol of the enduring connection between humanity and the sea.</p>
 
 	<div class="described-image">
 		<HumbakFile fid="${imgId2}"></HumbakFile>
-		<p><a href="https://unsplash.com/photos/black-and-white-rock-formation-on-blue-sea-water-during-daytime-eEx3ILScxW0" target="_blank" class="text-black text-link">wybrzeże</a></p>
+		<p><a href="https://unsplash.com/photos/aerial-view-of-city-near-body-of-water-during-daytime-S_3PsmDwU5c" target="_blank" class="text-black text-link">Greece</a></p>
+	</div>
+</section>`;
+}
+
+export function plMediterraneanPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Morze Śródziemnomorskie</h1>
+	<p>Morze Śródziemne, położone między kontynentami Europy, Afryki i Azji, to fascynujące i historycznie bogate akwen słony. Często nazywane "żłobem cywilizacji", Morze Śródziemne odegrało centralną rolę w kształtowaniu rozwoju kulturalnego i ekonomicznego otaczających regionów. Jego unikalna geografia, charakteryzowana zróżnicowanymi liniami brzegowymi i wyspami, sprzyjała mozaice kultur, tworząc z niego miejsce wielokulturowe przez wieki.</p>
+
+	<p class="indent">To morze, otoczone przez kraje takie jak Włochy, Grecja, Turcja, Egipt i Hiszpania, cieszy się umiarkowanym klimatem i wspiera obfitość życia morskiego. Od lazurowych wód Morza Egejskiego po kolorowe rafy koralowe koło Egiptu, Morze Śródziemne gości niezwykłą różnorodność biologiczną. Jego strategiczna lokalizacja uczyniła je skrzyżowaniem szlaków handlowych, miejscem eksploracji i wymiany kulturowej, z antycznymi cywilizacjami pozostawiającymi niezatarte ślady na jego brzegach.</p>
+
+	<a href="https://www.drishtiias.com/daily-updates/daily-news-analysis/mediterranean-sea" target="_blank">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+	</a>
+
+	<p>Morze Śródziemne to nie tylko kolebka starożytnych cywilizacji, ale także żywy dowód na delikatną równowagę między naturą a działalnością człowieka. Dzisiaj stoi ono przed nowoczesnymi wyzwaniami, takimi jak zanieczyszczenie, nadmierny połów ryb czy zmiany klimatu. Dążenia do ochrony i zachowania ekologicznej integralności Morza Śródziemnego są kluczowe dla zapewnienia dalszego dobrostanu jego ekosystemów morskich i zrównoważonego współistnienia społeczności, które nazywają jego brzegi domem. Morze Śródziemne, ze swoimi lazurowymi wodami i bogatą historią, pozostaje symbolem trwałego związku między ludzkością a morzem.</p>
+
+	<div class="described-image">
+		<HumbakFile fid="${imgId2}"></HumbakFile>
+		<p><a href="https://unsplash.com/photos/aerial-view-of-city-near-body-of-water-during-daytime-S_3PsmDwU5c" target="_blank" class="text-black text-link">Grecja</a></p>
 	</div>
 </section>`;
 }

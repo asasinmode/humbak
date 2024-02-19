@@ -31,7 +31,9 @@ import {
 	enPacificPageContent,
 	plPacificPageContent,
 	enIndianPageContent,
-	plIndianPageContent
+	plIndianPageContent,
+	enMediterraneanPageContent,
+	plMediterraneanPageContent
 } from './helpers';
 
 await promptProdContinue();
@@ -285,7 +287,7 @@ const [{ insertId: plSlideInsertId }] = await db.insert(slides).values(await Pro
 		href="https://unsplash.com/photos/green-forest-near-lake-and-mountain-under-cloudy-sky-Hrmayke-v8g"
 		target="_blank"
 		class="absolute text-link"
-		style="bottom: 0.3rem; right: 0.5rem;"
+		style="bottom: 0.3rem; right: 0.5rem; color: black; text-shadow: white 1px 1px 1px;"
 	>
 		unsplash
 	</a>
@@ -309,7 +311,7 @@ const [{ insertId: plSlideInsertId }] = await db.insert(slides).values(await Pro
 		href="https://unsplash.com/photos/body-of-water-between-trees-under-cloudy-sky-rB7-LCa_diU"
 		target="_blank"
 		class="absolute text-link"
-		style="bottom: 0.3rem; right: 0.5rem;"
+		style="bottom: 0.3rem; right: 0.5rem; color: black; text-shadow: white 1px 1px 1px;"
 	>
 		unsplash
 	</a>
@@ -338,7 +340,7 @@ console.timeLog('seed', 'home pages');
 // START
 const enHomePageId = await createPage({
 	language: 'en',
-	title: 'home',
+	title: 'Home',
 	slug: '',
 	menuText: 'home EN',
 	parentId: null,
@@ -348,7 +350,7 @@ const enHomePageId = await createPage({
 
 const plHomePageId = await createPage({
 	language: 'pl',
-	title: 'dom',
+	title: 'Dom',
 	slug: '',
 	menuText: 'home PL',
 	parentId: null,
@@ -404,18 +406,18 @@ const [oceanPageImage1Id, oceanPageImage2Id, oceanPageImage3Id, oceanPageImage4I
 
 const enOceansPageId = await createPage({
 	language: 'en',
-	title: 'oceans',
+	title: 'Oceans',
 	slug: 'oceans',
-	menuText: 'oceans',
+	menuText: 'Oceans',
 	parentId: null,
 	position: 0,
 	content: enOceansPageContent([oceanPageImage1Id, oceanPageImage2Id, oceanPageImage3Id, oceanPageImage4Id]),
 });
 const plOceansPageId = await createPage({
 	language: 'pl',
-	title: 'oceany',
+	title: 'Oceany',
 	slug: 'oceany',
-	menuText: 'oceany',
+	menuText: 'Oceany',
 	parentId: null,
 	position: 0,
 	content: plOceansPageContent([oceanPageImage1Id, oceanPageImage2Id, oceanPageImage3Id, oceanPageImage4Id]),
@@ -460,18 +462,18 @@ const [seasPageImage1Id, seasPageImage2Id] = await Promise.all([
 ]);
 const enSeasPageId = await createPage({
 	language: 'en',
-	title: 'seas',
+	title: 'Seas',
 	slug: 'seas',
-	menuText: 'seas',
+	menuText: 'Seas',
 	parentId: null,
 	position: 1,
 	content: enSeasPageContent([seasPageImage1Id, seasPageImage2Id]),
 });
 const plSeasPageId = await createPage({
 	language: 'pl',
-	title: 'morza',
+	title: 'Morza',
 	slug: 'morza',
-	menuText: 'morza',
+	menuText: 'Morza',
 	parentId: null,
 	position: 1,
 	content: plSeasPageContent([seasPageImage1Id, seasPageImage2Id]),
@@ -550,18 +552,18 @@ const [lakesPageImage4Id, lakesPageImage5Id, lakesPageImage6Id] = await Promise.
 ]);
 const enLakesPageId = await createPage({
 	language: 'en',
-	title: 'lakes',
+	title: 'Lakes',
 	slug: 'lakes',
-	menuText: 'lakes',
+	menuText: 'Lakes',
 	parentId: null,
 	position: 2,
 	content: enLakesPageContent([lakesPageImage1Id, lakesPageImage2Id, lakesPageImage3Id, lakesPageImage4Id, lakesPageImage5Id, lakesPageImage6Id]),
 });
 const plLakesPageId = await createPage({
 	language: 'pl',
-	title: 'jeziora',
+	title: 'Jeziora',
 	slug: 'jeziora',
-	menuText: 'jeziora',
+	menuText: 'Jeziora',
 	parentId: null,
 	position: 2,
 	content: plLakesPageContent([lakesPageImage1Id, lakesPageImage2Id, lakesPageImage3Id, lakesPageImage4Id, lakesPageImage5Id, lakesPageImage6Id]),
@@ -592,6 +594,7 @@ await mkdir(`${filesStoragePath}/oceans/atlantic`);
 const [{ insertId: atlanticDirId }] = await db.insert(directories).values({
 	name: 'atlantic',
 	path: '/oceans/atlantic',
+	parentId: oceansDirId
 });
 const [atlanticPageImage1Id, atlanticPageImage2Id] = await Promise.all([
 	createFile({
@@ -624,7 +627,7 @@ const enAtlanticPageId = await createPage({
 });
 const plAtlanticPageId = await createPage({
 	language: 'pl',
-	title: 'ocean Atlantycki',
+	title: 'Ocean Atlantycki',
 	slug: 'atlantyk',
 	menuText: 'Atlantyk',
 	parentId: plOceansPageId,
@@ -649,6 +652,7 @@ await mkdir(`${filesStoragePath}/oceans/pacific`);
 const [{ insertId: pacificDirId }] = await db.insert(directories).values({
 	name: 'pacific',
 	path: '/oceans/pacific',
+	parentId: oceansDirId
 });
 const [pacificPageImage1Id, pacificPageImage2Id] = await Promise.all([
 	createFile({
@@ -681,7 +685,7 @@ const enPacificPageId = await createPage({
 });
 const plPacificPageId = await createPage({
 	language: 'pl',
-	title: 'ocean Pacyficzny',
+	title: 'Ocean Pacyficzny',
 	slug: 'pacyfik',
 	menuText: 'Pacyfik',
 	parentId: plOceansPageId,
@@ -695,19 +699,20 @@ await db.insert(filesToPages).values([
 	{ pageId: plPacificPageId, fileId: pacificPageImage2Id },
 ]);
 // END
-// oceans atlantic
+// oceans pacific
 // END
 
 // START
 // oceans indian
-console.timeLog('seed', 'oceans pacific page');
+console.timeLog('seed', 'oceans indian page');
 // START
 await mkdir(`${filesStoragePath}/oceans/indian`);
 const [{ insertId: indianDirId }] = await db.insert(directories).values({
 	name: 'indian',
 	path: '/oceans/indian',
+	parentId: oceansDirId
 });
-const [indianPageImage1Id, indianPageImage2Id] = await Promise.all([
+const [indianPageImage1Id] = await Promise.all([
 	createFile({
 		url: 'https://science4fun.info/wp-content/uploads/2022/06/Indian-Ocean-map.jpg',
 		directoryId: indianDirId,
@@ -715,15 +720,6 @@ const [indianPageImage1Id, indianPageImage2Id] = await Promise.all([
 		path: '/oceans/indian/indian-map.jpg',
 		title: 'indian map',
 		alt: 'map highlighting the indian ocean\'s position',
-		mimetype: 'image/jpeg',
-	}),
-	createFile({
-		url: 'https://images.unsplash.com/photo-1602110604773-4e0255ef8b0d?q=80&w=2664&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-		directoryId: indianDirId,
-		name: 'shore.jpg',
-		path: '/oceans/indian/shore.jpg',
-		title: 'shore',
-		alt: 'a bird\'s eye view of a sandy beach with waves washing over',
 		mimetype: 'image/jpeg',
 	}),
 ]);
@@ -734,25 +730,81 @@ const enIndianPageId = await createPage({
 	menuText: 'Indian Ocean',
 	parentId: enOceansPageId,
 	position: 2,
-	content: enIndianPageContent([indianPageImage1Id, indianPageImage2Id]),
+	content: enIndianPageContent([indianPageImage1Id]),
 });
 const plIndianPageId = await createPage({
 	language: 'pl',
-	title: 'ocean Indyjski',
+	title: 'Ocean Indyjski',
 	slug: 'indyjski',
 	menuText: 'Ocean Indyjski',
 	parentId: plOceansPageId,
 	position: 2,
-	content: plIndianPageContent([indianPageImage1Id, indianPageImage2Id]),
+	content: plIndianPageContent([indianPageImage1Id]),
 });
 await db.insert(filesToPages).values([
 	{ pageId: enIndianPageId, fileId: indianPageImage1Id },
-	{ pageId: enIndianPageId, fileId: indianPageImage2Id },
 	{ pageId: plIndianPageId, fileId: indianPageImage1Id },
-	{ pageId: plIndianPageId, fileId: indianPageImage2Id },
 ]);
 // END
-// oceans atlantic
+// oceans indian
+// END
+
+// START
+// seas mediterranean
+console.timeLog('seed', 'seas mediterranean page');
+// START
+await mkdir(`${filesStoragePath}/seas/mediterranean`);
+const [{ insertId: mediterraneanDirId }] = await db.insert(directories).values({
+	name: 'mediterranean',
+	path: '/seas/mediterranean',
+	parentId: seasDirId
+});
+const [mediterraneanPageImage1Id, mediterraneanPageImage2Id] = await Promise.all([
+	createFile({
+		url: 'https://www.drishtiias.com/images/uploads/1665481057_Mediterranean_Sea_Drishti_IAS_English.png',
+		directoryId: mediterraneanDirId,
+		name: 'map.jpg',
+		path: '/seas/mediterranean/map.jpg',
+		title: 'mediterranean map',
+		alt: 'mediterranean sea\'s map',
+		mimetype: 'image/jpeg',
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1596103716734-a4b44d6c9892',
+		directoryId: mediterraneanDirId,
+		name: 'greece.jpg',
+		path: '/seas/mediterranean/greece.jpg',
+		title: 'greece',
+		alt: 'aerial view of a greece city next to the sea on a sunny day',
+		mimetype: 'image/jpeg',
+	}),
+]);
+const enMediterraneanPageId = await createPage({
+	language: 'en',
+	title: 'Mediterranean sea',
+	slug: 'mediterranean',
+	menuText: 'Mediterranean sea',
+	parentId: enSeasPageId,
+	position: 0,
+	content: enMediterraneanPageContent([mediterraneanPageImage1Id, mediterraneanPageImage2Id]),
+});
+const plMediterraneanPageId = await createPage({
+	language: 'pl',
+	title: 'Morze Śródziemne',
+	slug: 'srodziemne',
+	menuText: 'Morze Śródziemne',
+	parentId: plSeasPageId,
+	position: 0,
+	content: plMediterraneanPageContent([mediterraneanPageImage1Id, mediterraneanPageImage2Id]),
+});
+await db.insert(filesToPages).values([
+	{ pageId: enMediterraneanPageId, fileId: mediterraneanPageImage1Id },
+	{ pageId: enMediterraneanPageId, fileId: mediterraneanPageImage2Id },
+	{ pageId: plMediterraneanPageId, fileId: mediterraneanPageImage1Id },
+	{ pageId: plMediterraneanPageId, fileId: mediterraneanPageImage2Id },
+]);
+// END
+// seas mediterranean
 // END
 
 // START
