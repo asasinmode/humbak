@@ -185,7 +185,7 @@ const [{ insertId: enSlideInsertId }] = await db.insert(slides).values(await Pro
 		href="https://unsplash.com/photos/aerial-photo-body-of-water-cuTk59eNHUE"
 		target="_blank"
 		class="absolute text-link"
-		style="bottom: 0.3rem; right: 0.5rem;"
+		style="bottom: 0.3rem; right: 0.5rem; color: white;"
 	>
 		unsplash
 	</a>
@@ -203,7 +203,7 @@ const [{ insertId: enSlideInsertId }] = await db.insert(slides).values(await Pro
 		href="https://unsplash.com/photos/green-forest-near-lake-and-mountain-under-cloudy-sky-Hrmayke-v8g"
 		target="_blank"
 		class="absolute text-link"
-		style="bottom: 0.3rem; right: 0.5rem;"
+		style="bottom: 0.3rem; right: 0.5rem; color: black; text-shadow: white 1px 1px 1px;"
 	>
 		unsplash
 	</a>
@@ -227,7 +227,7 @@ const [{ insertId: enSlideInsertId }] = await db.insert(slides).values(await Pro
 		href="https://unsplash.com/photos/body-of-water-between-trees-under-cloudy-sky-rB7-LCa_diU"
 		target="_blank"
 		class="absolute text-link"
-		style="bottom: 0.3rem; right: 0.5rem;"
+		style="bottom: 0.3rem; right: 0.5rem; color: black; text-shadow: white 1px 1px 1px;"
 	>
 		unsplash
 	</a>
@@ -702,7 +702,7 @@ await db.insert(filesToPages).values([
 // oceans indian
 console.timeLog('seed', 'oceans pacific page');
 // START
-await mkdir(`${filesStoragePath}/oceans/pacific`);
+await mkdir(`${filesStoragePath}/oceans/indian`);
 const [{ insertId: indianDirId }] = await db.insert(directories).values({
 	name: 'indian',
 	path: '/oceans/indian',
