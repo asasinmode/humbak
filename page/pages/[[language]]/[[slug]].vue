@@ -43,5 +43,11 @@ useHead({
 </script>
 
 <template>
-	<main id="content" class="max-w-360 w-full px-2 mx-auto scroll-m-12 py-8" v-html="pageData!.html" />
+	<main id="content" class="max-w-360 mx-auto scroll-m-12 py-8" v-html="pageData!.html" />
 </template>
+
+<style>
+#content {
+	width: min(1440px, 100% - clamp(1rem, 0rem + 3.3333vi, 3rem));
+}
+</style>
