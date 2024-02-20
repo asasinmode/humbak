@@ -700,7 +700,7 @@ export function enBlackPageContent([imgId1, imgId2, imgId3]: [number, number, nu
 		</div>
 	</div>
 
-	<a href="https://en.wikipedia.org/wiki/Black_Sea#/media/File:Black_Sea_map.png" target="_blank" class="text-black text-link">
+	<a href="https://en.wikipedia.org/wiki/Black_Sea#/media/File:Black_Sea_map.png" target="_blank">
 		<HumbakFile fid="${imgId3}"></HumbakFile>
 	</a>
 </section>`;
@@ -726,7 +726,7 @@ export function plBlackPageContent([imgId1, imgId2, imgId3]: [number, number, nu
 		</div>
 	</div>
 
-	<a href="https://en.wikipedia.org/wiki/Black_Sea#/media/File:Black_Sea_map.png" target="_blank" class="text-black text-link">
+	<a href="https://en.wikipedia.org/wiki/Black_Sea#/media/File:Black_Sea_map.png" target="_blank">
 		<HumbakFile fid="${imgId3}"></HumbakFile>
 	</a>
 </section>`;
@@ -798,7 +798,7 @@ export function enGreatLakesPageContent([imgId1, imgId2, imgId3]: [number, numbe
 
 	<p class="indent">Despite their grandeur, the Great Lakes face environmental challenges, including issues like pollution, invasive species, and habitat degradation. Collaborative efforts between the United States and Canada, as well as local initiatives, aim to address these challenges and preserve the integrity of the Great Lakes. The lakes, with their immense beauty and ecological importance, stand as a testament to the delicate balance between human activities and the preservation of our planet's natural treasures.</p>
 
-	<a href="https://en.m.wikipedia.org/wiki/File:Great-Lakes.svg" target="_blank" class="text-black text-link">
+	<a href="https://en.m.wikipedia.org/wiki/File:Great-Lakes.svg" target="_blank">
 		<HumbakFile fid="${imgId3}"></HumbakFile>
 	</a>
 </section>`;
@@ -870,7 +870,7 @@ export function plGreatLakesPageContent([imgId1, imgId2, imgId3]: [number, numbe
 
 	<p class="indent">Mimo swojej okazałości, Wielkie Jeziora stają w obliczu wyzwań środowiskowych, takich jak zanieczyszczenie, inwazyjne gatunki i degradacja siedlisk. Wspólne działania między Stanami Zjednoczonymi a Kanadą, a także inicjatywy lokalne, mają na celu radzenie sobie z tymi problemami i zachowanie integralności Wielkich Jezior. Jeziora, ze swoim ogromnym pięknem i ekologicznym znaczeniem, stanowią dowód delikatnej równowagi między działalnością człowieka a zachowaniem naturalnych skarbów naszej planety.</p>
 
-	<a href="https://en.m.wikipedia.org/wiki/File:Great-Lakes.svg" target="_blank" class="text-black text-link">
+	<a href="https://en.m.wikipedia.org/wiki/File:Great-Lakes.svg" target="_blank">
 		<HumbakFile fid="${imgId3}"></HumbakFile>
 	</a>
 </section>`;
@@ -883,13 +883,13 @@ export function enBaikalLakesPageContent([imgId1, imgId2]: [number, number]) {
 
 	<p class="indent">Spanning over 25 million years in age, Lake Baikal holds a staggering 20% of the world's unfrozen freshwater reserve. The lake's clarity is unparalleled, allowing visibility to depths of over 40 meters. Baikal is home to an array of endemic species, including the mesmerizing Baikal seal, found nowhere else on Earth. The surrounding landscapes, from the jagged peaks of the Sayan Mountains to the dense Siberian taiga, contribute to the lake's unrivaled natural splendor.</p>
 
-	<a href="https://kids.britannica.com/kids/article/Lake-Baikal/602893" target="_blank" class="text-black text-link">
+	<a href="https://kids.britannica.com/kids/article/Lake-Baikal/602893" target="_blank">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 
 	<p>In winter, Lake Baikal transforms into a crystalline wonderland, as its surface freezes and creates surreal ice formations. This annual phenomenon draws adventurers and photographers from around the globe to witness the ethereal beauty of Baikal's ice. Beyond its scenic allure, Baikal plays a crucial role in scientific research, offering insights into the Earth's geological processes and serving as a living laboratory for the study of evolution.</p>
 
-	<a href="https://unsplash.com/photos/body-of-water-near-mountain-view-r6FU8zqrgdM" target="_blank" class="text-black text-link">
+	<a href="https://unsplash.com/photos/body-of-water-near-mountain-view-r6FU8zqrgdM" target="_blank">
 		<HumbakFile fid="${imgId2}"></HumbakFile>
 	</a>
 
@@ -904,13 +904,13 @@ export function plBaikalLakesPageContent([imgId1, imgId2]: [number, number]) {
 
 	<p class="indent">Osiągając wiek ponad 25 milionów lat, Jezioro Bajkał przechowuje zdumiewające 20% zasobów niespłynnej słodkiej wody na świecie. Jego klarowność jest niezrównana, umożliwiając widoczność na głębokość ponad 40 metrów. Bajkał jest domem dla licznych gatunków endemitów, w tym fascynującej foki bajkalskiej, której nie spotkamy nigdzie indziej na Ziemi. Otaczające je krajobrazy, od stromych szczytów Gór Sajańskich po gęste syberyjskie tajgi, przyczyniają się do niezrównanej przyrodniczej piękności jeziora.</p>
 
-	<a href="https://kids.britannica.com/kids/article/Lake-Baikal/602893" target="_blank" class="text-black text-link">
+	<a href="https://kids.britannica.com/kids/article/Lake-Baikal/602893" target="_blank">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 
 	<p>Zimą Jezioro Bajkał przemienia się w krystaliczne królestwo, gdy jego powierzchnia zamarza, tworząc surrealistyczne formacje lodowe. To coroczne zjawisko przyciąga podróżników i fotografów z całego świata, by być świadkami eterycznej piękności lodu Bajkału. Poza swoim urokiem krajobrazowym, Bajkał odgrywa kluczową rolę w badaniach naukowych, oferując wgląd w geologiczne procesy Ziemi i pełniąc funkcję żywej laboratorium do badania ewolucji.</p>
 
-	<a href="https://unsplash.com/photos/body-of-water-near-mountain-view-r6FU8zqrgdM" target="_blank" class="text-black text-link">
+	<a href="https://unsplash.com/photos/body-of-water-near-mountain-view-r6FU8zqrgdM" target="_blank">
 		<HumbakFile fid="${imgId2}"></HumbakFile>
 	</a>
 
@@ -943,7 +943,7 @@ export function plCaspianLakesPageContent([imgId1, imgId2]: [number, number]) {
 	<h1>Morze Kaspijskie</h1>
 	<p>Morze Kaspijskie, największe śródlądowe akwen na świecie, rozciąga się po rozległych krajobrazach Wschodniej Europy i Zachodniej Azji. Graniczące z pięcioma krajami - Rosją, Kazachstanem, Turkmenistanem, Iranem i Azerbejdżanem - Morze Kaspijskie to mozaika znaczenia kulturowego, historycznego i ekologicznego. To ogromne słone jezioro, często nazywane morzem ze względu na swoje rozmiary, rozpływa się w opowieść o zróżnicowanych krajobrazach i skomplikowanych relacjach geopolitycznych.</p>
 
-	<a href="https://www.researchgate.net/figure/Map-of-the-Caspian-Sea-and-surrounding-countries-modified-from-an-original-map-provided_fig1_313864880" target="_blank" class="text-black text-link">
+	<a href="https://www.researchgate.net/figure/Map-of-the-Caspian-Sea-and-surrounding-countries-modified-from-an-original-map-provided_fig1_313864880" target="_blank">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 
@@ -951,7 +951,7 @@ export function plCaspianLakesPageContent([imgId1, imgId2]: [number, number]) {
 
 	<div class="described-image">
 		<HumbakFile fid="${imgId2}"></HumbakFile>
-		<p><a href="https://unsplash.com/photos/aerial-photograph-of-islands-WKT3TE5AQu0" target="_blank" class="text-black text-link">Archipelag Tyuleniy</a></p>
+		<p><a href="https://unsplash.com/photos/aerial-photograph-of-islands-WKT3TE5AQu0" target="_blank">Archipelag Tyuleniy</a></p>
 	</div>
 
 	<p>Choć Morze Kaspijskie od dawna było źródłem dobrobytu, zapewniając środki utrzymania przez rybołówstwo i ułatwiając handel, stoi obecnie przed współczesnymi wyzwaniami, takimi jak degradacja środowiska i obawy dotyczące gospodarki zasobami. Skomplikowany status prawny morza, związany z interesami otaczających go narodów, dodaje kolejny element do jego dynamicznej historii. W miarę podejmowania działań mających na celu rozwiązanie problemów środowiskowych i promowanie zrównoważonych praktyk, Morze Kaspijskie pozostaje symbolem delikatnej współpracy między naturą, historią a geopolityką regionu.</p>
