@@ -37,7 +37,13 @@ import {
 	enBalticPageContent,
 	plBalticPageContent,
 	enBlackPageContent,
-	plBlackPageContent
+	plBlackPageContent,
+	enGreatLakesPageContent,
+	plGreatLakesPageContent,
+	enBaikalLakesPageContent,
+	plBaikalLakesPageContent,
+	enCaspianLakesPageContent,
+	plCaspianLakesPageContent
 } from './helpers';
 
 await promptProdContinue();
@@ -936,6 +942,191 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // seas black
+// END
+
+// START
+// lakes great
+console.timeLog('seed', 'lakes great page');
+// START
+await mkdir(`${filesStoragePath}/lakes/great`);
+const [{ insertId: greatDirId }] = await db.insert(directories).values({
+	name: 'great',
+	path: '/lakes/great',
+	parentId: lakesDirId
+});
+const [greatPageImage1Id, greatPageImage2Id, greatPageImage3Id] = await Promise.all([
+	createFile({
+		url: 'https://images.unsplash.com/photo-1487006113199-30fc89dd54e9',
+		directoryId: greatDirId,
+		name: 'michigan.jpg',
+		path: '/lakes/great/michigan.jpg',
+		title: 'lake Michigan',
+		alt: 'an aerial view of the Lake Michigan\'s shore with autumn forest in the distance',
+		mimetype: 'image/jpeg'
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1642573941638-dab66dd8d954',
+		directoryId: greatDirId,
+		name: 'huron.jpg',
+		path: '/lakes/great/huron.jpg',
+		title: 'lake Huron',
+		alt: 'a lake seen from the shore on a sunny day with islands in the distance',
+		mimetype: 'image/jpeg'
+	}),
+	createFile({
+		url: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Great-Lakes.svg',
+		directoryId: greatDirId,
+		name: 'map.svg',
+		path: '/lakes/great/map.svg',
+		title: 'great lakes map',
+		alt: 'the great lakes\' map',
+		mimetype: 'image/svg+xml'
+	})
+]);
+const enGreatPageId = await createPage({
+	language: 'en',
+	title: 'The Great Lakes',
+	slug: 'great-lakes',
+	menuText: 'The Great Lakes',
+	parentId: enLakesPageId,
+	position: 0,
+	content: enGreatLakesPageContent([greatPageImage1Id, greatPageImage2Id, greatPageImage3Id])
+});
+const plGreatPageId = await createPage({
+	language: 'pl',
+	title: 'Wielkie Jeziora',
+	slug: 'wielkie-jeziora',
+	menuText: 'Wielkie Jeziora',
+	parentId: plLakesPageId,
+	position: 0,
+	content: plGreatLakesPageContent([greatPageImage1Id, greatPageImage2Id, greatPageImage3Id])
+});
+await db.insert(filesToPages).values([
+	{ pageId: enGreatPageId, fileId: greatPageImage1Id },
+	{ pageId: enGreatPageId, fileId: greatPageImage2Id },
+	{ pageId: enGreatPageId, fileId: greatPageImage3Id },
+	{ pageId: plGreatPageId, fileId: greatPageImage1Id },
+	{ pageId: plGreatPageId, fileId: greatPageImage2Id },
+	{ pageId: plGreatPageId, fileId: greatPageImage3Id }
+]);
+// END
+// lakes great
+// END
+
+// START
+// lakes baikal
+console.timeLog('seed', 'lakes baikal page');
+// START
+await mkdir(`${filesStoragePath}/lakes/baikal`);
+const [{ insertId: baikalDirId }] = await db.insert(directories).values({
+	name: 'baikal',
+	path: '/lakes/baikal',
+	parentId: lakesDirId
+});
+const [baikalPageImage1Id, baikalPageImage2Id] = await Promise.all([
+	createFile({
+		url: 'https://cdn.britannica.com/73/171673-004-803CD9C6.jpg',
+		directoryId: baikalDirId,
+		name: 'map.jpg',
+		path: '/lakes/baikal/map.jpg',
+		title: 'map',
+		alt: 'baikal\'s lake map',
+		mimetype: 'image/jpeg'
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1553785063-9e892a3f15b6',
+		directoryId: baikalDirId,
+		name: 'frozen.jpg',
+		path: '/lakes/baikal/frozen.jpg',
+		title: 'frozen Baikal',
+		alt: 'frozen Baikal Lake with a rocky shore on the right and an island in the distance',
+		mimetype: 'image/jpeg'
+	})
+]);
+const enBaikalPageId = await createPage({
+	language: 'en',
+	title: 'Baikal Lake',
+	slug: 'baikal-lake',
+	menuText: 'Baikal Lake',
+	parentId: enLakesPageId,
+	position: 1,
+	content: enBaikalLakesPageContent([baikalPageImage1Id, baikalPageImage2Id])
+});
+const plBaikalPageId = await createPage({
+	language: 'pl',
+	title: 'Bajkał',
+	slug: 'jezioro-bajkal',
+	menuText: 'Bajkał',
+	parentId: plLakesPageId,
+	position: 1,
+	content: plBaikalLakesPageContent([baikalPageImage1Id, baikalPageImage2Id])
+});
+await db.insert(filesToPages).values([
+	{ pageId: enBaikalPageId, fileId: baikalPageImage1Id },
+	{ pageId: enBaikalPageId, fileId: baikalPageImage2Id },
+	{ pageId: plBaikalPageId, fileId: baikalPageImage1Id },
+	{ pageId: plBaikalPageId, fileId: baikalPageImage2Id }
+]);
+// END
+// lakes baikal
+// END
+
+// START
+// lakes caspian
+console.timeLog('seed', 'lakes caspian page');
+// START
+await mkdir(`${filesStoragePath}/lakes/caspian`);
+const [{ insertId: caspianDirId }] = await db.insert(directories).values({
+	name: 'caspian',
+	path: '/lakes/caspian',
+	parentId: lakesDirId
+});
+const [caspianPageImage1Id, caspianPageImage2Id] = await Promise.all([
+	createFile({
+		url: 'https://www.researchgate.net/profile/Jianli-Chen-7/publication/313864880/figure/fig1/AS:902013659402245@1592068223817/Map-of-the-Caspian-Sea-and-surrounding-countries-modified-from-an-original-map-provided.png',
+		directoryId: caspianDirId,
+		name: 'map.png',
+		path: '/lakes/caspian/map.png',
+		title: 'map',
+		alt: 'caspian\'s sea map',
+		mimetype: 'image/png'
+	}),
+	createFile({
+		url: 'https://images.unsplash.com/photo-1462331321792-cc44368b8894',
+		directoryId: caspianDirId,
+		name: 'tyuleniy-archipelago.jpg',
+		path: '/lakes/caspian/tyuleniy-archipelago.jpg',
+		title: 'tyuleniy archipelago',
+		alt: 'stylized tyuleniy archipelago from the orbit',
+		mimetype: 'image/jpeg'
+	})
+]);
+const enCaspianPageId = await createPage({
+	language: 'en',
+	title: 'Caspian Sea',
+	slug: 'caspian-sea',
+	menuText: 'Caspian Sea',
+	parentId: enLakesPageId,
+	position: 2,
+	content: enCaspianLakesPageContent([caspianPageImage1Id, caspianPageImage2Id])
+});
+const plCaspianPageId = await createPage({
+	language: 'pl',
+	title: 'Morze Kaspijskie',
+	slug: 'morze-kaspijskie',
+	menuText: 'Morze Kaspijskie',
+	parentId: plLakesPageId,
+	position: 2,
+	content: plCaspianLakesPageContent([caspianPageImage1Id, caspianPageImage2Id])
+});
+await db.insert(filesToPages).values([
+	{ pageId: enCaspianPageId, fileId: caspianPageImage1Id },
+	{ pageId: enCaspianPageId, fileId: caspianPageImage2Id },
+	{ pageId: plCaspianPageId, fileId: caspianPageImage1Id },
+	{ pageId: plCaspianPageId, fileId: caspianPageImage2Id }
+]);
+// END
+// lakes caspian
 // END
 
 // START

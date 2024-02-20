@@ -689,7 +689,7 @@ export function enBlackPageContent([imgId1, imgId2, imgId3]: [number, number, nu
 
 	<p class="indent">The environmental health of the Black Sea has faced challenges, including issues such as pollution, overfishing, and changes in biodiversity. International efforts, involving collaboration among the countries bordering the Black Sea, aim to address these challenges and promote sustainable practices for the benefit of both the marine ecosystems and the communities that depend on them. The Black Sea, with its complex history and ecological diversity, stands as a testament to the intricate connections between human activities and the natural world, urging responsible stewardship for its continued well-being.</p>
 
-	<div class="split-container-3">
+	<div class="split-container-2">
 		<div class="described-image">
 			<HumbakFile fid="${imgId1}"></HumbakFile>
 			<p><a href="https://unsplash.com/photos/blue-sky-over-sea-during-daytime-NH0u5ate6vY" target="_blank" class="text-black text-link">crimea peninsula</a></p>
@@ -729,5 +729,231 @@ export function plBlackPageContent([imgId1, imgId2, imgId3]: [number, number, nu
 	<a href="https://en.wikipedia.org/wiki/Black_Sea#/media/File:Black_Sea_map.png" target="_blank" class="text-black text-link">
 		<HumbakFile fid="${imgId3}"></HumbakFile>
 	</a>
+</section>`;
+}
+
+export function enGreatLakesPageContent([imgId1, imgId2, imgId3]: [number, number, number]) {
+	return `<section>
+	<h1>The Great Lakes</h1>
+
+	<p>The Great Lakes, a majestic and interconnected system of freshwater lakes located in North America, stand as a natural wonder of monumental proportions. Comprising Lake Superior, Lake Michigan, Lake Huron, Lake Erie, and Lake Ontario, these vast bodies of water hold about 84% of North America's freshwater and play a vital role in the region's ecology, economy, and cultural heritage. Enveloped by the United States and Canada, the Great Lakes have been a source of inspiration, sustenance, and exploration throughout history.</p>
+
+	<table>
+		<thead>
+			<tr>
+				<th>Great Lake</th>
+				<th>Total Area (sq km)</th>
+				<th>Maximum Depth (m)</th>
+				<th>Average Depth (m)</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Superior</td>
+				<td>82,100</td>
+				<td>406</td>
+				<td>147</td>
+			</tr>
+			<tr>
+				<td>Michigan</td>
+				<td>58,000</td>
+				<td>281</td>
+				<td>85</td>
+			</tr>
+			<tr>
+				<td>Huron</td>
+				<td>59,600</td>
+				<td>229</td>
+				<td>59</td>
+			</tr>
+			<tr>
+				<td>Erie</td>
+				<td>25,700</td>
+				<td>64</td>
+				<td>19</td>
+			</tr>
+			<tr>
+				<td>Ontario</td>
+				<td>19,000</td>
+				<td>244</td>
+				<td>86</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p>The Great Lakes, with their expansive shores and diverse landscapes, offer a mosaic of habitats for a wide array of plant and animal species. From the rugged terrain surrounding Lake Superior to the fertile plains near Lake Ontario, the region supports a rich biodiversity, including iconic species like the lake sturgeon, bald eagle, and various species of trout and salmon. The lakes also serve as a critical migratory pathway for numerous bird species, emphasizing their significance in the broader North American ecosystem.</p>
+
+	<div class="split-container-2">
+		<div class="described-image">
+			<HumbakFile fid="${imgId1}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/aerial-photograph-of-seaside-with-forest-DusR7CnbCNU" target="_blank" class="text-black text-link">Lake Michigan</a></p>
+		</div>
+		<div class="described-image">
+			<HumbakFile fid="${imgId2}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/a-body-of-water-sitting-next-to-a-lush-green-forest-Cf6xshF2EYQ" target="_blank" class="text-black text-link">Lake Huron</a></p>
+		</div>
+	</div>
+
+	<p>Historically, the Great Lakes have been central to the lives of indigenous peoples, serving as transportation routes, sources of sustenance, and focal points of cultural significance. European explorers and settlers later utilized the lakes for trade and industry, leading to the growth of cities and the development of shipping routes connecting the Atlantic Ocean to the heart of North America. Today, the Great Lakes continue to be vital for shipping, recreation, and supporting diverse ecosystems.</p>
+
+	<p class="indent">Despite their grandeur, the Great Lakes face environmental challenges, including issues like pollution, invasive species, and habitat degradation. Collaborative efforts between the United States and Canada, as well as local initiatives, aim to address these challenges and preserve the integrity of the Great Lakes. The lakes, with their immense beauty and ecological importance, stand as a testament to the delicate balance between human activities and the preservation of our planet's natural treasures.</p>
+
+	<a href="https://en.m.wikipedia.org/wiki/File:Great-Lakes.svg" target="_blank" class="text-black text-link">
+		<HumbakFile fid="${imgId3}"></HumbakFile>
+	</a>
+</section>`;
+}
+
+export function plGreatLakesPageContent([imgId1, imgId2, imgId3]: [number, number, number]) {
+	return `<section>
+	<h1>Wielkie Jeziora</h1>
+
+	<p>Wielkie Jeziora, majestatyczny i powiązany system jezior słodkowodnych położony w Ameryce Północnej, stanowią naturalne cuda monumentalnych rozmiarów. Obejmujące Jezioro Górne, Jezioro Michigan, Jezioro Huron, Jezioro Erie i Jezioro Ontario, te rozległe zbiorniki wodne zawierają około 84% słodkiej wody w Ameryce Północnej i odgrywają kluczową rolę w ekologii, gospodarce i dziedzictwie kulturowym regionu. Obejmujące obszar Stanów Zjednoczonych i Kanady, Wielkie Jeziora były źródłem inspiracji, utrzymania i eksploracji na przestrzeni dziejów.</p>
+
+	<table>
+		<thead>
+			<tr>
+				<th>Wielkie Jezioro</th>
+				<th>Powierzchnia Całkowita (km<sup>2</sup>)</th>
+				<th>Maksymalna Głębokość (m)</th>
+				<th>Średnia Głębokość (m)</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Superior</td>
+				<td>82,100</td>
+				<td>406</td>
+				<td>147</td>
+			</tr>
+			<tr>
+				<td>Michigan</td>
+				<td>58,000</td>
+				<td>281</td>
+				<td>85</td>
+			</tr>
+			<tr>
+				<td>Huron</td>
+				<td>59,600</td>
+				<td>229</td>
+				<td>59</td>
+			</tr>
+			<tr>
+				<td>Erie</td>
+				<td>25,700</td>
+				<td>64</td>
+				<td>19</td>
+			</tr>
+			<tr>
+				<td>Ontario</td>
+				<td>19,000</td>
+				<td>244</td>
+				<td>86</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<p>Wielkie Jeziora, ze swoimi rozległymi brzegami i zróżnicowanymi krajobrazami, oferują mozaikę siedlisk dla wielu gatunków roślin i zwierząt. Od dzikich terenów wokół Jeziora Górnego po żyzne równiny w okolicach Jeziora Ontario, region ten wspiera bogactwo różnorodności biologicznej, obejmując ikoniczne gatunki, takie jak jesiotr jeziorowy, bielik amerykański oraz różne gatunki troci i łososia. Jeziora pełnią również kluczową rolę jako ścieżka migracyjna dla licznych gatunków ptaków, podkreślając ich znaczenie w szerszym ekosystemie Ameryki Północnej.</p>
+
+	<div class="split-container-2">
+		<div class="described-image">
+			<HumbakFile fid="${imgId1}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/aerial-photograph-of-seaside-with-forest-DusR7CnbCNU" target="_blank" class="text-black text-link">Jezioro Michigan</a></p>
+		</div>
+		<div class="described-image">
+			<HumbakFile fid="${imgId2}"></HumbakFile>
+			<p><a href="https://unsplash.com/photos/a-body-of-water-sitting-next-to-a-lush-green-forest-Cf6xshF2EYQ" target="_blank" class="text-black text-link">Jezioro Huron</a></p>
+		</div>
+	</div>
+
+	<p>Historycznie Wielkie Jeziora były centralne dla życia rdzennych ludów, pełniąc rolę dróg wodnych, źródeł utrzymania i punktów odniesienia kulturowego. Europejscy odkrywcy i osadnicy później wykorzystywali jeziora do handlu i przemysłu, co doprowadziło do rozwoju miast i utworzenia szlaków żeglugowych łączących Ocean Atlantycki z sercem Ameryki Północnej. Dziś Wielkie Jeziora pozostają kluczowe dla żeglugi, rekreacji i wsparcia różnorodnych ekosystemów.</p>
+
+	<p class="indent">Mimo swojej okazałości, Wielkie Jeziora stają w obliczu wyzwań środowiskowych, takich jak zanieczyszczenie, inwazyjne gatunki i degradacja siedlisk. Wspólne działania między Stanami Zjednoczonymi a Kanadą, a także inicjatywy lokalne, mają na celu radzenie sobie z tymi problemami i zachowanie integralności Wielkich Jezior. Jeziora, ze swoim ogromnym pięknem i ekologicznym znaczeniem, stanowią dowód delikatnej równowagi między działalnością człowieka a zachowaniem naturalnych skarbów naszej planety.</p>
+
+	<a href="https://en.m.wikipedia.org/wiki/File:Great-Lakes.svg" target="_blank" class="text-black text-link">
+		<HumbakFile fid="${imgId3}"></HumbakFile>
+	</a>
+</section>`;
+}
+
+export function enBaikalLakesPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Baikal Lake</h1>
+	<p>Lake Baikal, a jewel of Siberia and the deepest freshwater lake on Earth, commands awe with its breathtaking beauty and unparalleled ecological significance. Nestled in the heart of Russia, this ancient lake predates even the mountains that cradle its shores. Its vastness, purity, and mystique have earned it the title of the "Galapagos of Russia," showcasing a unique evolutionary story found nowhere else on the planet.</p>
+
+	<p class="indent">Spanning over 25 million years in age, Lake Baikal holds a staggering 20% of the world's unfrozen freshwater reserve. The lake's clarity is unparalleled, allowing visibility to depths of over 40 meters. Baikal is home to an array of endemic species, including the mesmerizing Baikal seal, found nowhere else on Earth. The surrounding landscapes, from the jagged peaks of the Sayan Mountains to the dense Siberian taiga, contribute to the lake's unrivaled natural splendor.</p>
+
+	<a href="https://kids.britannica.com/kids/article/Lake-Baikal/602893" target="_blank" class="text-black text-link">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+	</a>
+
+	<p>In winter, Lake Baikal transforms into a crystalline wonderland, as its surface freezes and creates surreal ice formations. This annual phenomenon draws adventurers and photographers from around the globe to witness the ethereal beauty of Baikal's ice. Beyond its scenic allure, Baikal plays a crucial role in scientific research, offering insights into the Earth's geological processes and serving as a living laboratory for the study of evolution.</p>
+
+	<a href="https://unsplash.com/photos/body-of-water-near-mountain-view-r6FU8zqrgdM" target="_blank" class="text-black text-link">
+		<HumbakFile fid="${imgId2}"></HumbakFile>
+	</a>
+
+	<p>However, Lake Baikal faces modern challenges, including pollution and climate change, threatening its delicate ecosystem. Conservation efforts strive to balance the region's development with the preservation of this natural wonder. Lake Baikal, with its mystical depths and ecological importance, stands as a testament to the delicate dance between humanity and the pristine environments that shape our planet.</p>
+</section>`;
+}
+
+export function plBaikalLakesPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Jezioro Bajkał</h1>
+	<p>Jezioro Bajkał, klejnot Syberii i najgłębsze słodkowodne jezioro na Ziemi, budzi podziw swoim zapierającym dech w piersiach pięknem i niezrównanym znaczeniem ekologicznym. Usytuowane w sercu Rosji, to starożytne jezioro istnieje nawet od czasów gór, które otaczają jego brzegi. Jego ogrom, czystość i mistyka przyniosły mu miano "Galapagos Rosji", prezentując unikalną historię ewolucji, którą nie znajdziemy nigdzie indziej na świecie.</p>
+
+	<p class="indent">Osiągając wiek ponad 25 milionów lat, Jezioro Bajkał przechowuje zdumiewające 20% zasobów niespłynnej słodkiej wody na świecie. Jego klarowność jest niezrównana, umożliwiając widoczność na głębokość ponad 40 metrów. Bajkał jest domem dla licznych gatunków endemitów, w tym fascynującej foki bajkalskiej, której nie spotkamy nigdzie indziej na Ziemi. Otaczające je krajobrazy, od stromych szczytów Gór Sajańskich po gęste syberyjskie tajgi, przyczyniają się do niezrównanej przyrodniczej piękności jeziora.</p>
+
+	<a href="https://kids.britannica.com/kids/article/Lake-Baikal/602893" target="_blank" class="text-black text-link">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+	</a>
+
+	<p>Zimą Jezioro Bajkał przemienia się w krystaliczne królestwo, gdy jego powierzchnia zamarza, tworząc surrealistyczne formacje lodowe. To coroczne zjawisko przyciąga podróżników i fotografów z całego świata, by być świadkami eterycznej piękności lodu Bajkału. Poza swoim urokiem krajobrazowym, Bajkał odgrywa kluczową rolę w badaniach naukowych, oferując wgląd w geologiczne procesy Ziemi i pełniąc funkcję żywej laboratorium do badania ewolucji.</p>
+
+	<a href="https://unsplash.com/photos/body-of-water-near-mountain-view-r6FU8zqrgdM" target="_blank" class="text-black text-link">
+		<HumbakFile fid="${imgId2}"></HumbakFile>
+	</a>
+
+	<p>Jednak Jezioro Bajkał stawia czoło współczesnym wyzwaniom, w tym zanieczyszczeniu i zmianom klimatycznym, zagrażając delikatnemu ekosystemowi. Działania na rzecz ochrony dążą do znalezienia równowagi między rozwojem regionu a zachowaniem tego naturalnego cudu. Jezioro Bajkał, ze swoimi mistycznymi głębokościami i znaczeniem ekologicznym, stanowi dowód na delikatny taniec między ludzkością a dziewiczymi środowiskami, które kształtują naszą planetę.</p>
+</section>`;
+}
+
+export function enCaspianLakesPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Caspian Sea</h1>
+	<p>The Caspian Sea, the world's largest inland body of water, stretches across the vast landscapes of Eastern Europe and Western Asia. Bordered by five countries – Russia, Kazakhstan, Turkmenistan, Iran, and Azerbaijan – the Caspian Sea is a mosaic of cultural, historical, and ecological significance. This immense saltwater lake, often referred to as a sea due to its size, unfolds a narrative of diverse landscapes and geopolitical intricacies.</p>
+
+	<a href="https://www.researchgate.net/figure/Map-of-the-Caspian-Sea-and-surrounding-countries-modified-from-an-original-map-provided_fig1_313864880" target="_blank" class="text-black text-link">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+	</a>
+
+	<p>Encompassing an area larger than many countries, the Caspian Sea is a unique ecosystem with an intricate balance of marine life. Its diverse shores range from the desolate expanses of the Karakum Desert to the lush coastal regions teeming with biodiversity. The sea hosts a variety of species, including the sturgeon, a fish prized for its caviar. The ancient city of Baku along its shores and the historical Silk Road routes that skirted its edges are testaments to the Caspian's role as a crossroads of civilizations.</p>
+
+	<div class="described-image">
+		<HumbakFile fid="${imgId2}"></HumbakFile>
+		<p><a href="https://unsplash.com/photos/aerial-photograph-of-islands-WKT3TE5AQu0" target="_blank" class="text-black text-link">Tyuleniy archipelago</a></p>
+	</div>
+
+	<p>While the Caspian Sea has long been a source of prosperity, providing livelihoods through fishing and facilitating trade, it faces contemporary challenges such as environmental degradation and concerns over resource management. The complex legal status of the sea, compounded by the interests of the surrounding nations, adds another layer to its dynamic story. As efforts are made to address environmental concerns and promote sustainable practices, the Caspian Sea remains a symbol of the delicate interplay between nature, history, and the geopolitics of the region.</p>
+</section>`
+}
+
+export function plCaspianLakesPageContent([imgId1, imgId2]: [number, number]) {
+	return `<section>
+	<h1>Morze Kaspijskie</h1>
+	<p>Morze Kaspijskie, największe śródlądowe akwen na świecie, rozciąga się po rozległych krajobrazach Wschodniej Europy i Zachodniej Azji. Graniczące z pięcioma krajami - Rosją, Kazachstanem, Turkmenistanem, Iranem i Azerbejdżanem - Morze Kaspijskie to mozaika znaczenia kulturowego, historycznego i ekologicznego. To ogromne słone jezioro, często nazywane morzem ze względu na swoje rozmiary, rozpływa się w opowieść o zróżnicowanych krajobrazach i skomplikowanych relacjach geopolitycznych.</p>
+
+	<a href="https://www.researchgate.net/figure/Map-of-the-Caspian-Sea-and-surrounding-countries-modified-from-an-original-map-provided_fig1_313864880" target="_blank" class="text-black text-link">
+		<HumbakFile fid="${imgId1}"></HumbakFile>
+	</a>
+
+	<p>Obejmując obszar większy niż wiele krajów, Morze Kaspijskie stanowi unikalny ekosystem z delikatnym równowagą życia morskiego. Jego zróżnicowane brzegi rozciągają się od opustoszałych obszarów Pustyni Karakum po bujne nadbrzeżne regiony pełne różnorodności biologicznej. Morze gości różnorodne gatunki, w tym jesiotra, rybę cenioną za kawior. Starożytna miejscowość Baku na jego brzegach i historyczne szlaki Jedwabnego Szlaku, które omijały jego obrzeża, to świadectwa roli Morza Kaspijskiego jako skrzyżowania cywilizacji.</p>
+
+	<div class="described-image">
+		<HumbakFile fid="${imgId2}"></HumbakFile>
+		<p><a href="https://unsplash.com/photos/aerial-photograph-of-islands-WKT3TE5AQu0" target="_blank" class="text-black text-link">Archipelag Tyuleniy</a></p>
+	</div>
+
+	<p>Choć Morze Kaspijskie od dawna było źródłem dobrobytu, zapewniając środki utrzymania przez rybołówstwo i ułatwiając handel, stoi obecnie przed współczesnymi wyzwaniami, takimi jak degradacja środowiska i obawy dotyczące gospodarki zasobami. Skomplikowany status prawny morza, związany z interesami otaczających go narodów, dodaje kolejny element do jego dynamicznej historii. W miarę podejmowania działań mających na celu rozwiązanie problemów środowiskowych i promowanie zrównoważonych praktyk, Morze Kaspijskie pozostaje symbolem delikatnej współpracy między naturą, historią a geopolityką regionu.</p>
 </section>`;
 }
