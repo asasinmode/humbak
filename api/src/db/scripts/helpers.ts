@@ -715,7 +715,7 @@ export function plBlackPageContent([imgId1, imgId2, imgId3]: [number, number, nu
 
 	<p class="indent">Środowiskowe zdrowie Morza Czarnego napotykało wyzwania, w tym problemy związane z zanieczyszczeniem, nadmiernym połowem ryb czy zmianami w bioróżnorodności. Międzynarodowe wysiłki, obejmujące współpracę krajów otaczających Morze Czarne, mają na celu rozwiązanie tych problemów i promowanie zrównoważonych praktyk na rzecz korzyści zarówno ekosystemów morskich, jak i społeczności zależnych od nich. Morze Czarne, ze swoją skomplikowaną historią i różnorodnością ekologiczną, stanowi dowód na złożone powiązania między działalnością ludzką a światem przyrody, wzywając do odpowiedzialnej opieki w celu zapewnienia jego dalszego dobrostanu.</p>
 
-	<div class="split-container-3">
+	<div class="split-container-2">
 		<div class="described-image">
 			<HumbakFile fid="${imgId1}"></HumbakFile>
 			<p><a href="https://unsplash.com/photos/blue-sky-over-sea-during-daytime-NH0u5ate6vY" target="_blank" class="text-black text-link">półwysep krymski</a></p>
