@@ -1,23 +1,23 @@
-img {
+#content section img {
 	@apply w-full h-full object-cover
 }
 
-.split-container-2 {
+#content section .split-container-2 {
 	@apply grid md:grid-cols-2 gap-3
 }
 
-.split-container-3 {
+#content section .split-container-3 {
 	@apply grid lg:grid-cols-3 gap-3
 }
 
-.described-image {
+#content section .described-image {
 	@apply flex flex-col gap-1 justify-center
 }
 
-.described-image>*:first-child {
+#content section .described-image>*:first-child {
 	@apply w-full
 }
 
-.described-image>*:nth-child(2) {
+#content section .described-image>*:nth-child(2) {
 	@apply text-center text-sm text-neutral-8
 }

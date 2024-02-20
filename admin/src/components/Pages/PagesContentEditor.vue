@@ -132,18 +132,12 @@ defineExpose({
 
 <template>
 	<section ref="container" class="mt-6 hidden h-[60vh] min-h-88 gap-x-2 lg:flex">
-		<VEditor
-			ref="editor"
-			class="flex-1 shadow"
-			:models="[
-				{ language: 'html', value: contents.html.value },
-				{ language: 'css', value: contents.css.value },
-				{ language: 'json', value: contents.meta.value },
-			]"
-			:error="metaErrors ? `meta:\n${JSON.stringify(metaErrors, null, 2).slice(2, -2)}` : ''"
-			:current-model="currentModelIndex"
-			@update:model-value="updateCurrentModel"
-		/>
+		<VEditor ref="editor" class="flex-1 shadow" :models="[
+			{ language: 'html', value: contents.html.value },
+			{ language: 'css', value: contents.css.value },
+			{ language: 'json', value: contents.meta.value },
+		]" :error="metaErrors ? `meta:\n${JSON.stringify(metaErrors, null, 2).slice(2, -2)}` : ''"
+			:current-model="currentModelIndex" @update:model-value="updateCurrentModel" />
 		<aside class="relative w-8 shrink-0">
 			<PagesContentEditorModelSelect v-model="currentModelIndex" @update:model-value="formatMeta" />
 			<VButton class="mt-2 h-8 w-8 p-0 neon-purple" title="formatuj" @click="editor?.formatCurrentModel">
@@ -152,16 +146,13 @@ defineExpose({
 			</VButton>
 			<PagesSnippetsDialog />
 			<HumbakFilesDialog class="mt-2 h-8 w-8 p-0" />
-			<VButton
-				class="left-1/2 top-1/2 h-8 w-8 translate-center cursor-move p-0 !absolute neon-neutral"
-				title="zmień rozmiar"
-				@mousedown="initResizeDrag"
-			>
+			<VButton class="left-1/2 top-1/2 h-8 w-8 translate-center cursor-move p-0 !absolute neon-neutral"
+				title="zmień rozmiar" @mousedown="initResizeDrag">
 				<span class="visually-hidden">zmień rozmiar</span>
 				<div class="i-fa6-solid-arrows-up-down absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
 			</VButton>
 		</aside>
-		<main class="flex-1 bg-white text-black shadow of-auto p-2" v-html="parsedContent" />
+		<main id="page-content" class="flex-1 bg-white text-black shadow of-auto p-2" v-html="parsedContent" />
 	</section>
 	<VAlert class="mt-4 max-w-3xl md:mx-auto lg:hidden" variant="warning">
 		edytowanie zawartości nie jest dostępne na małych ekranach
