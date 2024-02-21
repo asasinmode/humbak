@@ -308,7 +308,7 @@ export function enOceansPageContent([imgId1, imgId2, imgId3, imgId4]: [number, n
 
 	<p class="indent">Beneath the glistening surface, oceans harbor a mysterious and intricate tapestry of marine life, ranging from microscopic plankton to majestic whales. Their depths house hidden realms and abyssal plains, where enigmatic creatures thrive in conditions unfathomable to terrestrial life. Oceans also serve as crucibles of biodiversity, nurturing vibrant coral reefs and underwater landscapes that teem with an abundance of flora and fauna. Moreover, they act as dynamic theaters of geological processes, with tectonic plates colliding and diverging beneath their surface, shaping coastlines and giving rise to underwater mountain ranges.</p>
 
-	<a href="https://unsplash.com/photos/school-of-fish-in-body-of-water-9y7y26C-l4Y" target="_blank">
+	<a href="https://unsplash.com/photos/school-of-fish-in-body-of-water-9y7y26C-l4Y" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId4}"></HumbakFile>
 	</a>
 
@@ -338,7 +338,7 @@ export function plOceansPageContent([imgId1, imgId2, imgId3, imgId4]: [number, n
 
 	<p>Pod błyszczącą powierzchnią oceany kryją tajemniczą i złożoną mozaikę życia morskiego, począwszy od mikroskopijnych planktonów po majestatyczne wieloryby. Ich głębiny skrywają ukryte królestwa i równiny abysalne, gdzie enigmatyczne istoty rozwijają się w warunkach niepojętych dla życia lądowego. Oceany pełnią także rolę kuźni bioróżnorodności, pielęgnując kolorowe rafy koralowe i podwodne krajobrazy, które pulsuje obfitością flory i fauny. Ponadto, działają jako dynamiczne areny procesów geologicznych, gdzie płyty tektoniczne zderzają się i oddzielają pod ich powierzchnią, kształtując linie brzegowe i powodując powstanie podwodnych łańcuchów górskich.</p>
 
-	<a href="https://unsplash.com/photos/school-of-fish-in-body-of-water-9y7y26C-l4Y" target="_blank">
+	<a href="https://unsplash.com/photos/school-of-fish-in-body-of-water-9y7y26C-l4Y" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId4}"></HumbakFile>
 	</a>
 
@@ -483,7 +483,7 @@ export function enAtlanticPageContent([imgId1, imgId2]: [number, number]) {
 
 	<p>The Atlantic Ocean serves as a conduit for complex oceanic currents and circulation patterns, influencing weather patterns and regulating the planet's climate. Its strategic location has historically facilitated exploration, trade, and cultural exchange among continents, forging connections that have shaped human history. The Atlantic, with its mighty currents and powerful storms, has witnessed centuries of seafaring adventures, playing a crucial role in maritime exploration and trade routes.</p>
 
-	<a href="https://unsplash.com/photos/boat-on-sea-under-white-clouds-8eFbe3jQZ7Y" target="_blank">
+	<a href="https://unsplash.com/photos/boat-on-sea-under-white-clouds-8eFbe3jQZ7Y" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId2}"></HumbakFile>
 	</a>
 
@@ -512,7 +512,7 @@ export function plAtlanticPageContent([imgId1, imgId2]: [number, number]) {
 
 	<p>Ocean Atlantycki pełni funkcję kanału dla złożonych prądów oceanicznych i cyrkulacyjnych wzorców, wpływając na układy pogodowe i regulując klimat planety. Jego strategiczna lokalizacja historycznie ułatwiała eksplorację, handel i wymianę kulturową między kontynentami, kształtując powiązania, które wpłynęły na historię ludzkości. Atlantyk, z jego potężnymi prądami i gwałtownymi burzami, był świadkiem wieków morskich przygód, odgrywając istotną rolę w eksploracji morskiej i trasach handlowych.</p>
 
-	<a href="https://unsplash.com/photos/boat-on-sea-under-white-clouds-8eFbe3jQZ7Y" target="_blank">
+	<a href="https://unsplash.com/photos/boat-on-sea-under-white-clouds-8eFbe3jQZ7Y" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId2}"></HumbakFile>
 	</a>
 
@@ -529,7 +529,7 @@ export function enPacificPageContent([imgId1, imgId2]: [number, number]) {
 
 	<p class="indent">Stretching from the Arctic to the Antarctic, the Pacific Ocean encompasses an array of climatic zones, from the icy waters of the North to the temperate and tropical regions near the Equator. This diversity fosters a rich tapestry of marine life, ranging from the iconic species of the Arctic seas to the vibrant coral reefs of the South Pacific. The ocean's currents, such as the powerful North and South Pacific Gyres, influence global weather patterns, contributing to the intricate dance of atmospheric and oceanic processes.</p>
 
-	<a href="https://science4fun.info/pacific-ocean/" target="_blank">
+	<a href="https://science4fun.info/pacific-ocean/" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 
@@ -553,7 +553,7 @@ export function plPacificPageContent([imgId1, imgId2]: [number, number]) {
 
 	<p class="indent">Rozciągający się od Arktyki po Antarktydę, Ocean Spokojny obejmuje szereg stref klimatycznych, od lodowatych wód na północy po umiarkowane i tropikalne obszary blisko równika. Ta różnorodność sprzyja bogatej mozaice życia morskiego, począwszy od ikonicznych gatunków mórz arktycznych po kolorowe rafy koralowe na południowym Pacyfiku. Prądy oceaniczne, takie jak potężne giętki północny i południowy Pacyfik, wpływają na globalne wzorce pogodowe, przyczyniając się do skomplikowanego tańca procesów atmosferycznych i oceanicznych.</p>
 
-	<a href="https://science4fun.info/pacific-ocean/" target="_blank">
+	<a href="https://science4fun.info/pacific-ocean/" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 
@@ -577,7 +577,7 @@ export function enIndianPageContent([imgId1]: [number]) {
 
 	<p class="indent">Extending from the Arctic to the Antarctic, the Indian Ocean encompasses a range of climatic zones, fostering an intricate tapestry of marine life. From the tropical coral reefs of the Maldives to the rich fishing grounds along the coast of East Africa, the ocean supports a wealth of biodiversity. Its monsoon winds and seasonal currents influence regional weather patterns, impacting the livelihoods of coastal communities and shaping cultural practices.</p>
 
-	<a href="https://science4fun.info/indian-ocean/" target="_blank">
+	<a href="https://science4fun.info/indian-ocean/" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 
@@ -592,7 +592,7 @@ export function plIndianPageContent([imgId1]: [number]) {
 
 	<p class="indent">Rozciągający się od Arktyki po Antarktydę, Ocean Indyjski obejmuje różnorodne strefy klimatyczne, tworząc złożoną mozaikę życia morskiego. Od tropikalnych raf koralowych Malediwów po bogate w ryby wody wybrzeża Afryki Wschodniej, ocean wspiera bogactwo różnorodności biologicznej. Jego monsunowe wiatry i sezonowe prądy wpływają na regionalne wzorce pogodowe, wpływając na środowisko życia społeczności przybrzeżnych i kształtując praktyki kulturowe.</p>
 
-	<a href="https://science4fun.info/indian-ocean/" target="_blank">
+	<a href="https://science4fun.info/indian-ocean/" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 
@@ -607,7 +607,7 @@ export function enMediterraneanPageContent([imgId1, imgId2]: [number, number]) {
 
 	<p class="indent">This sea, bordered by countries like Italy, Greece, Turkey, Egypt, and Spain, boasts a moderate climate and supports an abundance of marine life. From the azure waters of the Aegean to the vibrant coral reefs near Egypt, the Mediterranean hosts a remarkable array of biodiversity. Its strategic location has made it a crossroads for trade, exploration, and cultural exchange, with ancient seafaring civilizations leaving their indelible mark on its shores.</p>
 
-	<a href="https://www.drishtiias.com/daily-updates/daily-news-analysis/mediterranean-sea" target="_blank">
+	<a href="https://www.drishtiias.com/daily-updates/daily-news-analysis/mediterranean-sea" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 
@@ -627,7 +627,7 @@ export function plMediterraneanPageContent([imgId1, imgId2]: [number, number]) {
 
 	<p class="indent">To morze, otoczone przez kraje takie jak Włochy, Grecja, Turcja, Egipt i Hiszpania, cieszy się umiarkowanym klimatem i wspiera obfitość życia morskiego. Od lazurowych wód Morza Egejskiego po kolorowe rafy koralowe koło Egiptu, Morze Śródziemne gości niezwykłą różnorodność biologiczną. Jego strategiczna lokalizacja uczyniła je skrzyżowaniem szlaków handlowych, miejscem eksploracji i wymiany kulturowej, z antycznymi cywilizacjami pozostawiającymi niezatarte ślady na jego brzegach.</p>
 
-	<a href="https://www.drishtiias.com/daily-updates/daily-news-analysis/mediterranean-sea" target="_blank">
+	<a href="https://www.drishtiias.com/daily-updates/daily-news-analysis/mediterranean-sea" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 
@@ -704,7 +704,7 @@ export function enBlackPageContent([imgId1, imgId2, imgId3]: [number, number, nu
 		</div>
 	</div>
 
-	<a href="https://en.wikipedia.org/wiki/Black_Sea#/media/File:Black_Sea_map.png" target="_blank">
+	<a href="https://en.wikipedia.org/wiki/Black_Sea#/media/File:Black_Sea_map.png" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId3}"></HumbakFile>
 	</a>
 </section>`;
@@ -730,7 +730,7 @@ export function plBlackPageContent([imgId1, imgId2, imgId3]: [number, number, nu
 		</div>
 	</div>
 
-	<a href="https://en.wikipedia.org/wiki/Black_Sea#/media/File:Black_Sea_map.png" target="_blank">
+	<a href="https://en.wikipedia.org/wiki/Black_Sea#/media/File:Black_Sea_map.png" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId3}"></HumbakFile>
 	</a>
 </section>`;
@@ -802,7 +802,7 @@ export function enGreatLakesPageContent([imgId1, imgId2, imgId3]: [number, numbe
 
 	<p class="indent">Despite their grandeur, the Great Lakes face environmental challenges, including issues like pollution, invasive species, and habitat degradation. Collaborative efforts between the United States and Canada, as well as local initiatives, aim to address these challenges and preserve the integrity of the Great Lakes. The lakes, with their immense beauty and ecological importance, stand as a testament to the delicate balance between human activities and the preservation of our planet's natural treasures.</p>
 
-	<a href="https://en.m.wikipedia.org/wiki/File:Great-Lakes.svg" target="_blank">
+	<a href="https://en.m.wikipedia.org/wiki/File:Great-Lakes.svg" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId3}"></HumbakFile>
 	</a>
 </section>`;
@@ -874,7 +874,7 @@ export function plGreatLakesPageContent([imgId1, imgId2, imgId3]: [number, numbe
 
 	<p class="indent">Mimo swojej okazałości, Wielkie Jeziora stają w obliczu wyzwań środowiskowych, takich jak zanieczyszczenie, inwazyjne gatunki i degradacja siedlisk. Wspólne działania między Stanami Zjednoczonymi a Kanadą, a także inicjatywy lokalne, mają na celu radzenie sobie z tymi problemami i zachowanie integralności Wielkich Jezior. Jeziora, ze swoim ogromnym pięknem i ekologicznym znaczeniem, stanowią dowód delikatnej równowagi między działalnością człowieka a zachowaniem naturalnych skarbów naszej planety.</p>
 
-	<a href="https://en.m.wikipedia.org/wiki/File:Great-Lakes.svg" target="_blank">
+	<a href="https://en.m.wikipedia.org/wiki/File:Great-Lakes.svg" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId3}"></HumbakFile>
 	</a>
 </section>`;
@@ -887,13 +887,13 @@ export function enBaikalLakesPageContent([imgId1, imgId2]: [number, number]) {
 
 	<p class="indent">Spanning over 25 million years in age, Lake Baikal holds a staggering 20% of the world's unfrozen freshwater reserve. The lake's clarity is unparalleled, allowing visibility to depths of over 40 meters. Baikal is home to an array of endemic species, including the mesmerizing Baikal seal, found nowhere else on Earth. The surrounding landscapes, from the jagged peaks of the Sayan Mountains to the dense Siberian taiga, contribute to the lake's unrivaled natural splendor.</p>
 
-	<a href="https://kids.britannica.com/kids/article/Lake-Baikal/602893" target="_blank">
+	<a href="https://kids.britannica.com/kids/article/Lake-Baikal/602893" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 
 	<p>In winter, Lake Baikal transforms into a crystalline wonderland, as its surface freezes and creates surreal ice formations. This annual phenomenon draws adventurers and photographers from around the globe to witness the ethereal beauty of Baikal's ice. Beyond its scenic allure, Baikal plays a crucial role in scientific research, offering insights into the Earth's geological processes and serving as a living laboratory for the study of evolution.</p>
 
-	<a href="https://unsplash.com/photos/body-of-water-near-mountain-view-r6FU8zqrgdM" target="_blank">
+	<a href="https://unsplash.com/photos/body-of-water-near-mountain-view-r6FU8zqrgdM" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId2}"></HumbakFile>
 	</a>
 
@@ -908,13 +908,13 @@ export function plBaikalLakesPageContent([imgId1, imgId2]: [number, number]) {
 
 	<p class="indent">Osiągając wiek ponad 25 milionów lat, Jezioro Bajkał przechowuje zdumiewające 20% zasobów niespłynnej słodkiej wody na świecie. Jego klarowność jest niezrównana, umożliwiając widoczność na głębokość ponad 40 metrów. Bajkał jest domem dla licznych gatunków endemitów, w tym fascynującej foki bajkalskiej, której nie spotkamy nigdzie indziej na Ziemi. Otaczające je krajobrazy, od stromych szczytów Gór Sajańskich po gęste syberyjskie tajgi, przyczyniają się do niezrównanej przyrodniczej piękności jeziora.</p>
 
-	<a href="https://kids.britannica.com/kids/article/Lake-Baikal/602893" target="_blank">
+	<a href="https://kids.britannica.com/kids/article/Lake-Baikal/602893" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 
 	<p>Zimą Jezioro Bajkał przemienia się w krystaliczne królestwo, gdy jego powierzchnia zamarza, tworząc surrealistyczne formacje lodowe. To coroczne zjawisko przyciąga podróżników i fotografów z całego świata, by być świadkami eterycznej piękności lodu Bajkału. Poza swoim urokiem krajobrazowym, Bajkał odgrywa kluczową rolę w badaniach naukowych, oferując wgląd w geologiczne procesy Ziemi i pełniąc funkcję żywej laboratorium do badania ewolucji.</p>
 
-	<a href="https://unsplash.com/photos/body-of-water-near-mountain-view-r6FU8zqrgdM" target="_blank">
+	<a href="https://unsplash.com/photos/body-of-water-near-mountain-view-r6FU8zqrgdM" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId2}"></HumbakFile>
 	</a>
 
@@ -927,7 +927,7 @@ export function enCaspianLakesPageContent([imgId1, imgId2]: [number, number]) {
 	<h1>Caspian Sea</h1>
 	<p>The Caspian Sea, the world's largest inland body of water, stretches across the vast landscapes of Eastern Europe and Western Asia. Bordered by five countries – Russia, Kazakhstan, Turkmenistan, Iran, and Azerbaijan – the Caspian Sea is a mosaic of cultural, historical, and ecological significance. This immense saltwater lake, often referred to as a sea due to its size, unfolds a narrative of diverse landscapes and geopolitical intricacies.</p>
 
-	<a href="https://www.researchgate.net/figure/Map-of-the-Caspian-Sea-and-surrounding-countries-modified-from-an-original-map-provided_fig1_313864880" target="_blank" class="text-black text-link">
+	<a href="https://www.researchgate.net/figure/Map-of-the-Caspian-Sea-and-surrounding-countries-modified-from-an-original-map-provided_fig1_313864880" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 
@@ -947,7 +947,7 @@ export function plCaspianLakesPageContent([imgId1, imgId2]: [number, number]) {
 	<h1>Morze Kaspijskie</h1>
 	<p>Morze Kaspijskie, największe śródlądowe akwen na świecie, rozciąga się po rozległych krajobrazach Wschodniej Europy i Zachodniej Azji. Graniczące z pięcioma krajami - Rosją, Kazachstanem, Turkmenistanem, Iranem i Azerbejdżanem - Morze Kaspijskie to mozaika znaczenia kulturowego, historycznego i ekologicznego. To ogromne słone jezioro, często nazywane morzem ze względu na swoje rozmiary, rozpływa się w opowieść o zróżnicowanych krajobrazach i skomplikowanych relacjach geopolitycznych.</p>
 
-	<a href="https://www.researchgate.net/figure/Map-of-the-Caspian-Sea-and-surrounding-countries-modified-from-an-original-map-provided_fig1_313864880" target="_blank">
+	<a href="https://www.researchgate.net/figure/Map-of-the-Caspian-Sea-and-surrounding-countries-modified-from-an-original-map-provided_fig1_313864880" target="_blank" class="block my-4">
 		<HumbakFile fid="${imgId1}"></HumbakFile>
 	</a>
 

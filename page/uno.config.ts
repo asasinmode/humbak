@@ -76,5 +76,6 @@ export default defineConfig({
 			},
 		},
 	},
+	safelist: ['my-4', 'block'],
 	blocklist: ['container'],
 });

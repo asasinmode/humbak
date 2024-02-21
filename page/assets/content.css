@@ -1,18 +1,35 @@
-/* CONTAINER START */
+/* CONTAINERS */
+#content section {
+	@apply my-6;
+}
+
+#content section:first-child {
+	@apply mt-0;
+}
+
+#content section:last-child {
+	@apply mb-0;
+}
+
 #content section img {
-	@apply w-full h-full object-cover;
+	@apply w-full h-full object-cover shadow-md rounded-md;
 }
 
 #content section .split-container-2 {
-	@apply grid md:grid-cols-2 gap-3;
+	@apply grid md:grid-cols-2 gap-3 my-4;
 }
 
 #content section .split-container-3 {
-	@apply grid lg:grid-cols-3 gap-3;
+	@apply grid lg:grid-cols-3 gap-3 my-4;
 }
 
 #content section .described-image {
-	@apply flex flex-col gap-1 justify-center;
+	@apply flex flex-col gap-1 justify-center my-4;
+}
+
+#content section .split-container-2 .described-image,
+#content section .split-container-3 .described-image {
+	@apply my-0;
 }
 
 #content section .described-image>*:first-child {
@@ -23,7 +40,11 @@
 	@apply text-center text-sm text-neutral-8;
 }
 
-/* TABLE START */
+#content section>img {
+	@apply my-4;
+}
+
+/* TABLE */
 #content section table {
 	@apply border-spacing-0 border-separate overflow-hidden border-2 border-humbak-3 rounded;
 }
@@ -60,7 +81,7 @@
 	@apply even:bg-humbak-1/20;
 }
 
-/* LIST START */
+/* LISTS */
 #content section ul,
 #content section ol {
 	@apply my-1 list-inside;
@@ -89,27 +110,64 @@
 	@apply list-upper-roman my-0;
 }
 
-/* HEADINGS START */
+/* HEADINGS */
 #content section h1 {
 	@apply text-3xl text-center font-bold my-3;
+}
+
+#content section h1:first-child {
+	@apply mt-0;
+}
+
+#content section h1:not(:first-child) {
+	@apply mt-5;
 }
 
 #content section h2 {
 	@apply text-2xl font-bold my-2 relative before:(content-empty -z-1 bg-humbak-2 absolute w-full h-1 bottom-[0.125rem] left-0 rounded-2xl);
 }
 
+#content section h3:not(:first-child) {
+	@apply mt-4;
+}
+
 #content section h3 {
 	@apply text-xl font-bold my-1;
+}
+
+#content section h3:not(:first-child) {
+	@apply mt-3;
 }
 
 #content section h4 {
 	@apply text-lg font-bold my-1;
 }
 
+#content section h4:not(:first-child) {
+	@apply mt-3;
+}
+
 #content section h5 {
 	@apply text font-bold my-2;
 }
 
+#content section h5:not(:first-child) {
+	@apply mt-4;
+}
+
 #content section h6 {
 	@apply text-sm font-bold my-3;
+}
+
+#content section h6:not(:first-child) {
+	@apply mt-5;
+}
+
+/* TEXT */
+#content section .indent {
+	@apply indent-4;
+}
+
+#content section p+p {
+	@apply mt-1;
 }
