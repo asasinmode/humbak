@@ -1,23 +1,59 @@
 #content section img {
-	@apply w-full h-full object-cover
+	@apply w-full h-full object-cover;
 }
 
 #content section .split-container-2 {
-	@apply grid md:grid-cols-2 gap-3
+	@apply grid md:grid-cols-2 gap-3;
 }
 
 #content section .split-container-3 {
-	@apply grid lg:grid-cols-3 gap-3
+	@apply grid lg:grid-cols-3 gap-3;
 }
 
 #content section .described-image {
-	@apply flex flex-col gap-1 justify-center
+	@apply flex flex-col gap-1 justify-center;
 }
 
 #content section .described-image>*:first-child {
-	@apply w-full
+	@apply w-full;
 }
 
 #content section .described-image>*:nth-child(2) {
-	@apply text-center text-sm text-neutral-8
+	@apply text-center text-sm text-neutral-8;
+}
+
+#content section table {
+	@apply border-spacing-0 border-separate overflow-hidden border-2 border-humbak-3 rounded;
+}
+
+#content section table th:not(:last-child),
+#content section table td:not(:last-child) {
+	@apply border-r-2 border-humbak-3;
+}
+
+#content section table th,
+main section table td {
+	@apply py-1 px-2;
+}
+
+#content section table>thead>tr:not(:last-child)>th,
+#content section table>thead>tr:not(:last-child)>td,
+#content section table>tbody>tr:not(:last-child)>th,
+#content section table>tbody>tr:not(:last-child)>td,
+#content section table>tfoot>tr:not(:last-child)>th,
+#content section table>tfoot>tr:not(:last-child)>td,
+#content section table>tr:not(:last-child)>td,
+#content section table>tr:not(:last-child)>th,
+#content section table>thead:not(:last-child),
+#content section table>tbody:not(:last-child),
+#content section table>tfoot:not(:last-child) {
+	@apply border-b-2 border-humbak-3;
+}
+
+#content section table th {
+	@apply bg-humbak-1 font-semibold;
+}
+
+#content section table tr {
+	@apply even:bg-humbak-1/20;
 }
