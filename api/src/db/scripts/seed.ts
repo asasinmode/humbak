@@ -495,11 +495,20 @@ const plHomePageId = await createPage({
 		pagesHumbakFileTagImgId
 	]),
 });
+
+await db.insert(filesToPages).values([
+	{ pageId: enHomePageId, fileId: pagesTableEnImgId },
+	{ pageId: enHomePageId, fileId: pagesFormEnImgId },
+	{ pageId: enHomePageId, fileId: pagesHumbakFilesEnImgId },
+	{ pageId: enHomePageId, fileId: pagesHumbakFileTagImgId },
+	{ pageId: plHomePageId, fileId: pagesTablePlImgId },
+	{ pageId: plHomePageId, fileId: pagesFormPlImgId },
+	{ pageId: plHomePageId, fileId: pagesHumbakFilesPlImgId },
+	{ pageId: plHomePageId, fileId: pagesHumbakFileTagImgId },
+]);
 // END
 // home
 // END
-
-throw new Error('oopsie');
 
 // START
 // oceans home
