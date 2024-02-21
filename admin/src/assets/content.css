@@ -1,23 +1,173 @@
+/* CONTAINERS */
+#page-content section {
+	@apply my-6;
+}
+
+#page-content section:first-child {
+	@apply mt-0;
+}
+
+#page-content section:last-child {
+	@apply mb-0;
+}
+
 #page-content section img {
-	@apply w-full h-full object-cover
+	@apply w-full h-full object-cover shadow-md rounded-md;
 }
 
 #page-content section .split-container-2 {
-	@apply grid md:grid-cols-2 gap-3
+	@apply grid md:grid-cols-2 gap-3 my-4;
 }
 
 #page-content section .split-container-3 {
-	@apply grid lg:grid-cols-3 gap-3
+	@apply grid lg:grid-cols-3 gap-3 my-4;
 }
 
 #page-content section .described-image {
-	@apply flex flex-col gap-1 justify-center
+	@apply flex flex-col gap-1 justify-center my-4;
+}
+
+#page-content section .split-container-2 .described-image,
+#page-content section .split-container-3 .described-image {
+	@apply my-0;
 }
 
 #page-content section .described-image>*:first-child {
-	@apply w-full
+	@apply w-full;
 }
 
 #page-content section .described-image>*:nth-child(2) {
-	@apply text-center text-sm text-neutral-8
+	@apply text-center text-sm text-neutral-8;
+}
+
+#page-content section>img {
+	@apply my-4;
+}
+
+/* TABLE */
+#page-content section table {
+	@apply border-spacing-0 border-separate overflow-hidden border-2 border-humbak-3 rounded;
+}
+
+#page-content section table th:not(:last-child),
+#page-content section table td:not(:last-child) {
+	@apply border-r-2 border-humbak-3;
+}
+
+#page-content section table th,
+#page-content section table td {
+	@apply py-1 px-2;
+}
+
+#page-content section table>thead>tr:not(:last-child)>th,
+#page-content section table>thead>tr:not(:last-child)>td,
+#page-content section table>tbody>tr:not(:last-child)>th,
+#page-content section table>tbody>tr:not(:last-child)>td,
+#page-content section table>tfoot>tr:not(:last-child)>th,
+#page-content section table>tfoot>tr:not(:last-child)>td,
+#page-content section table>tr:not(:last-child)>td,
+#page-content section table>tr:not(:last-child)>th,
+#page-content section table>thead:not(:last-child),
+#page-content section table>tbody:not(:last-child),
+#page-content section table>tfoot:not(:last-child) {
+	@apply border-b-2 border-humbak-3;
+}
+
+#page-content section table th {
+	@apply bg-humbak-1 font-semibold;
+}
+
+#page-content section table tr {
+	@apply even:bg-humbak-1/20;
+}
+
+/* LISTS */
+#page-content section ul,
+#page-content section ol {
+	@apply my-1 list-inside;
+}
+
+#page-content section ul li,
+#page-content section ol li {
+	@apply pl-4;
+}
+
+#page-content section ul {
+	@apply list-disc;
+}
+
+#page-content section ol {
+	@apply list-decimal;
+}
+
+#page-content section ul ul,
+#page-content section ol ul {
+	@apply list-circle my-0;
+}
+
+#page-content section ol ol,
+#page-content section ul ol {
+	@apply list-upper-roman my-0;
+}
+
+/* HEADINGS */
+#page-content section h1 {
+	@apply text-3xl text-center font-bold my-3;
+}
+
+#page-content section h1:first-child {
+	@apply mt-0;
+}
+
+#page-content section h1:not(:first-child) {
+	@apply mt-5;
+}
+
+#page-content section h2 {
+	@apply text-2xl font-bold my-2 relative before:(content-empty -z-1 bg-humbak-2 absolute w-full h-1 bottom-[0.125rem] left-0 rounded-2xl);
+}
+
+#page-content section h3:not(:first-child) {
+	@apply mt-4;
+}
+
+#page-content section h3 {
+	@apply text-xl font-bold my-1;
+}
+
+#page-content section h3:not(:first-child) {
+	@apply mt-3;
+}
+
+#page-content section h4 {
+	@apply text-lg font-bold my-1;
+}
+
+#page-content section h4:not(:first-child) {
+	@apply mt-3;
+}
+
+#page-content section h5 {
+	@apply text font-bold my-2;
+}
+
+#page-content section h5:not(:first-child) {
+	@apply mt-4;
+}
+
+#page-content section h6 {
+	@apply text-sm font-bold my-3;
+}
+
+#page-content section h6:not(:first-child) {
+	@apply mt-5;
+}
+
+/* TEXT */
+#page-content section .indent {
+	@apply indent-4;
+}
+
+#page-content section p+p {
+	@apply mt-1;
 }
