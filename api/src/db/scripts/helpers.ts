@@ -6,20 +6,22 @@ export const enHomePageContent = `<section>
 </section>
 
 <section>
-	<h2>page</h2>
+	<h2>pages</h2>
+
+	<h3>page</h3>
 	<p>The content is displayed on the, well, <a href="#" class="text-link">page</a>. you are currently viewing.</p>
 
-	<h2>api</h2>
+	<h3>api</h3>
 	<p>The page and the admin communicate with and through the <a href="${env.API_URL}" target="_blank" class="text-link">api page</a>. Besides the <a href="${env.API_URL}" target="_blank" class="text-link">home page TODO fancy underline</a> (which I recommend you check out), there isn't much there.</p>
 
-	<h2>admin</h2>
+	<h3>admin</h3>
 	<p>The content managment part of the <strong>humbak</strong> cms is done on the <a href="${env.ADMIN_URL}" target="_blank" class="text-link">admin page</a>. The following section describes the features available there and contains instructions on how to use them.</p>
 </section>
 
-<h2>features</h2>
-
 <section>
-	<h3>pages</h3>
+	<h2>features</h2>
+
+	<h3>content</h3>
 	<p>The cms' main feature is creating pages, which can be done on the <a href="${env.ADMIN_URL}" target="_blank" class="text-link">admin home page</a>. Once there, you can browse and search all the pages and edit their <em>content</em>, <em>css</em> and <em>meta</em>.</p>
 
 	<h4>pages table</h4>
@@ -146,7 +148,7 @@ export const plHomePageContent = `<section>
 </section>
 
 <section>
-	<h2>funkcjonalność</h2>
+	<h2>strony</h2>
 
 	<h3>strona</h3>
 	<p>Zawartość zarządzana przez CMS jest wyświetlana na... <a href="#" class="text-link">stronie</a>. Tej samej, którą obecnie przeglądasz.</p>
@@ -159,7 +161,9 @@ export const plHomePageContent = `<section>
 </section>
 
 <section>
-	<h3>strony</h3>
+	<h2>funkcjonalność</h2>
+
+	<h3>zawartość</h3>
 	<p>Główną funkcjonalnością cms'a jest tworzenie stron, które odbywa się na <a href="${env.ADMIN_URL}" target="_blank" class="text-link">głównej stronie admina</a>. Możesz na niej szukać i przeglądać wszystkie strony oraz edytować ich <em>zawartość</em>, <em>css</em> i <em>metę</em>.</p>
 
 	<h4>tabela stron</h4>
