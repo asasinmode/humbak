@@ -34,7 +34,7 @@
 }
 
 #content section table th,
-main section table td {
+#content section table td {
 	@apply py-1 px-2;
 }
 
@@ -87,4 +87,29 @@ main section table td {
 #content section ol ol,
 #content section ul ol {
 	@apply list-upper-roman my-0;
+}
+
+/* HEADINGS START */
+#content section h1 {
+	@apply text-3xl text-center font-bold my-3;
+}
+
+#content section h2 {
+	@apply text-2xl font-bold my-2 relative before:(content-empty -z-1 bg-humbak-2 absolute w-full h-1 bottom-[0.125rem] left-0 rounded-2xl);
+}
+
+#content section h3 {
+	@apply text-xl font-bold my-1;
+}
+
+#content section h4 {
+	@apply text-lg font-bold my-1;
+}
+
+#content section h5 {
+	@apply text font-bold my-2;
+}
+
+#content section h6 {
+	@apply text-sm font-bold my-3;
 }
