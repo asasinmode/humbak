@@ -1,4 +1,5 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { cp, mkdir, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { Buffer } from 'node:buffer';
 import { db, pool } from '..';
 import { promptProdContinue } from '../../helpers';
@@ -348,6 +349,124 @@ await db.insert(filesToSlides).values([
 // home
 console.timeLog('seed', 'home pages');
 // START
+await mkdir(`${filesStoragePath}/home`);
+const [{ insertId: homeDirId }] = await db.insert(directories).values({
+	name: 'home',
+	path: '/home',
+	parentId: null,
+});
+await mkdir(`${filesStoragePath}/home/pages-en`);
+const [{ insertId: pagesEnDirId }] = await db.insert(directories).values({
+	name: 'pages-en',
+	path: '/home/pages-en',
+	parentId: homeDirId,
+});
+const [
+	pagesTableEnImgId,
+	pagesFormEnImgId,
+	pagesHumbakFilesEnImgId,
+	pagesHumbakFileTagImgId
+] = await Promise.all([
+	createFile(
+		{
+			url: './assets/pages-table-en.png',
+			directoryId: pagesEnDirId,
+			name: 'pages-table.png',
+			path: '/home/pages-en/pages-table.png',
+			title: 'pages table',
+			alt: 'admin page pages table',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/pages-form-en.png',
+			directoryId: pagesEnDirId,
+			name: 'pages-form.png',
+			path: '/home/pages-en/pages-form.png',
+			title: 'pages form',
+			alt: 'admin page pages form',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/pages-humbak-files-en.png',
+			directoryId: pagesEnDirId,
+			name: 'pages-humbak-files.png',
+			path: '/home/pages-en/pages-humbak-files.png',
+			title: 'pages humbak files',
+			alt: 'admin page humbak files dialog',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/pages-humbak-file-tag.png',
+			directoryId: homeDirId,
+			name: 'pages-humbak-file-tag.png',
+			path: '/home/pages-humbak-file-tag.png',
+			title: 'pages table',
+			alt: 'admin page humbak file html tag',
+			mimetype: 'image/png',
+		},
+		true
+	),
+]);
+
+console.timeLog('seed', 'home pages files pl');
+await mkdir(`${filesStoragePath}/home/pages-pl`);
+const [{ insertId: pagesPlDirId }] = await db.insert(directories).values({
+	name: 'pages-pl',
+	path: '/home/pages-pl',
+	parentId: homeDirId,
+});
+const [
+	pagesTablePlImgId,
+	pagesFormPlImgId,
+	pagesHumbakFilesPlImgId,
+] = await Promise.all([
+	createFile(
+		{
+			url: './assets/pages-table-pl.png',
+			directoryId: pagesPlDirId,
+			name: 'pages-table.png',
+			path: '/home/pages-pl/pages-table.png',
+			title: 'zawartość tabela',
+			alt: 'strona admin zawartość tabela',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/pages-form-pl.png',
+			directoryId: pagesPlDirId,
+			name: 'pages-form.png',
+			path: '/home/pages-pl/pages-form.png',
+			title: 'zawartość formularz',
+			alt: 'strona admin zawartość formularz',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/pages-humbak-files-pl.png',
+			directoryId: pagesPlDirId,
+			name: 'pages-humbak-files.png',
+			path: '/home/pages-pl/pages-humbak-files.png',
+			title: 'zawartość humbak pliki',
+			alt: 'strona admin dialog humbak plików',
+			mimetype: 'image/png',
+		},
+		true
+	),
+]);
+
 const enHomePageId = await createPage({
 	language: 'en',
 	title: 'Home',
@@ -355,9 +474,13 @@ const enHomePageId = await createPage({
 	menuText: 'home EN',
 	parentId: null,
 	position: 0,
-	content: enHomePageContent,
+	content: enHomePageContent([
+		pagesTableEnImgId,
+		pagesFormEnImgId,
+		pagesHumbakFilesEnImgId,
+		pagesHumbakFileTagImgId
+	]),
 });
-
 const plHomePageId = await createPage({
 	language: 'pl',
 	title: 'Dom',
@@ -365,11 +488,18 @@ const plHomePageId = await createPage({
 	menuText: 'home PL',
 	parentId: null,
 	position: 0,
-	content: plHomePageContent,
+	content: plHomePageContent([
+		pagesTablePlImgId,
+		pagesFormPlImgId,
+		pagesHumbakFilesPlImgId,
+		pagesHumbakFileTagImgId
+	]),
 });
 // END
 // home
 // END
+
+throw new Error('oopsie');
 
 // START
 // oceans home
@@ -1174,13 +1304,26 @@ await pool.end();
 console.timeEnd('seed');
 
 async function createFile(
-	{ url, name, directoryId, path, title, alt, mimetype }:
-		{ url: string; name: string; directoryId: number | null; path: string; title: string; alt: string; mimetype: string; }
+	{ url, name, directoryId, path, title, alt, mimetype }: {
+		url: string;
+		name: string;
+		directoryId: number | null;
+		path: string;
+		title: string;
+		alt: string;
+		mimetype: string;
+	},
+	isLocal = false
 ) {
-	await writeFile(
-		`${filesStoragePath}${path}`,
-		await fetch(`${url}?q=80&w=1920`).then(r => r.arrayBuffer()).then(v => Buffer.from(v))
-	);
+	if (isLocal) {
+		await cp(fileURLToPath(new URL(url, import.meta.url)), `${filesStoragePath}${path}`);
+	} else {
+		await writeFile(
+			`${filesStoragePath}${path}`,
+			await fetch(`${url}?q=80&w=1920`).then(r => r.arrayBuffer()).then(v => Buffer.from(v))
+		);
+	}
+
 	const { width, height } = await createImageSizes(`${filesStoragePath}${path}`, mimetype);
 	const [{ insertId }] = await db.insert(files).values({
 		directoryId,

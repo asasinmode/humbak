@@ -1,6 +1,19 @@
 import { env } from '../../env';
 
-export const enHomePageContent = `<section>
+export function enHomePageContent(
+	[
+		pagesTable,
+		pagesForm,
+		pagesHumbakFiles,
+		pagesHumbakFileTag
+	]: [
+		number,
+		number,
+		number,
+		number
+	]
+) {
+	return `<section>
 	<h1>humbak demo</h1>
 	<p>This is a demo page for <strong>humbak</strong>, a blog cms. Current content is a showcase of the features available and should be reset regularly. Most of the text content was generated with <a href="https://chat.openai.com/" target="_blank" class="text-link">ChatGPT</a> and images were taken from <a href="https://unsplash.com/" target="_blank" class="text-link">Unsplash</a>.</p>
 </section>
@@ -141,8 +154,22 @@ export const enHomePageContent = `<section>
 		settings page placeholder
 	</div>
 </section>`;
+}
 
-export const plHomePageContent = `<section>
+export function plHomePageContent(
+	[
+		pagesTable,
+		pagesForm,
+		pagesHumbakFiles,
+		pagesHumbakFileTag
+	]: [
+		number,
+		number,
+		number,
+		number
+	]
+) {
+	return `<section>
 	<h1>humbak demo</h1>
 	<p>To jest strona demo dla <strong>humbak</strong>, aplikacji CMS (content managment site - strona do zarządzania zawartością) dla bloga. Obecna zawartość przedstawia dostępną funkcjonalność CMS'a i powinna być resetowana regularnie. Większość tekstu została wygenerowana przez <a href="https://chat.openai.com/" target="_blank">ChatGPT</a>.</p>
 </section>
@@ -285,6 +312,7 @@ export const plHomePageContent = `<section>
 	<p>Na samym końcu, na <a href="${env.ADMIN_URL}/settings" target="_blank" class="text-link">stronie ustawień admina</a> możesz się wylogować lub zmienić swoją nazwę użytkownika i hasło.</p>
 </section>
 `;
+}
 
 export function enOceansPageContent([imgId1, imgId2, imgId3, imgId4]: [number, number, number, number]) {
 	return `<section>
