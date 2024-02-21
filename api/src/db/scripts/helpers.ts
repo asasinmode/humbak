@@ -39,26 +39,18 @@ export function enHomePageContent(
 
 	<h4>pages table</h4>
 	<p>At the top of the <a href="${env.ADMIN_URL}" target="_blank" class="text-link">home page</a> are a search input and a table. The table contains all the created pages and can be filtered using the input above it. Each page has <b>edit</b> and <b>delete</b> buttons.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		table placeholder
-	</div>
+	<HumbakFile fid="${pagesTable}"></HumbakFile>
 
 	<h4>page form</h4>
 	<p>Below the table there is a form consisting of 4 text fields, the <b>editor</b> and the <b>preview box</b>. Between the <em>editor</em> and the <em>preview box</em> are <b>control buttons</b>. Going from top to bottom, the <em>control buttons</em> are: <b>editor mode select</b>, <b>content formatting</b>, <b>snippets</b> and <b>Humbak Files</b>. The last, gray button in the middle can be used to resize the <em>editor</em>. Lastly, below the editor there are the <b>clear</b> and <b>save</b> buttons.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		form placeholder
-	</div>
+	<HumbakFile fid="${pagesForm}"></HumbakFile>
 	<p>Use the <b>editor mode select</b> to switch between editing page's <em>html</em>, <em>css</em> and <em>meta</em>. Note that meta should be a valid JSON array containing objects that will be mapped to meta tags, for example <code>{ "name": "description", "content": "My page's description" }</code> will create a tag <code>&lt;meta name="description" content="My page's description"&gt;.</code></p>
 
 	<h4>humbak files</h4>
 	<p>The fourth <em>control button</em>, opens the <b>humbak files dialog</b>, inside of which you can browse and search all of your files and open their preview or copy their html tag.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		humbak files dialog placeholder
-	</div>
+	<HumbakFile fid="${pagesHumbakFiles}"></HumbakFile>
 	<p><em>Humbak files</em> can be uploaded on the <a href="${env.ADMIN_URL}/files" target="_blank" class="text-link">files page</a> and have some special features that are described in the <a href="#files" class="text-link">humbak files</a> section. To make their features work, inside the page html you use them through a special tag <code>&ltHumbakFile fid="1"&gt;</code>. They require a special <b>fid</b> attribute that contains the target <b>humbak file's</b> id and accept all valid html attributes, such as <em>class</em> or <em>style</em>.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		humbak file tag placeholder
-	</div>
+	<HumbakFile fid="${pagesHumbakFileTag}"></HumbakFile>
 </section>
 
 <section>
@@ -195,26 +187,18 @@ export function plHomePageContent(
 
 	<h4>tabela stron</h4>
 	<p>Na samej górze <a href="${env.ADMIN_URL}" target="_blank" class="text-link">strony głównej</a> znajdują się wyszukiwarka i tabela. Tabela zawiera wszystkie utworzone strony i może być filtrowana przez wyszukiwarkę nad nią. Każda strona w tabeli ma przyciski <b>edytuj</b> oraz <b>usuń</b>.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		table placeholder
-	</div>
+	<HumbakFile fid="${pagesTable}"></HumbakFile>
 
 	<h4>formularz strony</h4>
 	<p>Poniżej tabeli znajduje się formularz złożony z 4 pól tekstowych, <b>edytora</b> i <b>podglądu</b>. Pomiędzy <em>edytorem</em> i <em>podglądem</em> są <b>przyciki kontrolne</b>. Idąc od góry do dołu, <em>przyciski kontrolne</em> to: <b>wybór trybu edytora</b>, <b>formatowanie zawartości</b>, <b>snippety</b> i <b>Pliki Humbak</b>. Ostatni, szary przycisk po środku służy do zmieniani rozmiaru <em>edytora</em>. Na samym końcu, poniżej <b>edytora</b> są przyciski <b>wyczyść</b> i <b>zapisz</b>.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		form placeholder
-	</div>
+	<HumbakFile fid="${pagesForm}"></HumbakFile>
 	<p>Użyj <b>wyboru trybu edytora</b> do zmieniania między edytowaniem <em>html</em>, <em>css</em> i <em>mety</em> strony. W przypadku edytowania <em>mety</em>, zawartość powinna być prawidłową JSON listą zawierającą obiekty, które zostaną zamienione w tagi meta. Przykładowo <code>{ "name": "description", "content": "Opis mojej strony" }</code> utworzy tag <code>&lt;meta name="description" content="Opis mojej strony"&gt;</code>.</p>
 
 	<h4>pliki humbak</h4>
 	<p>Czwarty <em>przycisk kontrolny</em>, otwiera <b>dialog Humbak Plików</b>, w środku którego możesz wyszukiwać i przeglądać wszystkie pliki, otwierać ich podglądy oraz kopiować ich tagi HTML.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		humbak files dialog placeholder
-	</div>
+	<HumbakFile fid="${pagesHumbakFiles}"></HumbakFile>
 	<p><em>Humbak pliki</em> mogą być wgrywane na <a href="${env.ADMIN_URL}/files" target="_blank" class="text-link">stronie plików admina</a> i mają specjalne właściwości opisane w sekcji <a href="#files" class="text-link">pliki humbak</a>. Żeby ich funkcjonalność działała, w html zawartości muszą one być używane za pomocą specjalnego tagu <code>&ltHumbakFile fid="1"&gt;</code>. Te tagi wymagają atrybutu <b>fid</b> który zawiera id docelowego <b>pliku humbak</b> i akceptują wszystkie poprawne html atrybuty, takie jak <em>class</em> lub <em>style</em>.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		humbak file tag placeholder
-	</div>
+	<HumbakFile fid="${pagesHumbakFileTag}"></HumbakFile>
 </section>
 
 <section>

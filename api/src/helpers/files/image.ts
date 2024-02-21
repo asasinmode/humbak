@@ -34,10 +34,10 @@ export async function createImageSizes(
 	}
 
 	const pathWithoutExtension = getPathWithoutExtension(path);
-	await image.resize({ [propertyToResize]: 500, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_500.webp`);
-	await image.resize({ [propertyToResize]: 800, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_800.webp`);
-	await image.resize({ [propertyToResize]: 1040, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_1040.webp`);
-	await image.resize({ [propertyToResize]: 1280, fit: 'inside' }).webp().toFile(`${pathWithoutExtension}_1280.webp`);
+	await image.resize({ [propertyToResize]: 500, fit: 'inside' }).webp({ quality: 100 }).toFile(`${pathWithoutExtension}_500.webp`);
+	await image.resize({ [propertyToResize]: 800, fit: 'inside' }).webp({ quality: 100 }).toFile(`${pathWithoutExtension}_800.webp`);
+	await image.resize({ [propertyToResize]: 1040, fit: 'inside' }).webp({ quality: 100 }).toFile(`${pathWithoutExtension}_1040.webp`);
+	await image.resize({ [propertyToResize]: 1280, fit: 'inside' }).webp({ quality: 100 }).toFile(`${pathWithoutExtension}_1280.webp`);
 
 	return { width: metadata.width, height: metadata.height };
 }
