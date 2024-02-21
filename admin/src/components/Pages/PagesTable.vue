@@ -266,16 +266,18 @@ defineExpose({
 	background-color: hsl(0 0% 100% / 0.08);
 }
 
-.vTable thead tr{
+.vTable thead tr {
 	background-color: hsl(0 0% 0% / 0.1)
 }
 
-.dark .vTable thead tr{
+.dark .vTable thead tr {
 	background-color: hsl(0 0% 100% / 0.2)
 }
 
-@media (max-width: 767px){
-	.vTable caption, .vTable tr {
+@media (max-width: 767px) {
+
+	.vTable caption,
+	.vTable tr {
 		padding-inline: 0.5rem;
 	}
 
@@ -300,7 +302,7 @@ defineExpose({
 		font-weight: 400;
 	}
 
-	.vTable td:last-of-type{
+	.vTable td:last-of-type {
 		display: flex;
 		justify-content: end;
 		gap: 0.5rem;
