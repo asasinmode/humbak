@@ -465,10 +465,10 @@ export function enAtlanticPageContent([imgId1, imgId2]: [number, number]) {
 	<h1>Atlantic</h1>
 	<p>The Atlantic Ocean, a vast expanse of saltwater that stretches between the
 		<ul>
-			<li>Americas<li>
-			<li>Europe<li>
-			<li>Africa<li>
-			<li>Antarctica<li>
+			<li>Americas</li>
+			<li>Europe</li>
+			<li>Africa</li>
+			<li>Antarctica</li>
 		</ul>
 	commands a position of profound significance in the global maritime landscape. As the second-largest ocean on Earth, the Atlantic encompasses a diverse range of climates, ecosystems, and marine life, contributing to its reputation as a dynamic and influential force in shaping the planet's interconnected systems.</p>
 
@@ -494,10 +494,10 @@ export function plAtlanticPageContent([imgId1, imgId2]: [number, number]) {
 	<h1>Atlantyk</h1>
 	<p>Ocean Atlantycki, rozległa przestrzeń słonej wody rozciągająca się między
 		<ul>
-			<li>Amerykami<li>
-			<li>Europą<li>
-			<li>Afryką<li>
-			<li>Antarktydą<li>
+			<li>Amerykami</li>
+			<li>Europą</li>
+			<li>Afryką</li>
+			<li>Antarktydą</li>
 		</ul>
 	zajmuje pozycję o głębokim znaczeniu w globalnym krajobrazie morskim. Jako drugi co do wielkości ocean na Ziemi, Atlantyk obejmuje różnorodne klimaty, ekosystemy i życie morskie, przyczyniając się do swojej reputacji dynamicznej i wpływowej siły kształtującej złożone systemy naszej planety.</p>
 
