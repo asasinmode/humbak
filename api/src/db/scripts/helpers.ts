@@ -187,7 +187,7 @@ export function plHomePageContent(
 ) {
 	return `<section>
 	<h1>humbak demo</h1>
-	<p>To jest strona demo dla <strong>humbak</strong>, aplikacji CMS (content managment site - strona do zarządzania zawartością) dla bloga. Obecna zawartość przedstawia dostępną funkcjonalność CMS'a i powinna być resetowana regularnie. Większość tekstu została wygenerowana przez <a href="https://chat.openai.com/" target="_blank">ChatGPT</a>.</p>
+	<p>To jest strona demo dla <strong>humbak</strong>, aplikacji CMS (content managment site - strona do zarządzania zawartością) dla bloga. Obecna zawartość przedstawia dostępną funkcjonalność CMS'a i powinna być resetowana regularnie. Większość tekstu została wygenerowana przez <a href="https://chat.openai.com/" target="_blank" class="text-link">ChatGPT</a> a wiekszość obrazów wzięta z <a href="https://unsplash.com/" target="_blank" class="text-link">Unsplash</a>.</p>
 </section>
 
 <section>
