@@ -935,6 +935,13 @@ await db.insert(filesToPages).values([
 	{ pageId: plHomePageId, fileId: sliderPreviewsPlImgId },
 	{ pageId: plHomePageId, fileId: sliderSettingsDialogPlImgId },
 	// footer
+	{ pageId: enHomePageId, fileId: footerOverviewEnImgId },
+	{ pageId: enHomePageId, fileId: footerSocialsDialogEnImgId },
+	{ pageId: plHomePageId, fileId: footerOverviewPlImgId },
+	{ pageId: plHomePageId, fileId: footerSocialsDialogPlImgId },
+	// settings
+	{ pageId: enHomePageId, fileId: settingsEnImgId },
+	{ pageId: plHomePageId, fileId: settingsPlImgId },
 ]);
 // END
 // home
