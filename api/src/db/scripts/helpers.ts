@@ -49,7 +49,7 @@ export function enHomePageContent(
 	<p>The content is displayed on the, well, <a href="#" class="text-link">page</a>. you are currently viewing.</p>
 
 	<h3>api</h3>
-	<p>The page and the admin communicate with and through the <a href="${env.API_URL}" target="_blank" class="text-link">api page</a>. Besides the <a href="${env.API_URL}" target="_blank" class="text-link fancy-underline">home page</a> (which I recommend you check out), there isn't much there.</p>
+	<p>The page and the admin communicate with and through the <a href="${env.API_URL}" target="_blank" class="text-link">api page</a>. Besides the <a href="${env.API_URL}" target="_blank" class="text-link fancy-underline">home page</a>, there isn't much there.</p>
 
 	<h3>admin</h3>
 	<p>The content managment part of the <strong>humbak</strong> cms is done on the <a href="${env.ADMIN_URL}" target="_blank" class="text-link">admin page</a>. The following section describes the features available there and contains instructions on how to use them.</p>
@@ -197,7 +197,7 @@ export function plHomePageContent(
 	<p>Zawartość zarządzana przez CMS jest wyświetlana na... <a href="#" class="text-link">stronie</a>. Tej samej, którą obecnie przeglądasz.</p>
 
 	<h3>api</h3>
-	<p>Strona główna i strona admina komunikują się przez i za pomocą <a href="${env.API_URL}" target="_blank" class="text-link">strony api</a>. Poza <a href="${env.API_URL}" target="_blank" class="text-link fancy-underline">stroną domową</a> (którą polecam odwiedzić), nie ma na niej za wiele.</p>
+	<p>Strona główna i strona admina komunikują się przez i za pomocą <a href="${env.API_URL}" target="_blank" class="text-link">strony api</a>. Poza <a href="${env.API_URL}" target="_blank" class="text-link fancy-underline">stroną domową</a>, nie ma na niej za wiele.</p>
 
 	<h3>admin</h3>
 	<p>Zarządzanie zawartością <strong>humbak</strong> cms'a odbywa się na <a href="${env.ADMIN_URL}" target="_blank" class="text-link">stronie admina</a>. Następujące sekcje opisują funkcjonalność dostępną na niej oraz zawierają instrukcje, jak jej używać.</p>

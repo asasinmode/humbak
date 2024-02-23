@@ -67,45 +67,76 @@
 			canvas.height = window.innerHeight;
 		})
 
-		const ripples = [];
+		let ripples = [];
+		let timestampsToRemove = [];
+		let lastFrameTime = performance.now();
 
 		function animate() {
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			const currentTime = performance.now();
+			const delta = currentTime - lastFrameTime;
+			const modifier = 1 + (delta / 1000);
 
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			for (const ripple of ripples) {
-				ripple.draw();
+				ripple.draw(modifier);
+			}
+			if (timestampsToRemove.length) {
+				ripples = ripples.filter(ripple => !timestampsToRemove.includes(ripple.timestamp));
+				timestampsToRemove = [];
 			}
 
+			lastFrameTime = currentTime;
 			requestAnimationFrame(animate);
 		}
 
 		animate();
 
 		class Ripple {
-			constructor(x = randomInt(canvas.width), y = randomInt(canvas.height)) {
+			constructor(x = randomInt(0, canvas.width), y = randomInt(0, canvas.height)) {
 				this.x = x;
 				this.y = y;
-				this.size = 10;
-				this.timestamp = Date.now();
+				this.timestamp = performance.now();
+				this.speed = 1.2 + Math.random() * 0.8;
+				this.size = 50;
+	
+				const fillRandom = Math.random();
+				this.fill = fillRandom < 0.33
+					? 'hsl(205 100% 65%'
+					: fillRandom < 0.66
+						? 'hsl(205 100% 70%'
+						: 'hsl(205 100% 75%'
+				
+				const lifespan = randomInt(2000, 2000);
 
 				setTimeout(() => {
-					const index = ripples.findIndex(ripple => ripple.timestamp = this.timestamp);
-					if (index !== -1) {
-						ripples.splice(index, 1);
-					}
-				}, 100)
+					this.disappearStart = performance.now();
+					this.disappearDuration = randomInt(300, 700);
+					this.disappearSpeed = 1 / this.disappearDuration;
+				}, lifespan)
 			}
 
-			draw() {
+			draw(deltaModifier) {
+				let fillSuffix = ')';
+
+				if (this.disappearStart) {
+					const timeElapsed = performance.now() - this.disappearStart;
+					if (timeElapsed >= this.disappearDuration) {
+						timestampsToRemove.push(this.timestamp);
+						return;
+					}
+					const percentage = Math.max(0.01, 1 - timeElapsed * this.disappearSpeed * deltaModifier);
+					fillSuffix = `/ ${percentage})`;
+				}
+	
 				ctx.beginPath();
-				ctx.arc(this.x, this.y, 5, 0, 2 * Math.PI);
-				ctx.fillStyle = 'red';
+				ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+				ctx.fillStyle = this.fill + fillSuffix;
 				ctx.fill();
 			}
 		}
 
-		function randomInt(max) {
-			return Math.floor(Math.random() * (max + 1));
+		function randomInt(min, max) {
+			return Math.floor(Math.random() * (max - min + 1)) + min;
 		}
 	</script>
 </body>
