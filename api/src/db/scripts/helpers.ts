@@ -8,7 +8,13 @@ export function enHomePageContent(
 		pagesHumbakFileTag,
 		menuOverview,
 		menuMoving,
+		filesToggling,
+		filesMoving,
+		filesMoveDialog,
 	]: [
+		number,
+		number,
+		number,
 		number,
 		number,
 		number,
@@ -73,21 +79,15 @@ export function enHomePageContent(
 	<p class="indent">
 		In the top left corner you can find the <em>directory breadcrumbs</em> that show the current directory, the path to it and can be used to navigate directory structure. To the right of it, there are 2 buttons used to toggle between list and tile view, along with the save button.
 	</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		toggling views gif
-	</div>
+	<HumbakFile fid="${filesToggling}"></HumbakFile>
 	<p class="indent">
 		Below these are all of your files with the exception of the first item that's used to create new directories and upload new files. Besides editing files and directories' attributes you can navigate to directories or delete/move files and directories. The <b>move</b> button can either be dragged to the target directory or be clicked on to open the <b>move dialog</b>.
 	</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		moving files/directories gif
-	</div>
+	<HumbakFile fid="${filesMoving}"></HumbakFile>
 
 	<h4>move dialog</h4>
 	<p>The move dialog contains a list of directories. In case the directory you want to move a file/dir to is not in the same location you are currently in, you can use it to select a target dir and move a file there.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		moving dir using move dialog gif
-	</div>
+	<HumbakFile fid="${filesMoveDialog}"></HumbakFile>
 </section>
 
 <section>
@@ -156,7 +156,13 @@ export function plHomePageContent(
 		pagesHumbakFileTag,
 		menuOverview,
 		menuMoving,
+		filesToggling,
+		filesMoving,
+		filesMoveDialog,
 	]: [
+		number,
+		number,
+		number,
 		number,
 		number,
 		number,
@@ -221,22 +227,16 @@ export function plHomePageContent(
 	<p class="indent">
 		W lewym górnym rogu znajdują się <em>okruchy folderów</em>, które pokazują twój obecny folder, jego ścieżkę i mogą być użyte do nawigowania między folderami. Na prawo od nich są 2 przyciski do zmieniania widoku pomiędzy widokiem listy a kafelkami. Obok nich jest przycisk <b>zapisz</b>.
 	</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		toggling views gif
-	</div>
+	<HumbakFile fid="${filesToggling}"></HumbakFile>
 	<p class="indent">
 		Poniżej powyższych wylistowane są wszystkie twoje pliki, z wyjątkiem pierwszego elementu, który służy do tworzenia nowych folderów i wgrywania nowych plików. Poza edytowaniem atrybutów plików i folderów możesz nawigować do poszczególnych folderów oraz usuwać/edytować pliki i foldery. Przycisk <b>przesuń</b> może być albo przeciągnięty i upuszczony do konkretnego folderu, albo kliknięty na żeby otworzyć <b>dialog przesuwania</b>.
 	</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		moving files/directories gif
-	</div>
+	<HumbakFile fid="${filesMoving}"></HumbakFile>
 	<p>Zaletą używania <b>plików humbak</b> jest fakt, że zmiana tytułu/atrybutu alt lub przemieszczenie go jest na bieżąco śledzone i wszystkie strony i slajdy używane go zostaną zaktualizowane z najnowszymi danymi.</p>
 
 	<h4>dialog przesuwania</h4>
 	<p>Dialog przesuwania zawiera listę folderów. W przypadku, kiedy folder, do którego chcesz przesunąć inny plik/folder jest w innej, niż obecna, lokacji, możesz użyć go do wybrania docelowego folderu i przesunięcia do niego pliku.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		moving dir using move dialog gif
-	</div>
+	<HumbakFile fid="${filesMoveDialog}"></HumbakFile>
 </section>
 
 <section>

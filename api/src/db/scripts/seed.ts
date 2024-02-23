@@ -371,10 +371,10 @@ const [
 		{
 			url: './assets/pages-table-en.png',
 			directoryId: pagesEnDirId,
-			name: 'pages-table.png',
-			path: '/home/pages-en/pages-table.png',
+			name: 'table.png',
+			path: '/home/pages-en/table.png',
 			title: 'pages table',
-			alt: 'admin page pages table',
+			alt: 'pages table on admin page',
 			mimetype: 'image/png',
 		},
 		true
@@ -383,10 +383,10 @@ const [
 		{
 			url: './assets/pages-form-en.png',
 			directoryId: pagesEnDirId,
-			name: 'pages-form.png',
-			path: '/home/pages-en/pages-form.png',
-			title: 'pages form',
-			alt: 'admin page pages form',
+			name: 'form.png',
+			path: '/home/pages-en/form.png',
+			title: 'content form',
+			alt: 'content form on admin page',
 			mimetype: 'image/png',
 		},
 		true
@@ -395,10 +395,10 @@ const [
 		{
 			url: './assets/pages-humbak-files-en.png',
 			directoryId: pagesEnDirId,
-			name: 'pages-humbak-files.png',
-			path: '/home/pages-en/pages-humbak-files.png',
-			title: 'pages humbak files',
-			alt: 'admin page humbak files dialog',
+			name: 'dialog.png',
+			path: '/home/pages-en/dialog.png',
+			title: 'humbak files dialog',
+			alt: 'dialog with list of files',
 			mimetype: 'image/png',
 		},
 		true
@@ -407,10 +407,10 @@ const [
 		{
 			url: './assets/pages-humbak-file-tag.png',
 			directoryId: homeDirId,
-			name: 'pages-humbak-file-tag.png',
-			path: '/home/pages-humbak-file-tag.png',
+			name: 'pages-file-tag.png',
+			path: '/home/pages-file-tag.png',
 			title: 'pages table',
-			alt: 'admin page humbak file html tag',
+			alt: 'dialog with a file list',
 			mimetype: 'image/png',
 		},
 		true
@@ -432,10 +432,10 @@ const [
 		{
 			url: './assets/pages-table-pl.png',
 			directoryId: pagesPlDirId,
-			name: 'pages-table.png',
-			path: '/home/pages-pl/pages-table.png',
-			title: 'zawartość tabela',
-			alt: 'strona admin zawartość tabela',
+			name: 'table.png',
+			path: '/home/pages-pl/table.png',
+			title: 'tabela stron',
+			alt: 'tabela stron na stronie admina',
 			mimetype: 'image/png',
 		},
 		true
@@ -444,10 +444,10 @@ const [
 		{
 			url: './assets/pages-form-pl.png',
 			directoryId: pagesPlDirId,
-			name: 'pages-form.png',
-			path: '/home/pages-pl/pages-form.png',
-			title: 'zawartość formularz',
-			alt: 'strona admin zawartość formularz',
+			name: 'form.png',
+			path: '/home/pages-pl/form.png',
+			title: 'formularz zawartości',
+			alt: 'formularz zawartości na stronie admina',
 			mimetype: 'image/png',
 		},
 		true
@@ -456,10 +456,10 @@ const [
 		{
 			url: './assets/pages-humbak-files-pl.png',
 			directoryId: pagesPlDirId,
-			name: 'pages-humbak-files.png',
-			path: '/home/pages-pl/pages-humbak-files.png',
-			title: 'zawartość humbak pliki',
-			alt: 'strona admin dialog humbak plików',
+			name: 'dialog.png',
+			path: '/home/pages-pl/dialog.png',
+			title: 'dialog humbak plików',
+			alt: 'dialog z listą plików',
 			mimetype: 'image/png',
 		},
 		true
@@ -482,8 +482,8 @@ const [
 		{
 			url: './assets/menu-en.png',
 			directoryId: menuDirId,
-			name: 'menu-en.png',
-			path: '/home/menu/menu-en.png',
+			name: 'overview-en.png',
+			path: '/home/menu/overview-en.png',
 			title: 'menu page',
 			alt: 'menu page',
 			mimetype: 'image/png',
@@ -494,10 +494,10 @@ const [
 		{
 			url: './assets/menu-pl.png',
 			directoryId: menuDirId,
-			name: 'menu-pl.png',
-			path: '/home/menu/menu-pl.png',
-			title: 'menu page',
-			alt: 'menu page',
+			name: 'overview-pl.png',
+			path: '/home/menu/overview-pl.png',
+			title: 'strona menu',
+			alt: 'strona menu',
 			mimetype: 'image/png',
 		},
 		true
@@ -506,8 +506,8 @@ const [
 		{
 			url: './assets/menu-en.gif',
 			directoryId: menuDirId,
-			name: 'menu-en.gif',
-			path: '/home/menu/menu-en.gif',
+			name: 'using-en.gif',
+			path: '/home/menu/using-en.gif',
 			title: 'menu page',
 			alt: 'menu page moving items',
 			mimetype: 'image/gif',
@@ -518,11 +518,109 @@ const [
 		{
 			url: './assets/menu-pl.gif',
 			directoryId: menuDirId,
-			name: 'menu-pl.gif',
-			path: '/home/menu/menu-pl.gif',
-			title: 'menu page',
-			alt: 'menu page moving items',
+			name: 'using-pl.gif',
+			path: '/home/menu/using-pl.gif',
+			title: 'strona menu',
+			alt: 'strona menu przesuwanie linków',
 			mimetype: 'image/gif',
+		},
+		true
+	),
+]);
+
+await mkdir(`${filesStoragePath}/home/files-en`);
+const [{ insertId: filesEnDirId }] = await db.insert(directories).values({
+	name: 'files-en',
+	path: '/home/files-en',
+	parentId: homeDirId,
+});
+const [
+	filesTogglingViewEnImgId,
+	filesMovingEnImgId,
+	filesMoveDialogEnImgId,
+] = await Promise.all([
+	createFile(
+		{
+			url: './assets/files-toggling-view-en.gif',
+			directoryId: filesEnDirId,
+			name: 'toggling-view.png',
+			path: '/home/files-en/toggling-view.gif',
+			title: 'toggling view',
+			alt: 'toggling files view between list and tiles',
+			mimetype: 'image/gif',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/files-moving-en.gif',
+			directoryId: filesEnDirId,
+			name: 'moving.png',
+			path: '/home/files-en/moving.gif',
+			title: 'moving files',
+			alt: 'moving files and directories',
+			mimetype: 'image/gif',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/files-move-dialog-en.png',
+			directoryId: filesEnDirId,
+			name: 'move-dialog.png',
+			path: '/home/files-en/move-dialog.png',
+			title: 'move dialog',
+			alt: 'dialog with list of dirs to choose from',
+			mimetype: 'image/png',
+		},
+		true
+	),
+]);
+
+await mkdir(`${filesStoragePath}/home/files-pl`);
+const [{ insertId: filesPlDirId }] = await db.insert(directories).values({
+	name: 'files-pl',
+	path: '/home/files-pl',
+	parentId: homeDirId,
+});
+const [
+	filesTogglingViewPlImgId,
+	filesMovingPlImgId,
+	filesMoveDialogPlImgId,
+] = await Promise.all([
+	createFile(
+		{
+			url: './assets/files-toggling-view-pl.gif',
+			directoryId: filesPlDirId,
+			name: 'toggling-view.png',
+			path: '/home/files-pl/toggling-view.gif',
+			title: 'przełączenie widoku',
+			alt: 'przełączanie widoku między listą i kafelkami',
+			mimetype: 'image/gif',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/files-moving-pl.gif',
+			directoryId: filesPlDirId,
+			name: 'moving.png',
+			path: '/home/files-pl/moving.gif',
+			title: 'przesuwanie plików',
+			alt: 'przesuwanie plików i folderów',
+			mimetype: 'image/gif',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/files-move-dialog-pl.png',
+			directoryId: filesPlDirId,
+			name: 'move-dialog.png',
+			path: '/home/files-pl/move-dialog.png',
+			title: 'dialog przesuwania',
+			alt: 'dialog z listą folderów do wyboru',
+			mimetype: 'image/png',
 		},
 		true
 	),
@@ -542,6 +640,9 @@ const enHomePageId = await createPage({
 		pagesHumbakFileTagImgId,
 		menuOverviewEnImgId,
 		menuMovingEnImgId,
+		filesTogglingViewEnImgId,
+		filesMovingEnImgId,
+		filesMoveDialogEnImgId,
 	]),
 });
 const plHomePageId = await createPage({
@@ -558,11 +659,14 @@ const plHomePageId = await createPage({
 		pagesHumbakFileTagImgId,
 		menuOverviewPlImgId,
 		menuMovingPlImgId,
+		filesTogglingViewPlImgId,
+		filesMovingPlImgId,
+		filesMoveDialogPlImgId,
 	]),
 });
 
 await db.insert(filesToPages).values([
-	// home start
+	// home
 	{ pageId: enHomePageId, fileId: pagesTableEnImgId },
 	{ pageId: enHomePageId, fileId: pagesFormEnImgId },
 	{ pageId: enHomePageId, fileId: pagesHumbakFilesEnImgId },
@@ -571,11 +675,12 @@ await db.insert(filesToPages).values([
 	{ pageId: plHomePageId, fileId: pagesFormPlImgId },
 	{ pageId: plHomePageId, fileId: pagesHumbakFilesPlImgId },
 	{ pageId: plHomePageId, fileId: pagesHumbakFileTagImgId },
-	// menu start
+	// menu
 	{ pageId: enHomePageId, fileId: menuOverviewEnImgId },
 	{ pageId: enHomePageId, fileId: menuMovingEnImgId },
 	{ pageId: plHomePageId, fileId: menuMovingPlImgId },
 	{ pageId: plHomePageId, fileId: menuMovingPlImgId },
+	// files
 ]);
 // END
 // home
