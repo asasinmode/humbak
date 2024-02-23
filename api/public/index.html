@@ -136,6 +136,14 @@
 			}
 		}
 
+		function randomRipple() {
+			ripples.push(new Ripple(randomInt(0, canvas.width), randomInt(0, canvas.height)));
+			setTimeout(randomRipple, randomInt(1250, 2500));
+		}
+
+		randomRipple();
+		setTimeout(randomRipple, 500)
+
 		function randomInt(min, max) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
 		}
