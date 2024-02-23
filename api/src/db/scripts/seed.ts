@@ -58,7 +58,6 @@ console.time('seed');
 
 // START
 // slide images
-console.timeLog('seed', 'slide images');
 // START
 const riverSlideImageId = await createFile({
 	url: 'https://images.unsplash.com/photo-1455577380025-4321f1e1dca7',
@@ -117,11 +116,11 @@ const [oceanSlideImageId, seaSlideImageId, lakeSlideImageId] = await Promise.all
 ]);
 // END
 // slide images
+console.timeLog('seed', 'slide images');
 // END
 
 // START
 // misc files
-console.timeLog('seed', 'misc files');
 // START
 await mkdir(`${filesStoragePath}/other`);
 const [{ insertId: otherDirId }] = await db.insert(directories).values({
@@ -158,11 +157,11 @@ await db.insert(files).values({
 });
 // END
 // misc files
+console.timeLog('seed', 'misc files');
 // END
 
 // START
 // slides
-console.timeLog('seed', 'slides');
 // START
 const [slideAspectRatioResult] = await db.select({ value: slideAspectRatio.value }).from(slideAspectRatio);
 !slideAspectRatioResult && await db.insert(slideAspectRatio).values({ value: '1 / 3' });
@@ -343,11 +342,11 @@ await db.insert(filesToSlides).values([
 ]);
 // END
 // slides
+console.timeLog('seed', 'slides');
 // END
 
 // START
 // home
-console.timeLog('seed', 'home pages');
 // START
 await mkdir(`${filesStoragePath}/home`);
 const [{ insertId: homeDirId }] = await db.insert(directories).values({
@@ -945,11 +944,11 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // home
+console.timeLog('seed', 'home pages');
 // END
 
 // START
 // oceans home
-console.timeLog('seed', 'oceans home pages');
 // START
 const [oceanPageImage1Id, oceanPageImage2Id, oceanPageImage3Id, oceanPageImage4Id] = await Promise.all([
 	createFile({
@@ -1020,11 +1019,11 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // oceans home
+console.timeLog('seed', 'oceans home page');
 // END
 
 // START
 // seas home
-console.timeLog('seed', 'seas home pages');
 // START
 const [seasPageImage1Id, seasPageImage2Id] = await Promise.all([
 	createFile({
@@ -1072,11 +1071,11 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // seas home
+console.timeLog('seed', 'seas home page');
 // END
 
 // START
 // lakes home
-console.timeLog('seed', 'lakes home pages');
 // START
 const [lakesPageImage1Id, lakesPageImage2Id, lakesPageImage3Id] = await Promise.all([
 	createFile({
@@ -1170,11 +1169,11 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // lakes home
+console.timeLog('seed', 'lakes home page');
 // END
 
 // START
 // oceans atlantic
-console.timeLog('seed', 'oceans atlantic page');
 // START
 await mkdir(`${filesStoragePath}/oceans/atlantic`);
 const [{ insertId: atlanticDirId }] = await db.insert(directories).values({
@@ -1228,11 +1227,11 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // oceans atlantic
+console.timeLog('seed', 'oceans atlantic page');
 // END
 
 // START
 // oceans pacific
-console.timeLog('seed', 'oceans pacific page');
 // START
 await mkdir(`${filesStoragePath}/oceans/pacific`);
 const [{ insertId: pacificDirId }] = await db.insert(directories).values({
@@ -1286,11 +1285,11 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // oceans pacific
+console.timeLog('seed', 'oceans pacific page');
 // END
 
 // START
 // oceans indian
-console.timeLog('seed', 'oceans indian page');
 // START
 await mkdir(`${filesStoragePath}/oceans/indian`);
 const [{ insertId: indianDirId }] = await db.insert(directories).values({
@@ -1333,11 +1332,11 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // oceans indian
+console.timeLog('seed', 'oceans indian page');
 // END
 
 // START
 // seas mediterranean
-console.timeLog('seed', 'seas mediterranean page');
 // START
 await mkdir(`${filesStoragePath}/seas/mediterranean`);
 const [{ insertId: mediterraneanDirId }] = await db.insert(directories).values({
@@ -1391,11 +1390,11 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // seas mediterranean
+console.timeLog('seed', 'seas mediterranean page');
 // END
 
 // START
 // seas baltic
-console.timeLog('seed', 'seas baltic page');
 // START
 await mkdir(`${filesStoragePath}/seas/baltic`);
 const [{ insertId: balticDirId }] = await db.insert(directories).values({
@@ -1449,11 +1448,11 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // seas baltic
+console.timeLog('seed', 'seas baltic page');
 // END
 
 // START
 // seas black
-console.timeLog('seed', 'seas black page');
 // START
 await mkdir(`${filesStoragePath}/seas/black`);
 const [{ insertId: blackDirId }] = await db.insert(directories).values({
@@ -1518,11 +1517,11 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // seas black
+console.timeLog('seed', 'seas black page');
 // END
 
 // START
 // lakes great
-console.timeLog('seed', 'lakes great page');
 // START
 await mkdir(`${filesStoragePath}/lakes/great`);
 const [{ insertId: greatDirId }] = await db.insert(directories).values({
@@ -1587,11 +1586,11 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // lakes great
+console.timeLog('seed', 'lakes great page');
 // END
 
 // START
 // lakes baikal
-console.timeLog('seed', 'lakes baikal page');
 // START
 await mkdir(`${filesStoragePath}/lakes/baikal`);
 const [{ insertId: baikalDirId }] = await db.insert(directories).values({
@@ -1645,11 +1644,11 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // lakes baikal
+console.timeLog('seed', 'lakes baikal page');
 // END
 
 // START
 // lakes caspian
-console.timeLog('seed', 'lakes caspian page');
 // START
 await mkdir(`${filesStoragePath}/lakes/caspian`);
 const [{ insertId: caspianDirId }] = await db.insert(directories).values({
@@ -1675,7 +1674,7 @@ const [caspianPageImage1Id, caspianPageImage2Id] = await Promise.all([
 		title: 'tyuleniy archipelago',
 		alt: 'stylized tyuleniy archipelago from the orbit',
 		mimetype: 'image/jpeg'
-	})
+	}),
 ]);
 const enCaspianPageId = await createPage({
 	language: 'en',
@@ -1703,11 +1702,11 @@ await db.insert(filesToPages).values([
 ]);
 // END
 // lakes caspian
+console.timeLog('seed', 'lakes caspian page');
 // END
 
 // START
 // footer
-console.timeLog('seed', 'footer home pages');
 // START
 await db.insert(footerContents).values([
 	{
@@ -1737,6 +1736,7 @@ await db.insert(footerContents).values([
 ]);
 // END
 // footer
+console.timeLog('seed', 'footer home pages');
 // END
 
 await db.insert(users).values({
