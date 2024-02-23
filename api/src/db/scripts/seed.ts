@@ -365,7 +365,7 @@ const [
 	pagesTableEnImgId,
 	pagesFormEnImgId,
 	pagesHumbakFilesEnImgId,
-	pagesHumbakFileTagImgId
+	pagesHumbakFileTagImgId,
 ] = await Promise.all([
 	createFile(
 		{
@@ -417,7 +417,6 @@ const [
 	),
 ]);
 
-console.timeLog('seed', 'home pages files pl');
 await mkdir(`${filesStoragePath}/home/pages-pl`);
 const [{ insertId: pagesPlDirId }] = await db.insert(directories).values({
 	name: 'pages-pl',
@@ -467,6 +466,68 @@ const [
 	),
 ]);
 
+await mkdir(`${filesStoragePath}/home/menu`);
+const [{ insertId: menuDirId }] = await db.insert(directories).values({
+	name: 'menu',
+	path: '/home/menu',
+	parentId: homeDirId,
+});
+const [
+	menuOverviewEnImgId,
+	menuOverviewPlImgId,
+	menuMovingEnImgId,
+	menuMovingPlImgId,
+] = await Promise.all([
+	createFile(
+		{
+			url: './assets/menu-en.png',
+			directoryId: menuDirId,
+			name: 'menu-en.png',
+			path: '/home/menu/menu-en.png',
+			title: 'menu page',
+			alt: 'menu page',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/menu-pl.png',
+			directoryId: menuDirId,
+			name: 'menu-pl.png',
+			path: '/home/menu/menu-pl.png',
+			title: 'menu page',
+			alt: 'menu page',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/menu-en.gif',
+			directoryId: menuDirId,
+			name: 'menu-en.gif',
+			path: '/home/menu/menu-en.gif',
+			title: 'menu page',
+			alt: 'menu page moving items',
+			mimetype: 'image/gif',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/menu-pl.gif',
+			directoryId: menuDirId,
+			name: 'menu-pl.gif',
+			path: '/home/menu/menu-pl.gif',
+			title: 'menu page',
+			alt: 'menu page moving items',
+			mimetype: 'image/gif',
+		},
+		true
+	),
+]);
+
 const enHomePageId = await createPage({
 	language: 'en',
 	title: 'Home',
@@ -478,7 +539,9 @@ const enHomePageId = await createPage({
 		pagesTableEnImgId,
 		pagesFormEnImgId,
 		pagesHumbakFilesEnImgId,
-		pagesHumbakFileTagImgId
+		pagesHumbakFileTagImgId,
+		menuOverviewEnImgId,
+		menuMovingEnImgId,
 	]),
 });
 const plHomePageId = await createPage({
@@ -492,11 +555,14 @@ const plHomePageId = await createPage({
 		pagesTablePlImgId,
 		pagesFormPlImgId,
 		pagesHumbakFilesPlImgId,
-		pagesHumbakFileTagImgId
+		pagesHumbakFileTagImgId,
+		menuOverviewPlImgId,
+		menuMovingPlImgId,
 	]),
 });
 
 await db.insert(filesToPages).values([
+	// home start
 	{ pageId: enHomePageId, fileId: pagesTableEnImgId },
 	{ pageId: enHomePageId, fileId: pagesFormEnImgId },
 	{ pageId: enHomePageId, fileId: pagesHumbakFilesEnImgId },
@@ -505,6 +571,11 @@ await db.insert(filesToPages).values([
 	{ pageId: plHomePageId, fileId: pagesFormPlImgId },
 	{ pageId: plHomePageId, fileId: pagesHumbakFilesPlImgId },
 	{ pageId: plHomePageId, fileId: pagesHumbakFileTagImgId },
+	// menu start
+	{ pageId: enHomePageId, fileId: menuOverviewEnImgId },
+	{ pageId: enHomePageId, fileId: menuMovingEnImgId },
+	{ pageId: plHomePageId, fileId: menuMovingPlImgId },
+	{ pageId: plHomePageId, fileId: menuMovingPlImgId },
 ]);
 // END
 // home

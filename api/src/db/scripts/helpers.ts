@@ -5,12 +5,16 @@ export function enHomePageContent(
 		pagesTable,
 		pagesForm,
 		pagesHumbakFiles,
-		pagesHumbakFileTag
+		pagesHumbakFileTag,
+		menuOverview,
+		menuMoving,
 	]: [
 		number,
 		number,
 		number,
-		number
+		number,
+		number,
+		number,
 	]
 ) {
 	return `<section>
@@ -57,14 +61,10 @@ export function enHomePageContent(
 	<h3>menu</h3>
 	<p>After creating pages you can manage the menu layout on the <a href="${env.ADMIN_URL}/menu" target="_blank" class="text-link">admin menu page</a>.</p>
 	<p class="indent">At the top there are: the <em>expandable and movable</em> <b>hidden pages list</b>, the <b>language select</b> and the <b>save button</b>. Below, there is the <b>menu layout editor</b> that is an interactive preview of the menu and can be used to hide and move the links around.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		menu page placeholder
-	</div>
+	<HumbakFile fid="${menuOverview}"></HumbakFile>
 
 	<h4>example of using the menu layout editor</h4>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		moving menus gif placeholder
-	</div>
+	<HumbakFile fid="${menuMoving}"></HumbakFile>
 </section>
 
 <section>
@@ -153,12 +153,16 @@ export function plHomePageContent(
 		pagesTable,
 		pagesForm,
 		pagesHumbakFiles,
-		pagesHumbakFileTag
+		pagesHumbakFileTag,
+		menuOverview,
+		menuMoving,
 	]: [
 		number,
 		number,
 		number,
-		number
+		number,
+		number,
+		number,
 	]
 ) {
 	return `<section>
@@ -205,14 +209,10 @@ export function plHomePageContent(
 	<h3>menu</h3>
 	<p>Po utworzeniu stron możesz zarządzać ułożeniem menu na <a href="${env.ADMIN_URL}/menu" target="_blank" class="text-link">stronie menu admina</a>.</p>
 	<p>Na samej górze znajdują się: <em>rozszerzana i ruchoma</em> <b>lista ukrytych stron</b>, <b>wybór języka</b> i <b>przycisk zapisz</b>. Poniżej jest <b>edytor układu menu</b> będący interaktywnym podglądem menu, który może być użyty do chowania i zmieniania pozycji linków menu. Żeby schować link należy przeciągnąć go do <b>listy ukrytych stron</b>. Podobnie, żeby pokazać link należy go przeciągnąć z tej samej listy do <b>edytora układu</b>.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		menu page placeholder
-	</div>
+	<HumbakFile fid="${menuOverview}"></HumbakFile>
 
 	<h4>przykład używania edytora układu menu</h4>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		moving menus gif placeholder
-	</div>
+	<HumbakFile fid="${menuMoving}"></HumbakFile>
 </section>
 
 <section>
