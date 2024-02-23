@@ -28,12 +28,8 @@ app.use('/*', cors({
 	origin: [env.ADMIN_URL, env.PAGE_URL],
 }));
 
-app.get('/', (c) => {
-	return c.text('hi');
-});
-
-app.use('/public/*', serveStatic({
-	root: '.',
+app.use('/*', serveStatic({
+	root: './public',
 }));
 
 const typedApp = app
