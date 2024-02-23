@@ -11,7 +11,9 @@ export function enHomePageContent(
 		filesToggling,
 		filesMoving,
 		filesMoveDialog,
+		global,
 	]: [
+		number,
 		number,
 		number,
 		number,
@@ -96,9 +98,7 @@ export function enHomePageContent(
 	<p class="indent">
 		At the top you can select the <b>editor's</b> mode, choosing between <em>css</em> and <em>meta</em>, along with, in case of being in <em>meta</em> edit mode, choosing the target language. To the right of these selects are the <b>content formatting</b> and the <b>save</b> buttons. Below them is the <b>editor</b>.
 	</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		global page placeholder
-	</div>
+	<HumbakFile fid="${global}"></HumbakFile>
 </section>
 
 <section>
@@ -159,7 +159,9 @@ export function plHomePageContent(
 		filesToggling,
 		filesMoving,
 		filesMoveDialog,
+		global,
 	]: [
+		number,
 		number,
 		number,
 		number,
@@ -248,9 +250,7 @@ export function plHomePageContent(
 	<p class="indent">
 		Na samej górze możesz wybrać tryb <b>edytora</b>, wybierając pomiędzy <em>css</em> i <em>metą</em>. Dodatkowo, w przypadku trybu edytora będącego <em>metą</em>, możesz wybrać język, dla którego jest ona zmieniana. Na prawo od tych dwóch pól wyboru są przyciski <b>formatowania kontentu</b> i <b>zapisywania</b>. Poniżej tych elementów znajduje się <b>edytor</b>.
 	</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		global page placeholder
-	</div>
+	<HumbakFile fid="${global}"></HumbakFile>
 </section>
 
 <section>

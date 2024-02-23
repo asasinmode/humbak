@@ -626,6 +626,42 @@ const [
 	),
 ]);
 
+await mkdir(`${filesStoragePath}/home/global`);
+const [{ insertId: globalDirId }] = await db.insert(directories).values({
+	name: 'global',
+	path: '/home/global',
+	parentId: homeDirId,
+});
+const [
+	globalEnImgId,
+	globalPlImgId,
+] = await Promise.all([
+	createFile(
+		{
+			url: './assets/global-en.png',
+			directoryId: globalDirId,
+			name: 'global-en.png',
+			path: '/home/global/global-en.png',
+			title: 'global page',
+			alt: 'global page with css editor',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/global-pl.png',
+			directoryId: globalDirId,
+			name: 'global-pl.png',
+			path: '/home/global/global-pl.png',
+			title: 'strona global',
+			alt: 'strona global z edytorem css',
+			mimetype: 'image/png',
+		},
+		true
+	),
+]);
+
 const enHomePageId = await createPage({
 	language: 'en',
 	title: 'Home',
@@ -643,6 +679,7 @@ const enHomePageId = await createPage({
 		filesTogglingViewEnImgId,
 		filesMovingEnImgId,
 		filesMoveDialogEnImgId,
+		globalEnImgId,
 	]),
 });
 const plHomePageId = await createPage({
@@ -662,6 +699,7 @@ const plHomePageId = await createPage({
 		filesTogglingViewPlImgId,
 		filesMovingPlImgId,
 		filesMoveDialogPlImgId,
+		globalPlImgId,
 	]),
 });
 
@@ -681,6 +719,15 @@ await db.insert(filesToPages).values([
 	{ pageId: plHomePageId, fileId: menuMovingPlImgId },
 	{ pageId: plHomePageId, fileId: menuMovingPlImgId },
 	// files
+	{ pageId: enHomePageId, fileId: filesTogglingViewEnImgId },
+	{ pageId: enHomePageId, fileId: filesMovingEnImgId },
+	{ pageId: enHomePageId, fileId: filesMoveDialogEnImgId },
+	{ pageId: plHomePageId, fileId: filesTogglingViewPlImgId },
+	{ pageId: plHomePageId, fileId: filesMovingPlImgId },
+	{ pageId: plHomePageId, fileId: filesMoveDialogPlImgId },
+	// global
+	{ pageId: enHomePageId, fileId: globalEnImgId },
+	{ pageId: plHomePageId, fileId: globalPlImgId },
 ]);
 // END
 // home
