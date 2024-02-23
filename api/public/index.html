@@ -73,12 +73,11 @@
 
 		function animate() {
 			const currentTime = performance.now();
-			const delta = currentTime - lastFrameTime;
-			const modifier = 1 + (delta / 1000);
+			const msPassed = currentTime - lastFrameTime;
 
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
 			for (const ripple of ripples) {
-				ripple.draw(modifier);
+				ripple.draw(msPassed);
 			}
 			if (timestampsToRemove.length) {
 				ripples = ripples.filter(ripple => !timestampsToRemove.includes(ripple.timestamp));
@@ -96,8 +95,8 @@
 				this.x = x;
 				this.y = y;
 				this.timestamp = performance.now();
-				this.speed = 1.2 + Math.random() * 0.8;
-				this.size = 50;
+				this.speed = randomInt(1, 10) / 100;
+				this.size = 3;
 	
 				const fillRandom = Math.random();
 				this.fill = fillRandom < 0.33
@@ -106,27 +105,28 @@
 						? 'hsl(205 100% 70%'
 						: 'hsl(205 100% 75%'
 				
-				const lifespan = randomInt(2000, 2000);
+				const lifespan = randomInt(2000, 5000);
 
 				setTimeout(() => {
-					this.disappearStart = performance.now();
-					this.disappearDuration = randomInt(300, 700);
-					this.disappearSpeed = 1 / this.disappearDuration;
+					this.disappearIn = randomInt(300, 700);
+					this.disappearProgression = 0;
 				}, lifespan)
 			}
 
-			draw(deltaModifier) {
+			draw(msPassed) {
 				let fillSuffix = ')';
 
-				if (this.disappearStart) {
-					const timeElapsed = performance.now() - this.disappearStart;
-					if (timeElapsed >= this.disappearDuration) {
+				if (this.disappearIn) {
+					this.disappearProgression += msPassed;
+					if (this.disappearProgression >= this.disappearIn) {
 						timestampsToRemove.push(this.timestamp);
 						return;
 					}
-					const percentage = Math.max(0.01, 1 - timeElapsed * this.disappearSpeed * deltaModifier);
+					const percentage = Math.max(0, 1 - this.disappearProgression / this.disappearIn);
 					fillSuffix = `/ ${percentage})`;
 				}
+
+				this.size += this.speed * msPassed;
 	
 				ctx.beginPath();
 				ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
