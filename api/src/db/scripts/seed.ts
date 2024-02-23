@@ -942,6 +942,34 @@ await db.insert(filesToPages).values([
 	{ pageId: enHomePageId, fileId: settingsEnImgId },
 	{ pageId: plHomePageId, fileId: settingsPlImgId },
 ]);
+
+const homePageCss = `.fancy-underline {
+	font-weight: 600;
+	transition: background-position 0.5s;
+	background-clip: text;
+	-webkit-background-clip: text;
+	-moz-background-clip: text;
+	color: black;
+	outline-offset: 0.125em;
+}
+
+.fancy-underline:hover,
+.fancy-underline:focus {
+	color: transparent;
+	background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+	animation: gradientMove 1.5s linear infinite;
+}
+
+@keyframes gradientMove {
+	0% {
+		filter: hue-rotate(0deg);
+	}
+	100% {
+		filter: hue-rotate(359deg);
+	}
+}`
+await writeFile(`${stylesheetsStoragePath}/${enHomePageId}.css`, homePageCss);
+await writeFile(`${stylesheetsStoragePath}/${plHomePageId}.css`, homePageCss);
 // END
 // home
 console.timeLog('seed', 'home pages');
