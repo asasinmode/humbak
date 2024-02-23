@@ -409,8 +409,8 @@ const [
 			directoryId: homeDirId,
 			name: 'pages-file-tag.png',
 			path: '/home/pages-file-tag.png',
-			title: 'pages table',
-			alt: 'dialog with a file list',
+			title: 'pages humbak file tag',
+			alt: 'content editor with a humbak file HTML tag and a preview next to it',
 			mimetype: 'image/png',
 		},
 		true
@@ -760,6 +760,95 @@ const [
 	),
 ]);
 
+await mkdir(`${filesStoragePath}/home/footer`);
+const [{ insertId: footerDirId }] = await db.insert(directories).values({
+	name: 'footer',
+	path: '/home/footer',
+	parentId: homeDirId,
+});
+const [
+	footerOverviewEnImgId,
+	footerOverviewPlImgId,
+	footerSocialsDialogEnImgId,
+	footerSocialsDialogPlImgId,
+] = await Promise.all([
+	createFile(
+		{
+			url: './assets/footer-en.png',
+			directoryId: footerDirId,
+			name: 'overview-en.png',
+			path: '/home/footer/overview-en.png',
+			title: 'footer overview',
+			alt: 'footer admin page with an interactive editor',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/footer-pl.png',
+			directoryId: footerDirId,
+			name: 'overview-pl.png',
+			path: '/home/footer/overview-pl.png',
+			title: 'overview stopki',
+			alt: 'strona admin stopki z interaktywnym edytorem',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/footer-socials-en.png',
+			directoryId: footerDirId,
+			name: 'socials-en.png',
+			path: '/home/footer/socials-en.png',
+			title: 'socials dialog',
+			alt: 'footer socials dialog with social links editor',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/footer-socials-pl.png',
+			directoryId: footerDirId,
+			name: 'socials-pl.png',
+			path: '/home/footer/socials-pl.png',
+			title: 'dialog sociali',
+			alt: 'dialog sociali stopki z edytorem social linków',
+			mimetype: 'image/png',
+		},
+		true
+	),
+]);
+
+const [settingsEnImgId, settingsPlImgId] = await Promise.all([
+	createFile(
+		{
+			url: './assets/settings-en.png',
+			directoryId: homeDirId,
+			name: 'settings-en.png',
+			path: '/home/settings-en.png',
+			title: 'settings page',
+			alt: 'admin settings page with change name and password forms',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/settings-pl.png',
+			directoryId: homeDirId,
+			name: 'settings-pl.png',
+			path: '/home/settings-pl.png',
+			title: 'strona ustawień',
+			alt: 'strona ustawień admina z formularzami zmiany nazwy i hasła',
+			mimetype: 'image/png',
+		},
+		true
+	),
+])
+
 const enHomePageId = await createPage({
 	language: 'en',
 	title: 'Home',
@@ -781,6 +870,9 @@ const enHomePageId = await createPage({
 		sliderFormEnImgId,
 		sliderPreviewsEnImgId,
 		sliderSettingsDialogEnImgId,
+		footerOverviewEnImgId,
+		footerSocialsDialogEnImgId,
+		settingsEnImgId,
 	]),
 });
 const plHomePageId = await createPage({
@@ -804,6 +896,9 @@ const plHomePageId = await createPage({
 		sliderFormPlImgId,
 		sliderPreviewsPlImgId,
 		sliderSettingsDialogPlImgId,
+		footerOverviewPlImgId,
+		footerSocialsDialogPlImgId,
+		settingsPlImgId,
 	]),
 });
 
@@ -832,6 +927,14 @@ await db.insert(filesToPages).values([
 	// global
 	{ pageId: enHomePageId, fileId: globalEnImgId },
 	{ pageId: plHomePageId, fileId: globalPlImgId },
+	// slider
+	{ pageId: enHomePageId, fileId: sliderFormEnImgId },
+	{ pageId: enHomePageId, fileId: sliderPreviewsEnImgId },
+	{ pageId: enHomePageId, fileId: sliderSettingsDialogEnImgId },
+	{ pageId: plHomePageId, fileId: sliderFormPlImgId },
+	{ pageId: plHomePageId, fileId: sliderPreviewsPlImgId },
+	{ pageId: plHomePageId, fileId: sliderSettingsDialogPlImgId },
+	// footer
 ]);
 // END
 // home

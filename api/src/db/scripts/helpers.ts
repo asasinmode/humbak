@@ -15,7 +15,13 @@ export function enHomePageContent(
 		sliderForm,
 		sliderPreviews,
 		sliderSettingsDialog,
+		footerOverview,
+		footerSocialsDialog,
+		settings,
 	]: [
+		number,
+		number,
+		number,
 		number,
 		number,
 		number,
@@ -128,23 +134,17 @@ export function enHomePageContent(
 	<p class="indent">
 		At the top are the <b>language select</b> and the <b>save</b> button, below which you can find an interactive preview of the footer. In the first column you can add and edit <em>emails</em>, in the second <em>phone numbers</em> and in the last the <em>location link</em>. Below these columns, in the second row, are social links that can be edited in the <b>social dialog</b>.
 	</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		footer page placeholder
-	</div>
+	<HumbakFile fid="${footerOverview}"></HumbakFile>
 
 	<h4>socials dialog</h4>
 	<p>Inside of the dialog you can add and edit a select few social links that will show up at the bottom of the footer.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		footer page socials dialog
-	</div>
+	<HumbakFile fid="${footerSocialsDialog}"></HumbakFile>
 </section>
 
 <section>
 	<h3>settings</h3>
 	<p>Lastly, on the <a href="${env.ADMIN_URL}/settings" target="_blank" class="text-link">admin settings page</a> you can log out and change your admin's account name and password.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		settings page placeholder
-	</div>
+	<HumbakFile fid="${settings}"></HumbakFile>
 </section>`;
 }
 
@@ -163,7 +163,13 @@ export function plHomePageContent(
 		sliderForm,
 		sliderPreviews,
 		sliderSettingsDialog,
+		footerOverview,
+		footerSocialsDialog,
+		settings,
 	]: [
+		number,
+		number,
+		number,
 		number,
 		number,
 		number,
@@ -280,20 +286,17 @@ export function plHomePageContent(
 	<p class="indent">
 		Na górze strony znajduje się <b>wybór języka</b> i przycisk <b>zapisz</b>, poniżej których jest interaktywny podgląd stopki. W pierwszej kolumnie można dodawać i edytować emaile, w drugiej numery telefonu a w ostatniej link lokacji. Poniżej tych kolumn, w drugim rzędzie znajdują się linki do sociali, które mogą być edytowane w <b>dialog sociali</b>.
 	</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		footer page placeholder
-	</div>
+	<HumbakFile fid="${footerOverview}"></HumbakFile>
 
 	<h4>dialog sociali</h4>
 	<p>W środku dialogu możesz dodawać i edytować kilka wybranych social linków, które pokażą się na dole stopki.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		footer page socials dialog
-	</div>
+	<HumbakFile fid="${footerSocialsDialog}"></HumbakFile>
 </section>
 
 <section>
 	<h3>ustawienia</h3>
 	<p>Na samym końcu, na <a href="${env.ADMIN_URL}/settings" target="_blank" class="text-link">stronie ustawień admina</a> możesz się wylogować lub zmienić swoją nazwę użytkownika i hasło.</p>
+	<HumbakFile fid="${settings}"></HumbakFile>
 </section>
 `;
 }
