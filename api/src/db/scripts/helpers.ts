@@ -214,12 +214,12 @@ export function plHomePageContent(
 	<HumbakFile fid="${pagesTable}" loading="lazy"></HumbakFile>
 
 	<h4>formularz strony</h4>
-	<p>Poniżej tabeli znajduje się formularz złożony z 4 pól tekstowych, <b>edytora</b> i <b>podglądu</b>. Pomiędzy <em>edytorem</em> i <em>podglądem</em> są <b>przyciki kontrolne</b>. Idąc od góry do dołu, <em>przyciski kontrolne</em> to: <b>wybór trybu edytora</b>, <b>formatowanie zawartości</b>, <b>snippety</b> i <b>Pliki Humbak</b>. Ostatni, szary przycisk po środku służy do zmieniani rozmiaru <em>edytora</em>. Na samym końcu, poniżej <b>edytora</b> są przyciski <b>wyczyść</b> i <b>zapisz</b>.</p>
+	<p>Poniżej tabeli znajduje się formularz złożony z 4 pól tekstowych, <b>edytora</b> i <b>podglądu</b>. Pomiędzy <em>edytorem</em> i <em>podglądem</em> są <b>przyciski kontrolne</b>. Idąc od góry do dołu, <em>przyciski kontrolne</em> to: <b>wybór trybu edytora</b>, <b>formatowanie zawartości</b>, <b>snippety</b> i <b>Pliki Humbak</b>. Ostatni, szary przycisk po środku służy do zmieniania rozmiaru <em>edytora</em>. Na samym końcu, poniżej <b>edytora</b> są przyciski <b>wyczyść</b> i <b>zapisz</b>.</p>
 	<HumbakFile fid="${pagesForm}" loading="lazy"></HumbakFile>
-	<p>Użyj <b>wyboru trybu edytora</b> do zmieniania między edytowaniem <em>html</em>, <em>css</em> i <em>mety</em> strony. W przypadku edytowania <em>mety</em>, zawartość powinna być prawidłową JSON listą zawierającą obiekty, które zostaną zamienione w tagi meta. Przykładowo <code style="background-color: hsl(0 0% 25%); color: white; border-radius: 0.25rem; padding-block: 0.125rem; padding-inline: 0.25rem;"><span style="color: hsl(290 100% 75%)">{</span> <span style="color: hsl(205 100% 80%)">"name"</span>: <span style="color: hsl(30 100% 65%)">"description"</span>, <span style="color: hsl(205 100% 80%)">"content"</span>: <span style="color: hsl(30 100% 65%)">"Opis mojej strony"</span> <span style="color: hsl(290 100% 75%)">}</span></code> will create a tag <code style="background-color: hsl(0 0% 25%); color: white; border-radius: 0.25rem; padding-block: 0.125rem; padding-inline: 0.25rem;"><span style="color: hsl(0 0% 60%)">&lt;</span><span style="color: hsl(205 100% 65%)">meta</span> <span style="color: hsl(205 100% 80%)">name<span style="color: hsl(0 0% 60%)">=</span></span><span style="color: hsl(30 100% 65%)">"description"</span> <span style="color: hsl(205 100% 80%)">content</span><span style="color: hsl(0 0% 60%)">=</span><span style="color: hsl(30 100% 65%)">"Opis mojej strony"</span><span style="color: hsl(0 0% 60%)">&gt;</span></code>.</p>
+	<p>Użyj <b>wyboru trybu edytora</b> do zmieniania między edytowaniem <em>html</em>, <em>css</em> i <em>mety</em> strony. W przypadku edytowania <em>mety</em>, zawartość powinna być prawidłową JSON listą zawierającą obiekty, które zostaną zamienione w tagi meta. Przykładowo <code style="background-color: hsl(0 0% 25%); color: white; border-radius: 0.25rem; padding-block: 0.125rem; padding-inline: 0.25rem;"><span style="color: hsl(290 100% 75%)">{</span> <span style="color: hsl(205 100% 80%)">"name"</span>: <span style="color: hsl(30 100% 65%)">"description"</span>, <span style="color: hsl(205 100% 80%)">"content"</span>: <span style="color: hsl(30 100% 65%)">"Opis mojej strony"</span> <span style="color: hsl(290 100% 75%)">}</span></code> utworzy tag <code style="background-color: hsl(0 0% 25%); color: white; border-radius: 0.25rem; padding-block: 0.125rem; padding-inline: 0.25rem;"><span style="color: hsl(0 0% 60%)">&lt;</span><span style="color: hsl(205 100% 65%)">meta</span> <span style="color: hsl(205 100% 80%)">name<span style="color: hsl(0 0% 60%)">=</span></span><span style="color: hsl(30 100% 65%)">"description"</span> <span style="color: hsl(205 100% 80%)">content</span><span style="color: hsl(0 0% 60%)">=</span><span style="color: hsl(30 100% 65%)">"Opis mojej strony"</span><span style="color: hsl(0 0% 60%)">&gt;</span></code>.</p>
 
 	<h4>pliki humbak</h4>
-	<p>Czwarty <em>przycisk kontrolny</em>, otwiera <b>dialog Humbak Plików</b>, w środku którego możesz wyszukiwać i przeglądać wszystkie pliki, otwierać ich podglądy oraz kopiować ich tagi HTML.</p>
+	<p>Czwarty <em>przycisk kontrolny</em> otwiera <b>dialog Humbak Plików</b>, w środku którego możesz wyszukiwać i przeglądać wszystkie pliki, otwierać ich podglądy oraz kopiować ich tagi HTML.</p>
 	<HumbakFile fid="${pagesHumbakFiles}" loading="lazy"></HumbakFile>
 	<p><em>Humbak pliki</em> mogą być wgrywane na <a href="${env.ADMIN_URL}/files" target="_blank" class="text-link">stronie plików admina</a> i mają specjalne właściwości opisane w sekcji <a href="#files" class="text-link">pliki humbak</a>. Żeby ich funkcjonalność działała, w html zawartości muszą one być używane za pomocą specjalnego tagu <code style="background-color: hsl(0 0% 25%); color: white; border-radius: 0.25rem; padding-block: 0.125rem; padding-inline: 0.25rem;"><span style="color: hsl(0 0% 60%)">&lt;</span><span style="color: hsl(205 100% 65%)">HumbakFile</span> <span style="color: hsl(205 100% 80%)">fid</span><span style="color: hsl(0 0% 60%)">=</span><span style="color: hsl(30 100% 65%)">"1"</span><span style="color: hsl(0 0% 60%)">&gt;</span></code>. Te tagi wymagają atrybutu <b>fid</b> który zawiera id docelowego <b>pliku humbak</b> i akceptują wszystkie poprawne html atrybuty, takie jak <em>class</em> lub <em>style</em>.</p>
 	<HumbakFile fid="${pagesHumbakFileTag}" loading="lazy"></HumbakFile>
@@ -236,7 +236,7 @@ export function plHomePageContent(
 </section>
 
 <section>
-	<h3 id="#files" style="scroll-margin-top: 4rem;">pliki</h3>
+	<h3 id="files" style="scroll-margin-top: 4rem;">pliki</h3>
 	<p><b>Pliki humbak</b> mogą być wgrywane i zarządzane na <a href="${env.ADMIN_URL}/files" target="_blank" class="text-link">stronie plików admina</a>.</p>
 	<p class="indent">
 		W lewym górnym rogu znajdują się <em>okruchy folderów</em>, które pokazują twój obecny folder, jego ścieżkę i mogą być użyte do nawigowania między folderami. Na prawo od nich są 2 przyciski do zmieniania widoku pomiędzy widokiem listy a kafelkami. Obok nich jest przycisk <b>zapisz</b>.
@@ -246,7 +246,7 @@ export function plHomePageContent(
 		Poniżej powyższych wylistowane są wszystkie twoje pliki, z wyjątkiem pierwszego elementu, który służy do tworzenia nowych folderów i wgrywania nowych plików. Poza edytowaniem atrybutów plików i folderów możesz nawigować do poszczególnych folderów oraz usuwać/edytować pliki i foldery. Przycisk <b>przesuń</b> może być albo przeciągnięty i upuszczony do konkretnego folderu, albo kliknięty na żeby otworzyć <b>dialog przesuwania</b>.
 	</p>
 	<HumbakFile fid="${filesMoving}" loading="lazy"></HumbakFile>
-	<p>Zaletą używania <b>plików humbak</b> jest fakt, że zmiana tytułu/atrybutu alt lub przemieszczenie go jest na bieżąco śledzone i wszystkie strony i slajdy używane go zostaną zaktualizowane z najnowszymi danymi.</p>
+	<p>Zaletą używania <b>plików humbak</b> jest fakt, że zmiana tytułu/atrybutu alt lub przemieszczenie go jest na bieżąco śledzone i wszystkie strony i slajdy używające go zostaną zaktualizowane z najnowszymi danymi.</p>
 
 	<h4>dialog przesuwania</h4>
 	<p>Dialog przesuwania zawiera listę folderów. W przypadku, kiedy folder, do którego chcesz przesunąć inny plik/folder jest w innej, niż obecna, lokacji, możesz użyć go do wybrania docelowego folderu i przesunięcia do niego pliku.</p>
@@ -257,10 +257,7 @@ export function plHomePageContent(
 	<h3>global</h3>
 	<p>Kiedy na <a href="${env.ADMIN_URL}" target="_blank" class="text-link">stronie głównej admina</a> możesz edytować <em>css</em> i <em>metę</em> poszczególnych stron, <a href="${env.ADMIN_URL}/global" target="_blank" class="text-link">strona global admina</a> jest używana do edytowania <em>css</em> i <em>mety</em> dzielonej między wszystkimi stronami (z wyjątkiem <em>mety</em>, która jest dzielona między wszystkimi stronami o tym samym języku).</p>
 	<p class="indent">
-		At the top you can select the <b>editor's</b> mode, choosing between <em>css</em> and <em>meta</em>, along with, in case of being in <em>meta</em> edit mode, choosing the target language. To the right of these selects are the <b>content formatting</b> and the <b>save</b> buttons. Below all of that is the <b>editor</b>.
-	</p>
-	<p class="indent">
-		Na samej górze możesz wybrać tryb <b>edytora</b>, wybierając pomiędzy <em>css</em> i <em>metą</em>. Dodatkowo, w przypadku trybu edytora będącego <em>metą</em>, możesz wybrać język, dla którego jest ona zmieniana. Na prawo od tych dwóch pól wyboru są przyciski <b>formatowania kontentu</b> i <b>zapisywania</b>. Poniżej tych elementów znajduje się <b>edytor</b>.
+		Na samej górze możesz wybrać tryb <b>edytora</b>, wybierając pomiędzy <em>css</em> i <em>metą</em>. Dodatkowo, w przypadku trybu edytora będącego <em>metą</em>, możesz wybrać język, dla którego jest ona zmieniana. Na prawo od tych dwóch pól wyboru są przyciski <b>formatowania zawartości</b> i <b>zapisywania</b>. Poniżej tych elementów znajduje się <b>edytor</b>.
 	</p>
 	<HumbakFile fid="${global}" loading="lazy"></HumbakFile>
 </section>
