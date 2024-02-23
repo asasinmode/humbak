@@ -63,28 +63,28 @@ export function enHomePageContent(
 
 	<h4>pages table</h4>
 	<p>At the top of the <a href="${env.ADMIN_URL}" target="_blank" class="text-link">home page</a> are a search input and a table. The table contains all the created pages and can be filtered using the input above it. Each page has <b>edit</b> and <b>delete</b> buttons.</p>
-	<HumbakFile fid="${pagesTable}"></HumbakFile>
+	<HumbakFile fid="${pagesTable} loading="lazy"></HumbakFile>
 
 	<h4>page form</h4>
 	<p>Below the table there is a form consisting of 4 text fields, the <b>editor</b> and the <b>preview box</b>. Between the <em>editor</em> and the <em>preview box</em> are <b>control buttons</b>. Going from top to bottom, the <em>control buttons</em> are: <b>editor mode select</b>, <b>content formatting</b>, <b>snippets</b> and <b>Humbak Files</b>. The last, gray button in the middle can be used to resize the <em>editor</em>. Lastly, below the editor there are the <b>clear</b> and <b>save</b> buttons.</p>
-	<HumbakFile fid="${pagesForm}"></HumbakFile>
+	<HumbakFile fid="${pagesForm} loading="lazy"></HumbakFile>
 	<p>Use the <b>editor mode select</b> to switch between editing page's <em>html</em>, <em>css</em> and <em>meta</em>. Note that meta should be a valid JSON array containing objects that will be mapped to meta tags, for example <code style="background-color: hsl(0 0% 25%); color: white; border-radius: 0.25rem; padding-block: 0.125rem; padding-inline: 0.25rem;"><span style="color: hsl(290 100% 75%)">{</span> <span style="color: hsl(205 100% 80%)">"name"</span>: <span style="color: hsl(30 100% 65%)">"description"</span>, <span style="color: hsl(205 100% 80%)">"content"</span>: <span style="color: hsl(30 100% 65%)">"My page's description"</span> <span style="color: hsl(290 100% 75%)">}</span></code> will create a tag <code style="background-color: hsl(0 0% 25%); color: white; border-radius: 0.25rem; padding-block: 0.125rem; padding-inline: 0.25rem;"><span style="color: hsl(0 0% 60%)">&lt;</span><span style="color: hsl(205 100% 65%)">meta</span> <span style="color: hsl(205 100% 80%)">name<span style="color: hsl(0 0% 60%)">=</span></span><span style="color: hsl(30 100% 65%)">"description"</span> <span style="color: hsl(205 100% 80%)">content</span><span style="color: hsl(0 0% 60%)">=</span><span style="color: hsl(30 100% 65%)">"My page's description"</span><span style="color: hsl(0 0% 60%)">&gt;</span></code></p>
 
 	<h4>humbak files</h4>
 	<p>The fourth <em>control button</em>, opens the <b>humbak files dialog</b>, inside of which you can browse and search all of your files and open their preview or copy their html tag.</p>
-	<HumbakFile fid="${pagesHumbakFiles}"></HumbakFile>
+	<HumbakFile fid="${pagesHumbakFiles} loading="lazy"></HumbakFile>
 	<p><em>Humbak files</em> can be uploaded on the <a href="${env.ADMIN_URL}/files" target="_blank" class="text-link">files page</a> and have some special features that are described in the <a href="#files" class="text-link">humbak files</a> section. To make their features work, inside the page html you use them through a special tag <code style="background-color: hsl(0 0% 25%); color: white; border-radius: 0.25rem; padding-block: 0.125rem; padding-inline: 0.25rem;"><span style="color: hsl(0 0% 60%)">&lt;</span><span style="color: hsl(205 100% 65%)">HumbakFile</span> <span style="color: hsl(205 100% 80%)">fid</span><span style="color: hsl(0 0% 60%)">=</span><span style="color: hsl(30 100% 65%)">"1"</span><span style="color: hsl(0 0% 60%)">&gt;</span></code>. They require a special <b>fid</b> attribute that contains the target <b>humbak file's</b> id and accept all valid html attributes, such as <em>class</em> or <em>style</em>.</p>
-	<HumbakFile fid="${pagesHumbakFileTag}"></HumbakFile>
+	<HumbakFile fid="${pagesHumbakFileTag} loading="lazy"></HumbakFile>
 </section>
 
 <section>
 	<h3>menu</h3>
 	<p>After creating pages you can manage the menu layout on the <a href="${env.ADMIN_URL}/menu" target="_blank" class="text-link">admin menu page</a>.</p>
 	<p class="indent">At the top there are: the <em>expandable and movable</em> <b>hidden pages list</b>, the <b>language select</b> and the <b>save button</b>. Below, there is the <b>menu layout editor</b> that is an interactive preview of the menu and can be used to hide and move the links around.</p>
-	<HumbakFile fid="${menuOverview}"></HumbakFile>
+	<HumbakFile fid="${menuOverview} loading="lazy"></HumbakFile>
 
 	<h4>example of using the menu layout editor</h4>
-	<HumbakFile fid="${menuMoving}"></HumbakFile>
+	<HumbakFile fid="${menuMoving} loading="lazy"></HumbakFile>
 </section>
 
 <section>
@@ -93,15 +93,15 @@ export function enHomePageContent(
 	<p class="indent">
 		In the top left corner you can find the <em>directory breadcrumbs</em> that show the current directory, the path to it and can be used to navigate directory structure. To the right of it, there are 2 buttons used to toggle between list and tile view, along with the save button.
 	</p>
-	<HumbakFile fid="${filesToggling}"></HumbakFile>
+	<HumbakFile fid="${filesToggling} loading="lazy"></HumbakFile>
 	<p class="indent">
 		Below these are all of your files with the exception of the first item that's used to create new directories and upload new files. Besides editing files and directories' attributes you can navigate to directories or delete/move files and directories. The <b>move</b> button can either be dragged to the target directory or be clicked on to open the <b>move dialog</b>.
 	</p>
-	<HumbakFile fid="${filesMoving}"></HumbakFile>
+	<HumbakFile fid="${filesMoving} loading="lazy"></HumbakFile>
 
 	<h4>move dialog</h4>
 	<p>The move dialog contains a list of directories. In case the directory you want to move a file/dir to is not in the same location you are currently in, you can use it to select a target dir and move a file there.</p>
-	<HumbakFile fid="${filesMoveDialog}"></HumbakFile>
+	<HumbakFile fid="${filesMoveDialog} loading="lazy"></HumbakFile>
 </section>
 
 <section>
@@ -110,7 +110,7 @@ export function enHomePageContent(
 	<p class="indent">
 		At the top you can select the <b>editor's</b> mode, choosing between <em>css</em> and <em>meta</em>, along with, in case of being in <em>meta</em> edit mode, choosing the target language. To the right of these selects are the <b>content formatting</b> and the <b>save</b> buttons. Below them is the <b>editor</b>.
 	</p>
-	<HumbakFile fid="${global}"></HumbakFile>
+	<HumbakFile fid="${global} loading="lazy"></HumbakFile>
 </section>
 
 <section>
@@ -119,13 +119,13 @@ export function enHomePageContent(
 	<p class="indent">
 		The first row on the page contains the <b>language select</b>, the <b>slide select</b>, in order, <b>humbak files</b>, <b>slider settings</b> and <b>content formatting</b> control buttons and the <b>clear</b> and <b>save</b> buttons. Below these is the <b>editor</b>, under which is a form for managing the current slide's attributes: name, language and visibility.
 	</p>
-	<HumbakFile fid="${sliderForm}"></HumbakFile>
+	<HumbakFile fid="${sliderForm} loading="lazy"></HumbakFile>
 	<p>Under the form are the <b>preview box</b>, showing the preview of currently edited slide, and a copy of the <b>slider</b> seen on the <a href="${env.PAGE_URL}" target="_blank" class="text-link">page</a>. Note that while the <em>preview box</em> updates in real time with current slide's <em>html</em>, the <em>slider</em> updates only after saving current changes.</p>
-	<HumbakFile fid="${sliderPreviews}"></HumbakFile>
+	<HumbakFile fid="${sliderPreviews} loading="lazy"></HumbakFile>
 
 	<h4>slider settings</h4>
 	<p>The <em>slider settings</em> control button opens the <b>slider configuration dialog</b>. Inside it, you can adjust the slider's <b>aspect ratio</b>. Note that it should be in a format that's supported by the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/calc" target="_blank" class="text-link">css calc function</a>.</p>
-	<HumbakFile fid="${sliderSettingsDialog}"></HumbakFile>
+	<HumbakFile fid="${sliderSettingsDialog} loading="lazy"></HumbakFile>
 </section>
 
 <section>
@@ -134,17 +134,17 @@ export function enHomePageContent(
 	<p class="indent">
 		At the top are the <b>language select</b> and the <b>save</b> button, below which you can find an interactive preview of the footer. In the first column you can add and edit <em>emails</em>, in the second <em>phone numbers</em> and in the last the <em>location link</em>. Below these columns, in the second row, are social links that can be edited in the <b>social dialog</b>.
 	</p>
-	<HumbakFile fid="${footerOverview}"></HumbakFile>
+	<HumbakFile fid="${footerOverview} loading="lazy"></HumbakFile>
 
 	<h4>socials dialog</h4>
 	<p>Inside of the dialog you can add and edit a select few social links that will show up at the bottom of the footer.</p>
-	<HumbakFile fid="${footerSocialsDialog}"></HumbakFile>
+	<HumbakFile fid="${footerSocialsDialog} loading="lazy"></HumbakFile>
 </section>
 
 <section>
 	<h3>settings</h3>
 	<p>Lastly, on the <a href="${env.ADMIN_URL}/settings" target="_blank" class="text-link">admin settings page</a> you can log out and change your admin's account name and password.</p>
-	<HumbakFile fid="${settings}"></HumbakFile>
+	<HumbakFile fid="${settings} loading="lazy"></HumbakFile>
 </section>`;
 }
 
@@ -211,28 +211,28 @@ export function plHomePageContent(
 
 	<h4>tabela stron</h4>
 	<p>Na samej górze <a href="${env.ADMIN_URL}" target="_blank" class="text-link">strony głównej</a> znajdują się wyszukiwarka i tabela. Tabela zawiera wszystkie utworzone strony i może być filtrowana przez wyszukiwarkę nad nią. Każda strona w tabeli ma przyciski <b>edytuj</b> oraz <b>usuń</b>.</p>
-	<HumbakFile fid="${pagesTable}"></HumbakFile>
+	<HumbakFile fid="${pagesTable} loading="lazy"></HumbakFile>
 
 	<h4>formularz strony</h4>
 	<p>Poniżej tabeli znajduje się formularz złożony z 4 pól tekstowych, <b>edytora</b> i <b>podglądu</b>. Pomiędzy <em>edytorem</em> i <em>podglądem</em> są <b>przyciki kontrolne</b>. Idąc od góry do dołu, <em>przyciski kontrolne</em> to: <b>wybór trybu edytora</b>, <b>formatowanie zawartości</b>, <b>snippety</b> i <b>Pliki Humbak</b>. Ostatni, szary przycisk po środku służy do zmieniani rozmiaru <em>edytora</em>. Na samym końcu, poniżej <b>edytora</b> są przyciski <b>wyczyść</b> i <b>zapisz</b>.</p>
-	<HumbakFile fid="${pagesForm}"></HumbakFile>
+	<HumbakFile fid="${pagesForm} loading="lazy"></HumbakFile>
 	<p>Użyj <b>wyboru trybu edytora</b> do zmieniania między edytowaniem <em>html</em>, <em>css</em> i <em>mety</em> strony. W przypadku edytowania <em>mety</em>, zawartość powinna być prawidłową JSON listą zawierającą obiekty, które zostaną zamienione w tagi meta. Przykładowo <code style="background-color: hsl(0 0% 25%); color: white; border-radius: 0.25rem; padding-block: 0.125rem; padding-inline: 0.25rem;"><span style="color: hsl(290 100% 75%)">{</span> <span style="color: hsl(205 100% 80%)">"name"</span>: <span style="color: hsl(30 100% 65%)">"description"</span>, <span style="color: hsl(205 100% 80%)">"content"</span>: <span style="color: hsl(30 100% 65%)">"Opis mojej strony"</span> <span style="color: hsl(290 100% 75%)">}</span></code> will create a tag <code style="background-color: hsl(0 0% 25%); color: white; border-radius: 0.25rem; padding-block: 0.125rem; padding-inline: 0.25rem;"><span style="color: hsl(0 0% 60%)">&lt;</span><span style="color: hsl(205 100% 65%)">meta</span> <span style="color: hsl(205 100% 80%)">name<span style="color: hsl(0 0% 60%)">=</span></span><span style="color: hsl(30 100% 65%)">"description"</span> <span style="color: hsl(205 100% 80%)">content</span><span style="color: hsl(0 0% 60%)">=</span><span style="color: hsl(30 100% 65%)">"Opis mojej strony"</span><span style="color: hsl(0 0% 60%)">&gt;</span></code>.</p>
 
 	<h4>pliki humbak</h4>
 	<p>Czwarty <em>przycisk kontrolny</em>, otwiera <b>dialog Humbak Plików</b>, w środku którego możesz wyszukiwać i przeglądać wszystkie pliki, otwierać ich podglądy oraz kopiować ich tagi HTML.</p>
-	<HumbakFile fid="${pagesHumbakFiles}"></HumbakFile>
+	<HumbakFile fid="${pagesHumbakFiles} loading="lazy"></HumbakFile>
 	<p><em>Humbak pliki</em> mogą być wgrywane na <a href="${env.ADMIN_URL}/files" target="_blank" class="text-link">stronie plików admina</a> i mają specjalne właściwości opisane w sekcji <a href="#files" class="text-link">pliki humbak</a>. Żeby ich funkcjonalność działała, w html zawartości muszą one być używane za pomocą specjalnego tagu <code style="background-color: hsl(0 0% 25%); color: white; border-radius: 0.25rem; padding-block: 0.125rem; padding-inline: 0.25rem;"><span style="color: hsl(0 0% 60%)">&lt;</span><span style="color: hsl(205 100% 65%)">HumbakFile</span> <span style="color: hsl(205 100% 80%)">fid</span><span style="color: hsl(0 0% 60%)">=</span><span style="color: hsl(30 100% 65%)">"1"</span><span style="color: hsl(0 0% 60%)">&gt;</span></code>. Te tagi wymagają atrybutu <b>fid</b> który zawiera id docelowego <b>pliku humbak</b> i akceptują wszystkie poprawne html atrybuty, takie jak <em>class</em> lub <em>style</em>.</p>
-	<HumbakFile fid="${pagesHumbakFileTag}"></HumbakFile>
+	<HumbakFile fid="${pagesHumbakFileTag} loading="lazy"></HumbakFile>
 </section>
 
 <section>
 	<h3>menu</h3>
 	<p>Po utworzeniu stron możesz zarządzać ułożeniem menu na <a href="${env.ADMIN_URL}/menu" target="_blank" class="text-link">stronie menu admina</a>.</p>
 	<p>Na samej górze znajdują się: <em>rozszerzana i ruchoma</em> <b>lista ukrytych stron</b>, <b>wybór języka</b> i <b>przycisk zapisz</b>. Poniżej jest <b>edytor układu menu</b> będący interaktywnym podglądem menu, który może być użyty do chowania i zmieniania pozycji linków menu. Żeby schować link należy przeciągnąć go do <b>listy ukrytych stron</b>. Podobnie, żeby pokazać link należy go przeciągnąć z tej samej listy do <b>edytora układu</b>.</p>
-	<HumbakFile fid="${menuOverview}"></HumbakFile>
+	<HumbakFile fid="${menuOverview} loading="lazy"></HumbakFile>
 
 	<h4>przykład używania edytora układu menu</h4>
-	<HumbakFile fid="${menuMoving}"></HumbakFile>
+	<HumbakFile fid="${menuMoving} loading="lazy"></HumbakFile>
 </section>
 
 <section>
@@ -241,16 +241,16 @@ export function plHomePageContent(
 	<p class="indent">
 		W lewym górnym rogu znajdują się <em>okruchy folderów</em>, które pokazują twój obecny folder, jego ścieżkę i mogą być użyte do nawigowania między folderami. Na prawo od nich są 2 przyciski do zmieniania widoku pomiędzy widokiem listy a kafelkami. Obok nich jest przycisk <b>zapisz</b>.
 	</p>
-	<HumbakFile fid="${filesToggling}"></HumbakFile>
+	<HumbakFile fid="${filesToggling} loading="lazy"></HumbakFile>
 	<p class="indent">
 		Poniżej powyższych wylistowane są wszystkie twoje pliki, z wyjątkiem pierwszego elementu, który służy do tworzenia nowych folderów i wgrywania nowych plików. Poza edytowaniem atrybutów plików i folderów możesz nawigować do poszczególnych folderów oraz usuwać/edytować pliki i foldery. Przycisk <b>przesuń</b> może być albo przeciągnięty i upuszczony do konkretnego folderu, albo kliknięty na żeby otworzyć <b>dialog przesuwania</b>.
 	</p>
-	<HumbakFile fid="${filesMoving}"></HumbakFile>
+	<HumbakFile fid="${filesMoving} loading="lazy"></HumbakFile>
 	<p>Zaletą używania <b>plików humbak</b> jest fakt, że zmiana tytułu/atrybutu alt lub przemieszczenie go jest na bieżąco śledzone i wszystkie strony i slajdy używane go zostaną zaktualizowane z najnowszymi danymi.</p>
 
 	<h4>dialog przesuwania</h4>
 	<p>Dialog przesuwania zawiera listę folderów. W przypadku, kiedy folder, do którego chcesz przesunąć inny plik/folder jest w innej, niż obecna, lokacji, możesz użyć go do wybrania docelowego folderu i przesunięcia do niego pliku.</p>
-	<HumbakFile fid="${filesMoveDialog}"></HumbakFile>
+	<HumbakFile fid="${filesMoveDialog} loading="lazy"></HumbakFile>
 </section>
 
 <section>
@@ -262,7 +262,7 @@ export function plHomePageContent(
 	<p class="indent">
 		Na samej górze możesz wybrać tryb <b>edytora</b>, wybierając pomiędzy <em>css</em> i <em>metą</em>. Dodatkowo, w przypadku trybu edytora będącego <em>metą</em>, możesz wybrać język, dla którego jest ona zmieniana. Na prawo od tych dwóch pól wyboru są przyciski <b>formatowania kontentu</b> i <b>zapisywania</b>. Poniżej tych elementów znajduje się <b>edytor</b>.
 	</p>
-	<HumbakFile fid="${global}"></HumbakFile>
+	<HumbakFile fid="${global} loading="lazy"></HumbakFile>
 </section>
 
 <section>
@@ -271,13 +271,13 @@ export function plHomePageContent(
 	<p class="indent">
 		Pierwszy rząd na stronie zawiera <b>wybór języka</b>, <b>wybór slajdu</b>, kolejno przyciski kontrolne <b>pliki humbak</b>, <b>ustawienia slidera</b> <b>formatowanie zawartości</b> oraz przyciski <b>wyczyść</b> i <b>zapisz</b>. Poniżej tych wszystkich elementów znajduje się <b>edytor</b>, pod którym jest formularz do zarządzania atrybutami obecnego slajdu: nazwa, język i widoczność.
 	</p>
-	<HumbakFile fid="${sliderForm}"></HumbakFile>
+	<HumbakFile fid="${sliderForm} loading="lazy"></HumbakFile>
 	<p>Poniżej formularza są <b>podgląd</b>, pokazujący wygląd obecnie edytowanego slajdu i <b>slider</b>, będący kopią slidera widocznego na <a href="${env.PAGE_URL}" target="_blank" class="text-link">stronie głównej</a>. O ile <em>podgląd</em> aktualizuje się na bieżąco z <em>html'em</em> obecnego slajdu, to <em>slider</em> aktualizuje się dopiero po zapisaniu zmian.</p>
-	<HumbakFile fid="${sliderPreviews}"></HumbakFile>
+	<HumbakFile fid="${sliderPreviews} loading="lazy"></HumbakFile>
 
 	<h4>ustawienia slidera</h4>
 	<p>Przycisk kontrolny <em>ustawień slidera</em> otwiera <b>dialog konfiguracji slidera</b>. W środku dialogu możesz zmienić <b>proporcje</b> slidera. Format wartości powinien być w formie wspieranej przez <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/calc" target="_blank" class="text-link">funkcję calc css</a>.</p>
-	<HumbakFile fid="${sliderSettingsDialog}"></HumbakFile>
+	<HumbakFile fid="${sliderSettingsDialog} loading="lazy"></HumbakFile>
 </section>
 
 <section>
@@ -286,17 +286,17 @@ export function plHomePageContent(
 	<p class="indent">
 		Na górze strony znajduje się <b>wybór języka</b> i przycisk <b>zapisz</b>, poniżej których jest interaktywny podgląd stopki. W pierwszej kolumnie można dodawać i edytować emaile, w drugiej numery telefonu a w ostatniej link lokacji. Poniżej tych kolumn, w drugim rzędzie znajdują się linki do sociali, które mogą być edytowane w <b>dialog sociali</b>.
 	</p>
-	<HumbakFile fid="${footerOverview}"></HumbakFile>
+	<HumbakFile fid="${footerOverview}" loading="lazy"></HumbakFile>
 
 	<h4>dialog sociali</h4>
 	<p>W środku dialogu możesz dodawać i edytować kilka wybranych social linków, które pokażą się na dole stopki.</p>
-	<HumbakFile fid="${footerSocialsDialog}"></HumbakFile>
+	<HumbakFile fid="${footerSocialsDialog}" loading="lazy"></HumbakFile>
 </section>
 
 <section>
 	<h3>ustawienia</h3>
 	<p>Na samym końcu, na <a href="${env.ADMIN_URL}/settings" target="_blank" class="text-link">stronie ustawień admina</a> możesz się wylogować lub zmienić swoją nazwę użytkownika i hasło.</p>
-	<HumbakFile fid="${settings}"></HumbakFile>
+	<HumbakFile fid="${settings}" loading="lazy"></HumbakFile>
 </section>
 `;
 }
