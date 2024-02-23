@@ -88,7 +88,7 @@ export function enHomePageContent(
 </section>
 
 <section>
-	<h3 id="files">files</h3>
+	<h3 id="files" style="scroll-margin-top: 4rem;">files</h3>
 	<p><b>Humbak files</b> can be uploaded and managed on the <a href="${env.ADMIN_URL}/files" target="_blank" class="text-link">admin files page</a>.</p>
 	<p class="indent">
 		In the top left corner you can find the <em>directory breadcrumbs</em> that show the current directory, the path to it and can be used to navigate directory structure. To the right of it, there are 2 buttons used to toggle between list and tile view, along with the save button.
@@ -236,7 +236,7 @@ export function plHomePageContent(
 </section>
 
 <section>
-	<h3>pliki</h3>
+	<h3 id="#files" style="scroll-margin-top: 4rem;">pliki</h3>
 	<p><b>Pliki humbak</b> mogą być wgrywane i zarządzane na <a href="${env.ADMIN_URL}/files" target="_blank" class="text-link">stronie plików admina</a>.</p>
 	<p class="indent">
 		W lewym górnym rogu znajdują się <em>okruchy folderów</em>, które pokazują twój obecny folder, jego ścieżkę i mogą być użyte do nawigowania między folderami. Na prawo od nich są 2 przyciski do zmieniania widoku pomiędzy widokiem listy a kafelkami. Obok nich jest przycisk <b>zapisz</b>.
