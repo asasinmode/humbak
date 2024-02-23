@@ -5,21 +5,15 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="icon" href="/favicon.ico">
 	<title>api - Humbak</title>
-	<script>
-		const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-		const setting = localStorage.getItem('color-scheme') || 'auto';
-
-		if (setting === 'dark' || (prefersDark && setting !== 'light')) {
-			document.documentElement.classList.toggle('dark', true);
-		}
-	</script>
 	<style>
 		body {
 			background-color: #fafafa;
 			min-height: 100vh;
 			color-scheme: light;
 			margin: 0;
-			font-family:Atkinson Hyperlegible,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji"
+			font-family:Atkinson Hyperlegible,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji";
+			display: grid;
+			place-items: center;
 		}
 		.dark body {
 			background-color: #171717;
@@ -34,9 +28,22 @@
 			src:url(https://fonts.bunny.net/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-normal.woff2) format("woff2"),
 				url(https://fonts.bunny.net/atkinson-hyperlegible/files/atkinson-hyperlegible-latin-400-normal.woff) format("woff");
 		}
+		h1 {
+			margin: 0;
+			font-size: clamp(3rem, 1.5714rem + 7.1429vi, 8rem);
+			text-align: center;
+		}
 	</style>
+	<script>
+		const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+		const setting = localStorage.getItem('color-scheme') || 'auto';
+
+		if (setting === 'dark' || (prefersDark && setting !== 'light')) {
+			document.documentElement.classList.toggle('dark', true);
+		}
+	</script>
 </head>
 <body>
-	<h1>hello</h1>
+	<h1>humbak api</h1>
 </body>
 </html>
