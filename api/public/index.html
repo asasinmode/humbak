@@ -35,6 +35,7 @@
 			font-size: clamp(3rem, 1.5714rem + 7.1429vi, 8rem);
 			text-align: center;
 			pointer-events: none;
+			transform: translateY(-0.5rem);
 		}
 		canvas {
 			width: 100%;
@@ -55,8 +56,57 @@
 	<h1>humbak api</h1>
 	<script>
 		const canvas = document.getElementById('canvas');
+		const ctx = canvas.getContext('2d');
 
-		console.log('canvas', canvas);
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+
+		window.addEventListener('click', (event) => ripples.push(new Ripple(event.clientX, event.clientY)));
+		window.addEventListener('resize', () => {
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+		})
+
+		const ripples = [];
+
+		function animate() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+			for (const ripple of ripples) {
+				ripple.draw();
+			}
+
+			requestAnimationFrame(animate);
+		}
+
+		animate();
+
+		class Ripple {
+			constructor(x = randomInt(canvas.width), y = randomInt(canvas.height)) {
+				this.x = x;
+				this.y = y;
+				this.size = 10;
+				this.timestamp = Date.now();
+
+				setTimeout(() => {
+					const index = ripples.findIndex(ripple => ripple.timestamp = this.timestamp);
+					if (index !== -1) {
+						ripples.splice(index, 1);
+					}
+				}, 100)
+			}
+
+			draw() {
+				ctx.beginPath();
+				ctx.arc(this.x, this.y, 5, 0, 2 * Math.PI);
+				ctx.fillStyle = 'red';
+				ctx.fill();
+			}
+		}
+
+		function randomInt(max) {
+			return Math.floor(Math.random() * (max + 1));
+		}
 	</script>
 </body>
 </html>
