@@ -95,22 +95,22 @@
 				this.x = x;
 				this.y = y;
 				this.timestamp = performance.now();
-				this.speed = randomInt(1, 10) / 100;
 				this.size = 3;
 	
-				const fillRandom = Math.random();
-				this.fill = fillRandom < 0.33
+				const colorRandom = Math.random();
+				this.color = colorRandom < 0.33
 					? 'hsl(205 100% 65%'
-					: fillRandom < 0.66
+					: colorRandom < 0.66
 						? 'hsl(205 100% 70%'
 						: 'hsl(205 100% 75%'
 				
-				const lifespan = randomInt(2000, 5000);
+				const speed = randomInt(3, 7);
+				this.speed = speed / 600;
 
 				setTimeout(() => {
 					this.disappearIn = randomInt(300, 700);
 					this.disappearProgression = 0;
-				}, lifespan)
+				}, randomInt(speed * 700, speed * 900))
 			}
 
 			draw(msPassed) {
@@ -130,8 +130,9 @@
 	
 				ctx.beginPath();
 				ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
-				ctx.fillStyle = this.fill + fillSuffix;
-				ctx.fill();
+				ctx.strokeStyle = this.color + fillSuffix;
+				ctx.lineWidth = 2;
+				ctx.stroke();
 			}
 		}
 
