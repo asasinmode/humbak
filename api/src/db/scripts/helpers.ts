@@ -12,7 +12,13 @@ export function enHomePageContent(
 		filesMoving,
 		filesMoveDialog,
 		global,
+		sliderForm,
+		sliderPreviews,
+		sliderSettingsDialog,
 	]: [
+		number,
+		number,
+		number,
 		number,
 		number,
 		number,
@@ -107,19 +113,13 @@ export function enHomePageContent(
 	<p class="indent">
 		The first row on the page contains the <b>language select</b>, the <b>slide select</b>, in order, <b>humbak files</b>, <b>slider settings</b> and <b>content formatting</b> control buttons and the <b>clear</b> and <b>save</b> buttons. Below these is the <b>editor</b>, under which is a form for managing the current slide's attributes: name, language and visibility.
 	</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		slider page placeholder
-	</div>
+	<HumbakFile fid="${sliderForm}"></HumbakFile>
 	<p>Under the form are the <b>preview box</b>, showing the preview of currently edited slide, and a copy of the <b>slider</b> seen on the <a href="${env.PAGE_URL}" target="_blank" class="text-link">page</a>. Note that while the <em>preview box</em> updates in real time with current slide's <em>html</em>, the <em>slider</em> updates only after saving current changes.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		slider page previes placeholder
-	</div>
+	<HumbakFile fid="${sliderPreviews}"></HumbakFile>
 
 	<h4>slider settings</h4>
 	<p>The <em>slider settings</em> control button opens the <b>slider configuration dialog</b>. Inside it, you can adjust the slider's <b>aspect ratio</b>. Note that it should be in a format that's supported by the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/calc" target="_blank" class="text-link">css calc function</a>.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		slider settings dialog placeholder
-	</div>
+	<HumbakFile fid="${sliderSettingsDialog}"></HumbakFile>
 </section>
 
 <section>
@@ -160,7 +160,13 @@ export function plHomePageContent(
 		filesMoving,
 		filesMoveDialog,
 		global,
+		sliderForm,
+		sliderPreviews,
+		sliderSettingsDialog,
 	]: [
+		number,
+		number,
+		number,
 		number,
 		number,
 		number,
@@ -259,19 +265,13 @@ export function plHomePageContent(
 	<p class="indent">
 		Pierwszy rząd na stronie zawiera <b>wybór języka</b>, <b>wybór slajdu</b>, kolejno przyciski kontrolne <b>pliki humbak</b>, <b>ustawienia slidera</b> <b>formatowanie zawartości</b> oraz przyciski <b>wyczyść</b> i <b>zapisz</b>. Poniżej tych wszystkich elementów znajduje się <b>edytor</b>, pod którym jest formularz do zarządzania atrybutami obecnego slajdu: nazwa, język i widoczność.
 	</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		slider page placeholder
-	</div>
+	<HumbakFile fid="${sliderForm}"></HumbakFile>
 	<p>Poniżej formularza są <b>podgląd</b>, pokazujący wygląd obecnie edytowanego slajdu i <b>slider</b>, będący kopią slidera widocznego na <a href="${env.PAGE_URL}" target="_blank" class="text-link">stronie głównej</a>. O ile <em>podgląd</em> aktualizuje się na bieżąco z <em>html'em</em> obecnego slajdu, to <em>slider</em> aktualizuje się dopiero po zapisaniu zmian.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		slider page previews placeholder
-	</div>
+	<HumbakFile fid="${sliderPreviews}"></HumbakFile>
 
 	<h4>ustawienia slidera</h4>
 	<p>Przycisk kontrolny <em>ustawień slidera</em> otwiera <b>dialog konfiguracji slidera</b>. W środku dialogu możesz zmienić <b>proporcje</b> slidera. Format wartości powinien być w formie wspieranej przez <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/calc" target="_blank" class="text-link">funkcję calc css</a>.</p>
-	<div class="flex-center" style="background-color: orange; height: 40px;">
-		slider settings dialog placeholder
-	</div>
+	<HumbakFile fid="${sliderSettingsDialog}"></HumbakFile>
 </section>
 
 <section>

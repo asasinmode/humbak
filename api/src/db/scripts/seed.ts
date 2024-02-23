@@ -643,7 +643,7 @@ const [
 			name: 'global-en.png',
 			path: '/home/global/global-en.png',
 			title: 'global page',
-			alt: 'global page with css editor',
+			alt: 'css editor on page global',
 			mimetype: 'image/png',
 		},
 		true
@@ -655,7 +655,105 @@ const [
 			name: 'global-pl.png',
 			path: '/home/global/global-pl.png',
 			title: 'strona global',
-			alt: 'strona global z edytorem css',
+			alt: 'edytor css na stronie global',
+			mimetype: 'image/png',
+		},
+		true
+	),
+]);
+
+await mkdir(`${filesStoragePath}/home/slider-en`);
+const [{ insertId: sliderEnDirId }] = await db.insert(directories).values({
+	name: 'slider-en',
+	path: '/home/slider-en',
+	parentId: homeDirId,
+});
+const [
+	sliderFormEnImgId,
+	sliderPreviewsEnImgId,
+	sliderSettingsDialogEnImgId,
+] = await Promise.all([
+	createFile(
+		{
+			url: './assets/slider-form-en.png',
+			directoryId: sliderEnDirId,
+			name: 'form.png',
+			path: '/home/slider-en/form.png',
+			title: 'slide form',
+			alt: 'slide form with html editor and slide attributes inputs',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/slider-previews-en.png',
+			directoryId: sliderEnDirId,
+			name: 'previews.png',
+			path: '/home/slider-en/previews.png',
+			title: 'slider previews',
+			alt: 'single slide and whole slider previews',
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/slider-settings-dialog-en.png',
+			directoryId: sliderEnDirId,
+			name: 'settings-dialog.png',
+			path: '/home/slider-en/settings-dialog.png',
+			title: 'slider settings dialog',
+			alt: 'slider settings dialog with aspect ratio input',
+			mimetype: 'image/png',
+		},
+		true
+	),
+]);
+
+await mkdir(`${filesStoragePath}/home/slider-pl`);
+const [{ insertId: sliderPlDirId }] = await db.insert(directories).values({
+	name: 'slider-pl',
+	path: '/home/slider-pl',
+	parentId: homeDirId,
+});
+const [
+	sliderFormPlImgId,
+	sliderPreviewsPlImgId,
+	sliderSettingsDialogPlImgId,
+] = await Promise.all([
+	createFile(
+		{
+			url: './assets/slider-form-pl.png',
+			directoryId: sliderPlDirId,
+			name: 'form.png',
+			path: '/home/slider-pl/form.png',
+			title: 'formularz slidera',
+			alt: "formularz html slide'u z polami atrybutów slide'u",
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/slider-previews-pl.png',
+			directoryId: sliderPlDirId,
+			name: 'previews.png',
+			path: '/home/slider-pl/previews.png',
+			title: 'podgląd slidera',
+			alt: "podgląd pojedynczego slide'u i całego slidera",
+			mimetype: 'image/png',
+		},
+		true
+	),
+	createFile(
+		{
+			url: './assets/slider-settings-dialog-pl.png',
+			directoryId: sliderPlDirId,
+			name: 'settings-dialog.png',
+			path: '/home/slider-pl/settings-dialog.png',
+			title: 'dialog ustawień slidera',
+			alt: 'dialog ustawień slidera z polem aspect ratio',
 			mimetype: 'image/png',
 		},
 		true
@@ -680,6 +778,9 @@ const enHomePageId = await createPage({
 		filesMovingEnImgId,
 		filesMoveDialogEnImgId,
 		globalEnImgId,
+		sliderFormEnImgId,
+		sliderPreviewsEnImgId,
+		sliderSettingsDialogEnImgId,
 	]),
 });
 const plHomePageId = await createPage({
@@ -700,6 +801,9 @@ const plHomePageId = await createPage({
 		filesMovingPlImgId,
 		filesMoveDialogPlImgId,
 		globalPlImgId,
+		sliderFormPlImgId,
+		sliderPreviewsPlImgId,
+		sliderSettingsDialogPlImgId,
 	]),
 });
 
