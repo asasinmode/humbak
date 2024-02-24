@@ -94,18 +94,20 @@
 			constructor(
 				x = randomInt(0, canvas.width),
 				y = randomInt(0, canvas.height),
-				speed = randomInt(3, 7),
-				disappearIn = randomInt(500, 700),
-				lifespan = randomInt(speed * 600, speed * 900),
+				size = randomInt(2, 5),
+				sizeModifier = randomInt(6, 10),
+				lifespan = size * sizeModifier * randomInt(90, 120),
+				disappearIn = randomInt(500, 800),
 				noChildren = false,
 				idModifier = ''
 			) {
 				this.x = x;
 				this.y = y;
 				this.id = performance.now() + idModifier;
-				this.lifespan = lifespan;
 				this.timeAlive = 0;
-				this.size = 1;
+				this.lifespan = lifespan;
+				this.disappearIn = disappearIn;
+				this.size = size * sizeModifier;
 	
 				const colorRandom = Math.random();
 				this.color = colorRandom < 0.33
@@ -114,24 +116,25 @@
 						? 'hsl(205 100% 70%'
 						: 'hsl(205 100% 75%'
 				
-				this.disappearIn = disappearIn
-				this.speed = speed / 600;
+				if (noChildren) {
+					return;
+				}
 
-				const childRipples = Math.max(0, speed - 5) + 1;
+				const childRipples = Math.max(0, size - 3) + 1;
 
-				if (!noChildren) {
-					for (let i = 1; i < childRipples; i++) {
-						const delay = i * randomInt(speed * 250, speed * 280);
-						setTimeout(() => ripples.push(new Ripple(
-							this.x,
-							this.y,
-							speed - i * 1.5,
-							this.disappearIn,
-							lifespan - i * (this.disappearIn + 300),
-							true,
-							`${i}`
-						)), delay)
-					}
+				for (let i = 1; i < childRipples; i++) {
+					const delay = randomInt(4, 6) * 180;
+
+					setTimeout(() => ripples.push(new Ripple(
+						x,
+						y,
+						size - i,
+						sizeModifier / Math.pow(1.25, i + i),
+						lifespan - i * (delay - 150),
+						disappearIn,
+						true,
+						`${i}`
+					)), i * delay)
 				}
 			}
 
@@ -149,10 +152,11 @@
 					fillSuffix = `/ ${percentage})`;
 				}
 
-				this.size += this.speed * msPassed;
+				const percentage = this.timeAlive / this.lifespan;
+				const size = percentage * this.size;
 	
 				ctx.beginPath();
-				ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+				ctx.arc(this.x, this.y, size, 0, 2 * Math.PI);
 				ctx.strokeStyle = this.color + fillSuffix;
 				ctx.lineWidth = 2;
 				ctx.stroke();
@@ -164,11 +168,15 @@
 			setTimeout(randomRipple, randomInt(1250, 2500));
 		}
 
-		randomRipple();
-		setTimeout(randomRipple, 500)
+		// randomRipple();
+		// setTimeout(randomRipple, 500)
 
 		function randomInt(min, max) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+
+		function easeOutCubic(value) {
+			return 1 - Math.pow(1 - value, 3);
 		}
 	</script>
 </body>
