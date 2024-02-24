@@ -76,7 +76,7 @@ export function getPathWithoutExtension(path: string) {
 
 export async function imageWithSameNameExists(path: string, name: string, mimetype: string) {
 	if (isMimetypeWithSizes(mimetype)) {
-		name = getPathWithoutExtension(name);
+		name = `${getPathWithoutExtension(name)}.`;
 	}
 	const nameLength = name.length;
 
