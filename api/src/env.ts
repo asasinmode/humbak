@@ -1,6 +1,6 @@
 import process from 'node:process';
 import { config } from 'dotenv';
-import { coerce, integer, number, object, parse, picklist, string } from 'valibot';
+import { coerce, integer, number, object, optional, parse, picklist, string } from 'valibot';
 
 config({
 	path: process.env.NODE_ENV === 'test'
@@ -15,7 +15,7 @@ const schema = object({
 	PORT: coerce(number([integer()]), Number),
 	DATABASE_URL: string(),
 	DATABASE_NAME: string(),
-	API_URL: string(),
+	API_URL: optional(string()),
 	ADMIN_URL: string(),
 	PAGE_URL: string(),
 	FILES_PATH: string(),
