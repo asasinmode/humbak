@@ -56,3 +56,36 @@ The fourth _control button_, opens the **humbak files dialog**, inside of which 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/pages-humbak-files-en.png" title="humbak files dialog" alt="dialog with list of files">
 
 _Humbak files_ can be uploaded on the files page and have some special features that are described in the humbak files section. To make their features work, inside the page html you use them through a special tag `<HumbakFile fid="1">`. They require a special **fid** attribute that contains the target _humbak file's_ id and accept all valid html attributes, such as _class_ or _style_.
+
+# menu
+
+After creating pages you can manage the menu layout on the admin menu page.
+
+At the top there are: the expandable and movable **hidden pages list**, the **language select** and the **save button**. Below, there is the **menu layout editor** that is an interactive preview of the menu and can be used to hide and move the links around.
+
+<img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/menu-en.png" title="menu page" alt="menu page with interactive preview for editing the layout">
+
+## example of using the menu layout editor
+
+<img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/menu-en.gif" title="menu page using" alt="menu page moving items using the interactive preview">
+
+# files
+
+**Humbak files** can be uploaded and managed on the admin files page.
+
+In the top left corner you can find the **directory breadcrumbs** that show the current directory, the path to it and can be used to navigate directory structure. To the right of it, there are 2 buttons used to toggle between **list** and **tile** view, along with the **save button**.
+
+<img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/files-move-dialog-en.png" title="toggling view" alt="toggling files view between list and tiles">
+
+Below these are all of your files with the exception of the first item that's used to create new directories and upload new files. Besides editing files and directories' attributes you can navigate to directories or delete/move files and directories. The **move** button can either be dragged to the target directory or be clicked on to open the **move dialog**.
+
+<img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/files-toggling-view-en.gif" title="moving files" alt="moving files and directories">
+
+## move dialog
+
+The move dialog contains a list of directories. In case the directory you want to move a file/dir to is not in the same location you are currently in, you can use it to select a target dir and move a file there.
+
+<img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/files-move-dialog-en.png" title="move dialog" alt="dialog with list of dirs to choose from">
+
+# global
+<img src="" title="" alt="">
