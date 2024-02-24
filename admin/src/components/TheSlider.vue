@@ -116,7 +116,7 @@ defineExpose({
 			<div class="blaze-container h-full">
 				<div class="blaze-track-container h-full">
 					<div class="blaze-track h-full">
-						<div v-for="slide in slides" :key="slide.id" class="h-full w-full" v-html="slide.content" />
+						<div v-for="slide in slides" :key="slide.id" class="h-full w-full relative" v-html="slide.content" />
 					</div>
 				</div>
 
