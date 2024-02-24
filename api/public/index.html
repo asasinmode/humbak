@@ -68,7 +68,7 @@
 		})
 
 		let ripples = [];
-		let timestampsToRemove = [];
+		let idsToRemove = [];
 		let lastFrameTime = performance.now();
 
 		function animate() {
@@ -79,9 +79,9 @@
 			for (const ripple of ripples) {
 				ripple.draw(msPassed);
 			}
-			if (timestampsToRemove.length) {
-				ripples = ripples.filter(ripple => !timestampsToRemove.includes(ripple.timestamp));
-				timestampsToRemove = [];
+			if (idsToRemove.length) {
+				ripples = ripples.filter(ripple => !idsToRemove.includes(ripple.id));
+				idsToRemove = [];
 			}
 
 			lastFrameTime = currentTime;
@@ -91,11 +91,18 @@
 		animate();
 
 		class Ripple {
-			constructor(x = randomInt(0, canvas.width), y = randomInt(0, canvas.height)) {
+			constructor(
+				x = randomInt(0, canvas.width),
+				y = randomInt(0, canvas.height),
+				speed = randomInt(3, 7),
+				disappearIn = randomInt(500, 700),
+				lifespan = randomInt(speed * 600, speed * 900),
+				noChildren = false
+			) {
 				this.x = x;
 				this.y = y;
-				this.timestamp = performance.now();
-				this.size = 3;
+				this.id = performance.now();
+				this.size = 1;
 	
 				const colorRandom = Math.random();
 				this.color = colorRandom < 0.33
@@ -104,22 +111,37 @@
 						? 'hsl(205 100% 70%'
 						: 'hsl(205 100% 75%'
 				
-				const speed = randomInt(3, 7);
+				this.disappearIn = disappearIn
 				this.speed = speed / 600;
 
 				setTimeout(() => {
-					this.disappearIn = randomInt(300, 700);
 					this.disappearProgression = 0;
-				}, randomInt(speed * 700, speed * 900))
+				}, lifespan)
+
+				const childRipples = Math.max(0, speed - 5) + 1;
+
+				if (!noChildren) {
+					for (let i = 1; i < childRipples; i++) {
+						const delay = i * randomInt(speed * 250, speed * 280);
+						setTimeout(() => ripples.push(new Ripple(
+							this.x,
+							this.y,
+							speed - i * 1.5,
+							this.disappearIn,
+							lifespan - i * (this.disappearIn + 300),
+							true)
+						), delay)
+					}
+				}
 			}
 
 			draw(msPassed) {
 				let fillSuffix = ')';
 
-				if (this.disappearIn) {
+				if (this.disappearProgression !== undefined) {
 					this.disappearProgression += msPassed;
 					if (this.disappearProgression >= this.disappearIn) {
-						timestampsToRemove.push(this.timestamp);
+						idsToRemove.push(this.id);
 						return;
 					}
 					const percentage = Math.max(0, 1 - this.disappearProgression / this.disappearIn);
@@ -137,7 +159,7 @@
 		}
 
 		function randomRipple() {
-			ripples.push(new Ripple(randomInt(0, canvas.width), randomInt(0, canvas.height)));
+			ripples.push(new Ripple());
 			setTimeout(randomRipple, randomInt(1250, 2500));
 		}
 
