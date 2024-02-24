@@ -131,8 +131,8 @@
 						y,
 						size - i,
 						sizeModifier * (3 - i) / 3,
-						lifespan - i * delay + 100,
-						disappearDuration - i * 30,
+						lifespan - (i * delay - 150),
+						disappearDuration,
 						true,
 						`${i}`
 					)), i * delay);
@@ -143,18 +143,19 @@
 				this.timeAlive += msPassed;
 				let fillSuffix = ')';
 
-				const disappearTime = this.timeAlive - this.lifespan + this.disappearDuration + 15 * this.size;
+				const disappearTime = this.timeAlive - this.lifespan + this.disappearDuration + 5 * this.size;
 				if (disappearTime > 0) {
 					if (disappearTime >= this.disappearDuration) {
 						idsToRemove.push(this.id);
 						return;
 					}
-					const percentage = Math.max(0, 1 - disappearTime / this.disappearDuration);
-					fillSuffix = `/ ${percentage})`;
+					const x = Math.max(0, 1 - disappearTime / this.disappearDuration);
+					const percentage = 1 - Math.cos((x * Math.PI) / 2);
+					fillSuffix = `/ ${x})`;
 				}
 
 				const percentage = this.timeAlive / this.lifespan;
-				const size = easeOutSine(percentage) * this.size;
+				const size = Math.sin((percentage * Math.PI) / 2) * this.size
 	
 				ctx.beginPath();
 				ctx.arc(this.x, this.y, size, 0, 2 * Math.PI);
@@ -174,10 +175,6 @@
 
 		function randomInt(min, max) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
-		}
-
-		function easeOutSine(x) {
-			return Math.sin((x * Math.PI) / 2);
 		}
 	</script>
 </body>
