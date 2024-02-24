@@ -111,15 +111,18 @@
 }
 
 /* HEADINGS */
-#content section h1 {
+#content section h1,
+#content h1 {
 	@apply text-3xl text-center font-bold my-3;
 }
 
-#content section h1:first-child {
+#content section h1:first-child,
+#content h1:first-child {
 	@apply mt-0;
 }
 
-#content section h1:not(:first-child) {
+#content section h1:not(:first-child),
+#content h1:not(:first-child) {
 	@apply mt-5;
 }
 
