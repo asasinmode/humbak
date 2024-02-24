@@ -36,6 +36,7 @@
 			text-align: center;
 			pointer-events: none;
 			transform: translateY(-0.5rem);
+			text-shadow: 2px 2px 10px hsl(0 0% 0% / 0.4);
 		}
 		canvas {
 			width: 100%;
@@ -97,7 +98,7 @@
 				size = randomInt(2, 5),
 				sizeModifier = randomInt(6, 10),
 				lifespan = size * sizeModifier * randomInt(50, 70),
-				disappearIn = randomInt(500, 800),
+				disappearDuration = randomInt(500, 800),
 				noChildren = false,
 				idModifier = ''
 			) {
@@ -106,8 +107,9 @@
 				this.id = performance.now() + idModifier;
 				this.timeAlive = 0;
 				this.lifespan = lifespan;
-				this.disappearIn = disappearIn;
+				this.disappearDuration = disappearDuration;
 				this.size = size * sizeModifier;
+				this.lineWidth = 1 + size / 4;
 	
 				const colorRandom = Math.random();
 				this.color = colorRandom < 0.33
@@ -129,11 +131,11 @@
 						y,
 						size - i,
 						sizeModifier * (3 - i) / 3,
-						lifespan - i * (delay - 150),
-						disappearIn,
+						lifespan - i * delay + 100,
+						disappearDuration - i * 30,
 						true,
 						`${i}`
-					)), i * delay)
+					)), i * delay);
 				}
 			}
 
@@ -141,23 +143,23 @@
 				this.timeAlive += msPassed;
 				let fillSuffix = ')';
 
-				const disappearTime = this.timeAlive - this.lifespan;
+				const disappearTime = this.timeAlive - this.lifespan + this.disappearDuration + 15 * this.size;
 				if (disappearTime > 0) {
-					if (disappearTime >= this.disappearIn) {
+					if (disappearTime >= this.disappearDuration) {
 						idsToRemove.push(this.id);
 						return;
 					}
-					const percentage = Math.max(0, 1 - disappearTime / this.disappearIn);
+					const percentage = Math.max(0, 1 - disappearTime / this.disappearDuration);
 					fillSuffix = `/ ${percentage})`;
 				}
 
 				const percentage = this.timeAlive / this.lifespan;
-				const size = percentage * this.size;
+				const size = easeOutSine(percentage) * this.size;
 	
 				ctx.beginPath();
 				ctx.arc(this.x, this.y, size, 0, 2 * Math.PI);
 				ctx.strokeStyle = this.color + fillSuffix;
-				ctx.lineWidth = 2;
+				ctx.lineWidth = this.lineWidth;
 				ctx.stroke();
 			}
 		}
@@ -168,14 +170,14 @@
 		}
 
 		randomRipple();
-		setTimeout(randomRipple, 500)
+		setTimeout(randomRipple, 300);
 
 		function randomInt(min, max) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
 		}
 
-		function easeOutCubic(value) {
-			return 1 - Math.pow(1 - value, 3);
+		function easeOutSine(x) {
+			return Math.sin((x * Math.PI) / 2);
 		}
 	</script>
 </body>
