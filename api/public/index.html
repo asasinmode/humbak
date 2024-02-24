@@ -96,7 +96,7 @@
 				y = randomInt(0, canvas.height),
 				size = randomInt(2, 5),
 				sizeModifier = randomInt(6, 10),
-				lifespan = size * sizeModifier * randomInt(90, 120),
+				lifespan = size * sizeModifier * randomInt(50, 70),
 				disappearIn = randomInt(500, 800),
 				noChildren = false,
 				idModifier = ''
@@ -123,13 +123,13 @@
 				const childRipples = Math.max(0, size - 3) + 1;
 
 				for (let i = 1; i < childRipples; i++) {
-					const delay = randomInt(4, 6) * 180;
+					const delay = lifespan / 5;
 
 					setTimeout(() => ripples.push(new Ripple(
 						x,
 						y,
 						size - i,
-						sizeModifier / Math.pow(1.25, i + i),
+						sizeModifier * (3 - i) / 3,
 						lifespan - i * (delay - 150),
 						disappearIn,
 						true,
@@ -168,8 +168,8 @@
 			setTimeout(randomRipple, randomInt(1250, 2500));
 		}
 
-		// randomRipple();
-		// setTimeout(randomRipple, 500)
+		randomRipple();
+		setTimeout(randomRipple, 500)
 
 		function randomInt(min, max) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;
