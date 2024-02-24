@@ -35,13 +35,14 @@ The **humbak** cms is made out of 3 pages: [api](https://github.com/asasinmode/h
 ## content
 
 The cms' main feature is creating pages, which can be done on the admin home page. Once there, you can browse and search all the pages and edit their _content_, _css_ and _meta_.
-pages table
+
+### pages table
 
 Located at the top are the home page are a search input and a table. The table contains all the created pages and can be filtered using the input above it. Each page has **edit** and **delete** buttons.
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/pages-table-en.png" title="pages table" alt="pages table on admin page">
 
-## page form
+### page form
 
 Below the table there is a form consisting of 4 text fields, the **editor** and the **preview box**. Between the _editor_ and the _preview box_ are **control buttons**. Going from top to bottom, the _control buttons_ are: **editor mode select**, **content formatting**, **snippets** and **Humbak Files**. The last, gray button in the middle can be used to resize the _editor_. Lastly, below the _editor_ there are the **clear** and **save** buttons.
 
@@ -49,7 +50,7 @@ Below the table there is a form consisting of 4 text fields, the **editor** and 
 
 Use the editor mode select to switch between editing page's _html_, _css_ and _meta_. Note that _meta_ should be a valid JSON array containing objects that will be mapped to meta tags, for example `{ "name": "description", "content": "My page's description" }` will create a tag `<meta name="description" content="My page's description">`.
 
-## humbak files
+### humbak files
 
 The fourth _control button_, opens the **humbak files dialog**, inside of which you can browse and search all of your files and open their preview or copy their html tag.
 
@@ -57,7 +58,7 @@ The fourth _control button_, opens the **humbak files dialog**, inside of which 
 
 _Humbak files_ can be uploaded on the files page and have some special features that are described in the humbak files section. To make their features work, inside the page html you use them through a special tag `<HumbakFile fid="1">`. They require a special **fid** attribute that contains the target _humbak file's_ id and accept all valid html attributes, such as _class_ or _style_.
 
-# menu
+## menu
 
 After creating pages you can manage the menu layout on the admin menu page.
 
@@ -65,11 +66,11 @@ At the top there are: the expandable and movable **hidden pages list**, the **la
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/menu-en.png" title="menu page" alt="menu page with interactive preview for editing the layout">
 
-## example of using the menu layout editor
+### example of using the menu layout editor
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/menu-en.gif" title="menu page using" alt="menu page moving items using the interactive preview">
 
-# files
+## files
 
 **Humbak files** can be uploaded and managed on the admin files page.
 
@@ -81,13 +82,13 @@ Below these are all of your files with the exception of the first item that's us
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/files-toggling-view-en.gif" title="toggling view" alt="toggling files view between list and tiles">
 
-## move dialog
+### move dialog
 
 The move dialog contains a list of directories. In case the directory you want to move a file/dir to is not in the same location you are currently in, you can use it to select a target dir and move a file there.
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/files-move-dialog-en.png" title="move dialog" alt="dialog with list of dirs to choose from">
 
-# global
+## global
 
 While on the admin home page you can edit _css_ and _meta_ specific to each page, the admin global page is used to manage _css_ and _meta_ shared between all pages (with _meta_ being language-specific).
 
@@ -95,7 +96,7 @@ At the top you can select the editor's mode, choosing between css and meta, alon
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/global-en.png" title="global page" alt="css editor on page global">
 
-# slider
+## slider
 
 The **slider** seen at the top of all of your pages can be configured on the admin slider page.
 
@@ -107,13 +108,13 @@ Under the form are the **preview box**, showing the preview of currently edited 
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/slider-previews-en.png" title="slider previews" alt="single slide and whole slider previews">
 
-## slider settings
+### slider settings
 
 The _slider settings_ control button opens the **slider configuration dialog**. Inside it, you can adjust the slider's **aspect ratio**. Note that it should be in a format that's supported by the [css calc function](https://developer.mozilla.org/en-US/docs/Web/CSS/calc).
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/slider-settings-dialog-en.png" title="slider settings dialog" alt="slider settings dialog with aspect ratio input">
 
-# footer
+## footer
 
 Similarly to the **slider**, the **footer** can be edited on the admin footer page.
 
@@ -121,13 +122,13 @@ At the top are the **language select** and the **save button**, below which you 
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/footer-en.png" title="footer overview" alt="footer admin page with an interactive editor">
 
-## socials dialog
+### socials dialog
 
 Inside of the dialog you can add and edit a select few _social links_ that will show up at the bottom of the footer.
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/footer-socials-en.png" title="socials dialog" alt="footer socials dialog with social links editor">
 
-# settings
+## settings
 
 Lastly, on the admin settings page you can log out and change your admin's account name and password.
 
