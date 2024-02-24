@@ -97,11 +97,14 @@
 				speed = randomInt(3, 7),
 				disappearIn = randomInt(500, 700),
 				lifespan = randomInt(speed * 600, speed * 900),
-				noChildren = false
+				noChildren = false,
+				idModifier = ''
 			) {
 				this.x = x;
 				this.y = y;
-				this.id = performance.now();
+				this.id = performance.now() + idModifier;
+				this.lifespan = lifespan;
+				this.timeAlive = 0;
 				this.size = 1;
 	
 				const colorRandom = Math.random();
@@ -114,10 +117,6 @@
 				this.disappearIn = disappearIn
 				this.speed = speed / 600;
 
-				setTimeout(() => {
-					this.disappearProgression = 0;
-				}, lifespan)
-
 				const childRipples = Math.max(0, speed - 5) + 1;
 
 				if (!noChildren) {
@@ -129,22 +128,24 @@
 							speed - i * 1.5,
 							this.disappearIn,
 							lifespan - i * (this.disappearIn + 300),
-							true)
-						), delay)
+							true,
+							`${i}`
+						)), delay)
 					}
 				}
 			}
 
 			draw(msPassed) {
+				this.timeAlive += msPassed;
 				let fillSuffix = ')';
 
-				if (this.disappearProgression !== undefined) {
-					this.disappearProgression += msPassed;
-					if (this.disappearProgression >= this.disappearIn) {
+				const disappearTime = this.timeAlive - this.lifespan;
+				if (disappearTime > 0) {
+					if (disappearTime >= this.disappearIn) {
 						idsToRemove.push(this.id);
 						return;
 					}
-					const percentage = Math.max(0, 1 - this.disappearProgression / this.disappearIn);
+					const percentage = Math.max(0, 1 - disappearTime / this.disappearIn);
 					fillSuffix = `/ ${percentage})`;
 				}
 
