@@ -484,7 +484,7 @@ const [
 			name: 'overview-en.png',
 			path: '/home/menu/overview-en.png',
 			title: 'menu page',
-			alt: 'menu page',
+			alt: 'menu page with interactive preview for editing the layout',
 			mimetype: 'image/png',
 		},
 		true
@@ -496,7 +496,7 @@ const [
 			name: 'overview-pl.png',
 			path: '/home/menu/overview-pl.png',
 			title: 'strona menu',
-			alt: 'strona menu',
+			alt: 'strona menu z interaktywnym podglądem do edytowania ułożenia',
 			mimetype: 'image/png',
 		},
 		true
@@ -508,7 +508,7 @@ const [
 			name: 'using-en.gif',
 			path: '/home/menu/using-en.gif',
 			title: 'menu page',
-			alt: 'menu page moving items',
+			alt: 'menu page moving items using the interactive preview',
 			mimetype: 'image/gif',
 		},
 		true
@@ -520,7 +520,7 @@ const [
 			name: 'using-pl.gif',
 			path: '/home/menu/using-pl.gif',
 			title: 'strona menu',
-			alt: 'strona menu przesuwanie linków',
+			alt: 'strona menu przesuwanie linków przy użyciu interaktywnego podglądu',
 			mimetype: 'image/gif',
 		},
 		true
