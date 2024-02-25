@@ -89,7 +89,7 @@
 
 #content section ul li,
 #content section ol li {
-	@apply pl-4;
+	@apply pl-6 my-[0.333em];
 }
 
 #content section ul {

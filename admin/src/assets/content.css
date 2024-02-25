@@ -89,7 +89,7 @@
 
 #page-content section ul li,
 #page-content section ol li {
-	@apply pl-4;
+	@apply pl-6 my-[0.333em];
 }
 
 #page-content section ul {
