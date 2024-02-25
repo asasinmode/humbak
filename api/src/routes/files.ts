@@ -29,6 +29,7 @@ export const app = new Hono<{
 				.where(query
 					? or(
 						like(files.name, `%${query}%`),
+						like(files.path, `%${query}%`),
 						like(files.title, `%${query}%`),
 						like(files.alt, `%${query}%`)
 					)
