@@ -46,7 +46,7 @@
 
 /* TABLE */
 #page-content section table {
-	@apply border-spacing-0 border-separate overflow-hidden border-2 border-humbak-3 rounded;
+	@apply border-spacing-0 border-separate overflow-hidden border-2 border-humbak-3 rounded my-4;
 }
 
 #page-content section table th:not(:last-child),
