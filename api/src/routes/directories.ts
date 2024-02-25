@@ -4,7 +4,7 @@ import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
 import { type Input, array, custom, null_, number, object, string, transform, union } from 'valibot';
 import { processDeletedDirs } from '../helpers/files/dirDeleteProcessing';
 import { createImageSizes, imageWithSameNameExists } from '../helpers/files/image';
-import { parsePageHtml } from '../helpers/pages';
+import { parseHumbakHtml } from '../helpers/pages';
 import { db } from '../db';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
 import { files, insertFileSchema } from '../db/schema/files';
@@ -209,7 +209,7 @@ export const app = new Hono<{
 					.from(contents)
 					.where(inArray(contents.pageId, Array.from(modifiedPagesIds)));
 				for (const { pageId, rawHtml } of contentsToUpdate) {
-					const { value } = await parsePageHtml(rawHtml);
+					const { value } = await parseHumbakHtml(rawHtml);
 					await db.update(contents).set({ parsedHtml: value }).where(eq(contents.pageId, pageId));
 				}
 			}
@@ -223,7 +223,7 @@ export const app = new Hono<{
 					.from(slides)
 					.where(inArray(slides.id, Array.from(modifiedSlidesIds)));
 				for (const { id, rawContent } of contentsToUpdate) {
-					const { value } = await parsePageHtml(rawContent);
+					const { value } = await parseHumbakHtml(rawContent);
 					await db.update(slides).set({ parsedContent: value }).where(eq(slides.id, id));
 				}
 			}

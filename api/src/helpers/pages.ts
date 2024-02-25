@@ -6,7 +6,7 @@ import { db } from '../db';
 import { files } from '../db/schema/files';
 import { getPathWithoutExtension } from './files/image';
 
-export async function parsePageHtml(html?: string): Promise<{ value?: string; fileIds: number[]; }> {
+export async function parseHumbakHtml(html?: string): Promise<{ value?: string; fileIds: number[]; }> {
 	if (html === undefined) {
 		return { fileIds: [] };
 	} else if (html === '') {

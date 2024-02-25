@@ -6,7 +6,7 @@ import { idParamValidationMiddleware, languageQueryValidation, nonEmptyMaxLength
 import { insertSlideSchema, slides } from '../db/schema/slides';
 import { slideAspectRatio } from '../db/schema/slideAspectRatio';
 import { filesToSlides } from '../db/schema/filesToSlides';
-import { parsePageHtml } from '../helpers/pages';
+import { parseHumbakHtml } from '../helpers/pages';
 
 export const app = new Hono()
 	.get('/', wrap('query', languageQueryValidation), async (c) => {
@@ -27,7 +27,7 @@ export const app = new Hono()
 	.post('/', wrap('json', insertSlideSchema), async (c) => {
 		const { content, ...input } = c.req.valid('json');
 
-		const { value: parsedContent, fileIds: associatedFilesIds } = await parsePageHtml(content);
+		const { value: parsedContent, fileIds: associatedFilesIds } = await parseHumbakHtml(content);
 
 		const [{ insertId: slideId }] = await db
 			.insert(slides)

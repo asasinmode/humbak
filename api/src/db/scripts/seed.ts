@@ -6,7 +6,7 @@ import { promptProdContinue } from '../../helpers';
 import { hashPassword } from '../../helpers/auth';
 import { filesStoragePath, stylesheetsStoragePath } from '../../helpers/files';
 import { createImageSizes } from '../../helpers/files/image';
-import { parsePageHtml } from '../../helpers/pages';
+import { parseHumbakHtml } from '../../helpers/pages';
 import { pages } from '../schema/pages';
 import { slides } from '../schema/slides';
 import { contents } from '../schema/contents';
@@ -1826,7 +1826,7 @@ async function createPage({ language, title, slug, menuText, parentId, position,
 		.insert(pages)
 		.values({ language, title, slug });
 
-	const { value } = await parsePageHtml(content);
+	const { value } = await parseHumbakHtml(content);
 
 	await Promise.all([
 		db.insert(menuLinks).values({ text: menuText, pageId, position, parentId }),
@@ -1838,7 +1838,7 @@ async function createPage({ language, title, slug, menuText, parentId, position,
 }
 
 async function createSlide({ name, language, content, isHidden }: { name: string; language: string; content: string; isHidden?: boolean; }) {
-	const { value } = await parsePageHtml(content);
+	const { value } = await parseHumbakHtml(content);
 
 	return {
 		name,
