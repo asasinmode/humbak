@@ -126,8 +126,10 @@
 	@apply mt-5;
 }
 
+/* before z-index here is 0 as opposed to -1 on page
+ * because the preview element has background set and otherwise it's not visible */
 #page-content section h2 {
-	@apply text-2xl font-bold my-2 relative before:(content-empty -z-1 bg-humbak-2 absolute w-full h-1 bottom-[0.125rem] left-0 rounded-2xl);
+	@apply text-2xl font-bold my-2 relative before:(content-empty z-0 bg-humbak-2 absolute w-full h-1 bottom-[0.125rem] left-0 rounded-2xl);
 }
 
 #page-content section h3:not(:first-child) {

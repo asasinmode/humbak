@@ -152,7 +152,7 @@ defineExpose({
 				<div class="i-fa6-solid-arrows-up-down absolute left-1/2 top-1/2 h-4 w-4 translate-center" />
 			</VButton>
 		</aside>
-		<main id="page-content" class="flex-1 bg-white text-black shadow of-auto p-2" v-html="parsedContent" />
+		<div id="page-content" class="flex-1 bg-white text-black shadow of-auto p-2" v-html="parsedContent" />
 	</section>
 	<VAlert class="mt-4 max-w-3xl md:mx-auto lg:hidden" variant="warning">
 		edytowanie zawartości nie jest dostępne na małych ekranach
