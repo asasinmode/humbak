@@ -37,8 +37,11 @@ export const app = new Hono()
 			const [page] = await db
 				.select({ id: pages.id })
 				.from(pages)
+				.leftJoin(menuLinks, eq(menuLinks.pageId, pages.id))
 				.where(
-					isLanguage ? and(eq(pages.language, slug), eq(pages.slug, '')) : eq(pages.slug, slug)
+					isLanguage
+						? and(eq(pages.language, slug), eq(pages.slug, ''))
+						: and(eq(pages.slug, slug), or(not(eq(menuLinks.parentId, -1)), isNull(menuLinks.parentId))),
 				);
 			if (!page) {
 				return c.notFound();
