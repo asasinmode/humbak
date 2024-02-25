@@ -18,7 +18,7 @@ const items = shallowRef<T[]>([]);
 const isLoading = ref(false);
 const total = ref(0);
 const offset = ref(1);
-const limit = ref(5);
+const limit = ref(10);
 const search = ref('');
 
 let previousOffset = 1;
@@ -154,7 +154,7 @@ defineExpose({
 				class="!hidden !min-w-14 !w-14 sm:!flex"
 				class-input="!min-w-14 !w-14 neon-neutral text-center"
 				label="pokazywana ilość naraz"
-				:options="[5, 10, 15]"
+				:options="[10, 15, 20]"
 				transform-options
 				label-visually-hidden
 				hide-check
