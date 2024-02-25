@@ -51,7 +51,7 @@ onBeforeUnmount(() => {
 	<article
 		v-show="slides.length"
 		class="relative w-full max-w-360 min-h-40 mx-auto lg:mt-8"
-		:style="{ paddingTop: `calc(${aspectRatio} * 100%)` }"
+		:style="{ paddingTop: `min(860px, calc(${aspectRatio} * 100%))` }"
 		aria-hidden="true"
 		tabindex="-1"
 	>
