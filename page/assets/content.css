@@ -167,10 +167,14 @@
 }
 
 /* TEXT */
-#content section .indent {
-	@apply indent-4;
+#content {
+	line-height: 1.75;
 }
 
-#content section p+p {
-	@apply mt-1;
+#page-content section p+p {
+	@apply mt-[1.333em];
+}
+
+#page-content section p.indent {
+	@apply indent-4 mt-0;
 }
