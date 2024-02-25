@@ -132,7 +132,7 @@
 	@apply text-2xl font-bold my-2 relative before:(content-empty z-0 bg-humbak-2 absolute w-full h-1 bottom-[0.125rem] left-0 rounded-2xl);
 }
 
-#page-content section h3:not(:first-child) {
+#page-content section h2:not(:first-child) {
 	@apply mt-4;
 }
 
@@ -174,7 +174,7 @@
 }
 
 #page-content section p+p {
-	@apply mt-[1.333em];
+	@apply mt-[1.2em];
 }
 
 #page-content section p.indent {
