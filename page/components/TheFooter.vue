@@ -21,7 +21,7 @@ const socialToIcon: Record<IFooterContents['socials'][number]['type'], string> =
 </script>
 
 <template>
-	<footer class="relative grid grid-cols-1 w-full justify-items-center gap-6 bg-humbak pb-4 pt-8 text-black md:px-[clamp(2rem,_-12.25rem_+_29.6875vw,_6.75rem)] md:pb-6 mt-auto lg:px-8">
+	<footer class="relative grid grid-cols-1 w-full justify-items-center gap-6 bg-humbak pb-4 pt-8 text-black border-t border-black md:px-[clamp(2rem,_-12.25rem_+_29.6875vw,_6.75rem)] md:pb-6 mt-auto lg:px-8">
 		<section class="grid grid-cols-[min-content_max-content] max-w-360 gap-x-3 gap-y-4 lg:grid-cols-[repeat(3,_1fr_2fr)] md:grid-cols-[min-content_6fr_4fr_6fr_4fr_max-content] md:w-full">
 			<template v-for="(email, index) in emails" :key="`email${index}`">
 				<div
