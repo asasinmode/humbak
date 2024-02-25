@@ -40,7 +40,12 @@ export const app = new Hono<{
 			db.select({ count: sql<number>`COUNT(*)` })
 				.from(files)
 				.where(query
-					? like(files.name, `%${query}%`)
+					? or(
+						like(files.name, `%${query}%`),
+						like(files.path, `%${query}%`),
+						like(files.title, `%${query}%`),
+						like(files.alt, `%${query}%`)
+					)
 					: sql`1 = 1`),
 		]);
 
