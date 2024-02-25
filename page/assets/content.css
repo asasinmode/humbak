@@ -78,7 +78,7 @@
 }
 
 #content section table tr {
-	@apply even:bg-humbak-1/20;
+	@apply odd:bg-humbak-1/20;
 }
 
 /* LISTS */
