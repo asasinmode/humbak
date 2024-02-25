@@ -59,12 +59,12 @@
 	@apply py-1 px-2;
 }
 
-#content section table>thead>tr:not(:last-child)>th,
-#content section table>thead>tr:not(:last-child)>td,
+#content section table>thead>tr>th,
+#content section table>thead>tr>td,
 #content section table>tbody>tr:not(:last-child)>th,
 #content section table>tbody>tr:not(:last-child)>td,
-#content section table>tfoot>tr:not(:last-child)>th,
-#content section table>tfoot>tr:not(:last-child)>td,
+#content section table>tfoot>tr>th,
+#content section table>tfoot>tr>td,
 #content section table>tr:not(:last-child)>td,
 #content section table>tr:not(:last-child)>th,
 #content section table>thead:not(:last-child),
@@ -77,7 +77,7 @@
 	@apply bg-humbak-1 font-semibold;
 }
 
-#content section table tr {
+#content section table>tbody>tr {
 	@apply odd:bg-humbak-1/20;
 }
 
