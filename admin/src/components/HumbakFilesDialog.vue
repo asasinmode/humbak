@@ -101,7 +101,7 @@ async function copy(file: IDialogFile) {
 	if (isImage(file.mimetype)) {
 		text = `<HumbakFile fid="${file.id}"></HumbakFile>`;
 	} else {
-		text = `<a href="files${file.path}" target="_blank">${file.name}</a>`;
+		text = `<a href="${env.VITE_PAGE_URL}/files${file.path}" target="_blank" class="text-link">${file.name}</a>`;
 	}
 
 	try {
