@@ -50,7 +50,7 @@ async function getItems(skipTotalCheck: boolean) {
 
 	try {
 		const { items, count } = await api.files
-			.$get({ query: { offset: offset.toString(), limit: '5', query: search.value } })
+			.$get({ query: { offset: offset.toString(), limit: '15', query: search.value } })
 			.then(r => r.json());
 		previousSearch = search.value;
 		total.value = count;
