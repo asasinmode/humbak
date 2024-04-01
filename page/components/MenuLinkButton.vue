@@ -23,6 +23,10 @@ const hasChildren = computed(() => !!props.menuLink.children.length);
 const linkClass = computed(() => {
 	const rv = [];
 
+	if(!props.isSecondLevel){
+		rv.push('lg:truncate')
+	}
+
 	if (hasChildren.value) {
 		rv.push(
 			'absolute top-0 right-0 w-min transition-transform before:(content-empty transition-transform skew-x-10 top-0 w-[200%] -left-[0.125rem] z-1 h-full absolute) lg:before:hidden',
@@ -61,9 +65,10 @@ onMounted(() => {
 
 <template>
 	<button
-		class="relative text-center of-hidden z-2 p-3 w-full before:(content-empty transition-transform origin-bottom z-1 absolute w-full h-full bg-humbak/20 top-0 left-0) lg:(hidden h-full truncate before:hidden)"
+		class="relative text-center of-hidden z-2 p-3 w-full before:(content-empty transition-transform origin-bottom z-1 absolute w-full h-full bg-humbak/20 top-0 left-0) lg:(hidden h-full before:hidden)"
 		:class="[
 			hasChildren ? '' : 'hidden',
+			isSecondLevel ? '' : 'lg:truncate',
 			isExpanded ? 'before:scale-y-full' : 'before:scale-y-0',
 		]"
 		:title="menuLink.text"
@@ -92,7 +97,7 @@ onMounted(() => {
 
 	<NuxtLink
 		ref="link"
-		class="p-3 text-center block z-2 lg:(h-full truncate w-full translate-x-0 static bg-inherit hoverable:bg-humbak-6)"
+		class="p-3 text-center block z-2 lg:(h-full w-full translate-x-0 static bg-inherit hoverable:bg-humbak-6)"
 		:class="linkClass"
 		:title="menuLink.text"
 		:to="`/${language}/${menuLink.href}`"
