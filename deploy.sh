@@ -179,14 +179,22 @@ if [ ! -f ./.env ]; then
 	exit
 fi
 
+target="dev"
+
 for arg; do
 	if [[ $arg == "-i" ]]; then
 		installDependencies=true
+	elif [[ $arg == "-prod" ]]; then
+		target="prod"
 	fi
 done
 
 if [ "$installDependencies" = true ]; then
 	printf "! ${yellow}installing dependencies$NC !\n"
+fi
+
+if [ "$target" = "prod" ]; then
+	printf "! ${red}version is prod$NC !\n"
 fi
 
 printf "\n$green?$white choose project$NC"
@@ -196,8 +204,6 @@ projectOptions=("api" "admin" "page")
 selectOption "${projectOptions[@]}"
 projectChoice=$?
 project=${projectOptions[$projectChoice]}
-
-target="dev"
 
 printf "$green?$white choose action$NC"
 
