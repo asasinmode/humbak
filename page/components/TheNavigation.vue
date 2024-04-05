@@ -13,7 +13,7 @@ function isMenuToTheLeft(indexOnLevel: number) {
 	return indexOnLevel + 1 > Math.ceil(props.menuLinks.length / 2);
 }
 
-const secondFocusableNavElement = ref<ComponentPublicInstance>();
+const secondFocusableNavElement = ref<HTMLElement>();
 const menu = ref<HTMLMenuElement>();
 let secondToLastMenuLink: HTMLElement;
 
@@ -106,7 +106,7 @@ const {
 	lastElementFocusOut,
 } = useMobileMenu(
 	1024,
-	() => secondFocusableNavElement.value!.$el,
+	() => secondFocusableNavElement.value!,
 	() => secondToLastMenuLink
 );
 
@@ -197,7 +197,7 @@ function closeMenuAndSetExpanded(id?: number) {
 				@focusout="firstElementFocusOut"
 			/>
 
-			<NuxtLink
+			<a
 				ref="secondFocusableNavElement"
 				class="w-12 h-12 col-start-1 row-start-1 my-2 relative z-1 hoverable:text-humbak-8 justify-self-end mr-2 flex-center lg:(m-0 absolute left-0 hoverable:bg-humbak-5 hoverable:text-inherit z-10)"
 				title="home"
@@ -206,7 +206,7 @@ function closeMenuAndSetExpanded(id?: number) {
 			>
 				<span class="visually-hidden">home</span>
 				<div class="i-ph-house-fill pointer-events-none w-6 h-6" />
-			</NuxtLink>
+			</a>
 
 			<a
 				id="skipContent"
@@ -264,14 +264,14 @@ function closeMenuAndSetExpanded(id?: number) {
 								:key="thirdLevelLink.pageId"
 								class="lg:(hover:bg-humbak-7)"
 							>
-								<NuxtLink
+								<a
 									class="w-full p-3 lg:h-full block text-center"
-									:to="`/${language}/${thirdLevelLink.href}`"
+									:href="`/${language}/${thirdLevelLink.href}`"
 									:title="thirdLevelLink.text"
 									@click.left="closeMenuAndSetExpanded(secondLevelLink.pageId)"
 								>
 									{{ thirdLevelLink.text }}
-								</NuxtLink>
+								</a>
 							</li>
 						</menu>
 					</li>

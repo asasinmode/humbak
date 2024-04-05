@@ -48,7 +48,7 @@ const linkClass = computed(() => {
 });
 
 onMounted(() => {
-	const element = link.value?.$el as HTMLElement;
+	const element = link.value as HTMLElement;
 	if (!element) {
 		console.warn('no link element found');
 		return;
@@ -95,12 +95,12 @@ onMounted(() => {
 		</div>
 	</button>
 
-	<NuxtLink
+	<a
 		ref="link"
 		class="p-3 text-center block z-2 lg:(h-full w-full translate-x-0 static bg-inherit hoverable:bg-humbak-6)"
 		:class="linkClass"
 		:title="menuLink.text"
-		:to="`/${language}/${menuLink.href}`"
+		:href="`/${language}/${menuLink.href}`"
 		@click.left="$emit('linkClick', menuLink.pageId)"
 	>
 		<span
@@ -126,5 +126,5 @@ onMounted(() => {
 					: 'right-[0.125rem] i-ph-caret-right-bold'
 			"
 		/>
-	</NuxtLink>
+	</a>
 </template>
