@@ -19,32 +19,32 @@ import { users } from '../schema/users';
 import { filesToSlides } from '../schema/filesToSlides';
 import { filesToPages } from '../schema/filesToPages';
 import {
-	enHomePageContent,
-	plHomePageContent,
-	enLakesPageContent,
-	plLakesPageContent,
-	enOceansPageContent,
-	plOceansPageContent,
-	enSeasPageContent,
-	plSeasPageContent,
 	enAtlanticPageContent,
-	plAtlanticPageContent,
-	enPacificPageContent,
-	plPacificPageContent,
-	enIndianPageContent,
-	plIndianPageContent,
-	enMediterraneanPageContent,
-	plMediterraneanPageContent,
-	enBalticPageContent,
-	plBalticPageContent,
-	enBlackPageContent,
-	plBlackPageContent,
-	enGreatLakesPageContent,
-	plGreatLakesPageContent,
 	enBaikalLakesPageContent,
-	plBaikalLakesPageContent,
+	enBalticPageContent,
+	enBlackPageContent,
 	enCaspianLakesPageContent,
-	plCaspianLakesPageContent
+	enGreatLakesPageContent,
+	enHomePageContent,
+	enIndianPageContent,
+	enLakesPageContent,
+	enMediterraneanPageContent,
+	enOceansPageContent,
+	enPacificPageContent,
+	enSeasPageContent,
+	plAtlanticPageContent,
+	plBaikalLakesPageContent,
+	plBalticPageContent,
+	plBlackPageContent,
+	plCaspianLakesPageContent,
+	plGreatLakesPageContent,
+	plHomePageContent,
+	plIndianPageContent,
+	plLakesPageContent,
+	plMediterraneanPageContent,
+	plOceansPageContent,
+	plPacificPageContent,
+	plSeasPageContent,
 } from './helpers';
 
 await promptProdContinue();
@@ -728,7 +728,7 @@ const [
 			name: 'form.png',
 			path: '/home/slider-pl/form.png',
 			title: 'formularz slidera',
-			alt: "formularz html slide'u z polami atrybutów slide'u",
+			alt: 'formularz html slide\'u z polami atrybutów slide\'u',
 			mimetype: 'image/png',
 		},
 		true
@@ -740,7 +740,7 @@ const [
 			name: 'previews.png',
 			path: '/home/slider-pl/previews.png',
 			title: 'podgląd slidera',
-			alt: "podgląd pojedynczego slide'u i całego slidera",
+			alt: 'podgląd pojedynczego slide\'u i całego slidera',
 			mimetype: 'image/png',
 		},
 		true
@@ -846,7 +846,7 @@ const [settingsEnImgId, settingsPlImgId] = await Promise.all([
 		},
 		true
 	),
-])
+]);
 
 const enHomePageId = await createPage({
 	language: 'en',
@@ -967,7 +967,7 @@ const homePageCss = `.fancy-underline {
 	100% {
 		filter: hue-rotate(359deg);
 	}
-}`
+}`;
 await writeFile(`${stylesheetsStoragePath}/${enHomePageId}.css`, homePageCss);
 await writeFile(`${stylesheetsStoragePath}/${plHomePageId}.css`, homePageCss);
 // END
@@ -1207,7 +1207,7 @@ await mkdir(`${filesStoragePath}/oceans/atlantic`);
 const [{ insertId: atlanticDirId }] = await db.insert(directories).values({
 	name: 'atlantic',
 	path: '/oceans/atlantic',
-	parentId: oceansDirId
+	parentId: oceansDirId,
 });
 const [atlanticPageImage1Id, atlanticPageImage2Id] = await Promise.all([
 	createFile({
@@ -1265,7 +1265,7 @@ await mkdir(`${filesStoragePath}/oceans/pacific`);
 const [{ insertId: pacificDirId }] = await db.insert(directories).values({
 	name: 'pacific',
 	path: '/oceans/pacific',
-	parentId: oceansDirId
+	parentId: oceansDirId,
 });
 const [pacificPageImage1Id, pacificPageImage2Id] = await Promise.all([
 	createFile({
@@ -1323,7 +1323,7 @@ await mkdir(`${filesStoragePath}/oceans/indian`);
 const [{ insertId: indianDirId }] = await db.insert(directories).values({
 	name: 'indian',
 	path: '/oceans/indian',
-	parentId: oceansDirId
+	parentId: oceansDirId,
 });
 const [indianPageImage1Id] = await Promise.all([
 	createFile({
@@ -1370,7 +1370,7 @@ await mkdir(`${filesStoragePath}/seas/mediterranean`);
 const [{ insertId: mediterraneanDirId }] = await db.insert(directories).values({
 	name: 'mediterranean',
 	path: '/seas/mediterranean',
-	parentId: seasDirId
+	parentId: seasDirId,
 });
 const [mediterraneanPageImage1Id, mediterraneanPageImage2Id] = await Promise.all([
 	createFile({
@@ -1428,7 +1428,7 @@ await mkdir(`${filesStoragePath}/seas/baltic`);
 const [{ insertId: balticDirId }] = await db.insert(directories).values({
 	name: 'baltic',
 	path: '/seas/baltic',
-	parentId: seasDirId
+	parentId: seasDirId,
 });
 const [balticPageImage1Id, balticPageImage2Id] = await Promise.all([
 	createFile({
@@ -1486,7 +1486,7 @@ await mkdir(`${filesStoragePath}/seas/black`);
 const [{ insertId: blackDirId }] = await db.insert(directories).values({
 	name: 'black',
 	path: '/seas/black',
-	parentId: seasDirId
+	parentId: seasDirId,
 });
 const [blackPageImage1Id, blackPageImage2Id, blackPageImage3Id] = await Promise.all([
 	createFile({
@@ -1555,7 +1555,7 @@ await mkdir(`${filesStoragePath}/lakes/great`);
 const [{ insertId: greatDirId }] = await db.insert(directories).values({
 	name: 'great',
 	path: '/lakes/great',
-	parentId: lakesDirId
+	parentId: lakesDirId,
 });
 const [greatPageImage1Id, greatPageImage2Id, greatPageImage3Id] = await Promise.all([
 	createFile({
@@ -1565,7 +1565,7 @@ const [greatPageImage1Id, greatPageImage2Id, greatPageImage3Id] = await Promise.
 		path: '/lakes/great/michigan.jpg',
 		title: 'lake Michigan',
 		alt: 'an aerial view of the Lake Michigan\'s shore with autumn forest in the distance',
-		mimetype: 'image/jpeg'
+		mimetype: 'image/jpeg',
 	}),
 	createFile({
 		url: 'https://images.unsplash.com/photo-1642573941638-dab66dd8d954',
@@ -1574,7 +1574,7 @@ const [greatPageImage1Id, greatPageImage2Id, greatPageImage3Id] = await Promise.
 		path: '/lakes/great/huron.jpg',
 		title: 'lake Huron',
 		alt: 'a lake seen from the shore on a sunny day with islands in the distance',
-		mimetype: 'image/jpeg'
+		mimetype: 'image/jpeg',
 	}),
 	createFile({
 		url: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/Great-Lakes.svg',
@@ -1583,8 +1583,8 @@ const [greatPageImage1Id, greatPageImage2Id, greatPageImage3Id] = await Promise.
 		path: '/lakes/great/map.svg',
 		title: 'great lakes map',
 		alt: 'the great lakes\' map',
-		mimetype: 'image/svg+xml'
-	})
+		mimetype: 'image/svg+xml',
+	}),
 ]);
 const enGreatPageId = await createPage({
 	language: 'en',
@@ -1593,7 +1593,7 @@ const enGreatPageId = await createPage({
 	menuText: 'The Great Lakes',
 	parentId: enLakesPageId,
 	position: 0,
-	content: enGreatLakesPageContent([greatPageImage1Id, greatPageImage2Id, greatPageImage3Id])
+	content: enGreatLakesPageContent([greatPageImage1Id, greatPageImage2Id, greatPageImage3Id]),
 });
 const plGreatPageId = await createPage({
 	language: 'pl',
@@ -1602,7 +1602,7 @@ const plGreatPageId = await createPage({
 	menuText: 'Wielkie Jeziora',
 	parentId: plLakesPageId,
 	position: 0,
-	content: plGreatLakesPageContent([greatPageImage1Id, greatPageImage2Id, greatPageImage3Id])
+	content: plGreatLakesPageContent([greatPageImage1Id, greatPageImage2Id, greatPageImage3Id]),
 });
 await db.insert(filesToPages).values([
 	{ pageId: enGreatPageId, fileId: greatPageImage1Id },
@@ -1610,7 +1610,7 @@ await db.insert(filesToPages).values([
 	{ pageId: enGreatPageId, fileId: greatPageImage3Id },
 	{ pageId: plGreatPageId, fileId: greatPageImage1Id },
 	{ pageId: plGreatPageId, fileId: greatPageImage2Id },
-	{ pageId: plGreatPageId, fileId: greatPageImage3Id }
+	{ pageId: plGreatPageId, fileId: greatPageImage3Id },
 ]);
 // END
 // lakes great
@@ -1624,7 +1624,7 @@ await mkdir(`${filesStoragePath}/lakes/baikal`);
 const [{ insertId: baikalDirId }] = await db.insert(directories).values({
 	name: 'baikal',
 	path: '/lakes/baikal',
-	parentId: lakesDirId
+	parentId: lakesDirId,
 });
 const [baikalPageImage1Id, baikalPageImage2Id] = await Promise.all([
 	createFile({
@@ -1634,7 +1634,7 @@ const [baikalPageImage1Id, baikalPageImage2Id] = await Promise.all([
 		path: '/lakes/baikal/map.jpg',
 		title: 'map',
 		alt: 'baikal\'s lake map',
-		mimetype: 'image/jpeg'
+		mimetype: 'image/jpeg',
 	}),
 	createFile({
 		url: 'https://images.unsplash.com/photo-1553785063-9e892a3f15b6',
@@ -1643,8 +1643,8 @@ const [baikalPageImage1Id, baikalPageImage2Id] = await Promise.all([
 		path: '/lakes/baikal/frozen.jpg',
 		title: 'frozen Baikal',
 		alt: 'frozen Baikal Lake with a rocky shore on the right and an island in the distance',
-		mimetype: 'image/jpeg'
-	})
+		mimetype: 'image/jpeg',
+	}),
 ]);
 const enBaikalPageId = await createPage({
 	language: 'en',
@@ -1653,7 +1653,7 @@ const enBaikalPageId = await createPage({
 	menuText: 'Baikal Lake',
 	parentId: enLakesPageId,
 	position: 1,
-	content: enBaikalLakesPageContent([baikalPageImage1Id, baikalPageImage2Id])
+	content: enBaikalLakesPageContent([baikalPageImage1Id, baikalPageImage2Id]),
 });
 const plBaikalPageId = await createPage({
 	language: 'pl',
@@ -1662,13 +1662,13 @@ const plBaikalPageId = await createPage({
 	menuText: 'Bajkał',
 	parentId: plLakesPageId,
 	position: 1,
-	content: plBaikalLakesPageContent([baikalPageImage1Id, baikalPageImage2Id])
+	content: plBaikalLakesPageContent([baikalPageImage1Id, baikalPageImage2Id]),
 });
 await db.insert(filesToPages).values([
 	{ pageId: enBaikalPageId, fileId: baikalPageImage1Id },
 	{ pageId: enBaikalPageId, fileId: baikalPageImage2Id },
 	{ pageId: plBaikalPageId, fileId: baikalPageImage1Id },
-	{ pageId: plBaikalPageId, fileId: baikalPageImage2Id }
+	{ pageId: plBaikalPageId, fileId: baikalPageImage2Id },
 ]);
 // END
 // lakes baikal
@@ -1682,7 +1682,7 @@ await mkdir(`${filesStoragePath}/lakes/caspian`);
 const [{ insertId: caspianDirId }] = await db.insert(directories).values({
 	name: 'caspian',
 	path: '/lakes/caspian',
-	parentId: lakesDirId
+	parentId: lakesDirId,
 });
 const [caspianPageImage1Id, caspianPageImage2Id] = await Promise.all([
 	createFile({
@@ -1692,7 +1692,7 @@ const [caspianPageImage1Id, caspianPageImage2Id] = await Promise.all([
 		path: '/lakes/caspian/map.png',
 		title: 'map',
 		alt: 'caspian\'s sea map',
-		mimetype: 'image/png'
+		mimetype: 'image/png',
 	}),
 	createFile({
 		url: 'https://images.unsplash.com/photo-1462331321792-cc44368b8894',
@@ -1701,7 +1701,7 @@ const [caspianPageImage1Id, caspianPageImage2Id] = await Promise.all([
 		path: '/lakes/caspian/tyuleniy-archipelago.jpg',
 		title: 'tyuleniy archipelago',
 		alt: 'stylized tyuleniy archipelago from the orbit',
-		mimetype: 'image/jpeg'
+		mimetype: 'image/jpeg',
 	}),
 ]);
 const enCaspianPageId = await createPage({
@@ -1711,7 +1711,7 @@ const enCaspianPageId = await createPage({
 	menuText: 'Caspian Sea',
 	parentId: enLakesPageId,
 	position: 2,
-	content: enCaspianLakesPageContent([caspianPageImage1Id, caspianPageImage2Id])
+	content: enCaspianLakesPageContent([caspianPageImage1Id, caspianPageImage2Id]),
 });
 const plCaspianPageId = await createPage({
 	language: 'pl',
@@ -1720,13 +1720,13 @@ const plCaspianPageId = await createPage({
 	menuText: 'Morze Kaspijskie',
 	parentId: plLakesPageId,
 	position: 2,
-	content: plCaspianLakesPageContent([caspianPageImage1Id, caspianPageImage2Id])
+	content: plCaspianLakesPageContent([caspianPageImage1Id, caspianPageImage2Id]),
 });
 await db.insert(filesToPages).values([
 	{ pageId: enCaspianPageId, fileId: caspianPageImage1Id },
 	{ pageId: enCaspianPageId, fileId: caspianPageImage2Id },
 	{ pageId: plCaspianPageId, fileId: caspianPageImage1Id },
-	{ pageId: plCaspianPageId, fileId: caspianPageImage2Id }
+	{ pageId: plCaspianPageId, fileId: caspianPageImage2Id },
 ]);
 // END
 // lakes caspian
@@ -1848,4 +1848,3 @@ async function createSlide({ name, language, content, isHidden }: { name: string
 		parsedContent: value,
 	};
 }
-

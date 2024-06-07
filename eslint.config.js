@@ -27,6 +27,7 @@ export default await antfu({
 			exports: 'always-multiline',
 			functions: 'never',
 		}],
+		'vue/return-in-computed-property': 'off',
 	},
 	files: [
 		'api/**/*',

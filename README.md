@@ -92,7 +92,7 @@ The move dialog contains a list of directories. In case the directory you want t
 
 While on the admin home page you can edit _css_ and _meta_ specific to each page, the admin global page is used to manage _css_ and _meta_ shared between all pages (with _meta_ being language-specific).
 
-At the top you can select the editor's mode, choosing between css and meta, along with, in case of being in meta edit mode, choosing the target language. To the right of these selects are the content formatting and the save buttons. Below them is the editor. 
+At the top you can select the editor's mode, choosing between css and meta, along with, in case of being in meta edit mode, choosing the target language. To the right of these selects are the content formatting and the save buttons. Below them is the editor.
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/global-en.png" title="global page" alt="css editor on page global">
 
@@ -100,7 +100,7 @@ At the top you can select the editor's mode, choosing between css and meta, alon
 
 The **slider** seen at the top of all of your pages can be configured on the admin slider page.
 
-The first row on the page contains the **language select**, the **slide select**, in order, **humbak files**, **slider settings** and **content formatting** _control buttons_ and the clear and save buttons. Below these is the _editor_, under which is a form for managing the current slide's attributes: _name_, _language_ and _visibility_. 
+The first row on the page contains the **language select**, the **slide select**, in order, **humbak files**, **slider settings** and **content formatting** _control buttons_ and the clear and save buttons. Below these is the _editor_, under which is a form for managing the current slide's attributes: _name_, _language_ and _visibility_.
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/slider-form-en.png" title="slide form" alt="slide form with html editor and slide attributes inputs">
 
@@ -118,7 +118,7 @@ The _slider settings_ control button opens the **slider configuration dialog**. 
 
 Similarly to the **slider**, the **footer** can be edited on the admin footer page.
 
-At the top are the **language select** and the **save button**, below which you can find an interactive preview of the footer. In the first column you can add and edit _emails_, in the second _phone numbers_ and in the last the _location link_. Below these columns, in the second row, are _social links_ that can be edited in the **social dialog**. 
+At the top are the **language select** and the **save button**, below which you can find an interactive preview of the footer. In the first column you can add and edit _emails_, in the second _phone numbers_ and in the last the _location link_. Below these columns, in the second row, are _social links_ that can be edited in the **social dialog**.
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/footer-en.png" title="footer overview" alt="footer admin page with an interactive editor">
 

@@ -41,7 +41,7 @@ export const app = new Hono()
 				.where(
 					isLanguage
 						? and(eq(pages.language, slug), eq(pages.slug, ''))
-						: and(eq(pages.slug, slug), or(not(eq(menuLinks.parentId, -1)), isNull(menuLinks.parentId))),
+						: and(eq(pages.slug, slug), or(not(eq(menuLinks.parentId, -1)), isNull(menuLinks.parentId)))
 				);
 			if (!page) {
 				return c.notFound();

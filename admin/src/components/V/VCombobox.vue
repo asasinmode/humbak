@@ -11,7 +11,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	'selectOption': [T['value'] | undefined];
+	selectOption: [T['value'] | undefined];
 }>();
 
 const modelValue = defineModel<T['value'] | undefined>();

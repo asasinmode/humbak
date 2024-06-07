@@ -77,5 +77,5 @@ export default defineConfig({
 		},
 	},
 	safelist: ['text-link', 'my-4', 'block', 'object-cover'],
-	blocklist: ['container',],
+	blocklist: ['container'],
 });

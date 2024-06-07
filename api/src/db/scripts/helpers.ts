@@ -34,7 +34,7 @@ export function enHomePageContent(
 		number,
 		number,
 		number,
-		number,
+		number
 	]
 ) {
 	return `<section>
@@ -180,7 +180,7 @@ export function plHomePageContent(
 		number,
 		number,
 		number,
-		number,
+		number
 	]
 ) {
 	return `<section>
@@ -947,7 +947,7 @@ export function enCaspianLakesPageContent([imgId1, imgId2]: [number, number]) {
 	</div>
 
 	<p>While the Caspian Sea has long been a source of prosperity, providing livelihoods through fishing and facilitating trade, it faces contemporary challenges such as environmental degradation and concerns over resource management. The complex legal status of the sea, compounded by the interests of the surrounding nations, adds another layer to its dynamic story. As efforts are made to address environmental concerns and promote sustainable practices, the Caspian Sea remains a symbol of the delicate interplay between nature, history, and the geopolitics of the region.</p>
-</section>`
+</section>`;
 }
 
 export function plCaspianLakesPageContent([imgId1, imgId2]: [number, number]) {

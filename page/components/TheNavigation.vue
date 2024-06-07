@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useMobileMenu } from '@humbak/shared';
 import type { IMenuTreeItem } from '@humbak/shared';
-import type { ComponentPublicInstance } from 'vue';
 
 const props = defineProps<{
 	language: string;

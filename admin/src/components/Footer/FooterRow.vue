@@ -8,7 +8,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
 	'update:model-value': [string];
-	delete: [];
+	'delete': [];
 }>();
 
 const localValue = ref(props.modelValue);

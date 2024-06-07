@@ -23,8 +23,8 @@ const hasChildren = computed(() => !!props.menuLink.children.length);
 const linkClass = computed(() => {
 	const rv = [];
 
-	if(!props.isSecondLevel){
-		rv.push('lg:truncate')
+	if (!props.isSecondLevel) {
+		rv.push('lg:truncate');
 	}
 
 	if (hasChildren.value) {
