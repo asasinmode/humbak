@@ -72,7 +72,7 @@ buildProject(){
 	printf "\n"
 	(
 		cd $project
-		npm run build
+		pnpm run build
 	)
 }
 
