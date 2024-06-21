@@ -1,11 +1,11 @@
 import { existsSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
 import { eq, inArray } from 'drizzle-orm';
-import { filesToSlides } from 'src/db/schema/filesToSlides';
 import { db } from '../../db';
 import type { IDir } from '../../routes/directories';
 import { directories } from '../../db/schema/directories';
 import { filesToPages } from '../../db/schema/filesToPages';
+import { filesToSlides } from '../../db/schema/filesToSlides';
 import { files } from '../../db/schema/files';
 import { filesStoragePath } from '.';
 

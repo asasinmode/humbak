@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { boolean, datetime, int, mysqlTable, text, varchar } from 'drizzle-orm/mysql-core';
-import { boolean as booleanValidation, integer, number, object, optional, string } from 'valibot';
-import { nonEmptyMaxLengthString } from '../../helpers';
+import * as v from 'valibot';
+import { nonEmptyMaxLengthString, positiveIntegerValidation } from '../../helpers';
 
 const defaultContent = `<div>
 	<h3>Slide</h3>
@@ -18,10 +18,10 @@ export const slides = mysqlTable('slides', {
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
-export const insertSlideSchema = object({
-	id: optional(number([integer()])),
+export const insertSlideSchema = v.object({
+	id: v.optional(positiveIntegerValidation),
 	name: nonEmptyMaxLengthString(),
 	language: nonEmptyMaxLengthString(32),
-	content: optional(string()),
-	isHidden: booleanValidation(),
+	content: v.optional(v.string('musi być tekstem')),
+	isHidden: v.boolean('musi być true lub false'),
 });

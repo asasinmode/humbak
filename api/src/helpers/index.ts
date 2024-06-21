@@ -1,12 +1,9 @@
 import { exit } from 'node:process';
 import { confirm } from '@clack/prompts';
-import { custom, maxLength, minLength, object, optional, safeParse, string, transform } from 'valibot';
-import type { Env, MiddlewareHandler, ValidationTargets } from 'hono';
-import type { BaseSchema, Input, Output, SchemaWithTransform } from 'valibot';
-import { eq } from 'drizzle-orm';
+import * as v from 'valibot';
+import type { Env, Input as HonoInput, MiddlewareHandler, ValidationTargets } from 'hono';
 import { validator } from 'hono/validator';
-import { db, pool } from '../db';
-import { pages } from '../db/schema/pages';
+import { pool } from '../db';
 import { env } from '../env';
 
 export async function promptProdContinue() {
@@ -28,73 +25,81 @@ export async function getTableNames() {
 	return queryResult[0] as { table_name: string; }[];
 }
 
-export const paginationQueryValidation = transform(object({
-	query: optional(string(), ''),
-	limit: optional(string(), '5'),
-	offset: optional(string(), '0'),
-}), ({ query, limit, offset }) => ({
-	query,
-	limit: Number.parseInt(limit),
-	offset: Number.parseInt(offset),
-}));
-
-export const languageQueryValidation = object({
-	language: string([minLength(1)]),
+export const paginationQueryValidation = v.object({
+	query: v.optional(v.string('musi być tesktem'), ''),
+	limit: v.optional(v.pipe(
+		v.string('musi być tekstem'),
+		v.transform(Number),
+		v.integer('musi być liczbą całkowitą')
+	), '5'),
+	offset: v.optional(v.pipe(
+		v.string('musi być tekstem'),
+		v.transform(Number),
+		v.integer('musi być liczbą całkowitą')
+	), '0'),
 });
 
-export const idParamValidationMiddleware = wrap('param', transform(object({
-	id: string([
-		custom((v) => {
-			if (Number.isNaN(Number.parseInt(v))) {
+export function nonEmptyMaxLengthString(length = 256) {
+	return v.pipe(v.string('musi być tesktem'), v.minLength(1, 'nie może być puste'), v.maxLength(length, `maksymalna długość: ${length}`));
+}
+
+export const nonEmptyStringValidation = v.pipe(v.string('musi być tekstem'), v.minLength(1, 'nie może być puste'));
+
+export const positiveIntegerValidation = v.pipe(v.number('musi być liczbą'), v.integer('musi być liczbą całkowitą'), v.minValue(1, 'minimalna wartość: 1'));
+
+export const nullablePositiveIntegerValidation = v.union([positiveIntegerValidation, v.null()], 'musi być liczbą całkowitą większą niż 1 lub null');
+
+export const languageQueryValidation = v.object({
+	language: nonEmptyStringValidation,
+});
+
+export const idParamValidationMiddleware = wrap('param', v.pipe(
+	v.object({
+		id: v.pipe(v.string('musi być tekstem'), v.custom((v) => {
+			if (Number.isNaN(Number.parseInt(v as string))) {
 				return false;
 			}
 			return true;
-		}, 'musi być liczbą'),
-	]),
-}), ({ id }) => ({
-	id: Number.parseInt(id),
-})));
+		}, 'musi być cyfrą')),
+	}),
+	v.transform(({ id }) => ({
+		id: Number.parseInt(id),
+	}))
+));
 
-export function languageExistsMiddleware(location: 'query' | 'param'): MiddlewareHandler {
-	return async (c, next) => {
-		const { language } = (c.req as any).valid(location);
+type HasUndefined<T> = undefined extends T ? true : false;
 
-		const [languageResult] = await db
-			.selectDistinct({ language: pages.language })
-			.from(pages)
-			.where(eq(pages.language, language))
-			.limit(1);
-		if (!languageResult) {
-			return c.notFound();
-		}
-
-		await next();
-	};
-}
-
-export function nonEmptyMaxLengthString(length = 256) {
-	return string([minLength(1, 'nie może być puste'), maxLength(length, `maksymalna długość: ${length}`)]);
-}
-
-// copied and adapted to valibot from https://github.com/honojs/hono/blob/main/src/validator/validator.ts#L22
+// copied and adapted to valibot from https://github.com/honojs/hono/blob/main/src/validator/validator.ts#L13
 export function wrap<
-	S extends BaseSchema,
-	T extends S | SchemaWithTransform<S, any>,
+	T extends v.GenericSchema,
 	Target extends keyof ValidationTargets,
 	E extends Env,
 	P extends string,
-	I = Input<T>,
-	O = Output<T>,
-	V extends {
-		in: { [K in Target]: I };
-		out: { [K in Target]: O };
-	} = {
-		in: { [K in Target]: I };
-		out: { [K in Target]: O };
-	}
+	In = v.InferInput<T>,
+	Out = v.InferOutput<T>,
+	I extends HonoInput = {
+		in: HasUndefined<In> extends true
+			? {
+					[K in Target]?: K extends 'json'
+						? In
+						: HasUndefined<keyof ValidationTargets[K]> extends true
+							? { [K2 in keyof In]?: ValidationTargets[K][K2] }
+							: { [K2 in keyof In]: ValidationTargets[K][K2] }
+				}
+			: {
+					[K in Target]: K extends 'json'
+						? In
+						: HasUndefined<keyof ValidationTargets[K]> extends true
+							? { [K2 in keyof In]?: ValidationTargets[K][K2] }
+							: { [K2 in keyof In]: ValidationTargets[K][K2] }
+				};
+		out: { [K in Target]: Out };
+	},
+	V extends I = I
 >(target: Target, schema: T): MiddlewareHandler<E, P, V> {
+	// @ts-expect-error not typed well
 	return validator(target, (value, c) => {
-		const parseResults = safeParse(schema, value);
+		const parseResults = v.safeParse(schema, value);
 
 		if (!parseResults.success) {
 			const errors: Record<string, unknown> = {};
@@ -109,12 +114,14 @@ export function wrap<
 				}
 
 				if (issue.path.length === 1) {
+					// @ts-expect-error key exists
 					errors[issue.path[0].key as string || 'unknown'] = message;
 					continue;
 				}
 
 				let pointer = errors as any;
 				for (let i = 0; i < issue.path.length - 1; i++) {
+					// @ts-expect-error key exists
 					const key = issue.path[i].key as string | number;
 
 					pointer[key] ||= {};
@@ -122,6 +129,7 @@ export function wrap<
 				}
 
 				const lastIssue = issue.path[issue.path.length - 1];
+				// @ts-expect-error key exists
 				pointer[lastIssue.key as string | number] = message;
 			}
 

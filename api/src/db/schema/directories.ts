@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { type AnyMySqlColumn, datetime, int, mysqlTable, text } from 'drizzle-orm/mysql-core';
-import { minLength, null_, number, object, string, union } from 'valibot';
+import * as v from 'valibot';
+import { nonEmptyStringValidation, nullablePositiveIntegerValidation } from '../../helpers';
 
 export const directories = mysqlTable('directories', {
 	id: int('id').primaryKey().autoincrement(),
@@ -11,7 +12,7 @@ export const directories = mysqlTable('directories', {
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
-export const insertDirectorySchema = object({
-	parentId: union([number(), null_()], 'musi być liczbą lub null'),
-	name: string([minLength(1, 'nie może być puste')]),
+export const insertDirectorySchema = v.object({
+	parentId: nullablePositiveIntegerValidation,
+	name: nonEmptyStringValidation,
 });

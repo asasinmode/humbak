@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { object } from 'valibot';
+import * as v from 'valibot';
 import { sign } from 'hono/jwt';
 import { and, eq, not } from 'drizzle-orm';
 import { env } from '../env';
@@ -14,7 +14,7 @@ const TWO_HOURS_IN_S = 60 * 60 * 2;
 export const app = new Hono()
 	.post(
 		'/login',
-		wrap('json', object({
+		wrap('json', v.object({
 			username: nonEmptyMaxLengthString(),
 			password: nonEmptyMaxLengthString(1024),
 		})),
@@ -58,7 +58,7 @@ export const app = new Hono()
 	.post(
 		'/changeUsername',
 		jwt,
-		wrap('json', object({
+		wrap('json', v.object({
 			username: nonEmptyMaxLengthString(),
 		})),
 		async (c) => {
@@ -94,7 +94,7 @@ export const app = new Hono()
 	.post(
 		'/changePassword',
 		jwt,
-		wrap('json', object({
+		wrap('json', v.object({
 			oldPassword: nonEmptyMaxLengthString(1024),
 			newPassword: nonEmptyMaxLengthString(1024),
 		})),

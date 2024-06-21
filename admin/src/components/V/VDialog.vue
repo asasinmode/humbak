@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { focusableElements } from '@humbak/shared';
+import { type Focusable, focusableElements } from '@humbak/shared';
 import VButton from '~/components/V/VButton.vue';
 
 const props = defineProps<{
@@ -18,10 +18,6 @@ const emit = defineEmits<{
 	open: [];
 	close: [];
 }>();
-
-type Focusable = Element & {
-	focus: () => void;
-};
 
 const isOpen = ref(false);
 const dialog = ref<HTMLElement>();

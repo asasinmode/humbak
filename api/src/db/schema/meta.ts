@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 import { datetime, json, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
-import { array, object, record, string } from 'valibot';
+import * as v from 'valibot';
 import { nonEmptyMaxLengthString } from '../../helpers';
 
 const defaultMeta = [{ name: 'robots', content: 'index, follow' }];
@@ -12,7 +12,14 @@ export const meta = mysqlTable('meta', {
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
-export const insertMetaSchema = object({
+export const insertMetaSchema = v.object({
 	language: nonEmptyMaxLengthString(32),
-	value: array(record(string('wartość musi być tekstem'), 'musi być obiektem'), 'musi być listą'),
+	value: v.array(
+		v.record(
+			v.string('klucze muszą być tesktem'),
+			v.string('wartości muszą być tesktem'),
+			'musi być obiektem'
+		),
+		'musi być listą'
+	),
 });

@@ -68,6 +68,7 @@ async function callGetItems(resetOffset = false) {
 }
 
 function parseOffsetAndGetItems(event: FocusEvent) {
+	// @ts-expect-error replaceAll is fine
 	const value = Number.parseInt(`${(event.target as HTMLInputElement).value}`.replaceAll(/[^0-9\-.]/g, ''));
 
 	if (Number.isNaN(value) || value < 1) {
@@ -83,6 +84,7 @@ function parseOffsetAndGetItems(event: FocusEvent) {
 }
 
 function parseLimitAndGetItems(event: FocusEvent) {
+	// @ts-expect-error replaceAll is fine
 	const value = Number.parseInt(`${(event.target as HTMLInputElement).value}`.replaceAll(/[^0-9\-.]/g, ''));
 
 	if (Number.isNaN(value) || value < 1) {

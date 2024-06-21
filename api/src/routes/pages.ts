@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { readFile, rm, writeFile } from 'node:fs/promises';
 import { Hono } from 'hono';
 import { and, eq, isNull, like, or, sql } from 'drizzle-orm';
-import { merge, object, optional, pick, string } from 'valibot';
+import * as v from 'valibot';
 import { stylesheetsStoragePath } from '../helpers/files';
 import { idParamValidationMiddleware, paginationQueryValidation, wrap } from '../helpers';
 import { db } from '../db';
@@ -13,11 +13,13 @@ import { contents, insertContentSchema } from '../db/schema/contents';
 import { insertMenuLinkSchema, menuLinks } from '../db/schema/menuLinks';
 import { env } from '../env';
 
-const upsertPageInputSchema = merge([
-	insertPageSchema,
-	object({ menuText: insertMenuLinkSchema.entries.text, css: optional(string()) }),
-	pick(insertContentSchema, ['html', 'meta']),
-]);
+const upsertPageInputSchema = v.object({
+	...insertPageSchema.entries,
+	html: insertContentSchema.entries.html,
+	meta: insertContentSchema.entries.meta,
+	menuText: insertMenuLinkSchema.entries.text,
+	css: v.optional(v.string()),
+});
 
 export const app = new Hono()
 	.get('/', wrap('query', paginationQueryValidation), async (c) => {

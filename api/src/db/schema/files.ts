@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { type AnyMySqlColumn, datetime, int, mysqlTable, text } from 'drizzle-orm/mysql-core';
-import { minLength, null_, number, object, string, union } from 'valibot';
+import * as v from 'valibot';
+import { nonEmptyStringValidation, nullablePositiveIntegerValidation } from '../../helpers';
 import { directories } from './directories';
 
 export const files = mysqlTable('files', {
@@ -17,10 +18,10 @@ export const files = mysqlTable('files', {
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
-export const insertFileSchema = object({
-	directoryId: union([number(), null_()]),
-	name: string([minLength(1, 'nie może być puste')]),
-	alt: string(),
-	title: string(),
-	mimetype: string([minLength(1, 'nie może być puste')]),
+export const insertFileSchema = v.object({
+	directoryId: nullablePositiveIntegerValidation,
+	name: nonEmptyStringValidation,
+	alt: v.string('musi być tesktem'),
+	title: v.string('musi być tesktem'),
+	mimetype: nonEmptyStringValidation,
 });

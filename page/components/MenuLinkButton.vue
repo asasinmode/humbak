@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { IMenuTreeItem } from '@humbak/shared';
-import type { ComponentPublicInstance } from 'vue';
 
 const props = defineProps<{
 	language: string;
@@ -16,7 +15,7 @@ defineEmits<{
 	linkClick: [number];
 }>();
 
-const link = ref<ComponentPublicInstance>();
+const link = ref<HTMLAnchorElement>();
 
 const hasChildren = computed(() => !!props.menuLink.children.length);
 

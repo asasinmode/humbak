@@ -1,9 +1,10 @@
 import { and, desc, eq, isNull, not, or, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
-import { minLength, object, optional, string } from 'valibot';
+import * as v from 'valibot';
 import { footerContents } from 'src/db/schema/footerContents';
 import { db } from '../db';
-import { languageExistsMiddleware, wrap } from '../helpers';
+import { nonEmptyStringValidation, wrap } from '../helpers';
+import { languageExistsMiddleware } from '../helpers/db';
 import { pages } from '../db/schema/pages';
 import { slides } from '../db/schema/slides';
 import { menuLinks } from '../db/schema/menuLinks';
@@ -24,11 +25,11 @@ export const app = new Hono()
 	})
 	.get(
 		'/pages/:slug',
-		wrap('param', object({
-			slug: string(),
+		wrap('param', v.object({
+			slug: v.string(),
 		})),
-		wrap('query', object({
-			isLanguage: optional(string()),
+		wrap('query', v.object({
+			isLanguage: v.optional(v.string()),
 		})),
 		async (c) => {
 			const { slug } = c.req.valid('param');
@@ -67,7 +68,7 @@ export const app = new Hono()
 	)
 	.get(
 		'/:language',
-		wrap('param', object({ language: string([minLength(1, 'nie może być puste')]) })),
+		wrap('param', v.object({ language: nonEmptyStringValidation })),
 		languageExistsMiddleware('param'),
 		async (c) => {
 			const { language } = c.req.valid('param');

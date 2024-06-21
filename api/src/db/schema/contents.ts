@@ -1,6 +1,7 @@
+import * as v from 'valibot';
 import { sql } from 'drizzle-orm';
 import { datetime, int, json, mysqlTable, text } from 'drizzle-orm/mysql-core';
-import { array, integer, number, object, optional, record, string } from 'valibot';
+import { positiveIntegerValidation } from '../../helpers';
 import { pages } from './pages';
 
 const defaultHtml = `<section>
@@ -16,8 +17,15 @@ export const contents = mysqlTable('contents', {
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
-export const insertContentSchema = object({
-	pageId: optional(number([integer()])),
-	html: optional(string()),
-	meta: optional(array(record(string('wartość musi być tekstem'), 'musi być obiektem'), 'musi być listą')),
+export const insertContentSchema = v.object({
+	pageId: v.optional(positiveIntegerValidation),
+	html: v.optional(v.string('musi być tesktem')),
+	meta: v.optional(v.array(
+		v.record(
+			v.string('klucze muszą być tesktem'),
+			v.string('wartości muszą być tesktem'),
+			'musi być obiektem'
+		),
+		'musi być listą'
+	)),
 });

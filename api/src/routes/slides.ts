@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
 import { Hono } from 'hono';
-import { object } from 'valibot';
+import * as v from 'valibot';
 import { db } from '../db';
 import { idParamValidationMiddleware, languageQueryValidation, nonEmptyMaxLengthString, wrap } from '../helpers';
 import { insertSlideSchema, slides } from '../db/schema/slides';
@@ -73,7 +73,7 @@ export const app = new Hono()
 
 		return c.json(result.value);
 	})
-	.put('/aspectRatio', wrap('json', object({ value: nonEmptyMaxLengthString() })), async (c) => {
+	.put('/aspectRatio', wrap('json', v.object({ value: nonEmptyMaxLengthString() })), async (c) => {
 		const { value } = c.req.valid('json');
 		await db.update(slideAspectRatio).set({ value, updatedAt: new Date() });
 

@@ -40,7 +40,7 @@ let parsedMeta: Record<string, string>[] = [];
 
 if (languageData.value.meta) {
 	try {
-		parsedMeta = JSON.parse(languageData.value.meta);
+		parsedMeta = JSON.parse(languageData.value.meta as unknown as string);
 	} catch (e) {
 		console.error('error parsing meta');
 		console.error(e);
@@ -57,7 +57,7 @@ const transformedMenuLinks = transformMenuLinks(languageData.value.menuLinks.sli
 
 <template>
 	<TheTrackingDialog />
-	<TheNavigation :menu-links="transformedMenuLinks" :languages :language />
+	<TheNavigation :menu-links="transformedMenuLinks" :languages :language="language as string" />
 	<TheSlider :slides="languageData!.slides" :aspect-ratio="languageData!.slideAspectRatio" />
 	<NuxtPage />
 	<TheFooter :data="languageData!.footerContents" />

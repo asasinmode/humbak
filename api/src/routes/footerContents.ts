@@ -1,9 +1,10 @@
 import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { db } from '../db';
-import { languageExistsMiddleware, languageQueryValidation, wrap } from '../helpers';
+import { languageQueryValidation, wrap } from '../helpers';
+import { languageExistsMiddleware } from '../helpers/db';
 import { jwt } from '../helpers/jwt';
-import { footerContents, insertFooterContentSchema } from '../db/schema/footerContents';
+import { footerContents, insertFooterContentsSchema } from '../db/schema/footerContents';
 
 export const app = new Hono()
 	.get(
@@ -41,7 +42,7 @@ export const app = new Hono()
 			return c.json(result);
 		}
 	)
-	.post('/', jwt, wrap('json', insertFooterContentSchema), async (c) => {
+	.post('/', jwt, wrap('json', insertFooterContentsSchema), async (c) => {
 		const input = c.req.valid('json');
 
 		await db

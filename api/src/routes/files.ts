@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { inArray, like, or, sql } from 'drizzle-orm';
-import { minLength, object, string } from 'valibot';
-import { paginationQueryValidation, wrap } from '../helpers';
+import * as v from 'valibot';
+import { nonEmptyStringValidation, paginationQueryValidation, wrap } from '../helpers';
 import { db } from '../db';
 import { files } from '../db/schema/files';
 
@@ -53,8 +53,8 @@ export const app = new Hono<{
 	})
 	.get(
 		'/byIds',
-		wrap('query', object({
-			ids: string([minLength(1, 'nie może być puste')]),
+		wrap('query', v.object({
+			ids: nonEmptyStringValidation,
 		})),
 		async (c, next) => {
 			const { ids: rawIds } = c.req.valid('query');

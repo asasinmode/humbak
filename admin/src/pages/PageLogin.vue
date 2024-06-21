@@ -19,7 +19,6 @@ const {
 		const serverJwt = await api.auth.login.$post({
 			json: { username: username.value, password: password.value },
 		})
-			// @ts-expect-error server returns string here
 			.then((r: Response) => r.text());
 
 		login(username.value, serverJwt);

@@ -1,6 +1,6 @@
 import process from 'node:process';
 import { config } from 'dotenv';
-import { coerce, integer, number, object, optional, parse, picklist, string } from 'valibot';
+import * as v from 'valibot';
 
 config({
 	path: process.env.NODE_ENV === 'test'
@@ -10,18 +10,18 @@ config({
 			: '.env.development',
 });
 
-const schema = object({
-	NODE_ENV: picklist(['production', 'development', 'test']),
-	PORT: coerce(number([integer()]), Number),
-	DATABASE_URL: string(),
-	DATABASE_NAME: string(),
-	API_URL: optional(string()),
-	ADMIN_URL: string(),
-	PAGE_URL: string(),
-	FILES_PATH: string(),
-	STYLESHEETS_PATH: string(),
-	DEFAULT_LANGUAGE: string(),
-	JWT_SECRET: string(),
+const schema = v.object({
+	NODE_ENV: v.picklist(['production', 'development', 'test']),
+	PORT: v.pipe(v.string(), v.transform(Number), v.integer()),
+	DATABASE_URL: v.string(),
+	DATABASE_NAME: v.string(),
+	API_URL: v.optional(v.string()),
+	ADMIN_URL: v.string(),
+	PAGE_URL: v.string(),
+	FILES_PATH: v.string(),
+	STYLESHEETS_PATH: v.string(),
+	DEFAULT_LANGUAGE: v.string(),
+	JWT_SECRET: v.string(),
 });
 
-export const env = parse(schema, process.env);
+export const env = v.parse(schema, process.env);

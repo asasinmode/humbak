@@ -1,7 +1,8 @@
 import { eq, sql } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { db } from '../db';
-import { languageExistsMiddleware, languageQueryValidation, wrap } from '../helpers';
+import { languageQueryValidation, wrap } from '../helpers';
+import { languageExistsMiddleware } from '../helpers/db';
 import { jwt } from '../helpers/jwt';
 import { insertMetaSchema, meta } from '../db/schema/meta';
 

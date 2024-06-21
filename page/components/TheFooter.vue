@@ -8,7 +8,7 @@ const props = defineProps<{
 const emails = computed(() => props.data?.emails || []);
 const phoneNumbers = computed(() => props.data?.phoneNumbers || []);
 const socials = computed(() => props.data?.socials || []);
-const location = computed(() => props.data?.location || {});
+const location = computed(() => props.data?.location || {} as IFooterContents['location']);
 
 const maxElementsInColumn = computed(() => Math.max(emails.value.length, phoneNumbers.value.length, 1));
 

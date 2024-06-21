@@ -1,5 +1,6 @@
 import type { IMenuLink } from '@humbak/shared';
 
+// typescript cant handle the types and some resolve to any, others just dont load
 export type ISlide = {
 	id: number;
 	content: string;
@@ -18,7 +19,6 @@ export type IFooterContents = {
 	}[];
 };
 
-// inferred types barely handle admin so here I just typed them out
 export type ILanguagePageData = {
 	menuLinks: IMenuLink[];
 	slides: ISlide[];

@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { focusableElements } from '@humbak/shared';
+import { type Focusable, focusableElements } from '@humbak/shared';
 
-type Focusable = Element & {
-	focus: () => void;
-};
-
-const { grantConsent, revokeConsent } = useGtag();
+const { gtag } = useGtag();
 
 const isOpen = ref(false);
 const dialog = ref<HTMLElement>();
@@ -53,20 +49,26 @@ onMounted(() => {
 	const savedValue = localStorage.getItem('trackingConsent');
 	if (savedValue === null) {
 		open();
-	} else {
-		savedValue === 'true' ? grantConsent() : revokeConsent();
+	} else if (savedValue === 'true') {
+		gtag('consent', 'update', {
+			analytics_storage: 'granted',
+		});
 	}
 });
 
 function agree() {
 	localStorage.setItem('trackingConsent', 'true');
-	grantConsent();
+	gtag('consent', 'update', {
+		analytics_storage: 'granted',
+	});
 	close();
 }
 
 function disagree() {
 	localStorage.setItem('trackingConsent', 'false');
-	revokeConsent();
+	gtag('consent', 'update', {
+		analytics_storage: 'denied',
+	});
 	close();
 }
 </script>

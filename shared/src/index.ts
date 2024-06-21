@@ -1,5 +1,9 @@
 import { ref } from 'vue';
 
+export type Focusable = Element & {
+	focus: () => void;
+};
+
 export type IMenuLink = {
 	pageId: number;
 	text: string;

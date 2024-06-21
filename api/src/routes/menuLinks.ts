@@ -1,6 +1,6 @@
 import type { IMenuLink } from '@humbak/shared';
 import { and, eq, not, sql } from 'drizzle-orm';
-import { array, object, omit } from 'valibot';
+import * as v from 'valibot';
 import { Hono } from 'hono';
 import { db } from '../db';
 import { languageQueryValidation, wrap } from '../helpers';
@@ -25,7 +25,7 @@ export const app = new Hono()
 
 		return c.json(result);
 	})
-	.put('/', wrap('json', object({ menuLinks: array(omit(insertMenuLinkSchema, ['text'])) })), async (c) => {
+	.put('/', wrap('json', v.object({ menuLinks: v.array(v.omit(insertMenuLinkSchema, ['text'])) })), async (c) => {
 		const input = c.req.valid('json');
 
 		await Promise.all(input.menuLinks.map(({ pageId, position, parentId }) => db

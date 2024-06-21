@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { datetime, json, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
-import { array, maxLength, object, optional, picklist, string } from 'valibot';
-import { nonEmptyMaxLengthString } from '../../helpers';
+import * as v from 'valibot';
+import { nonEmptyMaxLengthString, nonEmptyStringValidation } from '../../helpers';
 
 const knownSocials = ['facebook', 'youtube', 'instagram', 'twitter'] as const;
 
@@ -21,13 +21,16 @@ export const footerContents = mysqlTable('footerContents', {
 	updatedAt: datetime('updatedAt').notNull().default(sql`NOW()`),
 });
 
-export const insertFooterContentSchema = object({
+export const insertFooterContentsSchema = v.object({
 	language: nonEmptyMaxLengthString(32),
-	emails: optional(array(string())),
-	phoneNumbers: optional(array(string())),
-	location: optional(object({
-		text: string([maxLength(256, `maksymalna długość: 256`)]),
-		value: string([maxLength(256, `maksymalna długość: 256`)]),
+	emails: v.optional(v.array(nonEmptyStringValidation, 'musi być listą')),
+	phoneNumbers: v.optional(v.array(nonEmptyStringValidation, 'musi być listą')),
+	location: v.optional(v.object({
+		text: v.pipe(v.string('musi być tekstem'), v.maxLength(256, 'maksymalna długość: 256')),
+		value: v.pipe(v.string('musi być tekstem'), v.maxLength(256, 'maksymalna długość: 256')),
 	})),
-	socials: optional(array(object({ type: picklist(knownSocials), value: nonEmptyMaxLengthString() }))),
+	socials: v.optional(v.array(v.object({
+		type: v.picklist(knownSocials),
+		value: nonEmptyMaxLengthString(),
+	}))),
 });

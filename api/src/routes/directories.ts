@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { Hono, type MiddlewareHandler } from 'hono';
 import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
-import { type Input, array, custom, null_, number, object, string, transform, union } from 'valibot';
+import * as v from 'valibot';
 import { processDeletedDirs } from '../helpers/files/dirDeleteProcessing';
 import { createImageSizes, imageWithSameNameExists } from '../helpers/files/image';
 import { parseHumbakHtml } from '../helpers/pages';
@@ -10,7 +10,7 @@ import { directories, insertDirectorySchema } from '../db/schema/directories';
 import { files, insertFileSchema } from '../db/schema/files';
 import { slides } from '../db/schema/slides';
 import { contents } from '../db/schema/contents';
-import { wrap } from '../helpers';
+import { nullablePositiveIntegerValidation, positiveIntegerValidation, wrap } from '../helpers';
 import { filesStoragePath } from '../helpers/files';
 import { getDirsToDelete } from '../helpers/files/dirDeleteValidation';
 import { getDirsToEdit } from '../helpers/files/dirEditValidation';
@@ -21,39 +21,41 @@ import { processEditedDirs } from '../helpers/files/dirEditProcessing';
 import type { IEditedFile, IOriginalFile } from '../helpers/files/fileEditValidation';
 import type { IEditedDir } from '../helpers/files/dirEditValidation';
 
-const dirIdParamValidation = wrap('param', transform(object({
-	id: string([
-		custom((v) => {
+const dirIdParamValidation = wrap('param', v.pipe(
+	v.object({
+		id: v.pipe(v.string(), v.custom((v) => {
 			if (v === 'null') {
 				return true;
 			}
-			if (Number.isNaN(Number.parseInt(v))) {
+			if (Number.isNaN(Number.parseInt(v as string))) {
 				return false;
 			}
 			return true;
-		}, 'musi być liczbą lub null'),
-	]),
-}), ({ id }) => ({
-	id: id === 'null' ? null : Number.parseInt(id),
-})));
+		}, 'musi być liczbą lub null')),
+	}),
+	v.transform(({ id }) => ({
+		id: id === 'null' ? null : Number.parseInt(id),
+	}))
+));
 
-const putDirectoryInput = object({
-	deletedFileIds: array(number()),
-	editedFiles: array(object({
-		id: number(),
+const putDirectoryInput = v.object({
+	deletedFileIds: v.array(positiveIntegerValidation),
+	editedFiles: v.array(v.object({
+		id: positiveIntegerValidation,
 		name: insertFileSchema.entries.name,
 		title: insertFileSchema.entries.title,
 		alt: insertFileSchema.entries.alt,
-		directoryId: union([number(), null_()]),
+		directoryId: nullablePositiveIntegerValidation,
 	})),
-	deletedDirIds: array(number()),
-	editedDirs: array(object({
-		id: number(),
+	deletedDirIds: v.array(positiveIntegerValidation),
+	editedDirs: v.array(v.object({
+		id: positiveIntegerValidation,
 		name: insertDirectorySchema.entries.name,
-		parentId: union([number(), null_()]),
+		parentId: nullablePositiveIntegerValidation,
 	})),
 });
-export type IPutDirectoryInput = Input<typeof putDirectoryInput>;
+
+export type IPutDirectoryInput = v.InferInput<typeof putDirectoryInput>;
 export type IDir = Pick<InferSelectModel<typeof directories>, 'id' | 'name' | 'parentId' | 'path'>;
 
 export const app = new Hono<{
