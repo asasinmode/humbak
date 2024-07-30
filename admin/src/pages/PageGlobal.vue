@@ -105,6 +105,7 @@ function hasChanged(usePrevious: boolean) {
 			return rv;
 		} catch (error) {
 			console.error('JSON parsing error');
+			console.error(error);
 			return true;
 		}
 	}

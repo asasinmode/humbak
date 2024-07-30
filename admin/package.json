@@ -16,31 +16,31 @@
 	"dependencies": {
 		"@humbak/shared": "workspace:^",
 		"@monaco-editor/loader": "^1.4.0",
-		"@types/node": "^20.14.7",
+		"@types/node": "^22.0.0",
 		"blaze-slider": "^1.9.3",
-		"hono": "^4.4.7",
-		"valibot": "^0.33.3",
-		"vue": "^3.4.29",
-		"vue-router": "^4.3.3"
+		"hono": "^4.5.3",
+		"valibot": "^0.37.0",
+		"vue": "^3.4.34",
+		"vue-router": "^4.4.0"
 	},
 	"devDependencies": {
 		"@humbak/api": "workspace:^",
-		"@iconify-json/fa6-solid": "^1.1.21",
-		"@iconify-json/fluent": "^1.1.57",
+		"@iconify-json/fa6-solid": "^1.1.23",
+		"@iconify-json/fluent": "^1.1.60",
 		"@iconify-json/logos": "^1.1.43",
 		"@iconify-json/mdi": "^1.1.67",
 		"@iconify-json/ph": "^1.1.13",
 		"@iconify-json/solar": "^1.1.9",
 		"@tsconfig/node18": "^18.2.4",
-		"@unocss/reset": "^0.61.0",
-		"@vitejs/plugin-vue": "^5.0.5",
+		"@unocss/reset": "^0.61.8",
+		"@vitejs/plugin-vue": "^5.1.1",
 		"@vue/tsconfig": "^0.5.1",
-		"typescript": "^5.5.2",
-		"unocss": "^0.61.0",
-		"unplugin-auto-import": "^0.17.6",
-		"unplugin-vue-components": "^0.27.0",
-		"vite": "^5.3.1",
-		"vue-component-type-helpers": "^2.0.21",
-		"vue-tsc": "^2.0.21"
+		"typescript": "^5.5.4",
+		"unocss": "^0.61.8",
+		"unplugin-auto-import": "^0.18.2",
+		"unplugin-vue-components": "^0.27.3",
+		"vite": "^5.3.5",
+		"vue-component-type-helpers": "^2.0.29",
+		"vue-tsc": "^2.0.29"
 	}
 }

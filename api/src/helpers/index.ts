@@ -114,14 +114,12 @@ export function wrap<
 				}
 
 				if (issue.path.length === 1) {
-					// @ts-expect-error key exists
 					errors[issue.path[0].key as string || 'unknown'] = message;
 					continue;
 				}
 
 				let pointer = errors as any;
 				for (let i = 0; i < issue.path.length - 1; i++) {
-					// @ts-expect-error key exists
 					const key = issue.path[i].key as string | number;
 
 					pointer[key] ||= {};
@@ -129,7 +127,6 @@ export function wrap<
 				}
 
 				const lastIssue = issue.path[issue.path.length - 1];
-				// @ts-expect-error key exists
 				pointer[lastIssue.key as string | number] = message;
 			}
 

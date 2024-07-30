@@ -28,6 +28,7 @@ export default await antfu({
 			functions: 'never',
 		}],
 		'vue/return-in-computed-property': 'off',
+		'ts/no-unused-expressions': 'off',
 	},
 	files: [
 		'api/**/*',

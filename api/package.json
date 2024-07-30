@@ -23,23 +23,23 @@
 		"test": "set NODE_ENV=test&&node --import tsx ./__tests__/index.ts"
 	},
 	"dependencies": {
-		"@hono/node-server": "^1.11.4",
+		"@hono/node-server": "^1.12.0",
 		"cheerio": "1.0.0-rc.12",
 		"dotenv": "^16.4.5",
-		"drizzle-orm": "^0.31.2",
-		"hono": "^4.4.7",
+		"drizzle-orm": "^0.32.1",
+		"hono": "^4.5.3",
 		"jsonwebtoken": "^9.0.2",
-		"mysql2": "^3.10.1",
+		"mysql2": "^3.11.0",
 		"sharp": "^0.33.4",
-		"valibot": "^0.33.3"
+		"valibot": "^0.37.0"
 	},
 	"devDependencies": {
 		"@clack/prompts": "^0.7.0",
 		"@humbak/shared": "workspace:^",
-		"@types/node": "^20.14.7",
-		"drizzle-kit": "^0.22.7",
-		"esbuild": "^0.21.5",
-		"tsx": "^4.15.7",
-		"typescript": "^5.5.2"
+		"@types/node": "^22.0.0",
+		"drizzle-kit": "^0.23.1",
+		"esbuild": "^0.23.0",
+		"tsx": "^4.16.2",
+		"typescript": "^5.5.4"
 	}
 }

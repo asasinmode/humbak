@@ -14,9 +14,9 @@ export async function getFilesToEdit(
 	originalFiles: Map<number, IOriginalFile>,
 	rootPath = '/'
 ): Promise<{
-	filesToEdit: IEditedFile[];
-	errors: Record<number, Record<string, string>>;
-}> {
+		filesToEdit: IEditedFile[];
+		errors: Record<number, Record<string, string>>;
+	}> {
 	const filesToEdit: IEditedFile[] = [];
 
 	const errors: Record<number, Record<string, string>> = {};

@@ -13,9 +13,9 @@ export async function getDirsToEdit(
 	deletedDirs: Map<number, IDir>,
 	rootPath = '/'
 ): Promise<{
-	dirsToEdit: IEditedDir[];
-	errors: Record<number, Record<string, string>>;
-}> {
+		dirsToEdit: IEditedDir[];
+		errors: Record<number, Record<string, string>>;
+	}> {
 	const firstPassDirs: IEditedDir[] = [];
 
 	const errors: Record<number, Record<string, string>> = {};
