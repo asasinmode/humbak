@@ -69,7 +69,7 @@ export const idParamValidationMiddleware = wrap('param', v.pipe(
 
 type HasUndefined<T> = undefined extends T ? true : false;
 
-// copied and adapted to valibot from https://github.com/honojs/hono/blob/main/src/validator/validator.ts#L13
+// copied from https://github.com/honojs/middleware/blob/main/packages/valibot-validator/src/index.ts
 export function wrap<
 	T extends v.GenericSchema,
 	Target extends keyof ValidationTargets,
