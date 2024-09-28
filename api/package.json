@@ -8,7 +8,7 @@
 		"start:dev": "set NODE_ENV=development&& node dist/index.js",
 		"build": "node build.js",
 		"preview": "pnpm run build && pnpm run start:dev",
-		"db:generate": "drizzle-kit generate:mysql",
+		"db:generate": "drizzle-kit generate",
 		"db:drop-migration": "drizzle-kit drop",
 		"db:migrate": "tsx ./src/db/scripts/migrate.ts",
 		"db:migrate:prod": "set NODE_ENV=production&& tsx ./src/db/scripts/migrate.ts",
