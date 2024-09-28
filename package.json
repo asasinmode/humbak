@@ -11,10 +11,10 @@
 		"lint:fix": "eslint . --fix"
 	},
 	"devDependencies": {
-		"@antfu/eslint-config": "^2.24.0",
+		"@antfu/eslint-config": "^3.7.3",
 		"@humbak/api": "workspace:^",
 		"@humbak/shared": "workspace:^",
-		"eslint": "^9.8.0",
-		"unocss": "^0.61.8"
+		"eslint": "^9.11.1",
+		"unocss": "^0.62.4"
 	}
 }

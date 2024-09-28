@@ -1,10 +1,13 @@
-import type { CheerioAPI, Element } from 'cheerio';
+import type { CheerioAPI } from 'cheerio';
 import { load } from 'cheerio';
 import { inArray } from 'drizzle-orm';
 import { env } from 'src/env';
 import { db } from '../db';
 import { files } from '../db/schema/files';
 import { getPathWithoutExtension } from './files/image';
+
+// TMP https://github.com/cheeriojs/cheerio/issues/3988
+type Element = any;
 
 export async function parseHumbakHtml(html?: string): Promise<{ value?: string; fileIds: number[]; }> {
 	if (html === undefined) {
