@@ -1,22 +1,22 @@
 import { existsSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
-import { Hono } from 'hono';
-import { cors } from 'hono/cors';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { env } from './env';
 import { filesStoragePath, stylesheetsStoragePath } from './helpers/files';
 import { app as authApp } from './routes/auth';
-import { app as metaApp } from './routes/meta';
-import { app as pagesApp } from './routes/pages';
+import { app as directoriesApp } from './routes/directories';
 import { app as filesApp } from './routes/files';
-import { app as slidesApp } from './routes/slides';
-import { app as publicApp } from './routes/public';
+import { app as footerContentsApp } from './routes/footerContents';
 import { app as globalCssApp } from './routes/globalCss';
 import { app as languagesApp } from './routes/languages';
 import { app as menuLinksApp } from './routes/menuLinks';
-import { app as directoriesApp } from './routes/directories';
-import { app as footerContentsApp } from './routes/footerContents';
+import { app as metaApp } from './routes/meta';
+import { app as pagesApp } from './routes/pages';
+import { app as publicApp } from './routes/public';
+import { app as slidesApp } from './routes/slides';
 
 !existsSync(filesStoragePath) && await mkdir(filesStoragePath, { recursive: true });
 !existsSync(stylesheetsStoragePath) && await mkdir(stylesheetsStoragePath, { recursive: true });
@@ -32,6 +32,7 @@ app.use('/*', serveStatic({
 	root: './public',
 }));
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 const typedApp = app
 	.route('/auth', authApp)
 	.route('/footerContents', footerContentsApp)

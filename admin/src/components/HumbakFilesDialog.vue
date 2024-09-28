@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { getPathWithoutExtension, knownMimetypeExtensions } from '~/helpers';
-import { env } from '~/env';
 import type { IDialogFile } from '~/composables/useApi';
+import { env } from '~/env';
+import { getPathWithoutExtension, knownMimetypeExtensions } from '~/helpers';
 
 withDefaults(
 	defineProps<{ iconClass?: string; }>(),

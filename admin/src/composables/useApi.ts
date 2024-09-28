@@ -1,6 +1,6 @@
-import { hc } from 'hono/client';
-import type { InferRequestType, InferResponseType } from 'hono/client';
 import type { AppType } from '@humbak/api/src';
+import type { InferRequestType, InferResponseType } from 'hono/client';
+import { hc } from 'hono/client';
 import { env } from '~/env';
 
 const { jwt } = useAuth();

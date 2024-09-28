@@ -30,14 +30,6 @@ export default await antfu({
 		'vue/return-in-computed-property': 'off',
 		'ts/no-unused-expressions': 'off',
 	},
-	files: [
-		'api/**/*',
-		'admin/**/*',
-		'admin/**/*.vue',
-		'page/**/*',
-		'page/**/*.vue',
-		'shared/**/*',
-	],
 	vue: true,
 	typescript: true,
 }, {
@@ -45,6 +37,7 @@ export default await antfu({
 	rules: {
 		'no-console': 'off',
 		'test/no-import-node-test': 'off',
+		'antfu/no-top-level-await': 'off',
 	},
 }, {
 	ignores: ['api/src/db/migrations/**/*'],

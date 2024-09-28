@@ -1,12 +1,12 @@
+import type { IEditedFile } from './fileEditValidation';
 import { existsSync } from 'node:fs';
 import { eq, inArray } from 'drizzle-orm';
+import { filesStoragePath } from '.';
 import { db } from '../../db';
 import { files } from '../../db/schema/files';
 import { filesToPages } from '../../db/schema/filesToPages';
 import { filesToSlides } from '../../db/schema/filesToSlides';
-import type { IEditedFile } from './fileEditValidation';
 import { renameFile } from './image';
-import { filesStoragePath } from '.';
 
 export async function processEditedFiles(
 	input: IEditedFile[],

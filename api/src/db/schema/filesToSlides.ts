@@ -1,6 +1,6 @@
 import { int, mysqlTable } from 'drizzle-orm/mysql-core';
-import { slides } from './slides';
 import { files } from './files';
+import { slides } from './slides';
 
 export const filesToSlides = mysqlTable('filesToSlides', {
 	slideId: int('slideId').notNull().references(() => slides.id, { onDelete: 'cascade' }),

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import 'blaze-slider/dist/blaze.css';
 import BlazeSlider from 'blaze-slider';
-
 import type { IPublicListedSlide, ISlide } from '~/composables/useApi';
+
+import 'blaze-slider/dist/blaze.css';
 
 const props = withDefaults(defineProps<{
 	language?: string;

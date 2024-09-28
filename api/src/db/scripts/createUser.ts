@@ -1,8 +1,8 @@
-import process from 'node:process';
 import { randomUUID } from 'node:crypto';
+import process from 'node:process';
 import { pool } from '..';
-import { hashPassword } from '../../helpers/auth';
 import { promptProdContinue } from '../../helpers';
+import { hashPassword } from '../../helpers/auth';
 
 await promptProdContinue();
 

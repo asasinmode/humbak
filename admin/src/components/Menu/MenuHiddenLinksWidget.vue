@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import MenuLinkButton from './MenuLinkButton.vue';
 import type { IMenuTreeItem } from '~/types';
+import MenuLinkButton from './MenuLinkButton.vue';
 
 defineProps<{
 	menuLinks: IMenuTreeItem[];

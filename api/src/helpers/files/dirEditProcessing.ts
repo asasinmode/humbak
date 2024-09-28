@@ -1,14 +1,14 @@
+import type { IDir } from '../../routes/directories';
+import type { IEditedDir } from './dirEditValidation';
 import { existsSync } from 'node:fs';
 import { rename } from 'node:fs/promises';
 import { eq, inArray, sql } from 'drizzle-orm';
+import { filesStoragePath } from '.';
 import { db } from '../../db';
-import type { IDir } from '../../routes/directories';
 import { directories } from '../../db/schema/directories';
 import { files } from '../../db/schema/files';
 import { filesToPages } from '../../db/schema/filesToPages';
 import { filesToSlides } from '../../db/schema/filesToSlides';
-import type { IEditedDir } from './dirEditValidation';
-import { filesStoragePath } from '.';
 
 export async function processEditedDirs(
 	input: IEditedDir[],

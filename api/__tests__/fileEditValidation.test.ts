@@ -2,8 +2,8 @@ import assert from 'node:assert';
 import { existsSync } from 'node:fs';
 import { lstat, mkdir, rm, writeFile } from 'node:fs/promises';
 import test, { after, before } from 'node:test';
-import { getFilesToEdit } from 'src/helpers/files/fileEditValidation';
 import { filesStoragePath } from 'src/helpers/files';
+import { getFilesToEdit } from 'src/helpers/files/fileEditValidation';
 import { createAllDirs, createInputFile, createOriginalFiles } from './helpers';
 
 const dirPath = '/fileEditValidation';

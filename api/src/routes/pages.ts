@@ -1,17 +1,17 @@
 import { existsSync } from 'node:fs';
 import { readFile, rm, writeFile } from 'node:fs/promises';
-import { Hono } from 'hono';
 import { and, eq, isNull, like, or, sql } from 'drizzle-orm';
+import { Hono } from 'hono';
 import * as v from 'valibot';
-import { stylesheetsStoragePath } from '../helpers/files';
-import { idParamValidationMiddleware, paginationQueryValidation, wrap } from '../helpers';
 import { db } from '../db';
-import { parseHumbakHtml } from '../helpers/pages';
-import { filesToPages } from '../db/schema/filesToPages';
-import { insertPageSchema, pages } from '../db/schema/pages';
 import { contents, insertContentSchema } from '../db/schema/contents';
+import { filesToPages } from '../db/schema/filesToPages';
 import { insertMenuLinkSchema, menuLinks } from '../db/schema/menuLinks';
+import { insertPageSchema, pages } from '../db/schema/pages';
 import { env } from '../env';
+import { idParamValidationMiddleware, paginationQueryValidation, wrap } from '../helpers';
+import { stylesheetsStoragePath } from '../helpers/files';
+import { parseHumbakHtml } from '../helpers/pages';
 
 const upsertPageInputSchema = v.object({
 	...insertPageSchema.entries,
@@ -81,7 +81,8 @@ export const app = new Hono()
 
 		const originalPage = pageFields.id !== undefined
 			? await db.select({ language: pages.language, slug: pages.slug })
-				.from(pages).where(eq(pages.id, pageFields.id))
+				.from(pages)
+				.where(eq(pages.id, pageFields.id))
 			: undefined;
 
 		let languageChanged = false;

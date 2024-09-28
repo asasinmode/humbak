@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { knownMimetypeExtensions } from '~/helpers';
-import VDialog from '~/components/V/VDialog.vue';
-import { env } from '~/env';
 import VButton from '~/components/V/VButton.vue';
-import { FetchError } from '~/composables/useErrors';
+import VDialog from '~/components/V/VDialog.vue';
 import type { IDirectory, IFile, IGetDirectoryResponse, IPutDirectoriesInput } from '~/composables/useApi';
+import { FetchError } from '~/composables/useErrors';
+import { env } from '~/env';
+import { knownMimetypeExtensions } from '~/helpers';
 import type { IFilesGrabbedItem, ILocalDirectory, ILocalFile, INewFile } from '~/types';
 
 const api = useApi();
@@ -708,8 +708,8 @@ async function saveChanges() {
 
 	try {
 		const response: IGetDirectoryResponse = await fetch(
-				`${env.VITE_API_URL}/directories/${currentDirId.value}`,
-				{ method: 'post', body: formdata }
+			`${env.VITE_API_URL}/directories/${currentDirId.value}`,
+			{ method: 'post', body: formdata }
 		).then(async (r) => {
 			if (r.ok) {
 				return r;

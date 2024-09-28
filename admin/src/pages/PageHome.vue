@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { ComponentExposed } from 'vue-component-type-helpers';
 
-import { FetchError } from '~/composables/useErrors';
 import PagesContentEditor from '~/components/Pages/PagesContentEditor.vue';
 import PagesTable from '~/components/Pages/PagesTable.vue';
 import VButton from '~/components/V/VButton.vue';
+import { FetchError } from '~/composables/useErrors';
 
 const api = useApi();
 const { confirm } = useConfirm();

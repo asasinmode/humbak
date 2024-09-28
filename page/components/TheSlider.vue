@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import 'blaze-slider/dist/blaze.css';
 import BlazeSlider from 'blaze-slider';
 import type { ISlide } from '~/types/api';
+import 'blaze-slider/dist/blaze.css';
 
 const props = defineProps<{
 	slides: ISlide[];

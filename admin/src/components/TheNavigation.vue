@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useMobileMenu } from '@humbak/shared';
 import type { ComponentPublicInstance } from 'vue';
+import { useMobileMenu } from '@humbak/shared';
 import TheThemeToggle from '~/components/TheThemeToggle.vue';
 
 const secondToLastFocusableNavElement = ref<InstanceType<typeof TheThemeToggle>>();

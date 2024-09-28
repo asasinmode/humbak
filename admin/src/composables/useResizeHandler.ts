@@ -8,9 +8,9 @@ export function useResizeHandler(container: Ref<HTMLElement | undefined>) {
 		event.preventDefault();
 		if (!container.value || !document.defaultView) {
 			throw new Error(`container or document default view not found ${{
-			container: container.value,
-			defaultView: document.defaultView,
-		}}`);
+				container: container.value,
+				defaultView: document.defaultView,
+			}}`);
 		}
 
 		initY = event.clientY;

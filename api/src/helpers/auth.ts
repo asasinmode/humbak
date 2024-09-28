@@ -1,5 +1,5 @@
-import { randomBytes, scrypt, timingSafeEqual } from 'node:crypto';
 import { Buffer } from 'node:buffer';
+import { randomBytes, scrypt, timingSafeEqual } from 'node:crypto';
 
 export async function hashPassword(password: string) {
 	const salt = randomBytes(16).toString('hex');

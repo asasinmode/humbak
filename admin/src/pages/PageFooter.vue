@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import VButton from '~/components/V/VButton.vue';
 import LanguageSelect from '~/components/LanguageSelect.vue';
+import VButton from '~/components/V/VButton.vue';
 import type { IFooterContents } from '~/composables/useApi';
 
 const { toast, toastGenericError } = useToast();

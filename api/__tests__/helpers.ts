@@ -1,9 +1,9 @@
+import type { IEditedFile, IOriginalFile } from 'src/helpers/files/fileEditValidation';
+import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
 import { inArray } from 'drizzle-orm';
 import { db } from 'src/db';
-import { files } from 'src/db/schema/files';
 import { directories } from 'src/db/schema/directories';
-import type { IDir, IPutDirectoryInput } from 'src/routes/directories';
-import type { IEditedFile, IOriginalFile } from 'src/helpers/files/fileEditValidation';
+import { files } from 'src/db/schema/files';
 
 export function createAllDirs(dirs: { parentId: number | null; path?: string; }[]) {
 	const allDirs = new Map<number, IDir>();

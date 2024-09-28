@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs';
 import { rm } from 'node:fs/promises';
-import { filesStoragePath, stylesheetsStoragePath } from '../../helpers/files';
 import { pool } from '..';
 import { getTableNames, promptProdContinue } from '../../helpers';
+import { filesStoragePath, stylesheetsStoragePath } from '../../helpers/files';
 import { deleteFile } from '../../helpers/files/image';
 
 await promptProdContinue();

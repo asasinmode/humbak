@@ -1,8 +1,8 @@
 import type { InferSelectModel } from 'drizzle-orm';
 import type { files } from '../../db/schema/files';
 import type { IDir, IPutDirectoryInput } from '../../routes/directories';
-import { imageWithSameNameExists } from './image';
 import { filesStoragePath } from '.';
+import { imageWithSameNameExists } from './image';
 
 export type IOriginalFile = Pick<InferSelectModel<typeof files>, 'id' | 'directoryId' | 'path' | 'name' | 'mimetype'>;
 export type IEditedFile = IPutDirectoryInput['editedFiles'][number] & { targetDir?: IDir; originalFile: IOriginalFile; };
@@ -25,7 +25,6 @@ export async function getFilesToEdit(
 		errors[index][key] = value;
 	};
 
-	// eslint-disable-next-line no-restricted-syntax
 	outerLoop: for (let i = 0; i < input.length; i++) {
 		const file = input[i];
 		const originalFile = originalFiles.get(file.id);

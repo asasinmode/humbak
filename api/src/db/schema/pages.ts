@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
-import * as v from 'valibot';
 import { datetime, index, int, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
+import * as v from 'valibot';
 import { nonEmptyMaxLengthString, positiveIntegerValidation } from '../../helpers';
 
 export const pages = mysqlTable('pages', {

@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import PageLogin from '~/pages/PageLogin.vue';
 import LayoutNavigationless from '~/layouts/LayoutNavigationless.vue';
+import PageLogin from '~/pages/PageLogin.vue';
 
 export const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),

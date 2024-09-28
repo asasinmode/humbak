@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import IconsSnippetUnorderedList from '~/components/Icons/IconsSnippetUnorderedList.vue';
 import IconsSnippetDescribedImage from '~/components/Icons/IconsSnippetDescribedImage.vue';
 import IconsSnippetDoubleContainer from '~/components/Icons/IconsSnippetDoubleContainer.vue';
-import IconsSnippetTripleContainer from '~/components/Icons/IconsSnippetTripleContainer.vue';
 import IconsSnippetIndentedParagraphs from '~/components/Icons/IconsSnippetIndentedParagraphs.vue';
+import IconsSnippetTripleContainer from '~/components/Icons/IconsSnippetTripleContainer.vue';
+import IconsSnippetUnorderedList from '~/components/Icons/IconsSnippetUnorderedList.vue';
 
 const indentedParagraphs = `<p>Przykładowy tekst</p>
 <p class="indent">Druga linijka przykładowego tekstu</p>

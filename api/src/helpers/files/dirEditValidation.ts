@@ -1,8 +1,8 @@
+import type { IDir, IPutDirectoryInput } from '../../routes/directories';
 import { existsSync } from 'node:fs';
 import { lstat } from 'node:fs/promises';
-import type { IDir, IPutDirectoryInput } from '../../routes/directories';
-import { recursiveDirChildren } from './dirDeleteValidation';
 import { filesStoragePath } from '.';
+import { recursiveDirChildren } from './dirDeleteValidation';
 
 export type IEditedDir = IPutDirectoryInput['editedDirs'][number] & { originalIndex: number; };
 
@@ -24,7 +24,6 @@ export async function getDirsToEdit(
 		errors[index][key] = value;
 	};
 
-	// eslint-disable-next-line no-restricted-syntax
 	outerLoop: for (let i = 0; i < input.length; i++) {
 		const dir = input[i];
 		const originalDir = allDirs.get(dir.id);
@@ -74,7 +73,7 @@ export async function getDirsToEdit(
 	const secondPassDirs = extractDeletedFromMoved(allDirs, allDirsArray, deletedDirs, firstPassDirs);
 
 	const dirsToEdit: IEditedDir[] = [];
-	// eslint-disable-next-line no-restricted-syntax
+
 	outerLoop: for (const dir of secondPassDirs) {
 		if (dir.id === dir.parentId) {
 			setError(dir.originalIndex, 'parentId', 'folder nie może być przeniesiony do samego siebie');

@@ -1,25 +1,25 @@
+import type { IEditedDir } from '../helpers/files/dirEditValidation';
+import type { IEditedFile, IOriginalFile } from '../helpers/files/fileEditValidation';
 import { mkdir, writeFile } from 'node:fs/promises';
+import { eq, inArray, type InferSelectModel, isNull, sql } from 'drizzle-orm';
 import { Hono, type MiddlewareHandler } from 'hono';
-import { type InferSelectModel, eq, inArray, isNull, sql } from 'drizzle-orm';
 import * as v from 'valibot';
-import { processDeletedDirs } from '../helpers/files/dirDeleteProcessing';
-import { createImageSizes, imageWithSameNameExists } from '../helpers/files/image';
-import { parseHumbakHtml } from '../helpers/pages';
 import { db } from '../db';
+import { contents } from '../db/schema/contents';
 import { directories, insertDirectorySchema } from '../db/schema/directories';
 import { files, insertFileSchema } from '../db/schema/files';
 import { slides } from '../db/schema/slides';
-import { contents } from '../db/schema/contents';
 import { nullablePositiveIntegerValidation, positiveIntegerValidation, wrap } from '../helpers';
 import { filesStoragePath } from '../helpers/files';
+import { processDeletedDirs } from '../helpers/files/dirDeleteProcessing';
 import { getDirsToDelete } from '../helpers/files/dirDeleteValidation';
+import { processEditedDirs } from '../helpers/files/dirEditProcessing';
 import { getDirsToEdit } from '../helpers/files/dirEditValidation';
-import { getFilesToEdit } from '../helpers/files/fileEditValidation';
 import { processDeletedFiles } from '../helpers/files/fileDeleteProcessing';
 import { processEditedFiles } from '../helpers/files/fileEditProcessing';
-import { processEditedDirs } from '../helpers/files/dirEditProcessing';
-import type { IEditedFile, IOriginalFile } from '../helpers/files/fileEditValidation';
-import type { IEditedDir } from '../helpers/files/dirEditValidation';
+import { getFilesToEdit } from '../helpers/files/fileEditValidation';
+import { createImageSizes, imageWithSameNameExists } from '../helpers/files/image';
+import { parseHumbakHtml } from '../helpers/pages';
 
 const dirIdParamValidation = wrap('param', v.pipe(
 	v.object({

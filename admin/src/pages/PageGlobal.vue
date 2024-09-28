@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import type { ComponentExposed } from 'vue-component-type-helpers';
 
-import VButton from '~/components/V/VButton.vue';
-import VEditor from '~/components/V/VEditor.vue';
-import VCombobox from '~/components/V/VCombobox.vue';
 import LanguageSelect from '~/components/LanguageSelect.vue';
+import VButton from '~/components/V/VButton.vue';
+import VCombobox from '~/components/V/VCombobox.vue';
+import VEditor from '~/components/V/VEditor.vue';
 
 const api = useApi();
 const { toast } = useToast();

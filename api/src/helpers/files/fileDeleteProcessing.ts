@@ -1,10 +1,10 @@
 import { inArray } from 'drizzle-orm';
+import { filesStoragePath } from '.';
 import { db } from '../../db';
 import { files } from '../../db/schema/files';
 import { filesToPages } from '../../db/schema/filesToPages';
 import { filesToSlides } from '../../db/schema/filesToSlides';
 import { deleteFile } from './image';
-import { filesStoragePath } from '.';
 
 export async function processDeletedFiles(input: number[], modifiedPagesIds: Set<number>, modifiedSlidesIds: Set<number>) {
 	if (!input.length) {

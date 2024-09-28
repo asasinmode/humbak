@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { getPathWithoutExtension, knownMimetypeExtensions } from '~/helpers';
-import { env } from '~/env';
 import type { IFile } from '~/composables/useApi';
+import { env } from '~/env';
+import { getPathWithoutExtension, knownMimetypeExtensions } from '~/helpers';
 import type { IFilesGrabbedItem, ILocalFile, INewFile } from '~/types';
 
 const props = defineProps<{

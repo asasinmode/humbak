@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { ComponentExposed } from 'vue-component-type-helpers';
 
-import VButton from '~/components/V/VButton.vue';
-import VEditor from '~/components/V/VEditor.vue';
-import VDialog from '~/components/V/VDialog.vue';
-import TheSlider from '~/components/TheSlider.vue';
-import VCombobox from '~/components/V/VCombobox.vue';
 import LanguageSelect from '~/components/LanguageSelect.vue';
+import TheSlider from '~/components/TheSlider.vue';
+import VButton from '~/components/V/VButton.vue';
+import VCombobox from '~/components/V/VCombobox.vue';
+import VDialog from '~/components/V/VDialog.vue';
+import VEditor from '~/components/V/VEditor.vue';
 
 import type { IListedSlide } from '~/composables/useApi';
 

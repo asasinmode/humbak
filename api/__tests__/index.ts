@@ -1,11 +1,11 @@
 import process from 'node:process';
-import { fileURLToPath } from 'node:url';
 import { finished } from 'node:stream/promises';
-import { spec } from 'node:test/reporters';
 import { run } from 'node:test';
-import { env } from 'src/env';
-import { db, pool } from 'src/db';
+import { fileURLToPath } from 'node:url';
 import { migrate } from 'drizzle-orm/mysql2/migrator';
+import { spec } from 'node:test/reporters';
+import { db, pool } from 'src/db';
+import { env } from 'src/env';
 import { getTableNames } from 'src/helpers';
 
 if (env.NODE_ENV !== 'test') {

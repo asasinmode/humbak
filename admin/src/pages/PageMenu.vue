@@ -2,8 +2,8 @@
 import type { IMenuLink } from '@humbak/shared';
 import { extractWithParentId, transformMenuLinks } from '@humbak/shared';
 import LanguageSelect from '~/components/LanguageSelect.vue';
-import VButton from '~/components/V/VButton.vue';
 import MenuHiddenLinksWidget from '~/components/Menu/MenuHiddenLinksWidget.vue';
+import VButton from '~/components/V/VButton.vue';
 import type { IMenuTreeItem } from '~/types';
 
 const api = useApi();

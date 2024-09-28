@@ -1,9 +1,9 @@
-import { URL, fileURLToPath } from 'node:url';
-import { defineConfig } from 'vite';
+import { fileURLToPath, URL } from 'node:url';
 import Vue from '@vitejs/plugin-vue';
-import Components from 'unplugin-vue-components/vite';
-import AutoImport from 'unplugin-auto-import/vite';
 import Unocss from 'unocss/vite';
+import AutoImport from 'unplugin-auto-import/vite';
+import Components from 'unplugin-vue-components/vite';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
 	define: {

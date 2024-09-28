@@ -1,10 +1,10 @@
 import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
 import { db } from '../db';
+import { footerContents, insertFooterContentsSchema } from '../db/schema/footerContents';
 import { languageQueryValidation, wrap } from '../helpers';
 import { languageExistsMiddleware } from '../helpers/db';
 import { jwt } from '../helpers/jwt';
-import { footerContents, insertFooterContentsSchema } from '../db/schema/footerContents';
 
 export const app = new Hono()
 	.get(

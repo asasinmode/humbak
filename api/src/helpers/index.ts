@@ -1,8 +1,8 @@
+import type { Env, Input as HonoInput, MiddlewareHandler, ValidationTargets } from 'hono';
 import { exit } from 'node:process';
 import { confirm } from '@clack/prompts';
-import * as v from 'valibot';
-import type { Env, Input as HonoInput, MiddlewareHandler, ValidationTargets } from 'hono';
 import { validator } from 'hono/validator';
+import * as v from 'valibot';
 import { pool } from '../db';
 import { env } from '../env';
 
