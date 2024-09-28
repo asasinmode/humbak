@@ -26,6 +26,27 @@ pnpm -filter api run db:seed
 pnpm -filter api run db:create-user username password
 ```
 
+### deploy script
+
+When building and deploying (at least for the original provider) make sure the envs of the _admin_ page are correct. The page is built statically and has to be configured when built.
+Additionally in `api/src/helpers/files/index.ts` comment the original `dirname` and uncomment the second one for the api to work correctly.
+
+```ts
+const dirname = fileURLToPath(new URL('../../..', import.meta.url));
+// TMP replace when building, couldnt find any easy way
+// const dirname = fileURLToPath(new URL('..', import.meta.url));
+```
+
+The `deploy.sh` script can be used to build and deploy the app. It supports 2 optional flags.
+
+```sh
+# install dependencies after building - needed for api and page when dependencies change
+./deploy.sh -i
+
+# deploy to production - changes the target dictionaries and screen processes' names
+./deploy.sh -prod
+```
+
 # pages
 
 The **humbak** cms is made out of 3 pages: [api](https://github.com/asasinmode/humbak/tree/master/api), [admin](https://github.com/asasinmode/humbak/tree/master/admin) and the main [page](https://github.com/asasinmode/humbak/tree/master/page). The _admin_ page is used to manage the content displayed on the main _page_, both of which communicate with and through the _api_ page.
