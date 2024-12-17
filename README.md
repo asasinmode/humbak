@@ -97,7 +97,7 @@ At the top there are: the expandable and movable **hidden pages list**, the **la
 
 In the top left corner you can find the **directory breadcrumbs** that show the current directory, the path to it and can be used to navigate directory structure. To the right of it, there are 2 buttons used to toggle between **list** and **tile** view, along with the **save button**.
 
-<img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/files-moving.png" title="moving files" alt="moving files and directories">
+<img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/files-moving-en.gif" title="moving files" alt="moving files and directories">
 
 Below these are all of your files with the exception of the first item that's used to create new directories and upload new files. Besides editing files and directories' attributes you can navigate to directories or delete/move files and directories. The **move** button can either be dragged to the target directory or be clicked on to open the **move dialog**.
 
