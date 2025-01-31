@@ -171,10 +171,10 @@
 	line-height: 1.75;
 }
 
-#page-content section p+p {
+#content section p+p {
 	@apply mt-[1.2em];
 }
 
-#page-content section p.indent {
+#content section p.indent {
 	@apply indent-4 mt-0;
 }
