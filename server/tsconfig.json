@@ -1,0 +1,7 @@
+{
+	"extends": "../.nuxt/tsconfig.server.json",
+	"compilerOptions": {
+		// https://github.com/nuxt/nuxt/issues/30284
+		"noUncheckedIndexedAccess": true
+	}
+}

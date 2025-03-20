@@ -1,0 +1,172 @@
+body {
+	background-color: #fafafa;
+	background-image: url('/admin/bg.svg');
+	background-size: 100%;
+	min-height: 100vh;
+	color-scheme: light;
+	margin: 0;
+}
+
+.dark body {
+	background-color: #171717;
+	background-image: url('/admin/bg-dark.svg');
+	color: white;
+	color-scheme: dark;
+}
+
+.shake {
+	animation: shake 0.3s infinite;
+}
+
+@keyframes shake {
+	0% {
+		transform: translate(0);
+	}
+
+	20% {
+		transform: translate(0.5em);
+	}
+
+	40% {
+		transform: translate(-0.5em);
+	}
+
+	60% {
+		transform: translate(0.5em);
+	}
+
+	80% {
+		transform: translate(-0.5em);
+	}
+
+	100% {
+		transform: translate(0);
+	}
+}
+
+.humbak-file-dialog-item:has(button:focus-visible),
+.humbak-file-dialog-item:has(a:focus-visible) {
+	@apply bg-black/10 dark:bg-white/10;
+}
+
+.humbak-file-dialog-item {
+	@apply -mx-2;
+
+	&::after {
+		@apply absolute bottom-0 left-[0.5rem] h-px w-[calc(100%_-_1rem)] bg-neutral content-empty;
+	}
+
+	&:last-of-type::after {
+		@apply hidden;
+	}
+}
+
+@media (min-width: 768px) {
+	.humbak-file-dialog-item::after {
+		@apply w-[calc(100%_-_1rem)] left-auto;
+	}
+
+	.humbak-file-dialog-item:nth-of-type(odd) {
+		@apply mr-0 pl-2 pr-4 -ml-4;
+
+		&::after {
+			@apply right-0;
+		}
+
+		&:before {
+			@apply absolute top-0 h-full w-px bg-neutral content-empty -right-[0.5px];
+		}
+	}
+
+	.humbak-file-dialog-item:nth-of-type(even) {
+		@apply ml-0 pl-4 pr-2 -mr-4;
+
+		&::after {
+			@apply left-0;
+		}
+	}
+
+	/* last 2 except for (3rd col && last 3rd) */
+	.humbak-file-dialog-item:nth-last-of-type(-1n + 2):not(:nth-of-type(even):nth-last-of-type(2))::after {
+		@apply hidden;
+	}
+}
+
+@media (min-width: 1024px) {
+	.humbak-file-dialog-item:nth-of-type(odd) {
+		@apply mr-0 pl-4 pr-6 after:right-0 -ml-4;
+	}
+
+	.humbak-file-dialog-item:nth-of-type(even) {
+		@apply ml-0 pl-6 pr-4 after:left-0 -mr-4;
+	}
+}
+
+@media (min-width: 1280px) {
+	.humbak-file-dialog-item:nth-of-type(odd),
+	.humbak-file-dialog-item:nth-of-type(even) {
+		@apply mx-0 px-0;
+	}
+
+	.humbak-file-dialog-item:nth-of-type(odd):before,
+	.humbak-file-dialog-item:nth-of-type(even):before {
+		@apply hidden;
+	}
+
+	.humbak-file-dialog-item:nth-of-type(odd)::after,
+	.humbak-file-dialog-item:nth-of-type(even)::after {
+		@apply left-auto right-auto w-full;
+	}
+
+	/* first column */
+	.humbak-file-dialog-item:nth-of-type(3n + 1) {
+		@apply pr-6 -ml-4 pl-4;
+
+		&::after {
+			@apply right-0;
+		}
+
+		/* show and move vertical line */
+		&:before {
+			@apply absolute top-0 h-full w-px bg-neutral content-empty -right-0.5px;
+		}
+	}
+
+	/* second column */
+	.humbak-file-dialog-item:nth-of-type(3n + 2) {
+		@apply px-6;
+
+		/* show vertical line */
+		&:before {
+			@apply absolute top-0 h-full w-px bg-neutral content-empty -right-0.5px;
+		}
+	}
+
+	/* third column */
+	.humbak-file-dialog-item:nth-of-type(3n) {
+		@apply pl-6 -mr-4 pr-4;
+
+		&::after {
+			@apply left-0;
+		}
+	}
+
+	/* first and last column horizontal line width */
+	.humbak-file-dialog-item:nth-of-type(3n + 1)::after,
+	.humbak-file-dialog-item:nth-of-type(3n)::after {
+		@apply w-[calc(100%_-_1rem)];
+	}
+
+	/* first and last column show vertical line */
+	.humbak-file-dialog-item:nth-of-type(3n + 1):before,
+	.humbak-file-dialog-item:nth-of-type(3n + 2):before {
+		@apply block;
+	}
+
+	/* last 3 except for (3rd col && last 3rd) || (2nd col && last 3rd) || (3rd col && last 2nd) */
+	.humbak-file-dialog-item:nth-last-of-type(-1n + 3):not(:nth-of-type(3n):nth-last-of-type(3)):not(
+			:nth-of-type(3n + 2):nth-last-of-type(3)
+		):not(:nth-of-type(3n):nth-last-of-type(2))::after {
+		@apply hidden;
+	}
+}

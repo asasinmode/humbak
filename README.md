@@ -1,55 +1,10 @@
-# humbak
-
-This is a monorepo for **humbak** cms.
-
-### dev
-
-After cloning the repo, copy `.env.example` to `.env.[development|production]` and fill the variables
-
-```bash
-# install dependencies
-pnpm i
-
-pnpm -filter api dev
-pnpm -filter admin dev
-pnpm -filter page dev
-
-# generate migrations
-pnpm -filter api run db:generate
-# drop migration
-pnpm -filter api run db:drop-migration
-# migrate
-pnpm -filter api run db:migrate
-# seed
-pnpm -filter api run db:seed
-# create user
-pnpm -filter api run db:create-user username password
-```
-
-### deploy script
-
-When building and deploying (at least for the original provider) make sure the envs of the _admin_ page are correct. The page is built statically and has to be configured when built.
-Additionally in `api/src/helpers/files/index.ts` comment the original `dirname` and uncomment the second one for the api to work correctly.
-
-```ts
-const dirname = fileURLToPath(new URL('../../..', import.meta.url));
-// TMP replace when building, couldnt find any easy way
-// const dirname = fileURLToPath(new URL('..', import.meta.url));
-```
-
-The `deploy.sh` script can be used to build and deploy the app. It supports 2 optional flags.
-
-```sh
-# install dependencies after building - needed for api and page when dependencies change
-./deploy.sh -i
-
-# deploy to production - changes the target dictionaries and screen processes' names
-./deploy.sh -prod
-```
-
-# pages
+# humbak blog & cms
 
 The **humbak** cms is made out of 3 pages: [api](https://github.com/asasinmode/humbak/tree/master/api), [admin](https://github.com/asasinmode/humbak/tree/master/admin) and the main [page](https://github.com/asasinmode/humbak/tree/master/page). The _admin_ page is used to manage the content displayed on the main _page_, both of which communicate with and through the _api_ page.
+
+The **humbak** application can be divided into 3 sections. The main page and the _/api_ and _/admin_ subpages. The main page displays the content managed with the _/admin_ page. Both of these use the _/api_ subpage to communicate. The rest of this readme describes the features available on the _admin page_ and contains instructions on how to use them.
+
+For local development, additional project information can be found [at the end](#dev).
 
 # features
 
@@ -154,3 +109,40 @@ Inside of the dialog you can add and edit a select few _social links_ that will 
 Lastly, on the admin settings page you can log out and change your admin's account name and password.
 
 <img src="https://raw.githubusercontent.com/asasinmode/humbak/master/api/src/db/scripts/assets/settings-en.png" title="settings page" alt="admin settings page with change name and password forms">
+
+# dev
+
+After cloning the repo, copy `.env.example` to `.env[.prod|.test]` and fill the variables
+
+```bash
+# install dependencies
+pnpm i
+# run dev server
+pnpm dev
+
+# generate migrations, check comment in server/db/schema/slideAspectRatio.ts
+pnpm run db:generate
+# drop migration
+pnpm run db:drop-migration
+# migrate
+pnpm run db:migrate
+# seed
+pnpm run db:seed
+# create user
+pnpm run db:create-user username password
+```
+
+### deploy script
+
+When building and deploying (at least for the original provider) make sure the envs of the _admin_ page are correct. The page is built statically and has to be configured when built.
+Additionally in `api/src/helpers/files/index.ts` comment the original `dirname` and uncomment the second one for the api to work correctly.
+
+The `deploy.sh` script can be used to build and deploy the app. It supports 2 optional flags.
+
+```sh
+# install dependencies after building - needed for api and page when dependencies change
+./deploy.sh -i
+
+# deploy to production - changes the target dictionaries and screen processes' names
+./deploy.sh -prod
+```

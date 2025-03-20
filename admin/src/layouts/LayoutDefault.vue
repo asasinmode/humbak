@@ -1,4 +1,0 @@
-<template>
-	<TheNavigation />
-	<RouterView />
-</template>
