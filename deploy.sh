@@ -57,6 +57,7 @@ ENDSSH
 # put server/index.mjs
 # put server/index.mjs.map
 # put server/package.json
+# put robots.txt
 # put -r public/_fonts
 # put -r public/_nuxt
 # put -r public/admin
