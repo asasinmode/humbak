@@ -1,6 +1,6 @@
 body {
 	background-color: #fafafa;
-	background-image: url('/admin/bg.svg');
+	background-image: url('/admin-bg.svg');
 	background-size: 100%;
 	min-height: 100vh;
 	color-scheme: light;
@@ -9,7 +9,7 @@ body {
 
 .dark body {
 	background-color: #171717;
-	background-image: url('/admin/bg-dark.svg');
+	background-image: url('/admin-bg-dark.svg');
 	color: white;
 	color-scheme: dark;
 }

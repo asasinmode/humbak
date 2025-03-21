@@ -48,7 +48,7 @@ sendPage() {
 	local publicDirectory="${1}"
 			ssh "${SSH_USER}@${SERVER_IP}" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
 cd ${publicDirectory}
-rm -rf _fonts _nuxt admin chunks
+rm -rf _fonts _nuxt chunks
 exit
 ENDSSH
 	sftp -o PubkeyAuthentication=no -P $SSH_PORT "${SSH_USER}@${SERVER_IP}" << ENDFTP
@@ -56,10 +56,9 @@ cd ${publicDirectory}
 put server/index.mjs
 put server/index.mjs.map
 put server/package.json
-put robots.txt
+put public/robots.txt
 put -r public/_fonts
 put -r public/_nuxt
-put -r public/admin
 put -r server/chunks
 quit
 ENDFTP
