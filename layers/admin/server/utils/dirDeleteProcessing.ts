@@ -1,19 +1,9 @@
-// import type { MySql2Database } from 'drizzle-orm/mysql2';
 import { existsSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import { eq, inArray } from 'drizzle-orm';
 
 const { directories, files, filesToPages, filesToSlides } = tables;
 
-// interface IParams {
-// 	db: MySql2Database;
-// 	input: Map<number, IDir>;
-// 	allDirs: Map<number, IDir>;
-// 	allDirsArray: IDir[];
-// 	modifiedPagesIds: Set<number>;
-// 	modifiedSlidesIds: Set<number>;
-// 	filesStoragePath: string;
-// }
 export async function processDeletedDirs(
 	input: Map<number, IDir>,
 	allDirs: Map<number, IDir>,

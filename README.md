@@ -130,19 +130,19 @@ pnpm run db:migrate
 pnpm run db:seed
 # create user
 pnpm run db:create-user username password
+
+# run tests
+pnpm test
 ```
 
 ### deploy script
 
-When building and deploying (at least for the original provider) make sure the envs of the _admin_ page are correct. The page is built statically and has to be configured when built.
-Additionally in `api/src/helpers/files/index.ts` comment the original `dirname` and uncomment the second one for the api to work correctly.
-
-The `deploy.sh` script can be used to build and deploy the app. It supports 2 optional flags.
+When building and deploying (at least for the original provider) make sure the envs prefixed with `DEPLOY_` are correct.
 
 ```sh
-# install dependencies after building - needed for api and page when dependencies change
-./deploy.sh -i
+# either just deploy or build and deploy
+./deploy.sh
 
-# deploy to production - changes the target dictionaries and screen processes' names
-./deploy.sh -prod
+# install dependencies after deploy
+./deploy.sh -i
 ```

@@ -40,6 +40,7 @@ const tests = test.run({
 		`${dirname}/dirEditProcessing.test.ts`,
 	],
 	only: process.argv.includes('--test-only'),
+	execArgv: ['--import', '~~/server/db/scripts/setupGlobals'],
 	concurrency: true,
 }).compose(new testReporters.spec()); /* eslint-disable-line new-cap */
 

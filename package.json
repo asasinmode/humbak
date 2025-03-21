@@ -20,7 +20,8 @@
 		"db:truncate": "tsx ./server/db/scripts/truncate.ts",
 		"db:truncate:prod": "set NODE_ENV=production&& tsx ./server/db/scripts/truncate.ts",
 		"db:create-user": "tsx ./server/db/scripts/createUser.ts",
-		"db:create-user:prod": "set NODE_ENV=production&& tsx ./server/db/scripts/createUser.ts"
+		"db:create-user:prod": "set NODE_ENV=production&& tsx ./server/db/scripts/createUser.ts",
+		"test": "set NODE_ENV=test&& tsx ./tests/index.ts"
 	},
 	"dependencies": {
 		"@monaco-editor/loader": "^1.5.0",

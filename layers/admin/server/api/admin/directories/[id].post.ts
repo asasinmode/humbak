@@ -23,7 +23,6 @@ export default defineEventHandler(async (event) => {
 		parentId: directories.parentId,
 	}).from(directories);
 
-	// TODO check what it looks like and how to access input[`directoryId[number]`]
 	const rawInput = await readMultipartFormData(event);
 	if (typeof rawInput !== 'object') {
 		throw createError({
