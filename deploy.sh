@@ -24,7 +24,7 @@ deployProject(){
 		cd ".output"
 
 		local publicDirectory="/home/${SERVER_USER}/domains/${SERVER_PAGE_DOMAIN}/public_html"
-		local sourceNode="/home/${SERVER_USER}/nodevenv/domains/${SERVER_PAGE_DOMAIN}/public_html/20/bin/activate"
+		local sourceNode="/home/${SERVER_USER}/nodevenv/domains/${SERVER_PAGE_DOMAIN}/public_html/22/bin/activate"
 		local installCommand=$([ "$installDependencies" = true ] && echo "pnpm i" || echo "")
 
 		ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
@@ -32,12 +32,11 @@ screen -S "page" -X quit
 exit
 ENDSSH
 
-		# sendPage "${publicDirectory}"
+		sendPage "${publicDirectory}"
 
 		ssh "$SSH_USER@$SERVER_IP" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
 source "$sourceNode"
 cd $publicDirectory
-ls
 $installCommand
 screen -S "page" -dm node index.mjs
 exit
@@ -45,26 +44,26 @@ ENDSSH
 	)
 }
 
-# sendPage() {
-# 	local publicDirectory="${1}"
-# 			ssh "${SSH_USER}@${SERVER_IP}" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
-# cd ${publicDirectory}
-# rm -rf _fonts _nuxt admin chunks
-# exit
-# ENDSSH
-# 	sftp -o PubkeyAuthentication=no -P $SSH_PORT "${SSH_USER}@${SERVER_IP}" << ENDFTP
-# cd ${publicDirectory}
-# put server/index.mjs
-# put server/index.mjs.map
-# put server/package.json
-# put robots.txt
-# put -r public/_fonts
-# put -r public/_nuxt
-# put -r public/admin
-# put -r server/chunks
-# quit
-# ENDFTP
-# }
+sendPage() {
+	local publicDirectory="${1}"
+			ssh "${SSH_USER}@${SERVER_IP}" -o PubkeyAuthentication=no -p $SSH_PORT -tt << ENDSSH
+cd ${publicDirectory}
+rm -rf _fonts _nuxt admin chunks
+exit
+ENDSSH
+	sftp -o PubkeyAuthentication=no -P $SSH_PORT "${SSH_USER}@${SERVER_IP}" << ENDFTP
+cd ${publicDirectory}
+put server/index.mjs
+put server/index.mjs.map
+put server/package.json
+put robots.txt
+put -r public/_fonts
+put -r public/_nuxt
+put -r public/admin
+put -r server/chunks
+quit
+ENDFTP
+}
 
 if [ ! -f ./.env ]; then
 	printColored $red ".env not found"
@@ -86,7 +85,6 @@ SERVER_USER=$(getEnv DEPLOY_SERVER_USER)
 SERVER_PAGE_DOMAIN=$(getEnv DEPLOY_SERVER_PAGE_DOMAIN)
 SSH_PORT=$(getEnv DEPLOY_SSH_PORT)
 SSH_USER=$(getEnv DEPLOY_SSH_USER)
-SSH_PASSWORD=$(getEnv DEPLOY_SSH_PASSWORD)
 
 printf "$green?$white choose action$NC\n"
 
