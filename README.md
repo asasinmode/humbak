@@ -1,10 +1,8 @@
-# humbak blog & cms
+# humbak
 
-The **humbak** cms is made out of 3 pages: [api](https://github.com/asasinmode/humbak/tree/master/api), [admin](https://github.com/asasinmode/humbak/tree/master/admin) and the main [page](https://github.com/asasinmode/humbak/tree/master/page). The _admin_ page is used to manage the content displayed on the main _page_, both of which communicate with and through the _api_ page.
+An all-in-one blog cms system that can be divided into 3 sections: the main page, found under `/`, the `/api` and `/admin`. The _main page_ displays content managed with the _admin page_, both use _api endpoint_ to communicate. The app is made with [nuxt](https://nuxt.com/) but an older monorepo version can be found on the [monorepo branch](https://github.com/asasinmode/humbak/tree/monorepo).
 
-The **humbak** application can be divided into 3 sections. The main page and the _/api_ and _/admin_ subpages. The main page displays the content managed with the _/admin_ page. Both of these use the _/api_ subpage to communicate. The rest of this readme describes the features available on the _admin page_ and contains instructions on how to use them.
-
-For local development, additional project information can be found [at the end](#dev).
+For local development, additional project information can be found [at the end](#dev). Other than that the rest of the readme describes the features available on the _admin page_ and contains instructions on how to use it.
 
 # features
 
