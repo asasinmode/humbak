@@ -15,10 +15,14 @@ const {
 } = useForm(
 	{ username: '', password: '' },
 	async () => {
-		await useApi<string>('/api/admin/auth/login', {
+		const { jwt } = await useApi('/api/admin/auth/login', {
 			method: 'post',
 			body: { username: username.value, password: password.value },
 		});
+
+		useState('adminUsername').value = username.value;
+		useState('adminJwt').value = jwt;
+		localStorage.setItem('adminJwt', jwt);
 
 		navigateTo('/admin');
 	},

@@ -5,7 +5,7 @@ import { nonEmptyMaxLengthString } from '~~/server/validation';
 const { users } = tables;
 
 export default defineEventHandler(async (event) => {
-	const { id } = JSON.parse(getCookie(event, 'auth')!);
+	const { id } = await adminOnly(event);
 
 	const { username } = await useValidatedBody(event, v.object({
 		username: nonEmptyMaxLengthString(),
@@ -18,6 +18,7 @@ export default defineEventHandler(async (event) => {
 		})
 		.from(users)
 		.where(eq(users.id, id));
+
 	if (!user) {
 		setResponseStatus(event, 401, 'Unauthorized');
 		return 'użytkownik nie istnieje';
@@ -27,10 +28,13 @@ export default defineEventHandler(async (event) => {
 		.select({ id: users.id })
 		.from(users)
 		.where(and(eq(users.username, username), not(eq(users.id, user.id))));
+
 	if (userWithSameName) {
 		setResponseStatus(event, 403, 'Forbidden');
 		return 'użytkownik o podanej nazwie istnieje';
 	}
+
+	await db.update(users).set({ username }).where(eq(users.id, id));
 
 	setResponseStatus(event, 204, 'No Content');
 });

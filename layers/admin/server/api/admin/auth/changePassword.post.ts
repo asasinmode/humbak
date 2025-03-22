@@ -5,7 +5,7 @@ import { nonEmptyMaxLengthString } from '~~/server/validation';
 const { users } = tables;
 
 export default defineEventHandler(async (event) => {
-	const { id } = JSON.parse(getCookie(event, 'auth')!);
+	const { id } = await adminOnly(event);
 
 	const { newPassword, oldPassword } = await useValidatedBody(event, v.object({
 		oldPassword: nonEmptyMaxLengthString(1024),

@@ -4,6 +4,8 @@ import { eq, sql } from 'drizzle-orm';
 const { pages, menuLinks, contents } = tables;
 
 export default defineEventHandler(async (event) => {
+	await adminOnly(event);
+
 	const { id } = useValidatedParams(event, idParamValidation);
 
 	const [[result], stylesheetFileData] = await Promise.all([

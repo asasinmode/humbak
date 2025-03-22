@@ -3,6 +3,8 @@ import { eq, inArray } from 'drizzle-orm';
 const { directories, files, contents, slides } = tables;
 
 export default defineEventHandler(async (event) => {
+	await adminOnly(event);
+
 	const input = await useValidatedBody(event, putDirectoryInput);
 
 	const allDirsArray: IDir[] = await db.select({
@@ -91,7 +93,7 @@ export default defineEventHandler(async (event) => {
 		}
 	}
 
-	const returnDirHeader = getRequestHeader(event, 'return-for-dir') || '';
+	const returnDirHeader = getRequestHeader(event, 'x-humbak-return-for-dir') || '';
 	const parseResult = Number.parseInt(returnDirHeader);
 	const returnForDirId = returnDirHeader === 'null'
 		? null

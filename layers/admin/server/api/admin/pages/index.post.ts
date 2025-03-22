@@ -18,6 +18,8 @@ export type IUpsertPageInputSchema = v.InferInput<typeof upsertPageInputSchema>;
 const { pages, menuLinks, contents, filesToPages } = tables;
 
 export default defineEventHandler(async (event) => {
+	await adminOnly(event);
+
 	const { menuText, html, meta, css, ...pageFields } = await useValidatedBody(event, upsertPageInputSchema);
 
 	const originalPage = pageFields.id !== undefined

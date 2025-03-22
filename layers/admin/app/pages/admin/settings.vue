@@ -2,10 +2,10 @@
 definePageMeta({ layout: 'admin' });
 useHead({ title: 'ustawienia - Admin' });
 
-const auth = useCookie<IAuthCookie | undefined>('auth');
-
 function logout() {
-	auth.value = undefined;
+	useState('adminJwt').value = undefined;
+	useState('adminUsername').value = undefined;
+	localStorage.removeItem('adminJwt');
 	navigateTo('/admin/login');
 }
 
@@ -19,8 +19,7 @@ const {
 	{ username: '' },
 	async () => {
 		await useApi('/api/admin/auth/changeUsername', { method: 'post', body: { username: username.value } });
-		auth.value!.username = username.value;
-		refreshCookie('auth');
+		useState('adminUsername').value = username.value;
 		updateUsernameValues({
 			username: '',
 		});
@@ -62,7 +61,7 @@ const {
 			<form class="flex flex-col items-center" @submit.prevent="sendUsernameForm()">
 				<fieldset class="w-fit flex flex-col gap-5 border-2 border-neutral rounded-lg p-4 shadow">
 					<legend class="text-lg">
-						zmiana nazwy użytkownika ({{ auth?.username }})
+						zmiana nazwy użytkownika ({{ useState('adminUsername') }})
 					</legend>
 					<AdminVInput
 						id="settingsUsername"

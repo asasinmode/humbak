@@ -1,6 +1,8 @@
 const { directories } = tables;
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
+	await adminOnly(event);
+
 	const result = await db
 		.select({
 			id: directories.id,

@@ -2,7 +2,6 @@ import type { IUpsertPageInputSchema } from '../../server/api/admin/pages/index.
 
 export interface IPageContentsInput extends Pick<IUpsertPageInputSchema, 'html' | 'css' | 'meta'> {}
 
-export interface IAuthCookie {
-	username: string;
+export interface IJwtPayload {
 	id: string;
 }

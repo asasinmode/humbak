@@ -5,6 +5,8 @@ import { eq } from 'drizzle-orm';
 const { pages, menuLinks } = tables;
 
 export default defineEventHandler(async (event) => {
+	await adminOnly(event);
+
 	const { id } = useValidatedParams(event, idParamValidation);
 
 	const [page] = await db.select({

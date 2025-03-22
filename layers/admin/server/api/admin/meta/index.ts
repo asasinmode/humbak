@@ -3,6 +3,8 @@ import { eq, sql } from 'drizzle-orm';
 const { meta } = tables;
 
 export default defineEventHandler(async (event) => {
+	await adminOnly(event);
+
 	const { language } = useValidatedQuery(event, languageQueryValidation);
 
 	const [result] = await db

@@ -43,8 +43,8 @@ export function enHomePageContent(
 <section>
 	<h2>structure</h2>
 
-	<p><strong>Humbak</strong> can be divided into 3 sections: the <a href="#" class="text-link">main page</a> (the one you are currently viewing) and the <a href="/api" target="_blank" class="text-link">/api</a> and <a href="/admin" target="_blank" class="text-link">/admin</a> subpages.</p>
-	<p class="indent">The <a href="#" class="text-link">main page</a> displays the content managed with the <a href="/admin" target="_blank" class="text-link">admin page</a>. Both of these us the <a href="/api" target="_blank" class="text-link">/api</a> endpoint to communicate. Besides the <a href="/api" target="_blank" class="text-link fancy-underline">api home page</a> there isn't much there. The rest of this page describes the features available on the <a href="/admin" target="_blank" class="text-link">admin page</a> and contains instructions on how to use them.</p>
+	<p><strong>Humbak</strong> can be divided into 3 sections: the <a href="#" class="text-link">main page</a> (the one you are currently viewing), the <a href="/api" target="_blank" class="text-link">/api</a> and <a href="/admin" target="_blank" class="text-link">/admin</a> subpages.</p>
+	<p class="indent">The <a href="#" class="text-link">main page</a> displays content managed with the <a href="/admin" target="_blank" class="text-link">admin page</a>. Both of these use the <a href="/api" target="_blank" class="text-link">/api</a> endpoint to communicate. Besides the <a href="/api" target="_blank" class="text-link fancy-underline">api home page</a> there isn't much there. The rest of this page describes the features available on the <a href="/admin" target="_blank" class="text-link">admin page</a> and contains instructions on how to use it.</p>
 
 <section>
 	<h2>features</h2>

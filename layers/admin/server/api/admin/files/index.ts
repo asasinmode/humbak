@@ -3,6 +3,8 @@ import { like, or, sql } from 'drizzle-orm';
 const { files } = tables;
 
 export default defineEventHandler(async (event) => {
+	await adminOnly(event);
+
 	const { query, limit: rawLimit, offset } = useValidatedQuery(event, paginationQueryValidation);
 	const limit = Math.min(rawLimit, 100);
 

@@ -653,7 +653,7 @@ async function saveChanges() {
 				editedFiles,
 				deletedDirIds,
 				editedDirs,
-			}, headers: responseReturnsData ? { 'return-for-dir': `${currentDirId.value}` } : {} });
+			}, headers: responseReturnsData ? { 'x-humbak-return-for-dir': `${currentDirId.value}` } : {} });
 
 			if (responseReturnsData) {
 				clearLoadedFiles();
@@ -703,24 +703,6 @@ async function saveChanges() {
 			method: 'post',
 			body: formdata,
 		});
-		// const response: IGetDirectoryResponse = await fetch(
-		// 	`/api/admin/directories/${currentDirId.value}`,
-		// 	{ method: 'post', body: formdata },
-		// ).then(async (r) => {
-		// 	if (r.ok) {
-		// 		return r;
-		// 	}
-		// 	const contentType = r.headers.get('content-type');
-		// 	if (contentType && contentType.slice(0, 16) === 'application/json') {
-		// 		return r.json().then((v) => {
-		// 			throw new FetchError(v);
-		// 		});
-		// 	}
-
-		// 	return r.text().then((v) => {
-		// 		throw new FetchError(v);
-		// 	});
-		// }).then(r => r.json());
 		handlePutResponse(response);
 		clearLoadedFiles();
 		newFiles.value = [];

@@ -3,6 +3,8 @@ import { eq, like, or, sql } from 'drizzle-orm';
 const { pages, menuLinks } = tables;
 
 export default defineEventHandler(async (event) => {
+	await adminOnly(event);
+
 	const { query, limit: rawLimit, offset } = useValidatedQuery(event, paginationQueryValidation);
 	const limit = Math.min(rawLimit, 100);
 	const select = { id: pages.id, language: pages.language, title: pages.title, menuText: menuLinks.text };

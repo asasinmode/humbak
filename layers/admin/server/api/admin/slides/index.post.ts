@@ -4,6 +4,8 @@ import { insertSlideSchema } from '~~/server/db/schema/slides';
 const { slides, filesToSlides } = tables;
 
 export default defineEventHandler(async (event) => {
+	await adminOnly(event);
+
 	const { content, ...input } = await useValidatedBody(event, insertSlideSchema);
 
 	const { value: parsedContent, fileIds: associatedFilesIds } = await parseHumbakHtml(content, db);

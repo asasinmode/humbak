@@ -4,7 +4,10 @@ import { nonEmptyMaxLengthString } from '~~/server/validation';
 
 const { users } = tables;
 
-const TWO_HOURS_IN_S = 60 * 60 * 2;
+// workaround for nuxt server return types
+interface IRv {
+	jwt: string;
+}
 
 export default defineEventHandler(async (event) => {
 	const { username, password } = await useValidatedBody(event, v.object({
@@ -22,15 +25,16 @@ export default defineEventHandler(async (event) => {
 
 	if (!user) {
 		setResponseStatus(event, 401, 'Unauthorized');
-		return 'użytkownik nie istnieje';
+		return 'użytkownik nie istnieje' as unknown as IRv;
 	}
 
 	const isPasswordValid = await comparePassword(user.password, password);
 	if (!isPasswordValid) {
 		setResponseStatus(event, 401, 'Unauthorized');
-		return 'nieprawidłowe hasło';
+		return 'nieprawidłowe hasło' as unknown as IRv;
 	}
 
-	setCookie(event, 'auth', JSON.stringify({ username, id: user.id } satisfies IAuthCookie), { maxAge: TWO_HOURS_IN_S });
-	setResponseStatus(event, 201, 'No Content');
+	return {
+		jwt: createJwt({ id: user.id }),
+	};
 });

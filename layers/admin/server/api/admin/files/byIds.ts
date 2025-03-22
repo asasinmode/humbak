@@ -6,6 +6,8 @@ const { files } = tables;
 const idValidation = v.pipe(v.string(), v.nonEmpty(), v.transform(Number), v.integer());
 
 export default defineEventHandler(async (event) => {
+	await adminOnly(event);
+
 	const { ids } = useValidatedQuery(event, v.object({
 		ids: v.union([
 			idValidation,

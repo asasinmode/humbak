@@ -42,6 +42,7 @@ export default defineNuxtConfig({
 		databaseName: '',
 		filesPath: '',
 		stylesheetsPath: '',
+		jwtSecret: '',
 		public: {
 			defaultLanguage: '',
 		},

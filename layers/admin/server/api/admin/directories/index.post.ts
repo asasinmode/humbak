@@ -5,6 +5,8 @@ import { insertDirectorySchema } from '~~/server/db/schema/directories';
 const { directories } = tables;
 
 export default defineEventHandler(async (event) => {
+	await adminOnly(event);
+
 	const input = await useValidatedBody(event, insertDirectorySchema);
 	const target = await getTargetDir(false, input.parentId);
 

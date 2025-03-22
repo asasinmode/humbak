@@ -1,8 +1,26 @@
 import type { NitroFetchRequest } from 'nitropack';
 import type { UnwrapRef } from 'vue';
+import { FetchError } from 'ofetch';
 
 export const useApi = ((url, options) => {
-	return $fetch(url, options);
+	if (useState('adminJwt').value) {
+		// @ts-expect-error {} is fine
+		options ||= {};
+		options!.headers ||= {};
+		(options!.headers as Record<string, string>).Authorization = `Bearer ${useState('adminJwt').value}`;
+	}
+
+	return $fetch(url, options)
+		.catch((error) => {
+			if (
+				error instanceof FetchError
+				&& error.response?.status === 401
+				&& error.response?.headers.get('x-humbak-logged-out') === 'true') {
+				useToast().toast('wylogowano', 'error');
+			}
+
+			throw error;
+		});
 }) as typeof $fetch;
 
 export type IApiReturn<T extends NitroFetchRequest> = NonNullable<UnwrapRef<

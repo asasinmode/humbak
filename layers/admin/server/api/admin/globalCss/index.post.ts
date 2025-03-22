@@ -2,6 +2,8 @@ import fs from 'node:fs/promises';
 import * as v from 'valibot';
 
 export default defineEventHandler(async (event) => {
+	await adminOnly(event);
+
 	const { value } = await useValidatedBody(event, v.object({ value: v.string() }));
 
 	await fs.writeFile(`${stylesheetsStoragePath}/global.css`, value);
