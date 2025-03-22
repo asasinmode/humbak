@@ -17,9 +17,7 @@ export async function adminOnly(event: H3Event): Promise<IJwtPayload> {
 		jwt.verify(token, useRuntimeConfig().jwtSecret, (err, decoded) => err ? resolve(undefined) : resolve(decoded)),
 	);
 
-	const url = getRequestURL(event);
-
-	if (url.pathname === '/api/admin/menuLinks' || !verifiedToken || typeof verifiedToken !== 'object' || !('id' in verifiedToken)) {
+	if (!verifiedToken || typeof verifiedToken !== 'object' || !('id' in verifiedToken)) {
 		setResponseHeader(event, 'x-humbak-logged-out', true);
 		throw createError({
 			statusCode: 401,
