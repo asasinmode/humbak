@@ -35,7 +35,7 @@ export const tables = {
 
 const dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-export const filesStoragePath = path.resolve(dirname, '../..', useRuntimeConfig().filesPath);
-export const stylesheetsStoragePath = path.resolve(dirname, '../..', useRuntimeConfig().stylesheetsPath);
+export const filesStoragePath = path.resolve(dirname, useRuntimeConfig().filesPath);
+export const stylesheetsStoragePath = path.resolve(dirname, useRuntimeConfig().stylesheetsPath);
 
 export const db = drizzle(pool);
