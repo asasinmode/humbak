@@ -65,6 +65,7 @@ watch(expandedMenuIds, (newValue, oldValue) => {
 
 // todo handle keyboard navigation focus/expanded managment
 // also handle large screens instead of focus within which stays after link click
+// also change focus on page navigation to main instead of staying on menu
 function expandButtonClick(id: number, parentId?: number) {
 	if (expandedMenuIds.value[0] === id) {
 		expandedMenuLinkId.value = undefined;
